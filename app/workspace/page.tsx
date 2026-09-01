@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { WorkspaceClient } from "@/components/workspace-client";
+import { WorkspaceClientV3 } from "@/components/workspace-client-v3";
 
 export default function WorkspacePage() {
-  return <Suspense fallback={<main className="workspace-loading">Workspaceを読み込んでいます。</main>}><WorkspaceClient /></Suspense>;
+  return <Suspense fallback={<main className="workspace-loading">Workspaceを読み込んでいます。</main>}><WorkspaceClientV3 /></Suspense>;
 }
