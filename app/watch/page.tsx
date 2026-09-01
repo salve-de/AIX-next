@@ -1,0 +1,6 @@
+import { Suspense } from "react";
+import { WatchClient } from "@/components/watch-client";
+
+export default function WatchPage() {
+  return <Suspense fallback={<div className="full-loading">Watchを読み込んでいます。</div>}><WatchClient /></Suspense>;
+}
