@@ -1,0 +1,22 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { normalizePublicUrl } from "../lib/url-security";
+
+test("adds https to a bare domain", () => {
+  assert.equal(normalizePublicUrl("example.com"), "https://example.com/");
+});
+
+test("rejects credentials and non-http schemes", () => {
+  assert.throws(() => normalizePublicUrl("https://user:pass@example.com"), /認証情報/);
+  assert.throws(() => normalizePublicUrl("file:///etc/passwd"), /http/);
+});
+
+test("rejects non-standard ports and localhost", () => {
+  assert.throws(() => normalizePublicUrl("https://example.com:8443"), /標準ポート/);
+  assert.throws(() => normalizePublicUrl("http://localhost"), /公開ドメイン/);
+});
+
+test("rejects private literal IPs", () => {
+  assert.throws(() => normalizePublicUrl("http://127.0.0.1"), /内部IP/);
+  assert.throws(() => normalizePublicUrl("http://192.168.1.2"), /内部IP/);
+});
