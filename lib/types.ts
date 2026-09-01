@@ -1,6 +1,6 @@
 export type ProviderName = "openai" | "gemini" | "perplexity";
 export type ScanStage = "created" | "validating" | "crawling" | "discovering" | "prompting" | "measuring" | "analyzing" | "complete" | "partial" | "failed";
-export type PromptPanelKind = "free" | "core" | "discovery";
+export type PromptPanelKind = "free" | "core" | "discovery" | "custom";
 export type PromptCluster = "category" | "segment" | "use_case" | "feature" | "alternative" | "comparison" | "value" | "implementation" | "trust" | "support";
 
 export type Citation = { title: string; url: string; domain: string };
@@ -186,16 +186,17 @@ export type WatchRecord = {
   scanId: string;
   status: WatchStatus;
   paid: boolean;
-  /** Stable Core baseline. Discovery never contributes to trend metrics. */
+  /** Stable Core baseline. Discovery and Custom panels never contribute to Core trend metrics. */
   baseline: ScanResult;
-  /** Latest Core result. */
   latest: ScanResult;
-  /** Core history only. */
   history: ScanResult[];
   /** Latest rotating Discovery panel, paid plan only. */
   discoveryLatest?: ScanResult | null;
-  /** Discovery history, intentionally separate from Core. */
   discoveryHistory?: ScanResult[];
+  /** User-defined prompts are intentionally isolated from Core so adding a prompt cannot fake trend improvement. */
+  customPrompts?: BuyerPrompt[];
+  customLatest?: ScanResult | null;
+  customHistory?: ScanResult[];
   evidence: EvidenceAnswer[];
   changePacks?: ChangePack[];
   trialEndsAt: string;
