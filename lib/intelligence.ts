@@ -8,7 +8,7 @@ export type PromptIntelligenceRow = {
   firstChoices: number;
   citations: number;
   recommendationCoverage: number;
-  providerOutcomes: Array<{ provider: ProviderName; successful: number; recommended: number; firstChoice: number; cited: number }>;
+  providerOutcomes: Array<{ provider: ProviderName; successful: number; mentioned: number; recommended: number; firstChoice: number; cited: number }>;
 };
 
 export type CitationIntelligenceRow = {
@@ -20,16 +20,14 @@ export type CitationIntelligenceRow = {
   urls: Array<{ url: string; title: string; count: number }>;
 };
 
-export type ClusterIntelligenceRow = {
-  cluster: PromptCluster;
-  prompts: number;
-  successful: number;
-  recommended: number;
-  coverage: number;
-};
+export type ClusterIntelligenceRow = { cluster: PromptCluster; prompts: number; successful: number; recommended: number; coverage: number };
 
 function lower(value: string) { return value.trim().toLowerCase(); }
 function pct(a: number, b: number) { return b ? Math.round((a / b) * 100) : 0; }
+function mentionsBrand(item: Observation, discovery: CompanyDiscovery) {
+  const text = lower(item.rawText);
+  return discovery.aliases.some((alias) => alias.trim().length >= 2 && text.includes(lower(alias)));
+}
 
 export function withPromptRationale(prompts: BuyerPrompt[], discovery: CompanyDiscovery) {
   const segment = discovery.targetCustomers[0] || "対象顧客";
@@ -49,7 +47,7 @@ export function withPromptRationale(prompts: BuyerPrompt[], discovery: CompanyDi
   return prompts.map((prompt) => ({ ...prompt, whyTracked: prompt.whyTracked || reasons[prompt.cluster] }));
 }
 
-export function buildPromptIntelligence(result: Pick<ScanResult, "prompts" | "observations">): PromptIntelligenceRow[] {
+export function buildPromptIntelligence(result: Pick<ScanResult, "prompts" | "observations" | "discovery">): PromptIntelligenceRow[] {
   return result.prompts.map((prompt) => {
     const rows = result.observations.filter((item) => item.promptId === prompt.id && item.status === "success");
     const providers = (["openai", "gemini", "perplexity"] as ProviderName[]).map((provider) => {
@@ -57,16 +55,17 @@ export function buildPromptIntelligence(result: Pick<ScanResult, "prompts" | "ob
       return {
         provider,
         successful: providerRows.length,
+        mentioned: providerRows.filter((item) => mentionsBrand(item, result.discovery)).length,
         recommended: providerRows.filter((item) => item.ownRecommended).length,
-        firstChoice: providerRows.filter((item) => item.firstCandidate && lower(item.firstCandidate) === lower(item.recommendedEntities.find((entity) => lower(entity) === lower(item.firstCandidate || "")) || "")).length,
-        cited: providerRows.filter((item) => item.citations.length > 0).length,
+        firstChoice: providerRows.filter((item) => item.ownPosition === 1).length,
+        cited: providerRows.filter((item) => item.citations.some((citation) => lower(citation.domain) === lower(result.discovery.domain))).length,
       };
     });
     const recommendations = rows.filter((item) => item.ownRecommended).length;
     return {
       prompt,
       successful: rows.length,
-      mentions: rows.filter((item) => item.rawText.toLowerCase().includes(prompt.text.toLowerCase()) || item.ownRecommended).length,
+      mentions: rows.filter((item) => mentionsBrand(item, result.discovery)).length,
       recommendations,
       firstChoices: rows.filter((item) => item.ownPosition === 1).length,
       citations: rows.reduce((sum, item) => sum + item.citations.length, 0),
