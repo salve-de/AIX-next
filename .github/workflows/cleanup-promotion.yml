@@ -1,0 +1,31 @@
+name: Clean temporary AIX Next promotion automation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/cleanup-promotion.yml
+      - .github/workflows/promote-clean-room.yml
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Keep only the stable quality workflow
+        run: |
+          rm -f .github/workflows/promote-clean-room.yml
+          rm -f .github/workflows/cleanup-promotion.yml
+          git config user.name "AIX Next Release Bot"
+          git config user.email "actions@github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Remove temporary clean-room promotion automation"
+            git push origin HEAD:main
+          fi
