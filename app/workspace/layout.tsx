@@ -4,6 +4,7 @@ import "./workspace-v3.css";
 import "./custom-prompt-lab.css";
 import "./site-readiness.css";
 import "./export-center.css";
+import "./agent-analytics.css";
 
 export const metadata: Metadata = {
   title: "AI Buyer Intelligence Workspace",
