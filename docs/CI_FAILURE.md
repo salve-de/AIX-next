@@ -26,37 +26,37 @@ TAP version 13
 # Subtest: failed and skipped observations are excluded from recommendation denominator
 ok 1 - failed and skipped observations are excluded from recommendation denominator
   ---
-  duration_ms: 3.253624
+  duration_ms: 1.499516
   type: 'test'
   ...
 # Subtest: citation coverage includes owned subdomains
 ok 2 - citation coverage includes owned subdomains
   ---
-  duration_ms: 0.368361
+  duration_ms: 0.371021
   type: 'test'
   ...
 # Subtest: repeat agreement uses the modal outcome signature
 ok 3 - repeat agreement uses the modal outcome signature
   ---
-  duration_ms: 2.447752
+  duration_ms: 0.31694
   type: 'test'
   ...
 # Subtest: specific AIX group overrides wildcard group
 ok 4 - specific AIX group overrides wildcard group
   ---
-  duration_ms: 1.677187
+  duration_ms: 1.477525
   type: 'test'
   ...
 # Subtest: longest matching allow rule wins
 ok 5 - longest matching allow rule wins
   ---
-  duration_ms: 0.265738
+  duration_ms: 0.209801
   type: 'test'
   ...
 # Subtest: wildcard group applies to other agents
 ok 6 - wildcard group applies to other agents
   ---
-  duration_ms: 0.324969
+  duration_ms: 0.365011
   type: 'test'
   ...
 # node:internal/modules/cjs/loader:1430
@@ -86,7 +86,7 @@ ok 6 - wildcard group applies to other agents
 # Subtest: tests/url-security.test.ts
 not ok 3 - tests/url-security.test.ts
   ---
-  duration_ms: 261.034732
+  duration_ms: 199.10361
   type: 'test'
   location: '/home/runner/work/AIX-next/AIX-next/tests/url-security.test.ts:1:1'
   failureType: 'testCodeFailure'
@@ -103,5 +103,5 @@ not ok 3 - tests/url-security.test.ts
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 1016.040221
+# duration_ms 744.849776
 ```
