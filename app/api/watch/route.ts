@@ -1,6 +1,10 @@
+import { generateBuyerPrompts } from "@/lib/discovery";
+import { id } from "@/lib/ids";
+import { runScan } from "@/lib/scan-runner";
 import { createWatch, getScan, getWatch } from "@/lib/storage";
 
 export const runtime = "nodejs";
+export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
 function normalizeEmail(value: string) {
@@ -17,8 +21,27 @@ export async function POST(request: Request) {
     const scan = await getScan(body.scanId);
     if (!scan?.result) return Response.json({ error: "診断結果が見つかりません。" }, { status: 404 });
     if (!scan.result.successfulObservations) return Response.json({ error: "成功したAI観測がないためWatchを開始できません。API設定後に再測定してください。" }, { status: 409 });
-    const watch = await createWatch(scan, email);
-    return Response.json({ token: watch.token, watchUrl: `/watch?token=${encodeURIComponent(watch.token)}` }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
+
+    // The free 12-prompt snapshot is directional. A Watch starts a separate,
+    // stable 30-prompt Core baseline so later trend comparisons do not mix panels.
+    const corePrompts = await generateBuyerPrompts(scan.result.discovery, 30, "core");
+    const coreBaseline = await runScan({
+      scanId: id("trialcore"),
+      url: scan.result.targetUrl,
+      prompts: corePrompts,
+      promptCount: corePrompts.length,
+      repetitions: 1,
+      panelKind: "core",
+    });
+    if (!coreBaseline.successfulObservations) return Response.json({ error: "Watch用Core Panelを測定できませんでした。Provider設定を確認してください。" }, { status: 409 });
+
+    const watch = await createWatch(scan, email, coreBaseline);
+    return Response.json({
+      token: watch.token,
+      watchUrl: `/watch?token=${encodeURIComponent(watch.token)}`,
+      trialEndsAt: watch.trialEndsAt,
+      corePromptCount: coreBaseline.panel.promptCount,
+    }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Watchを開始できませんでした。" }, { status: 400 });
   }
