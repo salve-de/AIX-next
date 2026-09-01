@@ -3,26 +3,9 @@ export type ScanStage = "created" | "validating" | "crawling" | "discovering" | 
 export type PromptPanelKind = "free" | "core" | "discovery";
 export type PromptCluster = "category" | "segment" | "use_case" | "feature" | "alternative" | "comparison" | "value" | "implementation" | "trust" | "support";
 
-export type Citation = {
-  title: string;
-  url: string;
-  domain: string;
-};
-
-export type CrawledPage = {
-  url: string;
-  title: string;
-  description: string;
-  headings: string[];
-  text: string;
-};
-
-export type Competitor = {
-  name: string;
-  domain?: string;
-  reason: string;
-  confidence: number;
-};
+export type Citation = { title: string; url: string; domain: string };
+export type CrawledPage = { url: string; title: string; description: string; headings: string[]; text: string };
+export type Competitor = { name: string; domain?: string; reason: string; confidence: number };
 
 export type CompanyDiscovery = {
   legalName: string;
@@ -44,12 +27,11 @@ export type BuyerPrompt = {
   importance: number;
   panel: PromptPanelKind;
   version: number;
-  /** Why AIX believes this buying question belongs in the panel. */
+  /** Why this prompt belongs in the buying panel. This is relevance evidence, not search volume. */
   whyTracked?: string;
 };
 
 export type ObservationStatus = "success" | "failed" | "skipped";
-
 export type Observation = {
   id: string;
   promptId: string;
@@ -74,22 +56,8 @@ export type Observation = {
   error?: string;
 };
 
-export type CompetitorMetric = {
-  name: string;
-  recommendedCount: number;
-  firstChoiceCount: number;
-  coverage: number;
-};
-
-export type LostPrompt = {
-  promptId: string;
-  prompt: string;
-  winner: string | null;
-  summary: string;
-  citations: Citation[];
-  observations: Observation[];
-};
-
+export type CompetitorMetric = { name: string; recommendedCount: number; firstChoiceCount: number; coverage: number };
+export type LostPrompt = { promptId: string; prompt: string; winner: string | null; summary: string; citations: Citation[]; observations: Observation[] };
 export type EvidenceGap = {
   id: string;
   label: string;
@@ -99,6 +67,15 @@ export type EvidenceGap = {
   competitorEvidence?: string;
   confidence: number;
   status: "missing" | "partial";
+};
+
+export type NarrativeInsight = {
+  id: string;
+  theme: string;
+  stance: "positive" | "neutral" | "negative" | "mixed";
+  summary: string;
+  evidenceObservationIds: string[];
+  confidence: number;
 };
 
 export type ActionCard = {
@@ -113,8 +90,23 @@ export type ActionCard = {
   target: string;
 };
 
-export type ChangePackStatus = "draft" | "needs_evidence" | "ready" | "approved" | "rejected";
+export type EvidenceAnswer = {
+  gapId: string;
+  value: string;
+  sourceUrl?: string;
+  status: "company_asserted" | "verified" | "disputed" | "expired";
+  updatedAt: string;
+};
 
+export type ChangePackStatus = "draft" | "needs_evidence" | "ready" | "approved" | "rejected";
+export type ChangePackValidation = {
+  measuredAt: string;
+  promptIds: string[];
+  beforeCoverage: number;
+  afterCoverage: number;
+  successfulObservations: number;
+  note: string;
+};
 export type ChangePack = {
   id: string;
   actionId: string;
@@ -134,6 +126,7 @@ export type ChangePack = {
   remeasurePromptIds: string[];
   confidence: number;
   generatedAt: string;
+  validation?: ChangePackValidation;
 };
 
 export type MeasurementPanel = {
@@ -150,6 +143,7 @@ export type ScanResult = {
   targetUrl: string;
   discovery: CompanyDiscovery;
   panel: MeasurementPanel;
+  prompts: BuyerPrompt[];
   measuredAt: string;
   observations: Observation[];
   scheduledObservations: number;
@@ -165,6 +159,7 @@ export type ScanResult = {
   marketSize: number;
   competitors: CompetitorMetric[];
   lostPrompts: LostPrompt[];
+  narratives: NarrativeInsight[];
   evidenceGaps: EvidenceGap[];
   actions: ActionCard[];
   totalCostUsd: number;
@@ -183,16 +178,7 @@ export type ScanRecord = {
   updatedAt: string;
 };
 
-export type EvidenceAnswer = {
-  gapId: string;
-  value: string;
-  sourceUrl?: string;
-  status: "company_asserted" | "verified" | "disputed" | "expired";
-  updatedAt: string;
-};
-
 export type WatchStatus = "trial" | "active" | "past_due" | "expired" | "cancelled";
-
 export type WatchRecord = {
   id: string;
   token: string;
@@ -200,15 +186,15 @@ export type WatchRecord = {
   scanId: string;
   status: WatchStatus;
   paid: boolean;
-  /** Core panel baseline only. Discovery never contributes to trends. */
+  /** Stable Core baseline. Discovery never contributes to trend metrics. */
   baseline: ScanResult;
-  /** Latest Core panel result only. */
+  /** Latest Core result. */
   latest: ScanResult;
-  /** Core panel history only. */
+  /** Core history only. */
   history: ScanResult[];
   /** Latest rotating Discovery panel, paid plan only. */
   discoveryLatest?: ScanResult | null;
-  /** Rotating Discovery history, kept separate from Core trends. */
+  /** Discovery history, intentionally separate from Core. */
   discoveryHistory?: ScanResult[];
   evidence: EvidenceAnswer[];
   changePacks?: ChangePack[];
@@ -218,9 +204,4 @@ export type WatchRecord = {
   updatedAt: string;
 };
 
-export type ScanProgressEvent = {
-  stage: ScanStage;
-  progress: number;
-  message: string;
-  detail?: string;
-};
+export type ScanProgressEvent = { stage: ScanStage; progress: number; message: string; detail?: string };
