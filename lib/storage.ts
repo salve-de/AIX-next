@@ -1,7 +1,7 @@
 import "server-only";
 import { id } from "@/lib/ids";
 import { env } from "@/lib/env";
-import type { EvidenceAnswer, ScanRecord, ScanResult, WatchRecord } from "@/lib/types";
+import type { ChangePack, EvidenceAnswer, ScanRecord, ScanResult, WatchRecord } from "@/lib/types";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -35,8 +35,32 @@ function scanFromRow(row: any): ScanRecord {
   return { id: row.id, targetUrl: row.target_url, stage: row.stage, progress: Number(row.progress), message: row.message || "", result: row.result || null, error: row.error || null, createdAt: row.created_at, updatedAt: row.updated_at };
 }
 
+function trialEndFromRow(row: any) {
+  if (row.trial_ends_at) return String(row.trial_ends_at);
+  const created = row.created_at ? new Date(row.created_at).getTime() : Date.now();
+  return new Date(created + 14 * 86_400_000).toISOString();
+}
+
 function watchFromRow(row: any): WatchRecord {
-  return { id: row.id, token: row.token, email: row.email, scanId: row.scan_id, status: row.status, paid: Boolean(row.paid), baseline: row.baseline, latest: row.latest, history: row.history || [], evidence: row.evidence || [], nextRunAt: row.next_run_at, createdAt: row.created_at, updatedAt: row.updated_at };
+  return {
+    id: row.id,
+    token: row.token,
+    email: row.email,
+    scanId: row.scan_id,
+    status: row.status,
+    paid: Boolean(row.paid),
+    baseline: row.baseline,
+    latest: row.latest,
+    history: row.history || [],
+    discoveryLatest: row.discovery_latest || null,
+    discoveryHistory: row.discovery_history || [],
+    evidence: row.evidence || [],
+    changePacks: row.change_packs || [],
+    trialEndsAt: trialEndFromRow(row),
+    nextRunAt: row.next_run_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
 export async function createScan(targetUrl: string) {
@@ -77,9 +101,10 @@ export async function getScan(scanId: string) {
   return scans.get(scanId) || null;
 }
 
-export async function createWatch(scan: ScanRecord, email: string) {
+export async function createWatch(scan: ScanRecord, email: string, coreBaseline?: ScanResult) {
   if (!scan.result) throw new Error("診断結果が完成していません。");
   const now = new Date();
+  const baseline = coreBaseline || scan.result;
   const record: WatchRecord = {
     id: id("watch"),
     token: id("token"),
@@ -87,16 +112,40 @@ export async function createWatch(scan: ScanRecord, email: string) {
     scanId: scan.id,
     status: "trial",
     paid: false,
-    baseline: scan.result,
-    latest: scan.result,
-    history: [scan.result],
+    baseline,
+    latest: baseline,
+    history: [baseline],
+    discoveryLatest: null,
+    discoveryHistory: [],
     evidence: [],
+    changePacks: [],
+    trialEndsAt: new Date(now.getTime() + 14 * 86_400_000).toISOString(),
     nextRunAt: new Date(now.getTime() + 7 * 86_400_000).toISOString(),
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };
   if (durable()) {
-    const rows = await supabase<any[]>("aix_next_watches", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify({ id: record.id, token: record.token, email: record.email, scan_id: record.scanId, status: record.status, paid: false, baseline: record.baseline, latest: record.latest, history: record.history, evidence: [], next_run_at: record.nextRunAt }) });
+    const rows = await supabase<any[]>("aix_next_watches", {
+      method: "POST",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify({
+        id: record.id,
+        token: record.token,
+        email: record.email,
+        scan_id: record.scanId,
+        status: record.status,
+        paid: false,
+        baseline: record.baseline,
+        latest: record.latest,
+        history: record.history,
+        discovery_latest: null,
+        discovery_history: [],
+        evidence: [],
+        change_packs: [],
+        trial_ends_at: record.trialEndsAt,
+        next_run_at: record.nextRunAt,
+      }),
+    });
     return watchFromRow(rows[0]);
   }
   watches.set(record.token, record);
@@ -111,7 +160,11 @@ export async function getWatch(token: string) {
   return watches.get(token) || null;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "baseline" | "latest" | "history" | "evidence" | "nextRunAt">>) {
+type WatchPatch = Partial<Pick<WatchRecord,
+  "status" | "paid" | "baseline" | "latest" | "history" | "discoveryLatest" | "discoveryHistory" | "evidence" | "changePacks" | "trialEndsAt" | "nextRunAt"
+>>;
+
+export async function updateWatch(token: string, patch: WatchPatch) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
@@ -120,7 +173,11 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
     if (patch.baseline !== undefined) body.baseline = patch.baseline;
     if (patch.latest !== undefined) body.latest = patch.latest;
     if (patch.history !== undefined) body.history = patch.history;
+    if (patch.discoveryLatest !== undefined) body.discovery_latest = patch.discoveryLatest;
+    if (patch.discoveryHistory !== undefined) body.discovery_history = patch.discoveryHistory;
     if (patch.evidence !== undefined) body.evidence = patch.evidence;
+    if (patch.changePacks !== undefined) body.change_packs = patch.changePacks;
+    if (patch.trialEndsAt !== undefined) body.trial_ends_at = patch.trialEndsAt;
     if (patch.nextRunAt !== undefined) body.next_run_at = patch.nextRunAt;
     const rows = await supabase<any[]>(`aix_next_watches?token=eq.${encodeURIComponent(token)}`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify(body) });
     return rows[0] ? watchFromRow(rows[0]) : null;
@@ -139,11 +196,18 @@ export async function addEvidence(token: string, answer: Omit<EvidenceAnswer, "s
   return updateWatch(token, { evidence });
 }
 
+export async function saveChangePack(token: string, pack: ChangePack) {
+  const watch = await getWatch(token);
+  if (!watch) return null;
+  const changePacks = [...(watch.changePacks || []).filter((item) => item.id !== pack.id), pack];
+  return updateWatch(token, { changePacks });
+}
+
 export async function listDueWatches(limit = 10) {
   const now = new Date().toISOString();
   if (durable()) {
-    const rows = await supabase<any[]>(`aix_next_watches?status=in.(trial,active)&next_run_at=lte.${encodeURIComponent(now)}&order=next_run_at.asc&limit=${Math.min(50, Math.max(1, limit))}`);
+    const rows = await supabase<any[]>(`aix_next_watches?status=in.(trial,active,past_due)&next_run_at=lte.${encodeURIComponent(now)}&order=next_run_at.asc&limit=${Math.min(50, Math.max(1, limit))}`);
     return rows.map(watchFromRow);
   }
-  return [...watches.values()].filter((watch) => ["trial", "active"].includes(watch.status) && watch.nextRunAt <= now).slice(0, limit);
+  return [...watches.values()].filter((watch) => ["trial", "active", "past_due"].includes(watch.status) && watch.nextRunAt <= now).slice(0, limit);
 }
