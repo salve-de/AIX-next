@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import "./v3.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "AIX — AI shortlist intelligence for B2B", template: "%s | AIX" },
-  description: "会社URLだけで、AIの購入候補に入る質問、競合、Citation、不足Evidenceを調べて継続追跡します。",
+  title: { default: "AIX — AI Buyer Intelligence OS", template: "%s | AIX" },
+  description: "会社URLだけで、AI Visibility、Buyer Prompt、Recommendation、Citation、競合、比較材料、Change Pack、再観測まで一つのProjectで管理します。",
   applicationName: "AIX",
-  openGraph: { type: "website", locale: "ja_JP", title: "AIX — AI比較で候補から外れる理由を特定", description: "AIが競合を選び、自社を候補外にしたBuyer PromptとEvidence差を調べます。", url: "/" },
+  openGraph: { type: "website", locale: "ja_JP", title: "AIX — AIが誰を薦め、なぜ自社を外すかを一つで管理", description: "AI購買面の観測から改善・再観測までを統合するBuyer Intelligence OS。", url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 
