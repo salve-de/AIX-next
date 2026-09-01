@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./workspace.css";
 import "./workspace-v3.css";
 import "./custom-prompt-lab.css";
+import "./site-readiness.css";
 
 export const metadata: Metadata = {
   title: "AI Buyer Intelligence Workspace",
