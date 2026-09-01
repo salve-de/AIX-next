@@ -1,0 +1,78 @@
+name: Validate and promote clean-room AIX Next
+
+on:
+  push:
+    branches: [build/clean-room-v2]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: aix-next-clean-room-promotion
+  cancel-in-progress: true
+
+jobs:
+  validate-and-promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: build/clean-room-v2
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install and create deterministic lockfile
+        run: npm install
+      - name: Run complete quality gate and capture diagnostics
+        id: quality
+        shell: bash
+        run: |
+          set +e
+          : > /tmp/aix-ci.log
+          for command in "npm run lint" "npm test" "npm run typecheck" "npm run build" "npm audit --omit=dev --audit-level=high"; do
+            echo "\n## $command" | tee -a /tmp/aix-ci.log
+            bash -lc "$command" 2>&1 | tee -a /tmp/aix-ci.log
+            status=${PIPESTATUS[0]}
+            if [ "$status" -ne 0 ]; then
+              echo "FAILED_COMMAND=$command" >> "$GITHUB_ENV"
+              echo "quality_status=failed" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo "quality_status=passed" >> "$GITHUB_OUTPUT"
+      - name: Commit lockfile and failure diagnostics
+        if: always()
+        shell: bash
+        run: |
+          git config user.name "AIX Next Quality Bot"
+          git config user.email "actions@github.com"
+          if [ "${{ steps.quality.outputs.quality_status }}" = "failed" ]; then
+            {
+              echo "# Latest clean-room CI failure"
+              echo
+              echo "Failed command: \`${FAILED_COMMAND}\`"
+              echo
+              echo '```text'
+              tail -n 500 /tmp/aix-ci.log
+              echo '```'
+            } > docs/CI_FAILURE.md
+          else
+            rm -f docs/CI_FAILURE.md
+          fi
+          git add package-lock.json docs/CI_FAILURE.md 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Record clean-room dependency lock and CI diagnostics"
+            git push origin HEAD:build/clean-room-v2
+          fi
+      - name: Fail after diagnostics are persisted
+        if: steps.quality.outputs.quality_status == 'failed'
+        run: |
+          echo "${FAILED_COMMAND} failed. See docs/CI_FAILURE.md on build/clean-room-v2."
+          exit 1
+      - name: Promote validated clean-room source to main
+        if: steps.quality.outputs.quality_status == 'passed'
+        run: git push origin HEAD:main
