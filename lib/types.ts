@@ -44,6 +44,8 @@ export type BuyerPrompt = {
   importance: number;
   panel: PromptPanelKind;
   version: number;
+  /** Why AIX believes this buying question belongs in the panel. */
+  whyTracked?: string;
 };
 
 export type ObservationStatus = "success" | "failed" | "skipped";
@@ -111,6 +113,29 @@ export type ActionCard = {
   target: string;
 };
 
+export type ChangePackStatus = "draft" | "needs_evidence" | "ready" | "approved" | "rejected";
+
+export type ChangePack = {
+  id: string;
+  actionId: string;
+  status: ChangePackStatus;
+  title: string;
+  target: string;
+  rationale: string;
+  requiredFacts: string[];
+  missingFacts: string[];
+  allowedEvidence: Array<{ label: string; value: string; status: EvidenceAnswer["status"] }>;
+  recommendedHeadings: string[];
+  draftBody: string;
+  faqs: Array<{ question: string; answer: string }>;
+  structuredDataNotes: string[];
+  internalLinks: string[];
+  validationChecklist: string[];
+  remeasurePromptIds: string[];
+  confidence: number;
+  generatedAt: string;
+};
+
 export type MeasurementPanel = {
   kind: PromptPanelKind;
   version: number;
@@ -166,7 +191,7 @@ export type EvidenceAnswer = {
   updatedAt: string;
 };
 
-export type WatchStatus = "trial" | "active" | "past_due" | "cancelled";
+export type WatchStatus = "trial" | "active" | "past_due" | "expired" | "cancelled";
 
 export type WatchRecord = {
   id: string;
@@ -175,10 +200,19 @@ export type WatchRecord = {
   scanId: string;
   status: WatchStatus;
   paid: boolean;
+  /** Core panel baseline only. Discovery never contributes to trends. */
   baseline: ScanResult;
+  /** Latest Core panel result only. */
   latest: ScanResult;
+  /** Core panel history only. */
   history: ScanResult[];
+  /** Latest rotating Discovery panel, paid plan only. */
+  discoveryLatest?: ScanResult | null;
+  /** Rotating Discovery history, kept separate from Core trends. */
+  discoveryHistory?: ScanResult[];
   evidence: EvidenceAnswer[];
+  changePacks?: ChangePack[];
+  trialEndsAt: string;
   nextRunAt: string;
   createdAt: string;
   updatedAt: string;
