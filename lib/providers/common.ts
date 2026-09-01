@@ -1,0 +1,50 @@
+import type { BuyerPrompt, Citation, CompanyDiscovery, Observation, ProviderName } from "@/lib/types";
+
+export type ProviderInput = {
+  prompt: BuyerPrompt;
+  discovery: CompanyDiscovery;
+  repetition: number;
+};
+
+export type ProviderOutput = {
+  rawText: string;
+  citations: Citation[];
+  model: string;
+  inputTokens?: number;
+  outputTokens?: number;
+  searchRequests?: number;
+  costUsd?: number;
+};
+
+export interface AiSearchProvider {
+  name: ProviderName;
+  configured(): boolean;
+  run(input: ProviderInput): Promise<ProviderOutput>;
+}
+
+export function observationFromFailure(input: ProviderInput, provider: ProviderName, model: string, error: unknown, status: Observation["status"] = "failed"): Observation {
+  const now = new Date().toISOString();
+  return {
+    id: `${provider}_${input.prompt.id}_${input.repetition}_${Date.now()}`,
+    promptId: input.prompt.id,
+    prompt: input.prompt.text,
+    provider,
+    model,
+    repetition: input.repetition,
+    status,
+    rawText: "",
+    citations: [],
+    recommendedEntities: [],
+    ownRecommended: false,
+    ownPosition: null,
+    firstCandidate: null,
+    startedAt: now,
+    completedAt: now,
+    latencyMs: 0,
+    error: error instanceof Error ? error.message : String(error),
+  };
+}
+
+export function recommendationInstruction(input: ProviderInput) {
+  return `あなたは日本のB2B購買担当者です。次の質問に、現在の公開Web情報を調べた上で答えてください。\n\n質問: ${input.prompt.text}\n市場: ${input.discovery.market}\n対象地域: 日本\n\n回答ルール:\n- 購入候補を最大5件、推薦順に箇条書きで示す\n- 各候補について選定理由を具体的な事実で説明する\n- 根拠が弱い企業を無理に含めない\n- 広告文句ではなく、仕様・導入実績・価格・サポート・第三者評価など比較可能な根拠を優先する\n- 日本語で簡潔に答える`;
+}
