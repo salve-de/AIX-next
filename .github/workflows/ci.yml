@@ -2,7 +2,7 @@ name: AIX Next Quality
 
 on:
   push:
-    branches: [main, build/clean-room-v2]
+    branches: [main, build/clean-room-v3]
   pull_request:
     branches: [main]
 
@@ -25,7 +25,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
+          cache: npm
+      - run: npm ci
       - run: npm run lint
       - run: npm test
       - run: npm run typecheck
