@@ -1,6 +1,7 @@
 import "server-only";
 import { crawlCompanySite } from "@/lib/crawler";
 import { analyzeEvidence, discoverCompany, generateBuyerPrompts } from "@/lib/discovery";
+import { buildNarratives, withPromptRationale } from "@/lib/intelligence";
 import { competitorMetrics, citationCoverage, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
 import { runObservationPanel } from "@/lib/providers";
 import { normalizePublicUrl } from "@/lib/url-security";
@@ -29,7 +30,8 @@ export async function runScan(input: {
   const discovery = await discoverCompany(url, crawl.pages);
 
   await emit("prompting", 45, "購入直前に聞かれるBuyer Promptを構成しています。", discovery.market);
-  const prompts = input.prompts || await generateBuyerPrompts(discovery, promptCount, panelKind);
+  const generated = input.prompts || await generateBuyerPrompts(discovery, promptCount, panelKind);
+  const prompts = withPromptRationale(generated, discovery);
 
   await emit("measuring", 55, "OpenAI、Gemini、Perplexityで購入候補を観測しています。", `${prompts.length}質問 × 3 AI × ${repetitions}回`);
   const observations = await runObservationPanel({
@@ -39,10 +41,11 @@ export async function runScan(input: {
     onProgress: async (completed, total, detail) => emit("measuring", 55 + Math.round((completed / total) * 25), `AI回答を観測しています。${completed}/${total}`, detail),
   });
 
-  await emit("analyzing", 84, "推薦、Citation、競合差を同じ定義で集計しています。");
+  await emit("analyzing", 84, "Visibility、推薦、Citation、競合差、比較材料を統合集計しています。");
   const eligible = successful(observations);
   const lost = lostPrompts(prompts, observations, discovery);
   const analysis = await analyzeEvidence({ discovery, pages: crawl.pages, lostPrompts: lost });
+  const narratives = buildNarratives(observations, discovery);
   const position = marketPosition(observations, discovery);
   const warnings: string[] = [];
   if (discovery.confidence < .65) warnings.push("市場認識の信頼度が低いため、Watch開始前に市場と競合を確認してください。");
@@ -55,6 +58,7 @@ export async function runScan(input: {
     targetUrl: url,
     discovery,
     panel: { kind: panelKind, version: 1, promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" },
+    prompts,
     measuredAt: new Date().toISOString(),
     observations,
     scheduledObservations: observations.length,
@@ -70,11 +74,12 @@ export async function runScan(input: {
     marketSize: position.size,
     competitors: competitorMetrics(observations, discovery),
     lostPrompts: lost,
+    narratives,
     evidenceGaps: analysis.gaps,
     actions: analysis.actions,
     totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0),
     warnings,
   };
-  await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "診断結果を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName);
+  await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "統合診断を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName);
   return result;
 }
