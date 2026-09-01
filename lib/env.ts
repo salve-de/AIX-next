@@ -19,6 +19,11 @@ export const env = {
   stripeWebhookSecret: text("STRIPE_WEBHOOK_SECRET"),
   resendApiKey: text("RESEND_API_KEY"),
   mailFrom: text("MAIL_FROM", "AIX <watch@example.com>"),
+  githubAppId: text("GITHUB_APP_ID"),
+  githubAppSlug: text("GITHUB_APP_SLUG"),
+  githubAppPrivateKey: text("GITHUB_APP_PRIVATE_KEY").replace(/\\n/g, "\n"),
+  integrationSigningSecret: text("INTEGRATION_SIGNING_SECRET"),
+  integrationEncryptionKey: text("INTEGRATION_ENCRYPTION_KEY"),
   cronSecret: text("CRON_SECRET"),
   adminSecret: text("ADMIN_SECRET"),
   rateLimitSalt: text("RATE_LIMIT_SALT", "development-only"),
@@ -26,5 +31,12 @@ export const env = {
 };
 
 export function providerReadiness() {
-  return { openai: Boolean(env.openAiKey), gemini: Boolean(env.geminiKey), perplexity: Boolean(env.perplexityKey), email: Boolean(env.resendApiKey && env.mailFrom) };
+  return {
+    openai: Boolean(env.openAiKey),
+    gemini: Boolean(env.geminiKey),
+    perplexity: Boolean(env.perplexityKey),
+    email: Boolean(env.resendApiKey && env.mailFrom),
+    githubExecution: Boolean(env.githubAppId && env.githubAppSlug && env.githubAppPrivateKey && env.integrationSigningSecret),
+    encryptedIntegrations: Boolean(env.integrationEncryptionKey),
+  };
 }
