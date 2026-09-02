@@ -31,7 +31,7 @@ async function askJson<T>(prompt: string, webSearch = false) {
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { authorization: `Bearer ${env.openAiKey}`, "content-type": "application/json" },
-    body: JSON.stringify({ model: env.openAiDiscoveryModel, input: prompt, ...(webSearch ? { tools: [{ type: "web_search" }], tool_choice: "auto" } : {}) }),
+    body: JSON.stringify({ model: env.openAiDiscoveryModel, input: prompt, ...(webSearch ? { tools: [{ type: "web_search" }], tool_choice: "required" } : {}) }),
   });
   const data = await response.json() as any;
   if (!response.ok) throw new Error(data.error?.message || `OpenAI discovery ${response.status}`);
