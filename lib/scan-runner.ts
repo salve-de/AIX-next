@@ -4,14 +4,19 @@ import { analyzeEvidence, discoverCompany, generateBuyerPrompts } from "@/lib/di
 import { buildNarratives, withPromptRationale } from "@/lib/intelligence";
 import { competitorMetrics, citationCoverage, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
 import { freeProviders, runObservationPanel } from "@/lib/providers";
-import { PROVIDER_LABELS } from "@/lib/provider-meta";
+import { PROVIDER_LABELS, PROVIDER_ORDER } from "@/lib/provider-meta";
 import { auditSiteReadiness } from "@/lib/readiness";
 import { normalizePublicUrl } from "@/lib/url-security";
 import type { BuyerPrompt, PromptPanelKind, ProviderName, ScanProgressEvent, ScanResult } from "@/lib/types";
 
+function panelVersion(providerNames: ProviderName[]) {
+  const surfaceMask = PROVIDER_ORDER.reduce((mask, provider, index) => providerNames.includes(provider) ? mask + (1 << index) : mask, 0);
+  return 100 + surfaceMask;
+}
+
 export async function runScan(input: { scanId: string; url: string; promptCount?: number; repetitions?: number; panelKind?: PromptPanelKind; prompts?: BuyerPrompt[]; providerNames?: ProviderName[]; onProgress?: (event: ScanProgressEvent) => Promise<void> | void }) {
   const url = normalizePublicUrl(input.url); const promptCount = input.promptCount ?? 12; const repetitions = input.repetitions ?? 1; const panelKind = input.panelKind ?? "free";
-  const providerNames = input.providerNames?.length ? input.providerNames : (panelKind === "free" ? freeProviders : freeProviders);
+  const providerNames = input.providerNames?.length ? [...new Set(input.providerNames)] : freeProviders;
   const providerLabel = providerNames.map((provider) => PROVIDER_LABELS[provider]).join("、");
   const emit = async (stage: ScanProgressEvent["stage"], progress: number, message: string, detail?: string) => input.onProgress?.({ stage, progress, message, detail });
   await emit("validating", 5, "公開URLと接続先を検証しています。", new URL(url).hostname);
@@ -31,6 +36,6 @@ export async function runScan(input: { scanId: string; url: string; promptCount?
   if (!eligible.length) warnings.push("AI Providerの有効な回答がありません。API設定後に再測定してください。サンプル結果は /result?sample=1 で確認できます。");
   if (!discovery.competitors.length) warnings.push("十分な競合候補を特定できませんでした。市場認識を確認してください。");
   if (siteReadiness.failCount) warnings.push(`AI Crawlability監査で${siteReadiness.failCount}件の明確なブロックを確認しました。Workspaceで技術条件を確認してください。`);
-  const result: ScanResult = { scanId: input.scanId, targetUrl: url, discovery, panel: { kind: panelKind, version: 1, promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" }, prompts, measuredAt: new Date().toISOString(), observations, scheduledObservations: observations.length, successfulObservations: eligible.length, measurementCompleteness: observations.length ? Math.round((eligible.length / observations.length) * 100) : 0, recommendationCoverage: recommendationCoverage(observations), firstChoiceRate: firstChoiceRate(observations, discovery.brandName), mentionCoverage: mentionCoverage(observations, discovery.aliases), citationCoverage: citationCoverage(observations, discovery.domain), repeatAgreement: repeatAgreement(observations), ownRecommendationCount: eligible.filter((item) => item.ownRecommended).length, marketPosition: eligible.length ? position.position : 0, marketSize: position.size, competitors: competitorMetrics(observations, discovery), lostPrompts: lost, narratives, siteReadiness, evidenceGaps: analysis.gaps, actions: analysis.actions, totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0), warnings };
+  const result: ScanResult = { scanId: input.scanId, targetUrl: url, discovery, panel: { kind: panelKind, version: panelVersion(providerNames), promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" }, prompts, measuredAt: new Date().toISOString(), observations, scheduledObservations: observations.length, successfulObservations: eligible.length, measurementCompleteness: observations.length ? Math.round((eligible.length / observations.length) * 100) : 0, recommendationCoverage: recommendationCoverage(observations), firstChoiceRate: firstChoiceRate(observations, discovery.brandName), mentionCoverage: mentionCoverage(observations, discovery.aliases), citationCoverage: citationCoverage(observations, discovery.domain), repeatAgreement: repeatAgreement(observations), ownRecommendationCount: eligible.filter((item) => item.ownRecommended).length, marketPosition: eligible.length ? position.position : 0, marketSize: position.size, competitors: competitorMetrics(observations, discovery), lostPrompts: lost, narratives, siteReadiness, evidenceGaps: analysis.gaps, actions: analysis.actions, totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0), warnings };
   await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "統合診断を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName); return result;
 }
