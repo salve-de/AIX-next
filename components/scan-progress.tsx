@@ -7,12 +7,12 @@ import { BotIcon, BuildingIcon, EvidenceIcon, NetworkIcon, SearchIcon, SparkIcon
 import type { ScanProgressEvent, ScanStage } from "@/lib/types";
 
 const steps: Array<{ stage: ScanStage; label: string }> = [
-  { stage: "validating", label: "公開URLを検証" },
+  { stage: "validating", label: "会社サイトを確認" },
   { stage: "crawling", label: "製品・料金・導入事例を読む" },
-  { stage: "discovering", label: "会社・市場・競合を特定" },
-  { stage: "prompting", label: "Buyer Promptを構成" },
-  { stage: "measuring", label: "3つのAIで候補を観測" },
-  { stage: "analyzing", label: "CitationとEvidence差を解析" },
+  { stage: "discovering", label: "市場と競合を特定" },
+  { stage: "prompting", label: "買い手が聞く質問を作成" },
+  { stage: "measuring", label: "3つのAIで候補入りを観測" },
+  { stage: "analyzing", label: "Citation・不足Evidence・最優先Actionを特定" },
 ];
 
 function normalize(value: string | null) {
@@ -66,7 +66,7 @@ export function ScanProgress() {
               if (event.detail) setDetail(event.detail);
             }
             if (event.type === "complete" && event.scanId) {
-              setProgress(100); setStage("complete"); setMessage("診断結果を作成しました。");
+              setProgress(100); setStage("complete"); setMessage("順位・候補外質問・最優先Actionをまとめました。");
               router.replace(`/result?id=${encodeURIComponent(event.scanId)}`);
               return;
             }
@@ -89,7 +89,7 @@ export function ScanProgress() {
     <section className="scan-layout shell">
       <div className="scan-copy">
         <p className="eyebrow">ANALYZING {host.toUpperCase()}</p>
-        <h1>{host}の<br />AI比較市場を作成中。</h1>
+        <h1>{host}の<br />AI比較状況を調査中。</h1>
         <p className="scan-message">{message}</p>
         <div className="scan-progress-bar"><span style={{ width: `${progress}%` }} /></div>
         <div className="scan-progress-meta"><strong>{Math.round(progress)}%</strong><span>{scanId ? `Scan ${scanId.slice(-8)}` : "公開Webだけを取得"}</span></div>
@@ -108,7 +108,7 @@ export function ScanProgress() {
         <div className={`radar-node node-competitor ${progress >= 45 ? "found" : ""}`}><SearchIcon /><span>競合</span></div>
         <div className={`radar-node node-ai ${progress >= 55 ? "found" : ""}`}><BotIcon /><span>AI回答</span></div>
         <div className={`radar-node node-evidence ${progress >= 84 ? "found" : ""}`}><EvidenceIcon /><span>Evidence</span></div>
-        <div className="radar-detail"><small>LIVE FINDING</small><strong>{detail}</strong></div>
+        <div className="radar-detail"><small>NOW</small><strong>{detail}</strong></div>
       </div>
     </section>
   </main>;
