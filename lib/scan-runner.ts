@@ -55,6 +55,7 @@ export async function runScan(input: {
     targetUrl: url,
     discovery,
     panel: { kind: panelKind, version: 1, promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" },
+    prompts,
     measuredAt: new Date().toISOString(),
     observations,
     scheduledObservations: observations.length,
