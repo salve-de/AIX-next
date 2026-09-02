@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   }
 
   const cached = await getRecentCompletedScan(targetUrl, 10 * 60_000).catch(() => null);
-  if (cached?.result) {
+  if (cached?.stage === "complete" && cached.result) {
     return ndjsonResponse((emit, close) => {
       emit({ type: "accepted", scanId: cached.id, reused: true });
       emit({ type: "progress", scanId: cached.id, stage: cached.stage, progress: 100, message: "直近の公開Web診断を再利用します。", detail: `測定 ${cached.result?.measuredAt}` });
