@@ -3,13 +3,16 @@ import { crawlCompanySite } from "@/lib/crawler";
 import { analyzeEvidence, discoverCompany, generateBuyerPrompts } from "@/lib/discovery";
 import { buildNarratives, withPromptRationale } from "@/lib/intelligence";
 import { competitorMetrics, citationCoverage, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
-import { runObservationPanel } from "@/lib/providers";
+import { freeProviders, runObservationPanel } from "@/lib/providers";
+import { PROVIDER_LABELS } from "@/lib/provider-meta";
 import { auditSiteReadiness } from "@/lib/readiness";
 import { normalizePublicUrl } from "@/lib/url-security";
-import type { BuyerPrompt, PromptPanelKind, ScanProgressEvent, ScanResult } from "@/lib/types";
+import type { BuyerPrompt, PromptPanelKind, ProviderName, ScanProgressEvent, ScanResult } from "@/lib/types";
 
-export async function runScan(input: { scanId: string; url: string; promptCount?: number; repetitions?: number; panelKind?: PromptPanelKind; prompts?: BuyerPrompt[]; onProgress?: (event: ScanProgressEvent) => Promise<void> | void }) {
+export async function runScan(input: { scanId: string; url: string; promptCount?: number; repetitions?: number; panelKind?: PromptPanelKind; prompts?: BuyerPrompt[]; providerNames?: ProviderName[]; onProgress?: (event: ScanProgressEvent) => Promise<void> | void }) {
   const url = normalizePublicUrl(input.url); const promptCount = input.promptCount ?? 12; const repetitions = input.repetitions ?? 1; const panelKind = input.panelKind ?? "free";
+  const providerNames = input.providerNames?.length ? input.providerNames : (panelKind === "free" ? freeProviders : freeProviders);
+  const providerLabel = providerNames.map((provider) => PROVIDER_LABELS[provider]).join("、");
   const emit = async (stage: ScanProgressEvent["stage"], progress: number, message: string, detail?: string) => input.onProgress?.({ stage, progress, message, detail });
   await emit("validating", 5, "公開URLと接続先を検証しています。", new URL(url).hostname);
   await emit("crawling", 12, "サービス、料金、導入事例、AI crawlabilityを確認しています。");
@@ -19,8 +22,8 @@ export async function runScan(input: { scanId: string; url: string; promptCount?
   const discovery = await discoverCompany(url, crawl.pages);
   await emit("prompting", 45, "購入直前に聞かれるBuyer Promptを構成しています。", discovery.market);
   const generated = input.prompts || await generateBuyerPrompts(discovery, promptCount, panelKind); const prompts = withPromptRationale(generated, discovery);
-  await emit("measuring", 55, "OpenAI、Gemini、Perplexityで購入候補を観測しています。", `${prompts.length}質問 × 3 AI × ${repetitions}回`);
-  const observations = await runObservationPanel({ prompts, discovery, repetitions, onProgress: async (completed, total, detail) => emit("measuring", 55 + Math.round((completed / total) * 25), `AI回答を観測しています。${completed}/${total}`, detail) });
+  await emit("measuring", 55, `${providerLabel}で購入候補を観測しています。`, `${prompts.length}質問 × ${providerNames.length} AI × ${repetitions}回`);
+  const observations = await runObservationPanel({ prompts, discovery, repetitions, providerNames, onProgress: async (completed, total, detail) => emit("measuring", 55 + Math.round((completed / total) * 25), `AI回答を観測しています。${completed}/${total}`, detail) });
   await emit("analyzing", 84, "Visibility、推薦、Citation、競合差、比較材料を統合集計しています。");
   const eligible = successful(observations); const lost = lostPrompts(prompts, observations, discovery); const analysis = await analyzeEvidence({ discovery, pages: crawl.pages, lostPrompts: lost }); const narratives = buildNarratives(observations, discovery); const position = marketPosition(observations, discovery); const warnings: string[] = [];
   if (discovery.confidence < .65) warnings.push("市場認識の信頼度が低いため、Watch開始前に市場と競合を確認してください。");
