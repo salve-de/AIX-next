@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "next/navigation";
 import { ArrowIcon, NetworkIcon, TrophyIcon } from "@/components/icons";
 import { sampleWatch } from "@/lib/sample-data";
@@ -13,6 +14,17 @@ export function CompetitorMovers() {
   const sample = params.get("sample") === "1";
   const token = params.get("token") || "";
   const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
+  const [host, setHost] = useState<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const anchor = document.querySelector(".watch-v3-core");
+    if (!anchor) return;
+    const node = document.createElement("div");
+    node.dataset.aixCompetitorMovers = "true";
+    anchor.insertAdjacentElement("afterend", node);
+    setHost(node);
+    return () => node.remove();
+  }, []);
 
   useEffect(() => {
     if (sample || !token) return;
@@ -23,7 +35,7 @@ export function CompetitorMovers() {
   }, [sample, token]);
 
   const diff = useMemo(() => watch ? compareWatchRuns(watch.baseline, watch.latest) : null, [watch]);
-  if (!watch || !diff?.comparable) return null;
+  if (!host || !watch || !diff?.comparable) return null;
 
   const movers = diff.competitorDeltas.filter((item) => item.coverageDelta !== 0 || item.firstChoiceDelta !== 0 || item.newlyObserved).slice(0, 4);
   if (!movers.length) return null;
@@ -31,7 +43,7 @@ export function CompetitorMovers() {
   const workspaceHref = sample ? "/workspace?sample=1&view=competitors" : `/workspace?token=${encodeURIComponent(token)}&view=competitors`;
   const top = movers[0];
 
-  return <section className="competitor-movers-section">
+  return createPortal(<section className="competitor-movers-section">
     <div className="shell competitor-movers-head">
       <div><p className="eyebrow">COMPETITOR MOVEMENT</p><h2>今週、誰が買い手の候補面を取ったか。</h2><p>同じCore Panel・同じAI surface構成だけを比較しています。競合Coverageの変化は観測差であり、市場シェアそのものではありません。</p></div>
       <div className="competitor-movers-alert"><TrophyIcon /><span><small>最大上昇</small><strong>{top.name}</strong><em>{top.coverageDelta >= 0 ? "+" : ""}{top.coverageDelta}pt</em></span></div>
@@ -43,5 +55,5 @@ export function CompetitorMovers() {
       <p>First Choice {item.beforeFirstChoices} → {item.afterFirstChoices}{item.firstChoiceDelta ? ` (${item.firstChoiceDelta > 0 ? "+" : ""}${item.firstChoiceDelta})` : ""}</p>
     </article>)}</div>
     <div className="shell competitor-movers-foot"><Link href={workspaceHref}>競合のPrompt・Citationまで見る <ArrowIcon /></Link></div>
-  </section>;
+  </section>, host);
 }
