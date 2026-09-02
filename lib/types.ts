@@ -111,6 +111,35 @@ export type ActionCard = {
   target: string;
 };
 
+export type ChangePackFact = {
+  label: string;
+  value: string;
+  source: "public" | "company_asserted";
+  sourceUrl?: string;
+};
+
+export type ChangePackItem = {
+  id: string;
+  actionId: string;
+  title: string;
+  target: string;
+  objective: string;
+  factsUsed: ChangePackFact[];
+  proposedTitle: string;
+  proposedLead: string;
+  sections: Array<{ heading: string; body: string }>;
+  faq: Array<{ question: string; answer: string }>;
+  relatedPromptIds: string[];
+  publishChecks: string[];
+};
+
+export type ChangePack = {
+  generatedAt: string;
+  sourceMeasurementId: string;
+  model: string;
+  items: ChangePackItem[];
+};
+
 export type MeasurementPanel = {
   kind: PromptPanelKind;
   version: number;
@@ -182,6 +211,7 @@ export type WatchRecord = {
   latest: ScanResult;
   history: ScanResult[];
   evidence: EvidenceAnswer[];
+  changePack?: ChangePack | null;
   nextRunAt: string;
   createdAt: string;
   updatedAt: string;
