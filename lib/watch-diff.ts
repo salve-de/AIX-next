@@ -11,6 +11,17 @@ export type SurfaceOutcome = {
   stable: boolean;
 };
 
+export type CompetitorDelta = {
+  name: string;
+  beforeCoverage: number;
+  afterCoverage: number;
+  coverageDelta: number;
+  beforeFirstChoices: number;
+  afterFirstChoices: number;
+  firstChoiceDelta: number;
+  newlyObserved: boolean;
+};
+
 export type WatchDiff = {
   comparable: boolean;
   reasons: string[];
@@ -22,6 +33,7 @@ export type WatchDiff = {
   lostFirstChoices: number;
   newCitations: string[];
   removedCitations: string[];
+  competitorDeltas: CompetitorDelta[];
   stableCells: number;
   skippedCells: number;
 };
@@ -65,6 +77,27 @@ function citationSet(result: ScanResult) {
     .filter((item) => item.status === "success")
     .flatMap((item) => item.citations.map((citation) => citation.url))
     .filter(Boolean));
+}
+
+function competitorDiff(baseline: ScanResult, latest: ScanResult): CompetitorDelta[] {
+  const before = new Map(baseline.competitors.map((item) => [item.name.toLowerCase(), item]));
+  const after = new Map(latest.competitors.map((item) => [item.name.toLowerCase(), item]));
+  const names = new Set([...before.keys(), ...after.keys()]);
+  return [...names].map((key) => {
+    const previous = before.get(key);
+    const current = after.get(key);
+    const name = current?.name || previous?.name || key;
+    return {
+      name,
+      beforeCoverage: previous?.coverage || 0,
+      afterCoverage: current?.coverage || 0,
+      coverageDelta: (current?.coverage || 0) - (previous?.coverage || 0),
+      beforeFirstChoices: previous?.firstChoiceCount || 0,
+      afterFirstChoices: current?.firstChoiceCount || 0,
+      firstChoiceDelta: (current?.firstChoiceCount || 0) - (previous?.firstChoiceCount || 0),
+      newlyObserved: !previous && Boolean(current),
+    };
+  }).sort((a, b) => b.coverageDelta - a.coverageDelta || b.firstChoiceDelta - a.firstChoiceDelta || b.afterCoverage - a.afterCoverage);
 }
 
 export function compareWatchRuns(baseline: ScanResult, latest: ScanResult): WatchDiff {
@@ -113,6 +146,7 @@ export function compareWatchRuns(baseline: ScanResult, latest: ScanResult): Watc
     lostFirstChoices,
     newCitations,
     removedCitations,
+    competitorDeltas: comparable ? competitorDiff(baseline, latest) : [],
     stableCells,
     skippedCells,
   };
