@@ -43,61 +43,102 @@ const promptSeed: Array<[string, BuyerPrompt["cluster"], number]> = [
 
 const prompts: BuyerPrompt[] = promptSeed.map(([text, cluster, importance], index) => ({ id: `prompt_${index + 1}`, text, cluster, importance, panel: "free", version: 1 }));
 const providerNames: Observation["provider"][] = ["openai", "gemini", "perplexity"];
-const firstCandidates = [
-  "TrustOrbit", "TrustOrbit", "VendorLens",
-  "TrustOrbit", "VendorLens", "TrustOrbit",
-  "RiskCanvas", "TrustOrbit", "VendorLens",
-  "TrustOrbit", "RiskCanvas", "TrustOrbit",
-  "NEXORA Cloud", "TrustOrbit", "VendorLens",
-  "TrustOrbit", "NEXORA Cloud", "RiskCanvas",
-  "TrustOrbit", "VendorLens", "TrustOrbit",
-  "NEXORA Cloud", "TrustOrbit", "VendorLens",
-  "TrustOrbit", "RiskCanvas", "TrustOrbit",
-  "NEXORA Cloud", "TrustOrbit", "VendorLens",
-  "TrustOrbit", "NEXORA Cloud", "RiskCanvas",
-  "NEXORA Cloud", "TrustOrbit", "VendorLens",
+
+const competitorPlan: Array<{ name: string; recommendedCount: number }> = [
+  { name: "TrustOrbit", recommendedCount: 26 },
+  { name: "VendorLens", recommendedCount: 20 },
+  { name: "RiskCanvas", recommendedCount: 13 },
+  { name: "ThirdCheck", recommendedCount: 12 },
+  { name: "AuditLoop", recommendedCount: 11 },
+  { name: "VendorScope", recommendedCount: 11 },
+  { name: "SafeChain", recommendedCount: 9 },
+  { name: "DueTrack", recommendedCount: 9 },
+  { name: "ComplyNest", recommendedCount: 7 },
+  { name: "ClearVendor", recommendedCount: 6 },
+  { name: "RiskDock", recommendedCount: 5 },
+  { name: "ChainProof", recommendedCount: 4 },
 ];
+
+const baselineOwnRecommended = new Set([0, 1, 3, 6, 9, 12, 33, 34]);
+const latestOwnRecommended = new Set([0, 1, 3, 6, 15, 16, 24, 25, 33, 34]);
+
+function percent(numerator: number, denominator: number) {
+  return denominator ? Math.round((numerator / denominator) * 100) : 0;
+}
 
 function citation(name: string): Citation {
   const slug = name.toLowerCase().replace(/\s+/g, "");
   return { title: `${name} 導入実績・機能`, url: `https://${slug}.example/customer-proof`, domain: `${slug}.example` };
 }
 
-const observations: Observation[] = prompts.flatMap((prompt, promptIndex) => providerNames.map((provider, providerIndex) => {
-  const index = promptIndex * 3 + providerIndex;
-  const first = firstCandidates[index];
-  const ownRecommended = first === "NEXORA Cloud" || [3, 8].includes(index % 12);
-  const recommendedEntities = [first, ...(first !== "TrustOrbit" ? ["TrustOrbit"] : ["VendorLens"]), ...(ownRecommended && first !== "NEXORA Cloud" ? ["NEXORA Cloud"] : [])];
-  const ownPosition = recommendedEntities.indexOf("NEXORA Cloud") + 1 || null;
-  return {
-    id: `obs_${index + 1}`,
-    promptId: prompt.id,
-    prompt: prompt.text,
-    provider,
-    model: `${provider}-sample`,
-    repetition: 1,
-    status: "success",
-    rawText: `${first}を第一候補として挙げます。${first}は企業規模別の導入事例、標準導入期間、審査対象、監査証跡、導入支援を比較可能な形で公開しています。${ownRecommended ? "NEXORA Cloudも候補ですが、" : "NEXORA Cloudは公開情報から"}同規模の導入実績と標準導入期間を十分に確認できません。`,
-    citations: [citation(first)],
-    recommendedEntities,
-    ownRecommended,
-    ownPosition,
-    firstCandidate: first,
-    startedAt: "2026-09-01T09:00:00.000Z",
-    completedAt: "2026-09-01T09:00:01.000Z",
-    latencyMs: 1000,
-    costUsd: .002,
-  };
-}));
+function isCompetitorRecommended(observationIndex: number, planIndex: number, count: number) {
+  if (planIndex === 0) {
+    const promptIndex = Math.floor(observationIndex / providerNames.length);
+    const providerIndex = observationIndex % providerNames.length;
+    return promptIndex < 7 || providerIndex === 0;
+  }
+  return ((observationIndex * 13 + planIndex * 7) % 36) < count;
+}
 
-const lostPrompts = prompts.filter((prompt) => observations.filter((item) => item.promptId === prompt.id && item.ownRecommended).length < 2).map((prompt) => ({
-  promptId: prompt.id,
-  prompt: prompt.text,
-  winner: "TrustOrbit",
-  summary: "TrustOrbitが公開導入実績と標準導入期間を根拠に先に推薦され、NEXORA Cloudは過半数の回答で候補に入りませんでした。",
-  citations: [citation("TrustOrbit")],
-  observations: observations.filter((item) => item.promptId === prompt.id),
-}));
+function buildObservations(ownRecommendedIndexes: Set<number>, measuredAt: string): Observation[] {
+  return prompts.flatMap((prompt, promptIndex) => providerNames.map((provider, providerIndex) => {
+    const index = promptIndex * providerNames.length + providerIndex;
+    const competitors = competitorPlan.filter((plan, planIndex) => isCompetitorRecommended(index, planIndex, plan.recommendedCount)).map((plan) => plan.name);
+    const firstCandidate = competitors[0] || null;
+    const ownRecommended = ownRecommendedIndexes.has(index);
+    const recommendedEntities = [...competitors, ...(ownRecommended ? [discovery.brandName] : [])];
+    const ownPosition = ownRecommended ? recommendedEntities.indexOf(discovery.brandName) + 1 : null;
+    const competitorText = firstCandidate
+      ? `${firstCandidate}を第一候補として挙げます。${firstCandidate}は企業規模別の導入事例、標準導入期間、審査対象、監査証跡、導入支援を比較可能な形で公開しています。`
+      : "公開情報から比較可能な候補を十分に確認できませんでした。";
+    const ownText = ownRecommended
+      ? `${discovery.brandName}も購入候補ですが、同規模の導入実績と標準導入期間の比較材料は限定的です。`
+      : `${discovery.brandName}は購入候補には入りません。公開情報から同規模の導入実績と標準導入期間を十分に確認できません。`;
+    return {
+      id: `obs_${index + 1}`,
+      promptId: prompt.id,
+      prompt: prompt.text,
+      provider,
+      model: `${provider}-sample`,
+      repetition: 1,
+      status: "success",
+      rawText: `${competitorText}${ownText}`,
+      citations: firstCandidate ? [citation(firstCandidate)] : [],
+      recommendedEntities,
+      ownRecommended,
+      ownPosition,
+      firstCandidate,
+      startedAt: measuredAt,
+      completedAt: new Date(new Date(measuredAt).getTime() + 1000).toISOString(),
+      latencyMs: 1000,
+      costUsd: .002,
+    };
+  }));
+}
+
+function modal(values: Array<string | null>) {
+  const counts = new Map<string, number>();
+  values.filter((value): value is string => Boolean(value)).forEach((value) => counts.set(value, (counts.get(value) || 0) + 1));
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "ja"))[0]?.[0] || null;
+}
+
+function buildLostPrompts(observations: Observation[]) {
+  return prompts.flatMap((prompt) => {
+    const rows = observations.filter((item) => item.promptId === prompt.id && item.status === "success");
+    const ownWins = rows.filter((item) => item.ownRecommended).length;
+    if (!rows.length || ownWins >= Math.ceil(rows.length / 2)) return [];
+    const winner = modal(rows.map((item) => item.firstCandidate).filter((name) => name !== discovery.brandName));
+    const citations = [...new Map(rows.flatMap((item) => item.citations).map((item) => [item.url, item])).values()];
+    return [{
+      promptId: prompt.id,
+      prompt: prompt.text,
+      winner,
+      summary: winner ? `${winner}がより多くのAI回答で購入候補として先に挙げられ、${discovery.brandName}は過半数の回答で候補に入りませんでした。` : `${discovery.brandName}は過半数のAI回答で購入候補に入りませんでした。`,
+      citations,
+      observations: rows,
+    }];
+  });
+}
 
 const gaps: EvidenceGap[] = [
   { id: "segment-proof", label: "従業員100〜500名での導入実績", whyItMatters: "同規模企業向けの推薦理由を公開Webから確認できません。", relatedPromptIds: prompts.slice(0, 10).map((item) => item.id), relatedPromptCount: 10, competitorEvidence: "TrustOrbitは企業規模別の架空導入事例を公開。", confidence: .91, status: "missing" },
@@ -111,55 +152,65 @@ const actions: ActionCard[] = [
   { id: "action-third-party", title: "第三者が検証できる導入成果を増やす", rationale: "競合は自社サイト外の比較可能な根拠も引用されています。", type: "third_party", relatedPromptIds: prompts.slice(3, 8).map((item) => item.id), relatedPromptCount: 5, priority: "medium", confidence: .72, target: "業界媒体・顧客事例" },
 ];
 
-export const sampleResult: ScanResult = {
-  scanId: "sample_clean_room",
-  targetUrl: "https://nexora.example",
-  discovery,
-  panel: { kind: "free", version: 1, promptCount: 12, repetitions: 1, locale: "ja-JP", country: "JP" },
-  measuredAt: "2026-09-01T09:00:00.000Z",
-  observations,
-  scheduledObservations: 36,
-  successfulObservations: 36,
-  measurementCompleteness: 100,
-  recommendationCoverage: 22,
-  firstChoiceRate: 17,
-  mentionCoverage: 31,
-  citationCoverage: 8,
-  repeatAgreement: 100,
-  ownRecommendationCount: 8,
-  marketPosition: 9,
-  marketSize: 13,
-  competitors: [
-    { name: "TrustOrbit", recommendedCount: 29, firstChoiceCount: 20, coverage: 81 },
-    { name: "VendorLens", recommendedCount: 20, firstChoiceCount: 9, coverage: 56 },
-    { name: "RiskCanvas", recommendedCount: 13, firstChoiceCount: 6, coverage: 36 },
-    { name: "ThirdCheck", recommendedCount: 11, firstChoiceCount: 1, coverage: 31 },
-    { name: "AuditLoop", recommendedCount: 10, firstChoiceCount: 0, coverage: 28 },
-    { name: "VendorScope", recommendedCount: 10, firstChoiceCount: 0, coverage: 28 },
-    { name: "SafeChain", recommendedCount: 9, firstChoiceCount: 0, coverage: 25 },
-    { name: "DueTrack", recommendedCount: 9, firstChoiceCount: 0, coverage: 25 },
-    { name: "ComplyNest", recommendedCount: 7, firstChoiceCount: 0, coverage: 19 },
-    { name: "ClearVendor", recommendedCount: 6, firstChoiceCount: 0, coverage: 17 },
-    { name: "RiskDock", recommendedCount: 5, firstChoiceCount: 0, coverage: 14 },
-    { name: "ChainProof", recommendedCount: 4, firstChoiceCount: 0, coverage: 11 },
-  ],
-  lostPrompts,
-  evidenceGaps: gaps,
-  actions,
-  totalCostUsd: .072,
-  warnings: ["この画面は架空企業・架空競合・架空数値によるUIサンプルです。", "無料Scanは各AIを1回観測する方向性診断です。"],
-};
+function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndexes: Set<number>): ScanResult {
+  const observations = buildObservations(ownRecommendedIndexes, measuredAt);
+  const successfulObservations = observations.filter((item) => item.status === "success").length;
+  const ownRecommendationCount = observations.filter((item) => item.status === "success" && item.ownRecommended).length;
+  const competitors = competitorPlan.map((plan) => {
+    const recommendedCount = observations.filter((item) => item.recommendedEntities.includes(plan.name)).length;
+    const firstChoiceCount = observations.filter((item) => item.firstCandidate === plan.name).length;
+    return { name: plan.name, recommendedCount, firstChoiceCount, coverage: percent(recommendedCount, successfulObservations) };
+  }).sort((a, b) => b.coverage - a.coverage || b.firstChoiceCount - a.firstChoiceCount || a.name.localeCompare(b.name, "ja"));
+  const ownCoverage = percent(ownRecommendationCount, successfulObservations);
+  const ranked = [...competitors.map((item) => ({ name: item.name, coverage: item.coverage })), { name: discovery.brandName, coverage: ownCoverage }]
+    .sort((a, b) => b.coverage - a.coverage || a.name.localeCompare(b.name, "ja"));
+  const firstChoiceCount = observations.filter((item) => item.firstCandidate === discovery.brandName).length;
+  const mentionCount = observations.filter((item) => item.rawText.includes(discovery.brandName)).length;
+  const ownCitationCount = observations.filter((item) => item.citations.some((itemCitation) => itemCitation.domain === discovery.domain)).length;
+  return {
+    scanId,
+    targetUrl: "https://nexora.example",
+    discovery,
+    panel: { kind: "free", version: 1, promptCount: prompts.length, repetitions: 1, locale: "ja-JP", country: "JP" },
+    measuredAt,
+    observations,
+    scheduledObservations: prompts.length * providerNames.length,
+    successfulObservations,
+    measurementCompleteness: percent(successfulObservations, prompts.length * providerNames.length),
+    recommendationCoverage: ownCoverage,
+    firstChoiceRate: percent(firstChoiceCount, successfulObservations),
+    mentionCoverage: percent(mentionCount, successfulObservations),
+    citationCoverage: percent(ownCitationCount, successfulObservations),
+    repeatAgreement: 100,
+    ownRecommendationCount,
+    marketPosition: Math.max(1, ranked.findIndex((item) => item.name === discovery.brandName) + 1),
+    marketSize: ranked.length,
+    competitors,
+    lostPrompts: buildLostPrompts(observations),
+    evidenceGaps: gaps,
+    actions,
+    totalCostUsd: Number((observations.reduce((sum, item) => sum + (item.costUsd || 0), 0)).toFixed(3)),
+    warnings: ["この画面は架空企業・架空競合・架空数値によるUIサンプルです。", "無料Scanは各AIを1回観測する方向性診断です。"],
+  };
+}
+
+export const sampleResult: ScanResult = buildScanResult("sample_clean_room", "2026-09-01T09:00:00.000Z", baselineOwnRecommended);
 
 export function sampleWatch(): WatchRecord {
-  const latest: ScanResult = {
-    ...sampleResult,
-    measuredAt: "2026-09-08T09:00:00.000Z",
-    recommendationCoverage: 28,
-    firstChoiceRate: 19,
-    ownRecommendationCount: 10,
-    marketPosition: 7,
-    repeatAgreement: 78,
-    lostPrompts: sampleResult.lostPrompts.slice(2),
+  const latest = buildScanResult("sample_clean_room_week_2", "2026-09-08T09:00:00.000Z", latestOwnRecommended);
+  return {
+    id: "watch_sample",
+    token: "sample",
+    email: "sample@nexora.example",
+    scanId: sampleResult.scanId,
+    status: "trial",
+    paid: false,
+    baseline: sampleResult,
+    latest,
+    history: [sampleResult, latest],
+    evidence: [],
+    nextRunAt: "2026-09-15T09:00:00.000Z",
+    createdAt: sampleResult.measuredAt,
+    updatedAt: latest.measuredAt,
   };
-  return { id: "watch_sample", token: "sample", email: "sample@nexora.example", scanId: sampleResult.scanId, status: "trial", paid: false, baseline: sampleResult, latest, history: [sampleResult, latest], evidence: [], nextRunAt: "2026-09-15T09:00:00.000Z", createdAt: sampleResult.measuredAt, updatedAt: latest.measuredAt };
 }
