@@ -1,5 +1,5 @@
 import { env } from "@/lib/env";
-import { getWatch } from "@/lib/storage";
+import { getWatch, updateWatch } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -22,11 +22,19 @@ export async function POST(request: Request) {
     const watch = await getWatch(body.token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     if (!watch.paid) return Response.json({ error: "有料契約後に利用できます。" }, { status: 403 });
-    const customers = await stripe(`/customers?email=${encodeURIComponent(watch.email)}&limit=10`);
-    const customer = customers.data?.[0];
-    if (!customer?.id) return Response.json({ error: "Stripe Customerが見つかりません。" }, { status: 404 });
+
+    let customerId = watch.stripeCustomerId;
+    if (!customerId) {
+      const customers = await stripe(`/customers?email=${encodeURIComponent(watch.email)}&limit=2`);
+      if (customers.data?.length !== 1 || !customers.data[0]?.id) {
+        return Response.json({ error: "契約に紐づくStripe Customerを一意に確認できません。サポートへお問い合わせください。" }, { status: 409 });
+      }
+      customerId = customers.data[0].id;
+      await updateWatch(watch.token, { stripeCustomerId: customerId });
+    }
+
     const form = new URLSearchParams();
-    form.set("customer", customer.id);
+    form.set("customer", customerId);
     form.set("return_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}`);
     const session = await stripe("/billing_portal/sessions", form);
     if (!session.url) throw new Error("Customer Portalを作成できませんでした。");
