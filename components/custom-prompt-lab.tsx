@@ -19,7 +19,7 @@ function samplePrompt(text: string, cluster: PromptCluster): BuyerPrompt {
 export function CustomPromptLab() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
-  const token = params.get("token") || "";
+  const legacyToken = params.get("token") || "";
   const [open, setOpen] = useState(false);
   const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
   const [text, setText] = useState("");
@@ -28,24 +28,25 @@ export function CustomPromptLab() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!open || sample || !token) return;
-    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
+    if (!open || sample) return;
+    const endpoint = legacyToken ? `/api/watch?token=${encodeURIComponent(legacyToken)}` : "/api/watch";
+    fetch(endpoint, { cache: "no-store" })
       .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "Prompt Labを取得できませんでした。"); setWatch(data); })
       .catch((caught) => setError(caught instanceof Error ? caught.message : "Prompt Labを取得できませんでした。"));
-  }, [open, sample, token]);
+  }, [open, sample, legacyToken]);
 
   async function add(event: FormEvent) {
     event.preventDefault(); const clean = text.trim(); if (clean.length < 8) { setError("8文字以上の購買質問を入力してください。"); return; }
     if (sample) { setWatch((current) => current ? { ...current, customPrompts: [...(current.customPrompts || []), samplePrompt(clean, cluster)] } : current); setText(""); setError(""); return; }
     setBusy("add"); setError("");
-    try { const response = await fetch("/api/custom-prompts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, text: clean, cluster, importance: 5 }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "追加できませんでした。"); setWatch(data.watch); setText(""); }
+    try { const response = await fetch("/api/custom-prompts", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: legacyToken, text: clean, cluster, importance: 5 }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "追加できませんでした。"); setWatch(data.watch); setText(""); }
     catch (caught) { setError(caught instanceof Error ? caught.message : "追加できませんでした。"); } finally { setBusy(""); }
   }
 
   async function remove(promptId: string) {
     if (sample) { setWatch((current) => current ? { ...current, customPrompts: (current.customPrompts || []).filter((item) => item.id !== promptId) } : current); return; }
     setBusy(`delete:${promptId}`); setError("");
-    try { const response = await fetch("/api/custom-prompts", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, promptId }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "削除できませんでした。"); setWatch(data.watch); }
+    try { const response = await fetch("/api/custom-prompts", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: legacyToken, promptId }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "削除できませんでした。"); setWatch(data.watch); }
     catch (caught) { setError(caught instanceof Error ? caught.message : "削除できませんでした。"); } finally { setBusy(""); }
   }
 
@@ -57,11 +58,12 @@ export function CustomPromptLab() {
       setWatch((current) => current ? { ...current, customLatest: result, customHistory: [...(current.customHistory || []), result] } : current); return;
     }
     setBusy("run"); setError("");
-    try { const response = await fetch("/api/custom-prompts/run", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "測定できませんでした。"); setWatch(data.watch); }
+    try { const response = await fetch("/api/custom-prompts/run", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: legacyToken }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "測定できませんでした。"); setWatch(data.watch); }
     catch (caught) { setError(caught instanceof Error ? caught.message : "測定できませんでした。"); } finally { setBusy(""); }
   }
 
   const prompts = watch?.customPrompts || [];
   const limit = watch?.paid ? 25 : 5;
-  return <><button className="custom-lab-trigger" type="button" onClick={() => setOpen(true)}><SearchIcon />Custom Prompt Lab<span>{prompts.length}/{limit}</span></button>{open ? <div className="custom-lab-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}><section className="custom-lab"><header><div><small>OPTIONAL · DOES NOT MUTATE CORE</small><h2>Custom Prompt Lab</h2><p>AIXの自動Buyer Panelに加え、自社固有の質問だけ追加できます。追加してもCoreの過去推移は変わりません。</p></div><button type="button" onClick={() => setOpen(false)}>×</button></header><form onSubmit={add}><label>自社で追いたい購買質問<textarea value={text} onChange={(event) => setText(event.target.value)} placeholder="例：従業員300名で、海外子会社も含めて使いやすい取引先リスク管理SaaSは？" /></label><div><select value={cluster} onChange={(event) => setCluster(event.target.value as PromptCluster)}>{clusterOptions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select><button type="submit" disabled={busy === "add" || prompts.length >= limit}>{busy === "add" ? "追加中…" : "Custom Promptを追加"}</button></div></form><div className="custom-lab-list">{prompts.length ? prompts.map((prompt, index) => <article key={prompt.id}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{prompt.text}</strong><small>{clusterOptions.find((item) => item.value === prompt.cluster)?.label} · Core非算入</small></div><button type="button" onClick={() => remove(prompt.id)} disabled={busy === `delete:${prompt.id}`}>削除</button></article>) : <div className="custom-lab-empty"><SearchIcon /><strong>Custom Promptはまだありません。</strong><p>通常はAIXの自動Panelだけで開始できます。必要な質問がある場合だけ追加してください。</p></div>}</div><footer><div><strong>{watch?.customLatest ? `${watch.customLatest.recommendationCoverage}%` : "—"}</strong><span>最新Custom Recommendation Coverage</span></div><button type="button" onClick={run} disabled={busy === "run" || !prompts.length}>{busy === "run" ? "3 AIで測定中…" : "Custom Promptを3 AIで測定"}<ArrowIcon /></button></footer>{error ? <p className="custom-lab-error">{error}</p> : null}</section></div> : null}</>;
+  const surfaceCount = watch?.paid ? 5 : 3;
+  return <><button className="custom-lab-trigger" type="button" onClick={() => setOpen(true)}><SearchIcon />Custom Prompt Lab<span>{prompts.length}/{limit}</span></button>{open ? <div className="custom-lab-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false); }}><section className="custom-lab"><header><div><small>OPTIONAL · DOES NOT MUTATE CORE</small><h2>Custom Prompt Lab</h2><p>AIXの自動Buyer Panelに加え、自社固有の質問だけ追加できます。追加してもCoreの過去推移は変わりません。</p></div><button type="button" onClick={() => setOpen(false)}>×</button></header><form onSubmit={add}><label>自社で追いたい購買質問<textarea value={text} onChange={(event) => setText(event.target.value)} placeholder="例：従業員300名で、海外子会社も含めて使いやすい取引先リスク管理SaaSは？" /></label><div><select value={cluster} onChange={(event) => setCluster(event.target.value as PromptCluster)}>{clusterOptions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select><button type="submit" disabled={busy === "add" || prompts.length >= limit}>{busy === "add" ? "追加中…" : "Custom Promptを追加"}</button></div></form><div className="custom-lab-list">{prompts.length ? prompts.map((prompt, index) => <article key={prompt.id}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{prompt.text}</strong><small>{clusterOptions.find((item) => item.value === prompt.cluster)?.label} · Core非算入</small></div><button type="button" onClick={() => remove(prompt.id)} disabled={busy === `delete:${prompt.id}`}>削除</button></article>) : <div className="custom-lab-empty"><SearchIcon /><strong>Custom Promptはまだありません。</strong><p>通常はAIXの自動Panelだけで開始できます。必要な質問がある場合だけ追加してください。</p></div>}</div><footer><div><strong>{watch?.customLatest ? `${watch.customLatest.recommendationCoverage}%` : "—"}</strong><span>最新Custom Recommendation Coverage</span></div><button type="button" onClick={run} disabled={busy === "run" || !prompts.length}>{busy === "run" ? `${surfaceCount} AIで測定中…` : `Custom Promptを${surfaceCount} AIで測定`}<ArrowIcon /></button></footer>{error ? <p className="custom-lab-error">{error}</p> : null}</section></div> : null}</>;
 }
