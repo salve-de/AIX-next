@@ -2,9 +2,9 @@ import { env } from "@/lib/env";
 import { generateBuyerPrompts } from "@/lib/discovery";
 import { id } from "@/lib/ids";
 import { runScan } from "@/lib/scan-runner";
-import { listDueWatches, updateWatch } from "@/lib/storage";
+import { claimDueWatches, updateWatch } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
-import type { BuyerPrompt } from "@/lib/types";
+import type { BuyerPrompt, WatchRecord } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -18,7 +18,7 @@ function authorized(request: Request) {
   return Boolean(env.cronSecret) && header === `Bearer ${env.cronSecret}`;
 }
 
-function existingPrompts(watch: Awaited<ReturnType<typeof listDueWatches>>[number]): BuyerPrompt[] {
+function existingPrompts(watch: WatchRecord): BuyerPrompt[] {
   if (watch.latest.prompts?.length) return watch.latest.prompts;
   const seen = new Map<string, BuyerPrompt>();
   for (const observation of watch.latest.observations) {
@@ -42,7 +42,7 @@ function trialEndsAt(createdAt: string) {
 
 export async function GET(request: Request) {
   if (!authorized(request)) return Response.json({ error: "Unauthorized" }, { status: 401 });
-  const due = await listDueWatches(5);
+  const due = await claimDueWatches(5, 15 * 60);
   const results: Array<{ token: string; status: string; error?: string }> = [];
 
   for (const watch of due) {
