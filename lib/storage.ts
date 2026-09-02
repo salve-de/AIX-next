@@ -49,6 +49,7 @@ function watchFromRow(row: any): WatchRecord {
     latest: row.latest,
     history: row.history || [],
     evidence: row.evidence || [],
+    changePack: row.change_pack || null,
     nextRunAt: row.next_run_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -132,13 +133,14 @@ export async function createWatch(scan: ScanRecord, email: string) {
     latest: scan.result,
     history: [scan.result],
     evidence: [],
+    changePack: null,
     nextRunAt: new Date(now.getTime() + 7 * 86_400_000).toISOString(),
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
   };
   if (durable()) {
     try {
-      const rows = await supabase<any[]>("aix_next_watches", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify({ id: record.id, token: record.token, email: record.email, scan_id: record.scanId, status: record.status, paid: false, baseline: record.baseline, latest: record.latest, history: record.history, evidence: [], next_run_at: record.nextRunAt }) });
+      const rows = await supabase<any[]>("aix_next_watches", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify({ id: record.id, token: record.token, email: record.email, scan_id: record.scanId, status: record.status, paid: false, baseline: record.baseline, latest: record.latest, history: record.history, evidence: [], change_pack: null, next_run_at: record.nextRunAt }) });
       return watchFromRow(rows[0]);
     } catch (error) {
       const concurrent = await existingWatch(scan.id, normalizedEmail);
@@ -158,7 +160,7 @@ export async function getWatch(token: string) {
   return watches.get(token) || null;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "nextRunAt">>) {
+export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "nextRunAt">>) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
@@ -170,6 +172,7 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
     if (patch.latest !== undefined) body.latest = patch.latest;
     if (patch.history !== undefined) body.history = patch.history;
     if (patch.evidence !== undefined) body.evidence = patch.evidence;
+    if (patch.changePack !== undefined) body.change_pack = patch.changePack;
     if (patch.nextRunAt !== undefined) body.next_run_at = patch.nextRunAt;
     const rows = await supabase<any[]>(`aix_next_watches?token=eq.${encodeURIComponent(token)}`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify(body) });
     return rows[0] ? watchFromRow(rows[0]) : null;
