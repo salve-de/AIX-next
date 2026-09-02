@@ -21,7 +21,7 @@ async function consumeSupabase(key: string, limit: number, windowSeconds: number
     headers: { apikey: env.supabaseServiceKey, authorization: `Bearer ${env.supabaseServiceKey}`, "content-type": "application/json" },
     body: JSON.stringify({ p_key: key, p_limit: limit, p_window_seconds: windowSeconds }),
   });
-  if (!response.ok) return null;
+  if (!response.ok) throw new Error(`Rate limit storage unavailable (${response.status})`);
   return await response.json() as { allowed: boolean; reset_at: string };
 }
 
@@ -34,14 +34,27 @@ function consumeMemory(key: string, limit: number, windowSeconds: number) {
 }
 
 async function consume(key: string, limit: number, windowSeconds: number) {
-  return await consumeSupabase(key, limit, windowSeconds) || consumeMemory(key, limit, windowSeconds);
+  if (env.supabaseUrl && env.supabaseServiceKey) return await consumeSupabase(key, limit, windowSeconds);
+  return consumeMemory(key, limit, windowSeconds);
+}
+
+function result(value: { allowed: boolean; reset_at: string }) {
+  return {
+    allowed: value.allowed,
+    retryAfter: Math.max(1, Math.ceil((new Date(value.reset_at).getTime() - Date.now()) / 1000)),
+  };
 }
 
 export async function consumeFreeScan(request: Request, url: string) {
-  const domain = new URL(url).hostname.replace(/^www\./, "");
-  const ip = await consume(`ip:${hash(clientIp(request))}`, env.freeScansPerHour, 3600);
-  const target = await consume(`domain:${hash(domain)}`, 3, 3600);
-  const allowed = ip.allowed && target.allowed;
-  const resetAt = Math.max(new Date(ip.reset_at).getTime(), new Date(target.reset_at).getTime());
-  return { allowed, retryAfter: Math.max(1, Math.ceil((resetAt - Date.now()) / 1000)) };
+  try {
+    const domain = new URL(url).hostname.replace(/^www\./, "");
+    const ip = clientIp(request);
+    const ipLimit = await consume(`ip:${hash(ip)}`, env.freeScansPerHour, 3600);
+    if (!ipLimit.allowed) return result(ipLimit);
+
+    const targetLimit = await consume(`ip-target:${hash(`${ip}:${domain}`)}`, 3, 3600);
+    return result(targetLimit);
+  } catch {
+    return { allowed: false, retryAfter: 60 };
+  }
 }
