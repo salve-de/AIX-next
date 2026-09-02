@@ -14,6 +14,14 @@ const discovery: CompanyDiscovery = {
     { name: "VendorLens", domain: "vendorlens.example", reason: "委託先リスク評価の架空SaaS", confidence: .88 },
     { name: "RiskCanvas", domain: "riskcanvas.example", reason: "購買・法務向けの架空代替", confidence: .83 },
     { name: "ThirdCheck", domain: "thirdcheck.example", reason: "取引先情報確認の架空代替", confidence: .76 },
+    { name: "AuditLoop", domain: "auditloop.example", reason: "監査証跡を強みにする架空SaaS", confidence: .73 },
+    { name: "VendorScope", domain: "vendorscope.example", reason: "委託先管理の架空代替", confidence: .71 },
+    { name: "SafeChain", domain: "safechain.example", reason: "サプライヤーリスク管理の架空SaaS", confidence: .69 },
+    { name: "DueTrack", domain: "duetrack.example", reason: "継続審査の架空代替", confidence: .67 },
+    { name: "ComplyNest", domain: "complynest.example", reason: "コンプライアンス確認の架空代替", confidence: .64 },
+    { name: "ClearVendor", domain: "clearvendor.example", reason: "取引先確認の架空代替", confidence: .62 },
+    { name: "RiskDock", domain: "riskdock.example", reason: "リスク台帳の架空代替", confidence: .60 },
+    { name: "ChainProof", domain: "chainproof.example", reason: "サプライヤー証跡管理の架空代替", confidence: .58 },
   ],
   confidence: .93,
 };
@@ -119,13 +127,21 @@ export const sampleResult: ScanResult = {
   citationCoverage: 8,
   repeatAgreement: 100,
   ownRecommendationCount: 8,
-  marketPosition: 4,
-  marketSize: 5,
+  marketPosition: 9,
+  marketSize: 13,
   competitors: [
     { name: "TrustOrbit", recommendedCount: 29, firstChoiceCount: 20, coverage: 81 },
     { name: "VendorLens", recommendedCount: 20, firstChoiceCount: 9, coverage: 56 },
     { name: "RiskCanvas", recommendedCount: 13, firstChoiceCount: 6, coverage: 36 },
-    { name: "ThirdCheck", recommendedCount: 9, firstChoiceCount: 1, coverage: 25 },
+    { name: "ThirdCheck", recommendedCount: 11, firstChoiceCount: 1, coverage: 31 },
+    { name: "AuditLoop", recommendedCount: 10, firstChoiceCount: 0, coverage: 28 },
+    { name: "VendorScope", recommendedCount: 10, firstChoiceCount: 0, coverage: 28 },
+    { name: "SafeChain", recommendedCount: 9, firstChoiceCount: 0, coverage: 25 },
+    { name: "DueTrack", recommendedCount: 9, firstChoiceCount: 0, coverage: 25 },
+    { name: "ComplyNest", recommendedCount: 7, firstChoiceCount: 0, coverage: 19 },
+    { name: "ClearVendor", recommendedCount: 6, firstChoiceCount: 0, coverage: 17 },
+    { name: "RiskDock", recommendedCount: 5, firstChoiceCount: 0, coverage: 14 },
+    { name: "ChainProof", recommendedCount: 4, firstChoiceCount: 0, coverage: 11 },
   ],
   lostPrompts,
   evidenceGaps: gaps,
@@ -135,6 +151,15 @@ export const sampleResult: ScanResult = {
 };
 
 export function sampleWatch(): WatchRecord {
-  const latest: ScanResult = { ...sampleResult, measuredAt: "2026-09-08T09:00:00.000Z", recommendationCoverage: 28, firstChoiceRate: 19, ownRecommendationCount: 10, marketPosition: 3, repeatAgreement: 78 };
+  const latest: ScanResult = {
+    ...sampleResult,
+    measuredAt: "2026-09-08T09:00:00.000Z",
+    recommendationCoverage: 28,
+    firstChoiceRate: 19,
+    ownRecommendationCount: 10,
+    marketPosition: 7,
+    repeatAgreement: 78,
+    lostPrompts: sampleResult.lostPrompts.slice(2),
+  };
   return { id: "watch_sample", token: "sample", email: "sample@nexora.example", scanId: sampleResult.scanId, status: "trial", paid: false, baseline: sampleResult, latest, history: [sampleResult, latest], evidence: [], nextRunAt: "2026-09-15T09:00:00.000Z", createdAt: sampleResult.measuredAt, updatedAt: latest.measuredAt };
 }
