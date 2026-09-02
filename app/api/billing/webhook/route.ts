@@ -17,6 +17,7 @@ export async function POST(request: Request) {
 
   const requiredTypes = new Set([
     "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
     "customer.subscription.created",
     "customer.subscription.updated",
     "customer.subscription.deleted",
