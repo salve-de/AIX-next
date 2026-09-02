@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { compareWatchRuns } from "../lib/watch-diff";
-import type { Observation, ScanResult } from "../lib/types";
+import type { CompetitorMetric, Observation, ScanResult } from "../lib/types";
 
 function observation(id: string, repetition: number, recommended: boolean, first = false, status: Observation["status"] = "success", citation = "") : Observation {
   return {
@@ -24,7 +24,7 @@ function observation(id: string, repetition: number, recommended: boolean, first
   };
 }
 
-function result(observations: Observation[], coverage: number, position = 2): ScanResult {
+function result(observations: Observation[], coverage: number, position = 2, competitors: CompetitorMetric[] = []): ScanResult {
   return {
     scanId: "scan",
     targetUrl: "https://acme.example",
@@ -44,7 +44,7 @@ function result(observations: Observation[], coverage: number, position = 2): Sc
     ownRecommendationCount: observations.filter((item) => item.ownRecommended).length,
     marketPosition: position,
     marketSize: 2,
-    competitors: [],
+    competitors,
     lostPrompts: [],
     narratives: [],
     evidenceGaps: [],
@@ -98,4 +98,22 @@ test("Watch diff tracks citation additions and removals", () => {
   const diff = compareWatchRuns(before, after);
   assert.deepEqual(diff.newCitations, ["https://new.example/page"]);
   assert.deepEqual(diff.removedCitations, ["https://old.example/page"]);
+});
+
+test("Watch diff surfaces the competitor that gained the most coverage", () => {
+  const beforeCompetitors: CompetitorMetric[] = [
+    { name: "Rival", recommendedCount: 1, firstChoiceCount: 1, coverage: 30 },
+    { name: "Other", recommendedCount: 1, firstChoiceCount: 0, coverage: 20 },
+  ];
+  const afterCompetitors: CompetitorMetric[] = [
+    { name: "Rival", recommendedCount: 2, firstChoiceCount: 2, coverage: 55 },
+    { name: "Other", recommendedCount: 1, firstChoiceCount: 0, coverage: 18 },
+    { name: "NewCo", recommendedCount: 1, firstChoiceCount: 1, coverage: 25 },
+  ];
+  const before = result([observation("b1", 1, false), observation("b2", 2, false), observation("b3", 3, false)], 0, 2, beforeCompetitors);
+  const after = result([observation("a1", 1, false), observation("a2", 2, false), observation("a3", 3, false)], 0, 2, afterCompetitors);
+  const diff = compareWatchRuns(before, after);
+  assert.equal(diff.competitorDeltas[0].name, "Rival");
+  assert.equal(diff.competitorDeltas[0].coverageDelta, 25);
+  assert.equal(diff.competitorDeltas.find((item) => item.name === "NewCo")?.newlyObserved, true);
 });
