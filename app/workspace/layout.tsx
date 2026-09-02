@@ -9,6 +9,7 @@ import "./surface-status.css";
 import "./opportunity-queue.css";
 import "./business-outcome-strip.css";
 import "./page-intelligence.css";
+import "./page-intelligence-shortcut.css";
 
 export const metadata: Metadata = {
   title: "AI Buyer Intelligence Workspace",
