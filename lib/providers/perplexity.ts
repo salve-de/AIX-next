@@ -1,8 +1,8 @@
 import "server-only";
 import { env } from "@/lib/env";
-import type { Citation } from "@/lib/types";
 import type { AiSearchProvider, ProviderInput, ProviderOutput } from "@/lib/providers/common";
 import { recommendationInstruction } from "@/lib/providers/common";
+import { parsePerplexitySonarResponse } from "@/lib/providers/parsers";
 
 export const perplexityProvider: AiSearchProvider = {
   name: "perplexity",
@@ -22,26 +22,16 @@ export const perplexityProvider: AiSearchProvider = {
     });
     const data = await response.json() as any;
     if (!response.ok) throw new Error(data.error?.message || data.detail?.[0]?.msg || `Perplexity ${response.status}`);
-    const rawText = data.choices?.[0]?.message?.content || "";
-    if (!rawText) throw new Error("Perplexityが空の回答を返しました。");
-    const rawSources = Array.isArray(data.search_results) && data.search_results.length ? data.search_results : Array.isArray(data.citations) ? data.citations : [];
-    const citations: Citation[] = [];
-    for (const source of rawSources) {
-      const url = typeof source === "string" ? source : source?.url;
-      if (!url) continue;
-      try {
-        const parsed = new URL(url);
-        citations.push({ title: typeof source === "object" ? source.title || parsed.hostname : parsed.hostname, url: parsed.toString(), domain: parsed.hostname.replace(/^www\./, "") });
-      } catch { /* ignore invalid source */ }
-    }
+    const parsed = parsePerplexitySonarResponse(data);
+    if (!parsed.rawText) throw new Error("Perplexityが空の回答を返しました。");
     return {
-      rawText,
-      citations: [...new Map(citations.map((item) => [item.url, item])).values()].slice(0, 20),
-      model: data.model || env.perplexityModel,
-      inputTokens: data.usage?.prompt_tokens,
-      outputTokens: data.usage?.completion_tokens,
-      searchRequests: data.usage?.num_search_queries,
-      costUsd: data.usage?.cost?.total_cost,
+      rawText: parsed.rawText,
+      citations: parsed.citations,
+      model: parsed.model || env.perplexityModel,
+      inputTokens: parsed.inputTokens,
+      outputTokens: parsed.outputTokens,
+      searchRequests: parsed.searchRequests,
+      costUsd: parsed.costUsd,
     };
   },
 };
