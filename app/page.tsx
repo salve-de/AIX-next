@@ -13,9 +13,9 @@ export default function HomePage() {
       <div className="shell home-hero-grid-instant">
         <div className="home-hero-copy-instant">
           <p className="home-service-kicker">ChatGPT競合診断 · 会社URLだけ</p>
-          <h1>ChatGPTで、<br /><span>競合が選ばれ、自社が候補外になる質問</span>を見つける。</h1>
-          <p className="home-value-promise">候補入りを増やすために、何を直すべきかまで出します。</p>
-          <p className="home-hero-copy">買い手が「おすすめの○○会社は？」「A社とB社ならどっち？」とAIに聞く場面を再現。自社が何社中何位か、どの質問で候補外か、代わりに誰が選ばれたか、公開情報の何が足りないかを調べます。</p>
+          <h1>ChatGPTで、<br /><span>競合に負けている質問</span>がわかる。</h1>
+          <p className="home-value-promise">自社が候補に入るために、何を直すかまで出します。</p>
+          <p className="home-hero-copy">買い手が「おすすめの○○会社は？」「A社とB社ならどっち？」とAIに聞く場面を再現。どの質問で自社が候補外になり、代わりに誰が選ばれ、公開情報の何が足りないかを調べます。</p>
           <ScanForm />
           <div className="hero-operation-line" aria-label="AIXの流れ"><span>自社が外れる質問を発見</span><ArrowIcon /><span>直す場所を1つに絞る</span><ArrowIcon /><span>同じ質問で再測定</span></div>
           <div className="hero-trust"><span><LockIcon />登録不要</span><span>カード不要</span><span>公開Webのみ</span></div>
