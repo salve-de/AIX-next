@@ -61,7 +61,7 @@ export const openAiProvider: AiSearchProvider = {
         model: env.openAiSearchModel,
         input: recommendationInstruction(input),
         tools: [{ type: "web_search" }],
-        tool_choice: "auto",
+        tool_choice: "required",
         include: ["web_search_call.action.sources"],
       }),
     });
