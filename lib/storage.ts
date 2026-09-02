@@ -196,3 +196,27 @@ export async function listDueWatches(limit = 10) {
   }
   return [...watches.values()].filter((watch) => ["trial", "active"].includes(watch.status) && watch.nextRunAt <= now).slice(0, limit);
 }
+
+export async function claimDueWatches(limit = 5, leaseSeconds = 900) {
+  const safeLimit = Math.min(50, Math.max(1, Math.floor(limit)));
+  const safeLease = Math.max(60, Math.floor(leaseSeconds));
+  if (durable()) {
+    const rows = await supabase<any[]>("rpc/aix_next_claim_due_watches", {
+      method: "POST",
+      body: JSON.stringify({ p_limit: safeLimit, p_lease_seconds: safeLease }),
+    });
+    return rows.map(watchFromRow);
+  }
+  const now = Date.now();
+  const claimedAt = new Date().toISOString();
+  const leaseUntil = new Date(now + safeLease * 1000).toISOString();
+  const due = [...watches.values()]
+    .filter((watch) => ["trial", "active"].includes(watch.status) && new Date(watch.nextRunAt).getTime() <= now)
+    .sort((a, b) => new Date(a.nextRunAt).getTime() - new Date(b.nextRunAt).getTime())
+    .slice(0, safeLimit);
+  return due.map((watch) => {
+    const claimed = { ...watch, nextRunAt: leaseUntil, updatedAt: claimedAt };
+    watches.set(watch.token, claimed);
+    return claimed;
+  });
+}
