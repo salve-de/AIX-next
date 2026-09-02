@@ -23,6 +23,8 @@ export const env = {
   stripeSecretKey: text("STRIPE_SECRET_KEY"),
   stripePriceId: text("STRIPE_PRICE_ID"),
   stripeWebhookSecret: text("STRIPE_WEBHOOK_SECRET"),
+  resendApiKey: text("RESEND_API_KEY"),
+  watchFromEmail: text("WATCH_FROM_EMAIL"),
   cronSecret: text("CRON_SECRET"),
   adminSecret: text("ADMIN_SECRET"),
   rateLimitSalt: text("RATE_LIMIT_SALT", "development-only"),
