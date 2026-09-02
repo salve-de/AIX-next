@@ -14,13 +14,28 @@ export function HeroShortlistVisual() {
 }
 
 export function ProductOutputPreview() {
-  return <div className="product-preview" aria-label="AIX診断結果のサンプル画面">
-    <div className="preview-sidebar"><div className="preview-logo">AIX</div><span className="active">Overview</span><span>Buyer Prompts</span><span>Evidence</span><span>Actions</span><span>History</span></div>
-    <div className="preview-main">
-      <header><div><small>AI SHORTLIST POSITION</small><strong>4 / 5</strong></div><span>36 observations · 3 surfaces</span></header>
-      <div className="preview-kpis"><article><small>推薦カバレッジ</small><strong>22%</strong><i className="negative">-59pt vs leader</i></article><article><small>候補外テーマ</small><strong>8 / 12</strong><i>Buyer Prompt</i></article><article><small>Citation Coverage</small><strong>8%</strong><i>owned domain</i></article></div>
-      <div className="preview-content"><div className="preview-chart"><small>候補入り率</small>{[["TrustOrbit",81],["VendorLens",56],["RiskCanvas",36],["NEXORA",22]].map(([name,value]) => <div className={name === "NEXORA" ? "self" : ""} key={String(name)}><span>{name}</span><i><b style={{ width: `${value}%` }} /></i><strong>{value}%</strong></div>)}</div><div className="preview-loss"><small>BIGGEST LOST PROMPT</small><strong>従業員300名に合う取引先審査ツールは？</strong><p><span>TrustOrbit</span><b>推薦</b></p><p><span>NEXORA</span><b className="lost">候補外</b></p></div></div>
-      <div className="preview-footer"><article><EvidenceIcon /><div><small>NEED YOU</small><strong>標準導入期間</strong></div><span>8 prompts</span></article><article><TrendIcon /><div><small>FIRST ACTION</small><strong>企業規模別の導入実績を公開</strong></div><span>critical</span></article></div>
+  return <div className="home-result-preview" aria-label="AIX無料診断の架空サンプル">
+    <header className="home-result-preview-header">
+      <div><p className="eyebrow">FICTIONAL SAMPLE · NEXORA CLOUD</p><h3>AI比較で、<strong>13社中9位</strong>です。</h3><p>12の購買質問のうち、候補に入ったのは2問だけです。</p></div>
+      <span>OpenAI · Gemini · Perplexity<br />12 prompts · 36 observations</span>
+    </header>
+    <div className="home-result-preview-kpis">
+      <article><small>自社の候補入り</small><strong>2 / 12</strong><span>Buyer Prompts</span></article>
+      <article><small>競合トップ</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
+      <article className="negative"><small>候補外になった質問</small><strong>10 / 12</strong><span>Buyer Prompts</span></article>
+      <article><small>測定完了</small><strong>36 / 36</strong><span>AI observations</span></article>
+    </div>
+    <div className="home-result-preview-body">
+      <article className="home-result-loss-preview">
+        <small>候補外になった購買質問</small>
+        <h4>「従業員300名の企業に合う取引先審査ツールは？」</h4>
+        <div><span><small>最頻推薦</small><strong>TrustOrbit</strong></span><span><small>自社</small><strong className="lost">候補外</strong></span></div>
+        <p>競合は企業規模別の導入実績と標準導入期間を比較可能な形で公開。NEXORA Cloudでは同条件の根拠を確認できませんでした。</p>
+      </article>
+      <aside className="home-result-action-preview">
+        <div><EvidenceIcon /><span><small>確認できないEvidence</small><strong>従業員100〜500名での導入実績</strong></span></div>
+        <div><TrendIcon /><span><small>最優先Action</small><strong>企業規模別の導入実績を公開する</strong></span></div>
+      </aside>
     </div>
   </div>;
 }
@@ -36,9 +51,15 @@ export function ProductProcessVisual() {
 }
 
 export function WatchTrendVisual() {
-  return <div className="watch-visual" aria-label="週次Watchの変化サンプル">
-    <header><div><i /><strong>AIX WATCH</strong></div><span>WEEK 4 / CORE PANEL</span></header>
-    <div className="watch-visual-chart"><svg viewBox="0 0 640 210" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="watchArea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="currentColor" stopOpacity=".28"/><stop offset="1" stopColor="currentColor" stopOpacity="0"/></linearGradient></defs><path className="watch-grid" d="M20 35H620M20 95H620M20 155H620" /><path className="watch-area" d="M35 160 C130 150 160 140 225 128 S340 132 420 94 S535 74 605 54 L605 190 L35 190Z" /><path className="watch-line" d="M35 160 C130 150 160 140 225 128 S340 132 420 94 S535 74 605 54" /><circle cx="35" cy="160" r="6" /><circle cx="225" cy="128" r="6" /><circle cx="420" cy="94" r="6" /><circle className="last" cx="605" cy="54" r="7" /></svg><div className="watch-label start"><small>Baseline</small><strong>22%</strong></div><div className="watch-label end"><small>Now</small><strong>31%</strong></div></div>
-    <div className="watch-events"><article><span>+4</span><p><strong>新しく候補入り</strong><small>Buyer responses</small></p></article><article><span>7</span><p><strong>新しいCitation</strong><small>source changes</small></p></article><article><span>2</span><p><strong>確認が必要</strong><small>Evidence tasks</small></p></article></div>
+  return <div className="watch-home-visual" aria-label="Watchで追跡する変化の架空サンプル">
+    <header><div><i /><strong>AIX WATCH</strong></div><span>FICTIONAL SAMPLE · WEEK 2</span></header>
+    <div className="watch-home-rank"><small>AI比較での順位</small><strong><span>9位</span><ArrowIcon /><b>7位</b></strong><p>同じCore Prompt・同じAI観測面で比較</p></div>
+    <div className="watch-home-deltas">
+      <article><small>候補に入った質問</small><strong>2 <ArrowIcon /> 4</strong></article>
+      <article><small>候補外の質問</small><strong>10 <ArrowIcon /> 8</strong></article>
+      <article><small>新しく候補入り</small><strong className="positive">+2質問</strong></article>
+      <article><small>次に確認</small><strong>2 Evidence</strong></article>
+    </div>
+    <div className="watch-home-footer"><TrendIcon /><span><small>今回の変化</small><strong>順位 +2 / 候補入り質問 +2</strong></span></div>
   </div>;
 }
