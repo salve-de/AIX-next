@@ -11,18 +11,26 @@ export async function POST(request: Request) {
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     if (watch.paid) return Response.json({ error: "このWatchはすでに契約中です。" }, { status: 409 });
     if (!env.stripeSecretKey || !env.stripePriceId) return Response.json({ error: "Stripeの本番設定が完了していません。" }, { status: 503 });
+
     const form = new URLSearchParams();
     form.set("mode", "subscription");
     form.set("locale", "ja");
     form.set("line_items[0][price]", env.stripePriceId);
     form.set("line_items[0][quantity]", "1");
-    form.set("customer_email", watch.email);
+    if (watch.stripeCustomerId) form.set("customer", watch.stripeCustomerId);
+    else form.set("customer_email", watch.email);
     form.set("billing_address_collection", "required");
     form.set("success_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}&checkout=success`);
     form.set("cancel_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}&checkout=cancelled`);
+    form.set("client_reference_id", watch.id);
     form.set("metadata[watch_token]", watch.token);
     form.set("subscription_data[metadata][watch_token]", watch.token);
-    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", { method: "POST", headers: { authorization: `Bearer ${env.stripeSecretKey}`, "content-type": "application/x-www-form-urlencoded" }, body: form });
+
+    const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: { authorization: `Bearer ${env.stripeSecretKey}`, "content-type": "application/x-www-form-urlencoded" },
+      body: form,
+    });
     const data = await response.json() as any;
     if (!response.ok || !data.url) throw new Error(data.error?.message || "Checkoutを作成できませんでした。");
     return Response.json({ url: data.url });
