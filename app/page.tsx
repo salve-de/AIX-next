@@ -13,11 +13,11 @@ export default function HomePage() {
       <div className="shell home-hero-grid-instant">
         <div className="home-hero-copy-instant">
           <p className="home-service-kicker">ChatGPT競合診断 · 会社URLだけ</p>
-          <h1>ChatGPTで、<br /><span>競合に先に選ばれている質問</span>を見つける。</h1>
+          <h1>ChatGPTで、<br /><span>競合が選ばれ、自社が候補外になる質問</span>を見つける。</h1>
           <p className="home-value-promise">候補入りを増やすために、何を直すべきかまで出します。</p>
           <p className="home-hero-copy">買い手が「おすすめの○○会社は？」「A社とB社ならどっち？」とAIに聞く場面を再現。自社が何社中何位か、どの質問で候補外か、代わりに誰が選ばれたか、公開情報の何が足りないかを調べます。</p>
           <ScanForm />
-          <div className="hero-operation-line" aria-label="AIXの流れ"><span>負けている質問を発見</span><ArrowIcon /><span>直す場所を1つに絞る</span><ArrowIcon /><span>同じ質問で再測定</span></div>
+          <div className="hero-operation-line" aria-label="AIXの流れ"><span>自社が外れる質問を発見</span><ArrowIcon /><span>直す場所を1つに絞る</span><ArrowIcon /><span>同じ質問で再測定</span></div>
           <div className="hero-trust"><span><LockIcon />登録不要</span><span>カード不要</span><span>公開Webのみ</span></div>
           <Link className="text-link" href="/result?sample=1">架空サンプルで結果を見る <ArrowIcon /></Link>
         </div>
@@ -34,7 +34,7 @@ export default function HomePage() {
             <article><small>首位競合が候補入り</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
           </div>
           <div className="hero-rank-loss">
-            <small>競合に先に選ばれた質問</small>
+            <small>競合が選ばれ、自社が外れた質問</small>
             <strong>「従業員300名に合う取引先審査ツールは？」</strong>
             <div><span><small>選ばれた競合</small><b>TrustOrbit</b></span><span><small>自社</small><b className="lost">候補外</b></span></div>
           </div>
@@ -47,7 +47,7 @@ export default function HomePage() {
       <div className="shell">
         <div className="value-loop-heading">
           <div><p className="eyebrow">WHAT CHANGES</p><h2>順位表を見るためではない。<br />負けている理由を、次にやる作業へ変える。</h2></div>
-          <p>AIXの価値は「AIで9位だった」と知ることではありません。どの比較場面で競合に先を越され、何を足せば改善を狙えるかを決め、同じ条件で結果が動いたかまで確認できることです。</p>
+          <p>AIXの価値は「AIで9位だった」と知ることではありません。どの比較場面で競合が選ばれ、自社が外れているかを特定し、何を足せば改善を狙えるかを決め、同じ条件で結果が動いたかまで確認できることです。</p>
         </div>
         <div className="value-loop-grid">
           <article><span>01</span><small>FIND</small><h3>取りこぼしている比較場面を見つける</h3><strong>候補外 10 / 12</strong><p>「どこで負けているか分からない」を、Buyer Prompt単位の具体的な勝敗に変えます。</p></article>
