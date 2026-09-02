@@ -17,6 +17,23 @@ export type ActionCard = { id: string; title: string; rationale: string; type: "
 export type ReadinessStatus = "pass" | "warn" | "fail";
 export type ReadinessCheck = { id: string; label: string; status: ReadinessStatus; detail: string; affectedUrls?: string[] };
 export type SiteReadiness = { checkedAt: string; passCount: number; warnCount: number; failCount: number; checks: ReadinessCheck[] };
+export type PageRole = "home" | "product" | "pricing" | "proof" | "security" | "support" | "docs" | "other";
+export type PageIntelligence = {
+  url: string;
+  title: string;
+  role: PageRole;
+  hasDescription: boolean;
+  bodyChars: number;
+  citationEvents: number;
+  citedPromptCount: number;
+  citedProviders: ProviderName[];
+  recommendationEventsWhenCited: number;
+  relatedPromptIds: string[];
+  relatedLostPromptCount: number;
+  status: "cited" | "uncited";
+  opportunity: "high" | "medium" | "low";
+  /** Explains the deterministic mapping. It is not a causal claim that editing this page changes AI output. */ rationale: string;
+};
 export type EvidenceAnswer = { gapId: string; value: string; sourceUrl?: string; status: "company_asserted" | "verified" | "disputed" | "expired"; updatedAt: string };
 export type ChangePackStatus = "draft" | "needs_evidence" | "ready" | "approved" | "rejected";
 export type ChangePackValidation = { measuredAt: string; promptIds: string[]; beforeCoverage: number; afterCoverage: number; successfulObservations: number; note: string };
@@ -29,7 +46,7 @@ export type ExecutionTarget = "github" | "wordpress";
 export type ExecutionRecord = { id: string; packId: string; target: ExecutionTarget; status: "created" | "failed"; summary: string; externalUrl?: string; metadata?: Record<string, string | number | boolean>; createdAt: string };
 
 export type MeasurementPanel = { kind: PromptPanelKind; version: number; promptCount: number; repetitions: number; locale: "ja-JP"; country: "JP" };
-export type ScanResult = { scanId: string; targetUrl: string; discovery: CompanyDiscovery; panel: MeasurementPanel; prompts: BuyerPrompt[]; measuredAt: string; observations: Observation[]; scheduledObservations: number; successfulObservations: number; measurementCompleteness: number; recommendationCoverage: number; firstChoiceRate: number; mentionCoverage: number; citationCoverage: number; repeatAgreement: number; ownRecommendationCount: number; marketPosition: number; marketSize: number; competitors: CompetitorMetric[]; lostPrompts: LostPrompt[]; narratives: NarrativeInsight[]; /** Added in v3. Older stored scans can legitimately omit this field. */ siteReadiness?: SiteReadiness; evidenceGaps: EvidenceGap[]; actions: ActionCard[]; totalCostUsd: number; warnings: string[] };
+export type ScanResult = { scanId: string; targetUrl: string; discovery: CompanyDiscovery; panel: MeasurementPanel; prompts: BuyerPrompt[]; measuredAt: string; observations: Observation[]; scheduledObservations: number; successfulObservations: number; measurementCompleteness: number; recommendationCoverage: number; firstChoiceRate: number; mentionCoverage: number; citationCoverage: number; repeatAgreement: number; ownRecommendationCount: number; marketPosition: number; marketSize: number; competitors: CompetitorMetric[]; lostPrompts: LostPrompt[]; narratives: NarrativeInsight[]; /** Added in v3. Older stored scans can legitimately omit this field. */ siteReadiness?: SiteReadiness; /** Page inventory + citation linkage. Older stored scans can omit it. */ pageIntelligence?: PageIntelligence[]; evidenceGaps: EvidenceGap[]; actions: ActionCard[]; totalCostUsd: number; warnings: string[] };
 export type ScanRecord = { id: string; targetUrl: string; stage: ScanStage; progress: number; message: string; result: ScanResult | null; error: string | null; createdAt: string; updatedAt: string };
 export type WatchStatus = "trial" | "active" | "past_due" | "expired" | "cancelled";
 export type WatchRecord = { id: string; token: string; email: string; scanId: string; status: WatchStatus; paid: boolean; /** Stable Core baseline. Discovery and Custom panels never contribute to Core trend metrics. */ baseline: ScanResult; latest: ScanResult; history: ScanResult[]; /** Latest rotating Discovery panel, paid plan only. */ discoveryLatest?: ScanResult | null; discoveryHistory?: ScanResult[]; /** User-defined prompts are intentionally isolated from Core so adding a prompt cannot fake trend improvement. */ customPrompts?: BuyerPrompt[]; customLatest?: ScanResult | null; customHistory?: ScanResult[]; evidence: EvidenceAnswer[]; changePacks?: ChangePack[]; domainClaim?: DomainClaim | null; executions?: ExecutionRecord[]; trialEndsAt: string; nextRunAt: string; createdAt: string; updatedAt: string };
