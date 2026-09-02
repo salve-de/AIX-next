@@ -82,7 +82,7 @@ export function WatchClient() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Checkoutを開始できませんでした。");
       window.location.assign(data.url);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Checkoutを開始できませんでした。"); }
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Checkoutを開始できませんでした。")); }
     finally { setCheckoutBusy(false); }
   }
 
@@ -103,7 +103,7 @@ export function WatchClient() {
 
   return <main>
     <SiteHeader compact />
-    <section className="watch-hero"><div className="shell"><div className="watch-title-row"><div><p className="eyebrow">AIX WATCH · {sample ? "FICTIONAL SAMPLE" : watch.status.toUpperCase()}</p><h1>AI比較での順位、<br />{watch.baseline.marketPosition}位 → {watch.latest.marketPosition}位。</h1><p>{watch.latest.discovery.brandName}を{panelDescription(watch)}で再測定し、購買質問ごとの候補入り・候補外を比較しています。</p></div>{stopped ? <div className="live-pill stopped"><i />測定停止</div> : <div className="live-pill"><i />次回測定 {formatDate(watch.nextRunAt)}</div>}</div></div></section>
+    <section className="watch-hero"><div className="shell"><div className="watch-title-row"><div><p className="eyebrow">AIX WATCH · {sample ? "FICTIONAL SAMPLE" : watch.status.toUpperCase()}</p><h1>AI比較での順位、<br />{watch.baseline.marketPosition}位 → {watch.latest.marketPosition}位。</h1><p>{watch.latest.discovery.brandName}を{panelDescription(watch)}で再測定し、前回から何が変わったかだけを比較します。</p></div>{stopped ? <div className="live-pill stopped"><i />測定停止</div> : <div className="live-pill"><i />次回測定 {formatDate(watch.nextRunAt)}</div>}</div></div></section>
 
     {statusText ? <section className={`watch-status-banner watch-status-${watch.status}`}><div className="shell"><WarningIcon /><div><strong>{statusText}</strong><span>{watch.status === "expired" ? "継続する場合だけStripe Checkoutで有料Watchを開始します。" : watch.status === "past_due" ? "Watchは自動で新しい測定を行いません。" : "必要なら同じWatchを再開できます。"}</span></div></div></section> : null}
 
@@ -111,10 +111,9 @@ export function WatchClient() {
 
     <section className="watch-overview shell">
       <div className="watch-chart-card"><header><div><small>AI回答での自社候補入り</small><strong>{watch.latest.ownRecommendationCount} / {watch.latest.successfulObservations}</strong></div><span>週次推移</span></header><div className="watch-chart"><svg viewBox="0 0 610 210" preserveAspectRatio="none" aria-hidden="true"><path className="grid" d="M35 40H590M35 95H590M35 150H590" /><path className="line" d={path || "M44 150L566 150"} />{points.map((point, index) => <circle key={index} className={index === points.length - 1 ? "last" : ""} cx={point.x} cy={Math.max(25, point.y)} r={index === points.length - 1 ? 7 : 5} />)}</svg><span className="chart-baseline">Baseline {watch.baseline.ownRecommendationCount}/{watch.baseline.successfulObservations}</span><span className="chart-now">Now {watch.latest.ownRecommendationCount}/{watch.latest.successfulObservations}</span></div></div>
-      <div className="watch-kpis"><article><small>市場順位</small><strong>{watch.latest.marketPosition} / {watch.latest.marketSize}</strong><span>{change.rank >= 0 ? "+" : ""}{change.rank}順位</span></article><article><small>候補入り質問</small><strong>{change.latestShortlisted} / {watch.latest.panel.promptCount}</strong><span>Buyer Prompt</span></article><article><small>候補外質問</small><strong>{change.latestLost} / {watch.latest.panel.promptCount}</strong><span>Buyer Prompt</span></article><article><small>新しいCitation</small><strong>{change.newCitations}</strong><span>source URLs</span></article><article><small>AI回答で候補入り</small><strong>{watch.latest.ownRecommendationCount} / {watch.latest.successfulObservations}</strong><span>successful observations</span></article><article><small>確認が必要</small><strong>{pendingGaps.length}</strong><span>Evidence tasks</span></article></div>
     </section>
 
-    <section className="result-section shell"><div className="section-heading"><p className="eyebrow">WHAT MOVED</p><h2>今回、変わった購買質問。</h2><p>作業履歴ではなく、同じBuyer Promptで候補入りしたかどうかの変化を表示します。</p></div><div className="movement-grid"><article><span><TrendIcon />候補入り</span><h3>{change.newPromptWins ? `${change.newPromptWins}質問で新しく候補入り` : "新しい候補入りは未確認"}</h3><p>Baselineでは候補外、今回の測定では候補入りになったBuyer Promptです。</p></article><article><span><WarningIcon />候補外</span><h3>{change.newPromptLosses ? `${change.newPromptLosses}質問で新しく候補外` : "新しい候補外は未確認"}</h3><p>一時的な変化は次回測定も確認し、単発の揺れと継続変化を分けます。</p></article><article><span><QuoteIcon />Citation</span><h3>{change.newCitations}件の新しい引用元</h3><p>自社・競合の推薦理由に使われたURLの差分です。</p></article></div></section>
+    <section className="result-section shell"><div className="section-heading"><p className="eyebrow">WHAT MOVED</p><h2>今回、変わった購買質問。</h2><p>作業履歴ではなく、同じBuyer Promptで候補入りしたかどうかの差分だけを表示します。</p></div><div className="movement-grid"><article><span><TrendIcon />候補入り</span><h3>{change.newPromptWins ? `${change.newPromptWins}質問で新しく候補入り` : "新しい候補入りは未確認"}</h3><p>Baselineでは候補外、今回の測定では候補入りになったBuyer Promptです。</p></article><article><span><WarningIcon />候補外</span><h3>{change.newPromptLosses ? `${change.newPromptLosses}質問で新しく候補外` : "新しい候補外は未確認"}</h3><p>一時的な変化は次回測定も確認し、単発の揺れと継続変化を分けます。</p></article><article><span><QuoteIcon />Citation</span><h3>{change.newCitations}件の新しい引用元</h3><p>自社・競合の推薦理由に使われたURLの差分です。</p></article></div></section>
 
     <section className="result-section evidence-section"><div className="shell"><div className="section-heading"><p className="eyebrow">NEED YOU · {pendingGaps.length}</p><h2>企業にしか分からない事実。</h2><p>AIXが公開Webで確認できない情報だけを聞きます。入力は非公開です。</p></div><div className="evidence-grid evidence-input-grid">{watch.latest.evidenceGaps.slice(0, 4).map((gap) => {
       const answer = watch.evidence.find((item) => item.gapId === gap.id);
