@@ -1,4 +1,5 @@
 import { createWatch, getScan, getWatch } from "@/lib/storage";
+import { sendWatchStarted } from "@/lib/watch-email";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,7 +19,8 @@ export async function POST(request: Request) {
     if (!scan?.result) return Response.json({ error: "診断結果が見つかりません。" }, { status: 404 });
     if (!scan.result.successfulObservations) return Response.json({ error: "成功したAI観測がないためWatchを開始できません。API設定後に再測定してください。" }, { status: 409 });
     const watch = await createWatch(scan, email);
-    return Response.json({ token: watch.token, watchUrl: `/watch?token=${encodeURIComponent(watch.token)}` }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
+    const delivery = await sendWatchStarted(watch);
+    return Response.json({ token: watch.token, watchUrl: `/watch?token=${encodeURIComponent(watch.token)}`, emailSent: delivery.sent }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Watchを開始できませんでした。" }, { status: 400 });
   }
