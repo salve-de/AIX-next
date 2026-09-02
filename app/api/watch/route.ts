@@ -18,20 +18,20 @@ export async function POST(request: Request) {
     const email = normalizeEmail(body.email || "");
     const scan = await getScan(body.scanId);
     if (!scan?.result) return Response.json({ error: "診断結果が見つかりません。" }, { status: 404 });
-    if (!scan.result.successfulObservations) return Response.json({ error: "成功したAI観測がないためWatchを開始できません。API設定後に再測定してください。" }, { status: 409 });
+    if (!scan.result.successfulObservations) return Response.json({ error: "成功したAI回答がないため継続モニタリングを開始できません。再度診断してください。" }, { status: 409 });
     const watch = await createWatch(scan, email);
     const delivery = await sendWatchStarted(watch);
     return Response.json({ token: watch.token, watchUrl: `/watch?token=${encodeURIComponent(watch.token)}`, emailSent: delivery.sent }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "Watchを開始できませんでした。" }, { status: 400 });
+    return Response.json({ error: error instanceof Error ? error.message : "継続モニタリングを開始できませんでした。" }, { status: 400 });
   }
 }
 
 export async function GET(request: Request) {
   const token = new URL(request.url).searchParams.get("token") || "";
-  if (!token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
+  if (!token) return Response.json({ error: "モニタリングURLが正しくありません。" }, { status: 400 });
   const watch = await getWatch(token);
-  if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
+  if (!watch) return Response.json({ error: "モニタリング結果が見つかりません。" }, { status: 404 });
   const run = await getActiveWatchRun(watch.id);
   return Response.json({
     ...watch,
