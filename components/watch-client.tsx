@@ -82,7 +82,7 @@ export function WatchClient() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Checkoutを開始できませんでした。");
       window.location.assign(data.url);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Checkoutを開始できませんでした。")); }
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Checkoutを開始できませんでした。"); }
     finally { setCheckoutBusy(false); }
   }
 
