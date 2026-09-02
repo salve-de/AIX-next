@@ -1,0 +1,79 @@
+/* Layout pass based on current AI-search SaaS competitors: one promise, one CTA, product UI immediately visible. */
+.ux3-home-hero{padding:66px 0 72px;background:#fff;border-bottom:1px solid var(--ux2-line)}
+.ux3-home-hero-inner{display:flex;flex-direction:column;align-items:center;text-align:center}
+.ux3-home-hero-inner>.ux2-label{margin-bottom:12px}
+.ux3-home-hero h1{max-width:980px;margin:0;font-size:clamp(3.6rem,7.1vw,7rem);line-height:.94;letter-spacing:-.078em}
+.ux3-home-hero h1 span{color:var(--ux2-accent-dark)}
+.ux3-home-promise{max-width:860px;margin:21px 0 0;color:var(--ux2-text);font-size:1.2rem;font-weight:850;line-height:1.55;letter-spacing:-.025em}
+.ux3-home-lead{max-width:760px;margin:10px 0 0;color:var(--ux2-muted);font-size:.96rem;line-height:1.75}
+.ux3-home-form{width:min(760px,100%)}
+.ux3-home-form .scan-form{margin-top:28px}
+.ux3-home-trust{margin-top:11px;display:flex;justify-content:center;flex-wrap:wrap;gap:6px 17px;color:#71818a;font-size:.7rem;font-weight:750}
+.ux3-home-secondary{margin-top:18px;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap}
+.ux3-home-secondary a{display:inline-flex;align-items:center;gap:7px;color:var(--ux2-text);font-size:.78rem;font-weight:800;border-bottom:1px solid #acb8bf;padding-bottom:2px}
+.ux3-home-secondary svg{width:14px;height:14px}
+
+.ux3-product-stage{width:min(1080px,100%);margin-top:48px;text-align:left}
+.ux3-product-stage-label{height:42px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:18px;border:1px solid var(--ux2-line);border-bottom:0;border-radius:12px 12px 0 0;background:#f4f7f8;color:#7a8a93;font-size:.61rem;letter-spacing:.04em}
+.ux3-product-stage-label strong{color:var(--ux2-text);font-size:.65rem;letter-spacing:0}
+.ux3-product-stage .ux3-report-preview{border-radius:0 0 12px 12px;box-shadow:0 24px 65px rgba(18,33,44,.11)}
+.ux3-report-preview>header{background:#fff}
+.ux3-preview-top{display:grid;grid-template-columns:1fr auto;align-items:end;border-bottom:1px solid var(--ux2-line)}
+.ux3-preview-top .ux2-preview-summary{border-bottom:0}
+.ux3-preview-engines{padding:0 20px 22px;display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.ux3-preview-engines span{padding:6px 9px;border:1px solid var(--ux2-line);border-radius:999px;background:#f7f9fa;color:#5f707a;font-size:.58rem;font-weight:800}
+.ux3-preview-kpis{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--ux2-line)}
+.ux3-preview-kpis article{min-height:104px;padding:17px 18px;background:#fff}
+.ux3-preview-kpis article+article{border-left:1px solid var(--ux2-line)}
+.ux3-preview-kpis small,.ux3-preview-kpis strong,.ux3-preview-kpis span{display:block}
+.ux3-preview-kpis small{color:var(--ux2-muted);font-size:.58rem;font-weight:750}
+.ux3-preview-kpis strong{margin-top:7px;font-size:1.7rem;line-height:1;letter-spacing:-.05em}
+.ux3-preview-kpis span{margin-top:5px;color:#819099;font-size:.57rem}
+.ux3-preview-kpis .negative strong{color:var(--ux2-warn)}
+.ux3-preview-body{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.65fr);background:#fff}
+.ux3-preview-body .ux2-preview-loss{border-right:1px solid var(--ux2-line)}
+.ux3-preview-body .ux2-preview-loss>div{display:grid;grid-template-columns:repeat(3,1fr)}
+.ux3-preview-body .ux2-preview-loss>div span{padding-right:10px}
+.ux3-preview-body .ux2-preview-loss>div span+span{padding-left:13px;border-left:1px solid var(--ux2-line)}
+.ux3-preview-why{padding:20px;align-self:stretch;background:#f8fafb}
+.ux3-preview-why small{color:var(--ux2-accent-dark);font-size:.58rem;font-weight:850}
+.ux3-preview-why p{margin:7px 0 0;color:var(--ux2-muted);font-size:.7rem;line-height:1.65}
+.ux3-preview-action{padding:17px 20px}
+.ux3-preview-action>span:last-child{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.ux3-preview-action svg{width:14px;height:14px}
+
+.ux3-value-rail{width:min(980px,100%);margin-top:24px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:10px;color:#64757f;font-size:.66rem;text-align:left}
+.ux3-value-rail>span{display:flex;align-items:center;gap:8px;justify-content:center}
+.ux3-value-rail b{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--ux2-dark);color:#fff;font-size:.58rem}
+.ux3-value-rail>svg{width:13px;height:13px;color:#94a2aa}
+
+@media(max-width:920px){
+  .ux3-home-hero{padding-top:54px}
+  .ux3-home-hero h1{font-size:clamp(3.2rem,10.5vw,5.6rem)}
+  .ux3-preview-kpis{grid-template-columns:1fr 1fr}
+  .ux3-preview-kpis article:nth-child(3){border-left:0;border-top:1px solid var(--ux2-line)}
+  .ux3-preview-kpis article:nth-child(4){border-top:1px solid var(--ux2-line)}
+  .ux3-preview-body{grid-template-columns:1fr}
+  .ux3-preview-body .ux2-preview-loss{border-right:0;border-bottom:1px solid var(--ux2-line)}
+  .ux3-value-rail{grid-template-columns:1fr 1fr;gap:8px}
+  .ux3-value-rail>svg{display:none}
+  .ux3-value-rail>span{justify-content:flex-start;padding:9px 11px;border:1px solid var(--ux2-line);border-radius:8px;background:#f7f9fa}
+}
+@media(max-width:620px){
+  .ux3-home-hero{padding:44px 0 54px}
+  .ux3-home-hero h1{font-size:clamp(2.85rem,13.5vw,4.25rem)}
+  .ux3-home-promise{font-size:1rem}
+  .ux3-home-lead{font-size:.86rem}
+  .ux3-product-stage{margin-top:34px}
+  .ux3-product-stage-label{height:auto;min-height:40px;align-items:flex-start;flex-direction:column;justify-content:center;gap:1px;padding:8px 12px}
+  .ux3-preview-top{grid-template-columns:1fr}
+  .ux3-preview-engines{padding:0 16px 16px;justify-content:flex-start}
+  .ux3-preview-kpis{grid-template-columns:1fr 1fr}
+  .ux3-preview-kpis article{min-height:90px;padding:14px}
+  .ux3-preview-kpis strong{font-size:1.4rem}
+  .ux3-preview-body .ux2-preview-loss>div{grid-template-columns:1fr}
+  .ux3-preview-body .ux2-preview-loss>div span+span{padding-left:0;padding-top:9px;border-left:0;border-top:1px solid var(--ux2-line)}
+  .ux3-preview-action{grid-template-columns:1fr;gap:8px}
+  .ux3-preview-action>span:last-child{white-space:normal}
+  .ux3-value-rail{grid-template-columns:1fr}
+}
