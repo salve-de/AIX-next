@@ -1,329 +1,369 @@
 # AIX Next — Product Strategy
 
+> **Current authority:** `docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md`
+>
+> **Execution plan:** `docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md`
+>
+> If this summary conflicts with the master, the master wins.
+
 ## Mission
 
-AIX helps a B2B company improve the moment before a buyer contacts sales: the moment the buyer asks an AI which vendors should be considered.
+AIX helps a B2B company systematically improve the stage before a buyer contacts sales: the moment the buyer asks ChatGPT, Gemini, Perplexity or another AI which vendors should be considered.
 
-The product is not primarily an AI rank tracker. It is a buyer-consideration improvement loop:
+AIX is not primarily a rank tracker. It is a recurring AI-search improvement operating loop:
 
 ```text
-Find where the company is excluded
-→ explain who is selected instead and why
-→ turn the biggest evidence gap into a concrete change
-→ rerun the same buying questions
-→ see what moved and choose the next change
+find where the company is excluded
+→ explain who is selected instead and what observable evidence differs
+→ choose the most important improvement task
+→ prepare the brief/draft/checklist needed to execute it
+→ hand it to the correct person
+→ record completion
+→ rerun comparable questions
+→ show what changed and choose the next task
 ```
 
-## External positioning
+## External product position
 
-Do not lead with internal category names such as AI Buyer Intelligence, AEO, GEO or LLMO. The first screen must state the job directly:
+The intended first impression is:
 
-> ChatGPTで、競合に先に選ばれている質問を見つける。
-> 候補入りを増やすために、何を直すべきかまで出す。
+> **AI検索で競合に負けている場所を毎週見つける。**
+>
+> **自社が候補から外れる比較質問、選ばれる競合、足りない根拠を特定。今週やる改善までAIXが作る。**
 
-The visible first-viewport proof should include a concrete rank, prompt denominator, competitor, excluded buyer question and first Action.
+The product should make a visitor think:
 
-## The business problem
+- “AI SEOを継続的に強くするためのサービスだ”
+- “競合に取られているAI比較の機会を取り戻すために使うんだ”
+- “自分で毎週調査しなくても、次にやることが出てくる”
 
-For many high-value B2B purchases, evaluation can begin before a buyer visits the company website:
+It must not imply:
+
+- guaranteed AI traffic;
+- guaranteed rank increases;
+- direct control of ChatGPT/Gemini/Perplexity;
+- automatic production-site editing.
+
+## Core business problem
+
+For many high-value B2B purchases:
 
 ```text
-Buyer has a need
-→ asks AI for vendors / comparisons / recommendations
+buyer has a need
+→ asks AI for options/comparisons
 → AI forms a shortlist
 → buyer investigates shortlisted vendors
 → website / demo / contact / procurement
 ```
 
-GA and CRM mostly observe what happens after a visit or contact. If the company is omitted from the AI shortlist and the buyer never visits, that specific pre-visit comparison event is normally invisible to those systems.
+Ordinary analytics mostly observe what happens after a visit or contact. AIX observes a measurable sample of the comparison stage before that.
 
-AIX observes that decision surface. It does **not** claim that every omitted Buyer Prompt is a lost customer or lost revenue.
+AIX must never label an excluded comparison question as a lost customer or lost revenue.
 
-## Core questions
+## Core customer job
 
-AIX must answer five questions without requiring the customer to design the measurement system first:
+> When AI compares vendors before buyers contact sales, keep showing my team where we are excluded, why competitors are selected instead, what we can realistically improve next, give us the material needed to execute it, and tell us what changed after we finish the work.
 
-1. In which buying questions does the company enter or fall out of the AI shortlist?
-2. Which competitors are selected instead?
-3. What observable citations or public evidence support that difference?
-4. What is the single highest-priority change to test next?
-5. Under the same measurement conditions, did the result improve after the change?
+## What AIX owns
 
-## Initial customer
+AIX should automate as much of the safe operational work as possible:
 
-Japanese, high-value, non-regulated B2B companies where one qualified lead has meaningful value and buyers compare vendors before contacting sales.
+- scheduled AI observation;
+- fixed comparison-question history;
+- competitor tracking;
+- citation/source tracking;
+- relevant public-web comparison;
+- evidence/information-gap detection;
+- action prioritization;
+- missing-fact requests;
+- draft/brief/FAQ/checklist generation;
+- recommended owner/department;
+- shareable Action artifact;
+- task status;
+- completion history;
+- comparable remeasurement;
+- concise weekly notification.
 
-Priority segments:
+## What AIX explicitly does not own
 
-- B2B SaaS;
-- IT and implementation services;
-- HR, finance operations, sales and back-office software;
-- professional and consulting services;
-- niche industrial B2B products with public product information.
+AIX does **not** connect to or edit customer production websites.
 
-Excluded at launch:
+Do not require:
 
-- medical diagnosis or treatment;
-- investment or financial-product recommendations;
-- legal advice;
-- local restaurant/hotel discovery;
-- frequently changing retail inventory;
-- products where unsafe recommendations create material harm.
+- CMS admin access;
+- production GitHub write access;
+- deployment access;
+- automatic merges;
+- automatic publishing.
 
-## Core job
+The customer/team remains responsible for:
 
-> When buyers use AI to compare vendors before contacting sales, show me the questions where my company falls out of the shortlist, the competitor and evidence that replace it, the smallest useful change to make next, and whether the same buying questions improve after that change.
+- factual confirmation;
+- legal/brand approval;
+- production publishing;
+- real customer-review acquisition;
+- real third-party coverage;
+- product/service improvements.
+
+The product ends at a high-quality implementation handoff, then begins again at remeasurement.
 
 ## Value ladder
 
-### FIND — expose the lost consideration surface
+### FIND
+
+Answer:
+
+> Where are we losing in AI comparison?
 
 Outputs:
-- measured market position;
-- shortlisted Buyer Prompts;
-- excluded Buyer Prompts;
-- competitor selected instead.
 
-Value:
-- turns a vague concern about AI search into a concrete list of buying situations to investigate.
+- panel-relative position;
+- shortlisted comparison questions;
+- excluded comparison questions;
+- selected competitors.
 
-### EXPLAIN — make the loss auditable
+### EXPLAIN
+
+Answer:
+
+> Why is this happening in the observed responses?
 
 Outputs:
-- exact prompt;
+
+- exact comparison question;
 - provider/model/run;
 - raw answer;
-- competitor citations;
-- evidence gap;
-- denominator and measurement completeness.
+- citations;
+- competitor public proof;
+- customer information gap;
+- denominator/completeness.
 
-Value:
-- the customer can inspect why AIX reached its conclusion instead of trusting a black-box score.
+### PRIORITIZE
 
-### ACT — remove the gap between diagnosis and implementation
+Answer:
 
-Outputs:
-- one highest-priority Action;
-- number of related Buyer Prompts;
-- target page or surface;
-- Change Pack with proposed title, lead, sections, FAQ, facts used and publish checks.
+> What should the team do next?
 
-Value:
-- the customer does not have to translate a dashboard into a content brief from scratch.
+Output one primary Action by default, ranked by:
 
-Change Packs are human-reviewable drafts. AIX must not invent facts and must not publish to the customer site without explicit approval.
+- importance of related comparison questions;
+- number of related tracked questions;
+- evidence strength;
+- confidence;
+- implementation burden;
+- whether the customer can actually control the surface.
 
-### PROVE — remeasure the same decision surface
+### PREPARE
 
-Outputs:
-- baseline vs latest rank;
-- shortlisted/lost prompt movement;
-- newly won/lost Buyer Prompts;
-- citation changes;
-- next gap and next Action.
+Answer:
 
-Value:
-- optimization becomes a repeatable loop rather than a one-time report.
+> What exactly does the team need to execute this?
 
-## Product promise
+Create an Action Pack / improvement pack containing:
 
-AIX provides an explicit, repeatable observation panel. It does not promise a universal ChatGPT rank, guaranteed citation, guaranteed shortlist inclusion, causal revenue uplift or a complete representation of every private consumer AI conversation.
-
-## Differentiation
-
-### Zero-setup market discovery
-
-The user starts with one company URL. AIX derives the operating company, brand, product category, buyer, use cases, likely substitutes and Buyer Prompt panel.
-
-### Buyer-loss model instead of generic visibility score
-
-The primary unit is a buying question with a recorded outcome:
-
-- company recommended;
-- competitor recommended;
-- company omitted;
-- citations used;
-- stability across repeated runs.
-
-Prompt counts must never be labeled as customers, leads or revenue.
-
-### Evidence operating system
-
-AIX converts missing public information into a specific, testable request:
-
-> Average implementation time could not be verified. This evidence gap is related to 11 tracked buying questions.
-
-The user is asked only for facts the system cannot find.
-
-### Executable Change Pack
-
-The strongest Action is translated into a draft the customer can actually review and use:
-
-- proposed page/title;
-- lead;
-- body sections;
+- why;
+- target page/surface;
+- required company facts;
+- verified public facts;
+- proposed title/heading;
+- body/brief;
 - FAQ;
-- confirmed facts used;
+- technical notes where relevant;
 - publish checks;
-- related Buyer Prompts.
+- related comparison questions;
+- recommended owner.
 
-This closes the largest gap in pure visibility dashboards: knowing what is wrong but not knowing what to change.
+### SHARE
 
-### Auditability
+Answer:
 
-Every metric can be traced to the exact prompt, provider, time, response, citation, extraction version and denominator.
+> Who should do this and how do I hand it off?
 
-### Longitudinal Watch
+Core handoff model:
 
-A fixed Core panel is rerun weekly. Discovery prompts are kept separate so changing the questions cannot masquerade as improvement.
+- share link;
+- copy;
+- print/PDF;
+- email later;
+- recommended owner role;
+- status.
 
-Watch is an improvement-verification surface, not a diary of system activity.
+A stakeholder should not need a full AIX account to execute one task.
+
+### PROVE
+
+Answer:
+
+> After the team implemented the task, what moved under comparable measurement?
+
+Outputs:
+
+- baseline vs latest;
+- newly shortlisted questions;
+- newly excluded questions;
+- citation/source changes;
+- movement in related questions;
+- next Action.
+
+Never infer causality from simple before/after movement.
+
+## Weekly paid operating model
+
+Do not sell a “weekly report”. Sell a weekly AI SEO action cycle.
+
+The default customer-facing summary is only:
+
+```text
+AI比較: 9位 → 7位
+2つの比較質問で新しく候補入り
+次にやること: 標準導入期間を公開する
+```
+
+The detailed product then explains:
+
+1. what changed;
+2. what remains important;
+3. this week's primary Action;
+4. what AIX prepared;
+5. what fact/approval the customer still needs to provide;
+6. who should own the task;
+7. task/share/completion state;
+8. detailed audit data only after the decision layer.
 
 ## Business model
 
-### Free Scan — FIND + EXPLAIN
+### Free Scan
 
-- no account or card;
+Purpose:
+
+> **どこで負けているか分かる。**
+
 - one URL;
-- 12 Buyer Prompts;
-- OpenAI, Gemini and Perplexity;
-- one run per prompt and surface;
-- market position;
-- excluded prompts;
-- competitor/citation evidence;
-- top evidence gaps;
-- one highest-priority Action.
+- no account/card;
+- comparison-question discovery;
+- AI observations;
+- named competitors;
+- key information gaps;
+- one primary Action.
 
-Customer question answered:
+### 14-day free monitoring
 
-> Where am I losing, and what should I look at first?
+Purpose:
 
-### 14-day Watch — PROVE the first improvement
+> **最初の改善後に、同じ比較質問が動いたか確認する。**
 
-- company email after the result;
-- fixed panel and comparable rerun;
-- evidence inbox;
-- baseline vs latest movement;
+- company email;
+- fixed comparable panel;
+- baseline/latest;
 - no card;
 - no automatic paid conversion.
 
-Customer question answered:
+### AIX Monitor
 
-> After I changed something, did the same buying questions move?
+Purpose:
 
-### Founder Watch — ACT + PROVE continuously
+> **毎週、競合差分を監視し、次にやるAI SEO Actionと共有できる成果物を更新する。**
 
-- ¥29,800/month before tax;
-- one brand;
-- 50 fixed Core prompts plus Discovery prompts;
-- three AI surfaces and repeated observations;
-- weekly measurement;
-- full answers and citations;
-- evidence inbox;
-- Change Pack;
-- reprioritized Actions;
-- 12-month history.
+Paid value must include recurring work removal, not merely more prompt volume:
 
-Customer question answered:
+- scheduled monitoring;
+- stored comparable history;
+- competitor/source change detection;
+- action reprioritization;
+- fact requests;
+- Action Pack;
+- recommended owner;
+- handoff/share;
+- completion state;
+- remeasurement;
+- concise notification.
 
-> What should I change next, and is the improvement loop continuing to work?
+Technical capacity (prompt count, repetitions, providers) is secondary specification, not the headline value.
 
-Prompt/provider quotas are proof and capacity details, not the headline value proposition.
+## Why not just ChatGPT?
 
-## North-star and supporting metrics
+A one-off general AI can inspect a website and generate recommendations.
 
-### North-star: Paid Project Activation
+AIX only deserves to exist if it persists and operates the workflow:
 
-Within 14 days of payment:
-- a valid comparable Core measurement completes;
-- at least one Evidence task or Change Pack action is reviewed;
-- the customer reaches a second measurement or scheduled next measurement.
+```text
+Company
+× fixed comparison questions
+× AI surfaces
+× competitors
+× citations
+× evidence state
+× Action
+× owner
+× task status
+× weekly history
+× completion
+× remeasurement
+```
 
-This tests whether AIX actually enters the customer's operating loop.
+The durable differentiation is continuity, comparable measurement, workflow state and handoff—not raw LLM intelligence.
 
-### Supporting product metrics
+## Product moat
 
-- **Buyer Prompt Shortlist Coverage** — share of comparable Core prompts where the company is shortlisted.
-- **Prompt Recovery Rate** — previously excluded Core prompts that become shortlisted in a comparable later measurement.
-- **Action-to-Remeasure Completion** — Action/Change Pack reviewed and followed by comparable remeasurement.
-- **Evidence Resolution Rate** — high-priority evidence gaps resolved or verified.
-
-These are product-operating metrics, not guaranteed business outcomes.
-
-### Optional future business-impact metrics
-
-When a customer connects first-party analytics, AIX may additionally show:
-- AI-referral sessions;
-- AI-referral demo/contact conversions;
-- CRM-reported AI source;
-- supporting branded/direct traffic trends.
-
-These signals must remain separate from prompt counts. AIX must not infer that a prompt movement caused revenue merely because both changed after an Action.
-
-## Long-term moat
-
-The durable asset is not the interface. It is the structured history:
+Long-term structured history:
 
 ```text
 Company × Market × Buyer Intent × AI Surface × Competitor
-× Citation × Evidence State × Action × Change Pack
-× Before/After × Confidence × optional first-party business outcome
+× Citation × Evidence State × Action × Owner × Completion
+× Before/After × Confidence × optional first-party outcome
 ```
 
-With sufficient observations, AIX can eventually rank Actions by outcomes observed in comparable companies rather than generic SEO advice, while preserving uncertainty and avoiding unsupported causal claims.
-
-## UX hierarchy
-
-### 0.1 second — visual gist
-
-The page should visually read as:
-
-```text
-ChatGPT + company vs competitors + rank/result + URL input
-```
-
-Do not require the visitor to understand AEO/GEO/LLMO terminology.
-
-### 1–3 seconds — category understanding
-
-The visitor should understand:
-
-> This finds the buyer questions where AI recommends competitors instead of us.
-
-### 5–10 seconds — value understanding
-
-The visitor should understand:
-
-> It tells us why, what to change first, and whether the result improves after the change.
-
-### 30–60 seconds — trust
-
-The visitor should be able to inspect:
-- exact prompts;
-- providers;
-- denominators;
-- raw answers;
-- citations;
-- measurement time;
-- missing observations;
-- methodology boundaries.
+With enough valid history, AIX can improve Action prioritization based on comparable observed outcomes while preserving uncertainty.
 
 ## Product boundaries
 
 AIX will not:
 
 - claim to control external AI systems;
-- claim a universal or absolute ChatGPT rank;
-- label Buyer Prompts as lost customers;
-- convert prompt counts into revenue without first-party attribution;
-- guarantee recommendation, citation, inquiry or revenue increases;
-- infer causation from a simple before/after movement;
-- sell paid ranking placement as independent measurement;
-- generate fake reviews or forum posts;
+- claim a universal ChatGPT rank;
+- call comparison-question counts customers/leads/revenue;
+- guarantee recommendation/citation/traffic/inquiry/revenue;
+- infer causation from simple before/after movement;
+- edit or publish to customer production websites;
+- generate fake reviews, fake case studies or fake media mentions;
 - invent customer results, implementation times, certifications, pricing or ROI;
-- make direct production changes without explicit approval and rollback;
-- treat one API observation as every consumer AI experience.
+- become a CMS, auto-deployer, generic chatbot or generic project-management suite.
 
-## Research reference
+## UX hierarchy
 
-See `docs/VALUE_PROPOSITION_RESEARCH_2026-09-02.md` for the market, adjacent-category and UX research supporting this strategy.
+### 0.1 second
+
+Visual gist:
+
+```text
+AI search + competitors + improvement + URL input
+```
+
+### 1 second
+
+Paid-value gist:
+
+> “ここに払えば、AI検索で競合に負けている場所を継続監視して、次に何を直すか出してくれる。”
+
+### 3–5 seconds
+
+Operational loop:
+
+```text
+監視 → 改善Action → 担当者へ共有 → 実施 → 再測定
+```
+
+### 10 seconds
+
+Substitution answer:
+
+> “単発分析はChatGPTでもできるが、AIXは固定質問・競合・引用元・履歴・Action・担当者・完了・再測定を継続運用する。”
+
+## Required implementation source
+
+All implementation work should follow:
+
+- `docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md`
+- `docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md`
+
+Do not implement from older handoffs when they conflict with these files.
