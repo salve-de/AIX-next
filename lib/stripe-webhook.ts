@@ -52,10 +52,10 @@ export function stripeWatchPatch(event: StripeEventLike): StripeWatchPatch {
   if (customerId) patch.stripeCustomerId = customerId;
   if (priceId) patch.stripePriceId = priceId;
 
-  if (event.type === "checkout.session.completed") {
+  if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
     const subscriptionId = idFrom(object.subscription);
     if (subscriptionId) patch.stripeSubscriptionId = subscriptionId;
-    const paid = ["paid", "no_payment_required"].includes(object.payment_status || "");
+    const paid = event.type === "checkout.session.async_payment_succeeded" || ["paid", "no_payment_required"].includes(object.payment_status || "");
     if (paid) {
       patch.paid = true;
       patch.status = "active";
