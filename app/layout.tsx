@@ -6,6 +6,7 @@ import "./instant-clarity.css";
 import "./value-proposition.css";
 import "./product-redesign.css";
 import "./product-redesign-extras.css";
+import "./product-redesign-hotfix.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
