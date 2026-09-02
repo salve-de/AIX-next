@@ -1,0 +1,2 @@
+.header-inner .ux2-mobile-menu{display:grid;align-items:stretch;gap:2px;color:var(--ux2-text);font-size:.86rem;font-weight:700}.header-inner .ux2-mobile-menu a{display:block;color:var(--ux2-text)}.header-inner .ux2-mobile-menu a:last-child{color:#fff}.header-inner .ux2-mobile-menu a:hover{color:var(--ux2-text)}
+@media(max-width:760px){.header-inner .ux2-mobile-menu{display:grid}.header-inner .ux2-mobile-menu a:last-child:hover{color:#fff}.scan-form-compact{margin:0}}
