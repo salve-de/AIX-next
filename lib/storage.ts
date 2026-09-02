@@ -36,7 +36,23 @@ function scanFromRow(row: any): ScanRecord {
 }
 
 function watchFromRow(row: any): WatchRecord {
-  return { id: row.id, token: row.token, email: row.email, scanId: row.scan_id, status: row.status, paid: Boolean(row.paid), baseline: row.baseline, latest: row.latest, history: row.history || [], evidence: row.evidence || [], nextRunAt: row.next_run_at, createdAt: row.created_at, updatedAt: row.updated_at };
+  return {
+    id: row.id,
+    token: row.token,
+    email: row.email,
+    scanId: row.scan_id,
+    status: row.status,
+    paid: Boolean(row.paid),
+    stripeCustomerId: row.stripe_customer_id || undefined,
+    stripeSubscriptionId: row.stripe_subscription_id || undefined,
+    baseline: row.baseline,
+    latest: row.latest,
+    history: row.history || [],
+    evidence: row.evidence || [],
+    nextRunAt: row.next_run_at,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
 }
 
 export async function createScan(targetUrl: string) {
@@ -129,12 +145,14 @@ export async function getWatch(token: string) {
   return watches.get(token) || null;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "baseline" | "latest" | "history" | "evidence" | "nextRunAt">>) {
+export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "nextRunAt">>) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
     if (patch.status !== undefined) body.status = patch.status;
     if (patch.paid !== undefined) body.paid = patch.paid;
+    if (patch.stripeCustomerId !== undefined) body.stripe_customer_id = patch.stripeCustomerId || null;
+    if (patch.stripeSubscriptionId !== undefined) body.stripe_subscription_id = patch.stripeSubscriptionId || null;
     if (patch.baseline !== undefined) body.baseline = patch.baseline;
     if (patch.latest !== undefined) body.latest = patch.latest;
     if (patch.history !== undefined) body.history = patch.history;
