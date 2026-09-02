@@ -176,6 +176,8 @@ export type WatchRecord = {
   scanId: string;
   status: WatchStatus;
   paid: boolean;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
   baseline: ScanResult;
   latest: ScanResult;
   history: ScanResult[];
