@@ -9,9 +9,18 @@ function normalized(value: string) {
     .replace(/[\s・･_\-—–/（）(),.]/g, "");
 }
 
+function stripLineDecoration(rawLine: string) {
+  return rawLine
+    .trim()
+    .replace(/^(?:[-•]\s+|\*\s+)/, "")
+    .replace(/^\*\*/, "")
+    .replace(/\*\*$/, "")
+    .trim();
+}
+
 function candidateLines(text: string) {
-  const lines = text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-  const listed = lines.filter((line) => /^(?:[-*•]|\d+[.)、]|[①-⑳]|候補\s*\d+)\s*/.test(line.replace(/^\*\*/, "")));
+  const lines = text.split(/\r?\n/).map(stripLineDecoration).filter(Boolean);
+  const listed = lines.filter((line) => /^(?:\d+[.)、]|[①-⑳]|候補\s*\d+)\s*/.test(line));
   return listed.length ? listed : lines.slice(0, 20);
 }
 
@@ -42,7 +51,7 @@ function canonicalName(value: string, discovery: CompanyDiscovery) {
 function structuredCandidates(text: string, discovery: CompanyDiscovery) {
   const result: string[] = [];
   for (const rawLine of text.split(/\r?\n/)) {
-    const line = rawLine.trim().replace(/^[-*•]\s*/, "").replace(/^\*\*/, "").replace(/\*\*$/, "");
+    const line = stripLineDecoration(rawLine);
     const match = line.match(/^候補\s*\d+\s*[|｜]\s*([^|｜]+?)(?:\s*[|｜]|$)/i);
     if (!match) continue;
     const name = canonicalName(match[1], discovery);
