@@ -1,0 +1,91 @@
+import "server-only";
+import { env } from "@/lib/env";
+import { id } from "@/lib/ids";
+import type { ChangePack, ChangePackFact, CrawledPage, EvidenceAnswer, ScanResult } from "@/lib/types";
+
+function responseText(data: any) {
+  if (typeof data?.output_text === "string") return data.output_text;
+  return (Array.isArray(data?.output) ? data.output : [])
+    .filter((item: any) => item?.type === "message")
+    .flatMap((item: any) => Array.isArray(item?.content) ? item.content : [])
+    .map((part: any) => typeof part?.text === "string" ? part.text : "")
+    .filter(Boolean)
+    .join("\n");
+}
+
+function parseJson<T>(text: string): T {
+  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  const start = cleaned.indexOf("{");
+  const end = cleaned.lastIndexOf("}");
+  if (start < 0 || end < start) throw new Error("Change Pack生成結果がJSONではありませんでした。");
+  return JSON.parse(cleaned.slice(start, end + 1)) as T;
+}
+
+function compactPages(pages: CrawledPage[]) {
+  return pages.slice(0, 12).map((page) => ({
+    url: page.url,
+    title: page.title,
+    description: page.description,
+    headings: page.headings.slice(0, 12),
+    text: page.text.slice(0, 4_500),
+  }));
+}
+
+function companyFacts(result: ScanResult, evidence: EvidenceAnswer[]): ChangePackFact[] {
+  const gaps = new Map(result.evidenceGaps.map((gap) => [gap.id, gap]));
+  return evidence
+    .filter((answer) => answer.status !== "disputed" && answer.status !== "expired" && answer.value.trim())
+    .slice(0, 20)
+    .map((answer) => ({
+      label: gaps.get(answer.gapId)?.label || answer.gapId,
+      value: answer.value.trim().slice(0, 2_000),
+      source: "company_asserted" as const,
+      sourceUrl: answer.sourceUrl,
+    }));
+}
+
+function safeArray(value: unknown, limit: number) {
+  return Array.isArray(value) ? value.slice(0, limit) : [];
+}
+
+export async function generateChangePack(input: { result: ScanResult; pages: CrawledPage[]; evidence: EvidenceAnswer[] }): Promise<ChangePack | null> {
+  if (!env.openAiKey || !input.result.actions.length) return null;
+  const assertedFacts = companyFacts(input.result, input.evidence);
+  const prompt = `あなたは日本のB2Bサイト改善を担当する編集責任者です。AIXの測定結果をもとに、承認前のChange Packを作ってください。\n\n絶対ルール:\n- 公開ページに書かれている事実と、company_assertedとして渡した企業入力だけを事実として使う\n- 数値、導入社数、導入期間、認証、料金、効果を推測・創作しない\n- 根拠が足りない箇所は本文に入れず、publishChecksで「確認が必要」と明示する\n- 競合の文章をコピーしない\n- SEO一般論ではなく、今回候補外になったBuyer PromptとEvidence差を埋める具体的なページ変更にする\n- サイトを自動変更する指示ではなく、人間が確認して公開できるドラフトにする\n- 最大3 Action。各Actionは実際に貼れる見出し、リード、本文セクション、FAQを作る\n- JSONだけを返す\n\nJSON形式:\n{"items":[{"actionId":"","title":"","target":"","objective":"","factsUsed":[{"label":"","value":"","source":"public|company_asserted","sourceUrl":""}],"proposedTitle":"","proposedLead":"","sections":[{"heading":"","body":""}],"faq":[{"question":"","answer":""}],"relatedPromptIds":[""],"publishChecks":[""]}]}\n\n会社・市場:${JSON.stringify(input.result.discovery)}\n測定:${JSON.stringify({ scanId: input.result.scanId, marketPosition: input.result.marketPosition, marketSize: input.result.marketSize, lostPrompts: input.result.lostPrompts.slice(0, 8).map((item) => ({ promptId: item.promptId, prompt: item.prompt, winner: item.winner, summary: item.summary })), gaps: input.result.evidenceGaps.slice(0, 8), actions: input.result.actions.slice(0, 3) })}\ncompany_asserted:${JSON.stringify(assertedFacts)}\n公開ページ:${JSON.stringify(compactPages(input.pages))}`;
+
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: { authorization: `Bearer ${env.openAiKey}`, "content-type": "application/json" },
+    body: JSON.stringify({ model: env.openAiDiscoveryModel, input: prompt }),
+    signal: AbortSignal.timeout(60_000),
+  });
+  const data = await response.json() as any;
+  if (!response.ok) throw new Error(data.error?.message || `Change Pack ${response.status}`);
+  const raw = parseJson<any>(responseText(data));
+  const actionIds = new Set(input.result.actions.slice(0, 3).map((action) => action.id));
+  const items = safeArray(raw?.items, 3).map((item: any, index: number) => {
+    const action = input.result.actions.find((candidate) => candidate.id === item?.actionId) || input.result.actions[index];
+    const factsUsed: ChangePackFact[] = safeArray(item?.factsUsed, 12).map((fact: any) => ({
+      label: String(fact?.label || "根拠").slice(0, 200),
+      value: String(fact?.value || "").slice(0, 2_000),
+      source: fact?.source === "company_asserted" ? "company_asserted" as const : "public" as const,
+      sourceUrl: fact?.sourceUrl ? String(fact.sourceUrl).slice(0, 2_000) : undefined,
+    })).filter((fact) => fact.value);
+    return {
+      id: id("change"),
+      actionId: actionIds.has(String(item?.actionId)) ? String(item.actionId) : action?.id || `action-${index + 1}`,
+      title: String(item?.title || action?.title || "ページ改善案").slice(0, 300),
+      target: String(item?.target || action?.target || "自社サイト").slice(0, 300),
+      objective: String(item?.objective || action?.rationale || "候補外Buyer PromptのEvidence差を埋める").slice(0, 1_000),
+      factsUsed,
+      proposedTitle: String(item?.proposedTitle || "").slice(0, 300),
+      proposedLead: String(item?.proposedLead || "").slice(0, 2_000),
+      sections: safeArray(item?.sections, 6).map((section: any) => ({ heading: String(section?.heading || "").slice(0, 300), body: String(section?.body || "").slice(0, 4_000) })).filter((section) => section.heading && section.body),
+      faq: safeArray(item?.faq, 6).map((faq: any) => ({ question: String(faq?.question || "").slice(0, 500), answer: String(faq?.answer || "").slice(0, 2_000) })).filter((faq) => faq.question && faq.answer),
+      relatedPromptIds: safeArray(item?.relatedPromptIds, 20).map(String).filter((promptId) => input.result.prompts?.some((prompt) => prompt.id === promptId) ?? true),
+      publishChecks: safeArray(item?.publishChecks, 12).map((value) => String(value).slice(0, 500)).filter(Boolean),
+    };
+  }).filter((item) => item.proposedTitle || item.proposedLead || item.sections.length || item.faq.length);
+  if (!items.length) return null;
+  return { generatedAt: new Date().toISOString(), sourceMeasurementId: input.result.scanId, model: data.model || env.openAiDiscoveryModel, items };
+}
