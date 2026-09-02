@@ -7,116 +7,18 @@ import { ArrowIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { sampleWatch } from "@/lib/sample-data";
-import type { WatchRecord } from "@/lib/types";
+import type { ChangePack, WatchRecord } from "@/lib/types";
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Tokyo" }).format(new Date(value));
 }
 
-function panelDescription(watch: WatchRecord) {
+function comparisonLabel(watch: WatchRecord) {
   return watch.latest.panel.kind === "core" ? "固定した比較質問" : "前回と同じ比較質問";
 }
 
-export function WatchClient() {
-  const params = useSearchParams();
-  const sample = params.get("sample") === "1";
-  const token = params.get("token") || "";
-  const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
-  const [loading, setLoading] = useState(!sample);
-  const [error, setError] = useState("");
-  const [values, setValues] = useState<Record<string, string>>({});
-  const [saving, setSaving] = useState("");
-  const [checkoutBusy, setCheckoutBusy] = useState(false);
-  const [changePackBusy, setChangePackBusy] = useState(false);
-
-  useEffect(() => {
-    if (sample) return;
-    if (!token) { setError("モニタリングURLが正しくありません。"); setLoading(false); return; }
-    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
-      .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "モニタリング結果を取得できませんでした。"); setWatch(data); })
-      .catch((caught) => setError(caught instanceof Error ? caught.message : "モニタリング結果を取得できませんでした。"))
-      .finally(() => setLoading(false));
-  }, [sample, token]);
-
-  const change = useMemo(() => {
-    if (!watch) return null;
-    const comparable = watch.baseline.panel.kind === watch.latest.panel.kind && watch.baseline.panel.version === watch.latest.panel.version && watch.baseline.panel.promptCount === watch.latest.panel.promptCount;
-    const baselineLost = new Set(watch.baseline.lostPrompts.map((item) => item.promptId));
-    const latestLost = new Set(watch.latest.lostPrompts.map((item) => item.promptId));
-    const baselineShortlisted = Math.max(0, watch.baseline.panel.promptCount - baselineLost.size);
-    const latestShortlisted = Math.max(0, watch.latest.panel.promptCount - latestLost.size);
-    const wonPrompts = watch.baseline.lostPrompts.filter((item) => !latestLost.has(item.promptId));
-    const newlyLostPrompts = watch.latest.lostPrompts.filter((item) => !baselineLost.has(item.promptId));
-    const baselineCitations = new Set(watch.baseline.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
-    const latestCitations = new Set(watch.latest.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
-    return {
-      comparable,
-      rank: comparable ? watch.baseline.marketPosition - watch.latest.marketPosition : 0,
-      baselineShortlisted,
-      latestShortlisted,
-      baselineLost: baselineLost.size,
-      latestLost: latestLost.size,
-      wonPrompts,
-      newlyLostPrompts,
-      newCitations: [...latestCitations].filter((url) => !baselineCitations.has(url)).length,
-    };
-  }, [watch]);
-
-  async function saveEvidence(event: FormEvent, gapId: string) {
-    event.preventDefault();
-    if (sample || !token || !values[gapId]?.trim()) return;
-    setSaving(gapId); setError("");
-    try {
-      const response = await fetch("/api/evidence", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, gapId, value: values[gapId] }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "保存できませんでした。");
-      setWatch(data);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "保存できませんでした。"); }
-    finally { setSaving(""); }
-  }
-
-  async function checkout() {
-    if (sample) { setError("サンプル画面では決済を開始しません。"); return; }
-    setCheckoutBusy(true); setError("");
-    try {
-      const response = await fetch("/api/billing/checkout", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "契約手続きを開始できませんでした。");
-      window.location.assign(data.url);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "契約手続きを開始できませんでした。"); }
-    finally { setCheckoutBusy(false); }
-  }
-
-  async function generateChangePack() {
-    if (sample || !token) return;
-    setChangePackBusy(true); setError("");
-    try {
-      const response = await fetch("/api/change-pack", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "変更原稿を作成できませんでした。");
-      setWatch((current) => current ? { ...current, changePack: data.changePack } : current);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "変更原稿を作成できませんでした。"); }
-    finally { setChangePackBusy(false); }
-  }
-
-  if (loading) return <div className="full-loading">モニタリング結果を読み込んでいます。</div>;
-  if (!watch || !change) return <main className="empty-page"><h1>モニタリング結果を表示できません。</h1><p>{error}</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
-
-  const points = watch.history.map((item, index) => ({ x: 44 + index * (520 / Math.max(1, watch.history.length - 1)), y: 170 - item.recommendationCoverage * 2.8 }));
-  const path = points.map((point, index) => `${index ? "L" : "M"}${point.x} ${Math.max(25, point.y)}`).join(" ");
-  const pendingGaps = watch.latest.evidenceGaps.filter((gap) => !watch.evidence.some((answer) => answer.gapId === gap.id));
-  const stopped = ["expired", "cancelled"].includes(watch.status);
-  const firstAction = watch.latest.actions[0];
-  const remainingLosses = watch.latest.lostPrompts.slice(0, 3);
-  const statusText = watch.status === "expired"
-    ? "14日間の無料モニタリングは終了しました。自動課金はされていません。"
-    : watch.status === "cancelled"
-      ? "有料モニタリングは解約済みです。過去の結果は引き続き確認できます。"
-      : watch.status === "past_due"
-        ? "決済の確認が必要です。契約管理から支払情報を確認してください。"
-        : "";
-
-  const samplePack = sample ? {
+function sampleChangePack(watch: WatchRecord): ChangePack {
+  return {
     generatedAt: watch.latest.measuredAt,
     sourceMeasurementId: watch.latest.scanId,
     model: "fictional-sample",
@@ -137,15 +39,163 @@ export function WatchClient() {
       relatedPromptIds: ["prompt_1", "prompt_2"],
       publishChecks: ["導入企業から公開許諾を取得", "導入期間と対象部署の事実確認"],
     }],
-  } : null;
-  const visibleChangePack = watch.changePack || samplePack;
+  };
+}
+
+export function WatchClient() {
+  const params = useSearchParams();
+  const sample = params.get("sample") === "1";
+  const token = params.get("token") || "";
+  const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
+  const [loading, setLoading] = useState(!sample);
+  const [error, setError] = useState("");
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState("");
+  const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [changePackBusy, setChangePackBusy] = useState(false);
+
+  useEffect(() => {
+    if (sample) return;
+    if (!token) {
+      setError("モニタリングURLが正しくありません。");
+      setLoading(false);
+      return;
+    }
+    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "モニタリング結果を取得できませんでした。");
+        setWatch(data);
+      })
+      .catch((caught) => setError(caught instanceof Error ? caught.message : "モニタリング結果を取得できませんでした。"))
+      .finally(() => setLoading(false));
+  }, [sample, token]);
+
+  const change = useMemo(() => {
+    if (!watch) return null;
+    const comparable = watch.baseline.panel.kind === watch.latest.panel.kind
+      && watch.baseline.panel.version === watch.latest.panel.version
+      && watch.baseline.panel.promptCount === watch.latest.panel.promptCount;
+    const baselineLostIds = new Set(watch.baseline.lostPrompts.map((item) => item.promptId));
+    const latestLostIds = new Set(watch.latest.lostPrompts.map((item) => item.promptId));
+    const baselineCitations = new Set(watch.baseline.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
+    const latestCitations = new Set(watch.latest.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
+    return {
+      comparable,
+      rank: comparable ? watch.baseline.marketPosition - watch.latest.marketPosition : 0,
+      baselineShortlisted: Math.max(0, watch.baseline.panel.promptCount - baselineLostIds.size),
+      latestShortlisted: Math.max(0, watch.latest.panel.promptCount - latestLostIds.size),
+      baselineLost: baselineLostIds.size,
+      latestLost: latestLostIds.size,
+      wonPrompts: watch.baseline.lostPrompts.filter((item) => !latestLostIds.has(item.promptId)),
+      newlyLostPrompts: watch.latest.lostPrompts.filter((item) => !baselineLostIds.has(item.promptId)),
+      newCitations: [...latestCitations].filter((url) => !baselineCitations.has(url)).length,
+    };
+  }, [watch]);
+
+  async function saveEvidence(event: FormEvent, gapId: string) {
+    event.preventDefault();
+    if (sample || !token || !values[gapId]?.trim()) return;
+    setSaving(gapId);
+    setError("");
+    try {
+      const response = await fetch("/api/evidence", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token, gapId, value: values[gapId] }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "保存できませんでした。");
+      setWatch(data);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "保存できませんでした。");
+    } finally {
+      setSaving("");
+    }
+  }
+
+  async function checkout() {
+    if (sample) {
+      setError("サンプル画面では決済を開始しません。");
+      return;
+    }
+    setCheckoutBusy(true);
+    setError("");
+    try {
+      const response = await fetch("/api/billing/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "契約手続きを開始できませんでした。");
+      window.location.assign(data.url);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "契約手続きを開始できませんでした。");
+    } finally {
+      setCheckoutBusy(false);
+    }
+  }
+
+  async function generateChangePack() {
+    if (sample || !token) return;
+    setChangePackBusy(true);
+    setError("");
+    try {
+      const response = await fetch("/api/change-pack", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "変更原稿を作成できませんでした。");
+      setWatch((current) => current ? { ...current, changePack: data.changePack } : current);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "変更原稿を作成できませんでした。");
+    } finally {
+      setChangePackBusy(false);
+    }
+  }
+
+  if (loading) return <div className="full-loading">モニタリング結果を読み込んでいます。</div>;
+  if (!watch || !change) return <main className="empty-page"><h1>モニタリング結果を表示できません。</h1><p>{error}</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
+
+  const firstAction = watch.latest.actions[0];
+  const remainingLosses = watch.latest.lostPrompts.slice(0, 3);
+  const pendingGapCount = watch.latest.evidenceGaps.filter((gap) => !watch.evidence.some((answer) => answer.gapId === gap.id)).length;
+  const stopped = ["expired", "cancelled"].includes(watch.status);
+  const visibleChangePack = watch.changePack || (sample ? sampleChangePack(watch) : null);
+  const statusText = watch.status === "expired"
+    ? "14日間の無料モニタリングは終了しました。自動課金はされていません。"
+    : watch.status === "cancelled"
+      ? "有料モニタリングは解約済みです。過去の結果は引き続き確認できます。"
+      : watch.status === "past_due"
+        ? "決済の確認が必要です。契約管理から支払情報を確認してください。"
+        : "";
+  const points = watch.history.map((item, index) => ({
+    x: 44 + index * (520 / Math.max(1, watch.history.length - 1)),
+    y: 170 - item.recommendationCoverage * 2.8,
+  }));
+  const path = points.map((point, index) => `${index ? "L" : "M"}${point.x} ${Math.max(25, point.y)}`).join(" ");
 
   return <main className="ux2-watch-page">
     <SiteHeader compact />
 
     <section className="ux2-watch-top"><div className="shell">
-      <div className="ux2-watch-top-row"><div><p className="ux2-label">{sample ? "架空サンプル · 継続モニタリング" : "継続モニタリング"}</p><h1>前回の改善後、<br />AI比較は {watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b>。</h1><p>{panelDescription(watch)}で再測定。候補入り質問は {change.baselineShortlisted} → {change.latestShortlisted}。まず「何が良くなったか」と「次に何を直すか」を確認します。</p></div><span className="ux2-next-run">{stopped ? "測定停止" : `次回 ${formatDate(watch.nextRunAt)}`}</span></div>
-      <div className="ux2-watch-kpis"><article><small>AI比較での位置</small><strong>{watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b></strong><span>{change.comparable ? `${change.rank >= 0 ? "+" : ""}${change.rank}順位` : "新しい基準値"}</span></article><article><small>候補入り質問</small><strong>{change.baselineShortlisted} → <b>{change.latestShortlisted}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article><article><small>候補外質問</small><strong>{change.baselineLost} → <b>{change.latestLost}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article><article><small>新しく候補入り</small><strong><b>+{change.wonPrompts.length}質問</b></strong><span>{change.newlyLostPrompts.length ? `新しく候補外 ${change.newlyLostPrompts.length}` : "新しい候補外なし"}</span></article></div>
+      <div className="ux2-watch-top-row">
+        <div>
+          <p className="ux2-label">{sample ? "架空サンプル · 継続モニタリング" : "継続モニタリング"}</p>
+          <h1>前回の改善後、<br />AI比較は {watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b>。</h1>
+          <p>{comparisonLabel(watch)}で再測定。候補入り質問は {change.baselineShortlisted} → {change.latestShortlisted}。まず「何が良くなったか」と「次に何を直すか」を確認します。</p>
+        </div>
+        <span className="ux2-next-run">{stopped ? "測定停止" : `次回 ${formatDate(watch.nextRunAt)}`}</span>
+      </div>
+      <div className="ux2-watch-kpis">
+        <article><small>AI比較での位置</small><strong>{watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b></strong><span>{change.comparable ? `${change.rank >= 0 ? "+" : ""}${change.rank}順位` : "新しい基準値"}</span></article>
+        <article><small>候補入り質問</small><strong>{change.baselineShortlisted} → <b>{change.latestShortlisted}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article>
+        <article><small>候補外質問</small><strong>{change.baselineLost} → <b>{change.latestLost}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article>
+        <article><small>新しく候補入り</small><strong><b>+{change.wonPrompts.length}質問</b></strong><span>{change.newlyLostPrompts.length ? `新しく候補外 ${change.newlyLostPrompts.length}` : "新しい候補外なし"}</span></article>
+      </div>
     </div></section>
 
     {statusText ? <section className="watch-status-banner"><div className="shell"><strong>{statusText}</strong></div></section> : null}
@@ -170,11 +220,15 @@ export function WatchClient() {
 
     <section className="ux2-watch-section white"><div className="shell">
       <div className="ux2-report-heading"><div><p className="ux2-label">変更原稿</p><h2>「何を直す？」を、そのまま編集できる形へ。</h2><p>公開Webと企業が確認した事実だけを使い、見出し・本文・FAQ・公開前チェックまで作ります。AIXが勝手にサイトへ公開することはありません。</p></div></div>
-      {visibleChangePack ? <div className="ux2-change-pack">{visibleChangePack.items.map((item) => <article className="ux2-change-item" key={item.id}><header><div><small>{item.target}</small><h3>{item.title}</h3></div><span>{item.relatedPromptIds.length}質問</span></header><div className="ux2-change-body"><small>提案見出し</small><strong>{item.proposedTitle}</strong>{item.proposedLead ? <p>{item.proposedLead}</p> : null}{item.sections.slice(0, 3).map((section) => <div className="ux2-change-section" key={section.heading}><b>{section.heading}</b><p>{section.body}</p></div>)}{item.faq.slice(0, 2).map((faq) => <div className="ux2-change-section" key={faq.question}><b>FAQ: {faq.question}</b><p>{faq.answer}</p></div>)}</div>{item.publishChecks.length ? <div className="ux2-change-checks">公開前に確認: {item.publishChecks.join(" · ")}</div> : null}</article>)}</div> : watch.paid ? <div className="ux2-account-card"><h2>最新測定から変更原稿を作成</h2><p>現在の候補外質問・比較材料の差・企業入力を使って、最大3件の変更ドラフトを生成します。</p><button className="button button-dark" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "作成中…" : <>変更原稿を作成 <ArrowIcon /></>}</button></div> : <div className="ux2-account-card"><h2>AIX Monitorで利用できます</h2><p>最優先の改善を、見出し・本文・FAQ・公開前チェックまで編集可能な原稿へ変換します。サンプルでは実際の形式を確認できます。</p><Link className="button button-dark" href="/pricing">料金と内容を見る <ArrowIcon /></Link></div>}
+      {visibleChangePack ? <div className="ux2-change-pack">{visibleChangePack.items.map((item) => <article className="ux2-change-item" key={item.id}>
+        <header><div><small>{item.target}</small><h3>{item.title}</h3></div><span>{item.relatedPromptIds.length}質問</span></header>
+        <div className="ux2-change-body"><small>提案見出し</small><strong>{item.proposedTitle}</strong>{item.proposedLead ? <p>{item.proposedLead}</p> : null}{item.sections.slice(0, 3).map((section) => <div className="ux2-change-section" key={section.heading}><b>{section.heading}</b><p>{section.body}</p></div>)}{item.faq.slice(0, 2).map((faq) => <div className="ux2-change-section" key={faq.question}><b>FAQ: {faq.question}</b><p>{faq.answer}</p></div>)}</div>
+        {item.publishChecks.length ? <div className="ux2-change-checks">公開前に確認: {item.publishChecks.join(" · ")}</div> : null}
+      </article>)}</div> : watch.paid ? <div className="ux2-account-card"><h2>最新測定から変更原稿を作成</h2><p>現在の候補外質問・比較材料の差・企業入力を使って、最大3件の変更ドラフトを生成します。</p><button className="button button-dark" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "作成中…" : <>変更原稿を作成 <ArrowIcon /></>}</button></div> : <div className="ux2-account-card"><h2>AIX Monitorで利用できます</h2><p>最優先の改善を、見出し・本文・FAQ・公開前チェックまで編集可能な原稿へ変換します。サンプルでは実際の形式を確認できます。</p><Link className="button button-dark" href="/pricing">料金と内容を見る <ArrowIcon /></Link></div>}
     </div></section>
 
     <section className="ux2-watch-section"><div className="shell">
-      <div className="ux2-report-heading"><div><p className="ux2-label">確認が必要な事実</p><h2>企業にしか分からない情報を補う。</h2><p>公開Webで確認できなかった事実だけを聞きます。変更原稿を生成するときは、入力内容がOpenAIへ送信される場合があります。</p></div></div>
+      <div className="ux2-report-heading"><div><p className="ux2-label">確認が必要な事実 · {pendingGapCount}</p><h2>企業にしか分からない情報を補う。</h2><p>公開Webで確認できなかった事実だけを聞きます。変更原稿を生成するときは、入力内容がOpenAIへ送信される場合があります。</p></div></div>
       <div className="ux2-evidence-list">{watch.latest.evidenceGaps.slice(0, 3).map((gap) => {
         const answer = watch.evidence.find((item) => item.gapId === gap.id);
         return <article className="ux2-evidence-card" key={gap.id}><small>{gap.relatedPromptCount}質問に関連 · {answer ? "入力済み" : "未確認"}</small><h3>{gap.label}</h3><p>{answer ? answer.value : gap.whyItMatters}</p>{answer ? null : <form onSubmit={(event) => saveEvidence(event, gap.id)}><input value={values[gap.id] || ""} onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))} placeholder="分かる範囲で入力" /><button className="button button-dark" disabled={saving === gap.id}>{saving === gap.id ? "保存中…" : "保存"}</button></form>}</article>;
