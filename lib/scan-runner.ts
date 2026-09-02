@@ -3,6 +3,7 @@ import { crawlCompanySite } from "@/lib/crawler";
 import { analyzeEvidence, discoverCompany, generateBuyerPrompts } from "@/lib/discovery";
 import { buildNarratives, withPromptRationale } from "@/lib/intelligence";
 import { competitorMetrics, citationCoverage, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
+import { buildPageIntelligence } from "@/lib/page-intelligence";
 import { freeProviders, runObservationPanel } from "@/lib/providers";
 import { PROVIDER_LABELS, PROVIDER_ORDER } from "@/lib/provider-meta";
 import { auditSiteReadiness } from "@/lib/readiness";
@@ -29,13 +30,48 @@ export async function runScan(input: { scanId: string; url: string; promptCount?
   const generated = input.prompts || await generateBuyerPrompts(discovery, promptCount, panelKind); const prompts = withPromptRationale(generated, discovery);
   await emit("measuring", 55, `${providerLabel}で購入候補を観測しています。`, `${prompts.length}質問 × ${providerNames.length} AI × ${repetitions}回`);
   const observations = await runObservationPanel({ prompts, discovery, repetitions, providerNames, onProgress: async (completed, total, detail) => emit("measuring", 55 + Math.round((completed / total) * 25), `AI回答を観測しています。${completed}/${total}`, detail) });
-  await emit("analyzing", 84, "Visibility、推薦、Citation、競合差、比較材料を統合集計しています。");
-  const eligible = successful(observations); const lost = lostPrompts(prompts, observations, discovery); const analysis = await analyzeEvidence({ discovery, pages: crawl.pages, lostPrompts: lost }); const narratives = buildNarratives(observations, discovery); const position = marketPosition(observations, discovery); const warnings: string[] = [];
+  await emit("analyzing", 84, "Visibility、推薦、Citation、競合差、比較材料、Pageを統合集計しています。");
+  const eligible = successful(observations);
+  const lost = lostPrompts(prompts, observations, discovery);
+  const analysis = await analyzeEvidence({ discovery, pages: crawl.pages, lostPrompts: lost });
+  const narratives = buildNarratives(observations, discovery);
+  const pageIntelligence = buildPageIntelligence({ pages: crawl.pages, prompts, observations, lostPrompts: lost });
+  const position = marketPosition(observations, discovery);
+  const warnings: string[] = [];
   if (discovery.confidence < .65) warnings.push("市場認識の信頼度が低いため、Watch開始前に市場と競合を確認してください。");
   if (eligible.length < observations.length) warnings.push(`${observations.length - eligible.length}件のAI観測が失敗または未設定です。Recommendation指標の分母から除外しています。`);
   if (!eligible.length) warnings.push("AI Providerの有効な回答がありません。API設定後に再測定してください。サンプル結果は /result?sample=1 で確認できます。");
   if (!discovery.competitors.length) warnings.push("十分な競合候補を特定できませんでした。市場認識を確認してください。");
   if (siteReadiness.failCount) warnings.push(`AI Crawlability監査で${siteReadiness.failCount}件の明確なブロックを確認しました。Workspaceで技術条件を確認してください。`);
-  const result: ScanResult = { scanId: input.scanId, targetUrl: url, discovery, panel: { kind: panelKind, version: panelVersion(providerNames), promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" }, prompts, measuredAt: new Date().toISOString(), observations, scheduledObservations: observations.length, successfulObservations: eligible.length, measurementCompleteness: observations.length ? Math.round((eligible.length / observations.length) * 100) : 0, recommendationCoverage: recommendationCoverage(observations), firstChoiceRate: firstChoiceRate(observations, discovery.brandName), mentionCoverage: mentionCoverage(observations, discovery.aliases), citationCoverage: citationCoverage(observations, discovery.domain), repeatAgreement: repeatAgreement(observations), ownRecommendationCount: eligible.filter((item) => item.ownRecommended).length, marketPosition: eligible.length ? position.position : 0, marketSize: position.size, competitors: competitorMetrics(observations, discovery), lostPrompts: lost, narratives, siteReadiness, evidenceGaps: analysis.gaps, actions: analysis.actions, totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0), warnings };
-  await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "統合診断を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName); return result;
+  const result: ScanResult = {
+    scanId: input.scanId,
+    targetUrl: url,
+    discovery,
+    panel: { kind: panelKind, version: panelVersion(providerNames), promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" },
+    prompts,
+    measuredAt: new Date().toISOString(),
+    observations,
+    scheduledObservations: observations.length,
+    successfulObservations: eligible.length,
+    measurementCompleteness: observations.length ? Math.round((eligible.length / observations.length) * 100) : 0,
+    recommendationCoverage: recommendationCoverage(observations),
+    firstChoiceRate: firstChoiceRate(observations, discovery.brandName),
+    mentionCoverage: mentionCoverage(observations, discovery.aliases),
+    citationCoverage: citationCoverage(observations, discovery.domain),
+    repeatAgreement: repeatAgreement(observations),
+    ownRecommendationCount: eligible.filter((item) => item.ownRecommended).length,
+    marketPosition: eligible.length ? position.position : 0,
+    marketSize: position.size,
+    competitors: competitorMetrics(observations, discovery),
+    lostPrompts: lost,
+    narratives,
+    siteReadiness,
+    pageIntelligence,
+    evidenceGaps: analysis.gaps,
+    actions: analysis.actions,
+    totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0),
+    warnings,
+  };
+  await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "統合診断を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName);
+  return result;
 }
