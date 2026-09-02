@@ -3,6 +3,7 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { id } from "@/lib/ids";
 import { runScan } from "@/lib/scan-runner";
 import { listDueWatches, updateWatch } from "@/lib/storage";
+import { sendWatchUpdate } from "@/lib/watch-email";
 import type { BuyerPrompt } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -46,6 +47,7 @@ export async function GET(request: Request) {
 
   for (const watch of due) {
     try {
+      const previous = watch.latest;
       const switchToCore = watch.paid && watch.latest.panel.kind !== "core";
       const prompts = switchToCore ? await generateBuyerPrompts(watch.latest.discovery, 50, "core") : existingPrompts(watch);
       if (!prompts.length) throw new Error("再測定に使えるBuyer Promptがありません。");
@@ -64,13 +66,15 @@ export async function GET(request: Request) {
       const expiresAfterRun = !watch.paid && watch.status === "trial" && now >= trialEndsAt(watch.createdAt);
       const nextRunAt = new Date(now + 7 * DAY_MS).toISOString();
       const history = switchToCore ? [result] : [...watch.history, result].slice(-52);
-      await updateWatch(watch.token, {
+      const updated = await updateWatch(watch.token, {
         latest: result,
         baseline: switchToCore ? result : watch.baseline,
         history,
         nextRunAt,
         ...(expiresAfterRun ? { status: "expired" as const } : {}),
       });
+      if (!updated) throw new Error("Watch更新後の状態を取得できませんでした。");
+      await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
       results.push({ token: watch.token, status: expiresAfterRun ? "completed_and_expired" : switchToCore ? "core_baseline_created" : "completed" });
     } catch (error) {
       await updateWatch(watch.token, { nextRunAt: new Date(Date.now() + DAY_MS).toISOString() });
