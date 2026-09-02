@@ -7,6 +7,7 @@ import "./export-center.css";
 import "./agent-analytics.css";
 import "./surface-status.css";
 import "./opportunity-queue.css";
+import "./business-outcome-strip.css";
 
 export const metadata: Metadata = {
   title: "AI Buyer Intelligence Workspace",
