@@ -10,14 +10,26 @@ export async function POST(request: Request) {
     if (!key || key.length > 200) return Response.json({ error: "Invalid ingest key" }, { status: 401 });
     const resolved = await resolveAgentIngestKey(key);
     if (!resolved) return Response.json({ error: "Invalid ingest key" }, { status: 401 });
-    const body = await request.json() as { events?: Array<{ occurredAt?: string; userAgent?: string; path?: string; referrer?: string; statusCode?: number; conversion?: boolean }> };
+    const body = await request.json() as { events?: Array<{ occurredAt?: string; userAgent?: string; path?: string; referrer?: string; statusCode?: number; conversion?: boolean; conversionType?: string; conversionValue?: number; currency?: string }> };
     const input = Array.isArray(body.events) ? body.events.slice(0, 100) : [];
     const normalized = input.flatMap((event) => {
       const signal = classifyAgentSignal(String(event.userAgent || ""), String(event.referrer || ""));
       if (!signal) return [];
       const occurredAt = event.occurredAt && !Number.isNaN(new Date(event.occurredAt).getTime()) ? new Date(event.occurredAt).toISOString() : new Date().toISOString();
       const path = String(event.path || "/").trim().slice(0, 500) || "/";
-      return [{ occurredAt, kind: signal.kind, agent: signal.agent, path, referrerDomain: signal.referrerDomain, statusCode: event.statusCode, conversion: Boolean(event.conversion) }];
+      const value = Number(event.conversionValue);
+      return [{
+        occurredAt,
+        kind: signal.kind,
+        agent: signal.agent,
+        path,
+        referrerDomain: signal.referrerDomain,
+        statusCode: event.statusCode,
+        conversion: Boolean(event.conversion),
+        conversionType: event.conversion ? String(event.conversionType || "conversion").trim().slice(0, 80) : undefined,
+        conversionValue: event.conversion && Number.isFinite(value) && value >= 0 ? value : undefined,
+        currency: event.conversion && event.currency ? String(event.currency).trim().toUpperCase().slice(0, 8) : undefined,
+      }];
     });
     const accepted = normalized.length ? await addAgentEvents(resolved.watchId, normalized) : 0;
     return Response.json({ received: input.length, accepted, ignored: input.length - accepted }, { headers: { "cache-control": "no-store" } });
