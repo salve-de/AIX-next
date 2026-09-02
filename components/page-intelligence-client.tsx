@@ -23,7 +23,7 @@ function samplePages(): PageIntelligence[] {
 export function PageIntelligenceClient() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
-  const token = params.get("token") || "";
+  const legacyToken = params.get("token") || "";
   const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
@@ -31,12 +31,12 @@ export function PageIntelligenceClient() {
 
   useEffect(() => {
     if (sample) return;
-    if (!token) { setError("Workspace tokenがありません。"); setLoading(false); return; }
-    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
+    const endpoint = legacyToken ? `/api/watch?token=${encodeURIComponent(legacyToken)}` : "/api/watch";
+    fetch(endpoint, { cache: "no-store" })
       .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "Page Intelligenceを取得できませんでした。"); setWatch(data); })
       .catch((caught) => setError(caught instanceof Error ? caught.message : "Page Intelligenceを取得できませんでした。"))
       .finally(() => setLoading(false));
-  }, [sample, token]);
+  }, [sample, legacyToken]);
 
   const pages = useMemo(() => {
     const source = watch?.latest.pageIntelligence?.length ? watch.latest.pageIntelligence : sample ? samplePages() : [];
@@ -53,26 +53,14 @@ export function PageIntelligenceClient() {
   const cited = all.filter((page) => page.status === "cited");
   const high = all.filter((page) => page.opportunity === "high");
   const citationEvents = all.reduce((sum, page) => sum + page.citationEvents, 0);
-  const workspaceHref = sample ? "/workspace?sample=1" : `/workspace?token=${encodeURIComponent(token)}`;
+  const workspaceHref = sample ? "/workspace?sample=1" : "/workspace";
+  const viewJoin = workspaceHref.includes("?") ? "&" : "?";
 
   return <main className="page-intel-root">
     <header className="page-intel-top"><div className="shell"><Brand /><Link href={workspaceHref}>← Workspace</Link></div></header>
     <section className="page-intel-hero"><div className="shell"><p className="eyebrow">PAGE INTELLIGENCE</p><h1>どのページがAIに使われ、<br /><span>どこが購買機会とズレているか。</span></h1><p>サイト内ページ、Citation、Buyer Prompt、候補外テーマを同じ表にします。未引用ページを「悪いページ」とは扱わず、関連する購買Intentと一緒に優先順位を見ます。</p></div></section>
-
-    <section className="shell page-intel-kpis">
-      <article><SearchIcon /><small>Tracked Pages</small><strong>{all.length}</strong><span>今回取得できた公開ページ</span></article>
-      <article><QuoteIcon /><small>Cited Pages</small><strong>{cited.length}</strong><span>{citationEvents} citation events</span></article>
-      <article><WarningIcon /><small>High Opportunity</small><strong>{high.length}</strong><span>候補外Intentと重なる未引用ページ</span></article>
-      <article><EyeIcon /><small>Own Citation Coverage</small><strong>{watch.latest.citationCoverage}%</strong><span>成功AI回答ベース</span></article>
-    </section>
-
+    <section className="shell page-intel-kpis"><article><SearchIcon /><small>Tracked Pages</small><strong>{all.length}</strong><span>今回取得できた公開ページ</span></article><article><QuoteIcon /><small>Cited Pages</small><strong>{cited.length}</strong><span>{citationEvents} citation events</span></article><article><WarningIcon /><small>High Opportunity</small><strong>{high.length}</strong><span>候補外Intentと重なる未引用ページ</span></article><article><EyeIcon /><small>Own Citation Coverage</small><strong>{watch.latest.citationCoverage}%</strong><span>成功AI回答ベース</span></article></section>
     <section className="shell page-intel-controls"><div><button className={filter === "all" ? "active" : ""} onClick={() => setFilter("all")}>すべて</button><button className={filter === "high" ? "active" : ""} onClick={() => setFilter("high")}>優先</button><button className={filter === "cited" ? "active" : ""} onClick={() => setFilter("cited")}>Cited</button><button className={filter === "uncited" ? "active" : ""} onClick={() => setFilter("uncited")}>Uncited</button></div><span>Correlation ≠ causation</span></section>
-
-    <section className="shell page-intel-list">{pages.length ? pages.map((page) => <article key={page.url} className={`page-intel-row opportunity-${page.opportunity}`}>
-      <div className="page-intel-status"><span className={`page-role role-${page.role}`}>{roleLabel[page.role]}</span><strong className={`citation-state ${page.status}`}>{page.status === "cited" ? "CITED" : "NOT CITED"}</strong></div>
-      <div className="page-intel-main"><h2>{page.title}</h2><a href={page.url} target="_blank" rel="noreferrer">{page.url}</a><p>{page.rationale}</p><div className="page-intel-meta"><span>本文 {page.bodyChars.toLocaleString()} chars</span><span>Meta description {page.hasDescription ? "あり" : "未確認"}</span><span>関連候補外 {page.relatedLostPromptCount}</span></div></div>
-      <div className="page-intel-citations"><small>CITATION EVENTS</small><strong>{page.citationEvents}</strong><span>{page.citedPromptCount} prompts</span><p>{page.citedProviders.length ? page.citedProviders.map((provider) => PROVIDER_LABELS[provider]).join(" / ") : "—"}</p></div>
-      <div className="page-intel-action"><span>{page.opportunity.toUpperCase()} PRIORITY</span><Link href={`${workspaceHref}&view=${page.relatedLostPromptCount ? "actions" : "citations"}`}>{page.relatedLostPromptCount ? "関連Actionを見る" : "Citationを見る"}<ArrowIcon /></Link></div>
-    </article>) : <div className="page-intel-empty"><strong>Page Intelligenceは次回Scanから生成されます。</strong><p>既存の保存結果にはページ在庫が含まれていない場合があります。次回のCore観測で自動作成します。</p></div>}</section>
+    <section className="shell page-intel-list">{pages.length ? pages.map((page) => <article key={page.url} className={`page-intel-row opportunity-${page.opportunity}`}><div className="page-intel-status"><span className={`page-role role-${page.role}`}>{roleLabel[page.role]}</span><strong className={`citation-state ${page.status}`}>{page.status === "cited" ? "CITED" : "NOT CITED"}</strong></div><div className="page-intel-main"><h2>{page.title}</h2><a href={page.url} target="_blank" rel="noreferrer">{page.url}</a><p>{page.rationale}</p><div className="page-intel-meta"><span>本文 {page.bodyChars.toLocaleString()} chars</span><span>Meta description {page.hasDescription ? "あり" : "未確認"}</span><span>関連候補外 {page.relatedLostPromptCount}</span></div></div><div className="page-intel-citations"><small>CITATION EVENTS</small><strong>{page.citationEvents}</strong><span>{page.citedPromptCount} prompts</span><p>{page.citedProviders.length ? page.citedProviders.map((provider) => PROVIDER_LABELS[provider]).join(" / ") : "—"}</p></div><div className="page-intel-action"><span>{page.opportunity.toUpperCase()} PRIORITY</span><Link href={`${workspaceHref}${viewJoin}view=${page.relatedLostPromptCount ? "actions" : "citations"}`}>{page.relatedLostPromptCount ? "関連Actionを見る" : "Citationを見る"}<ArrowIcon /></Link></div></article>) : <div className="page-intel-empty"><strong>Page Intelligenceは次回Scanから生成されます。</strong><p>既存の保存結果にはページ在庫が含まれていない場合があります。次回のCore観測で自動作成します。</p></div>}</section>
   </main>;
 }
