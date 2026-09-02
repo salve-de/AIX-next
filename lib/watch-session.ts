@@ -1,4 +1,5 @@
 export const WATCH_SESSION_COOKIE = "aix_watch_session";
+export const WATCH_SESSION_MARKER = "session";
 const MAX_AGE_SECONDS = 30 * 24 * 60 * 60;
 
 function decodeCookie(value: string) {
@@ -15,7 +16,9 @@ export function watchTokenFromCookie(request: Request) {
 }
 
 export function resolveWatchToken(request: Request, explicit?: string | null) {
-  return explicit?.trim() || watchTokenFromCookie(request);
+  const candidate = explicit?.trim() || "";
+  if (candidate && candidate !== WATCH_SESSION_MARKER) return candidate;
+  return watchTokenFromCookie(request);
 }
 
 export function watchSessionCookie(token: string, requestUrl: string) {
