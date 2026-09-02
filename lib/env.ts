@@ -12,10 +12,10 @@ function integer(name: string, fallback: number) {
 export const env = {
   siteUrl: text("NEXT_PUBLIC_SITE_URL", "http://localhost:3000"),
   openAiKey: text("OPENAI_API_KEY"),
-  openAiDiscoveryModel: text("OPENAI_DISCOVERY_MODEL", "gpt-5-mini"),
-  openAiSearchModel: text("OPENAI_SEARCH_MODEL", "gpt-5-mini"),
+  openAiDiscoveryModel: text("OPENAI_DISCOVERY_MODEL", "gpt-5.6-luna"),
+  openAiSearchModel: text("OPENAI_SEARCH_MODEL", "gpt-5.6-luna"),
   geminiKey: text("GEMINI_API_KEY"),
-  geminiModel: text("GEMINI_MODEL", "gemini-2.5-flash"),
+  geminiModel: text("GEMINI_MODEL", "gemini-3.6-flash"),
   perplexityKey: text("PERPLEXITY_API_KEY"),
   perplexityModel: text("PERPLEXITY_MODEL", "sonar"),
   supabaseUrl: text("SUPABASE_URL"),
