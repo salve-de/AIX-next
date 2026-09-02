@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "@/lib/env";
-import { updateWatch } from "@/lib/storage";
+import { getWatch, updateWatch } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -36,22 +36,27 @@ export async function POST(request: Request) {
   const metadata = { ...(object.subscription_details?.metadata || {}), ...(object.metadata || {}) };
   const token = metadata.watch_token;
   if (!token) return Response.json({ received: true, ignored: "watch_token missing" });
+  const current = await getWatch(token);
+  if (!current) return Response.json({ received: true, ignored: "watch not found" });
 
   if (event.type === "checkout.session.completed") {
     const paid = ["paid", "no_payment_required"].includes(object.payment_status || "");
     await updateWatch(token, {
       paid,
-      status: paid ? "active" : "trial",
+      status: paid ? "active" : current.status,
       stripeCustomerId: stripeId(object.customer),
       stripeSubscriptionId: stripeId(object.subscription),
+      ...(paid && !current.paid ? { nextRunAt: new Date().toISOString() } : {}),
     });
   } else if (["customer.subscription.created", "customer.subscription.updated"].includes(event.type)) {
     const base = {
       stripeCustomerId: stripeId(object.customer),
       stripeSubscriptionId: stripeId(object.id),
     };
-    if (["active", "trialing"].includes(object.status)) await updateWatch(token, { ...base, paid: true, status: "active" });
-    else if (object.status === "past_due") await updateWatch(token, { ...base, paid: true, status: "past_due" });
+    if (["active", "trialing"].includes(object.status)) {
+      const newlyActive = !current.paid || current.status !== "active";
+      await updateWatch(token, { ...base, paid: true, status: "active", ...(newlyActive ? { nextRunAt: new Date().toISOString() } : {}) });
+    } else if (object.status === "past_due") await updateWatch(token, { ...base, paid: true, status: "past_due" });
     else if (["canceled", "unpaid", "incomplete_expired"].includes(object.status)) await updateWatch(token, { ...base, paid: false, status: "cancelled" });
     else await updateWatch(token, base);
   } else if (event.type === "customer.subscription.deleted") {
