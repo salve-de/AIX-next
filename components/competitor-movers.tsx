@@ -12,7 +12,7 @@ import type { WatchRecord } from "@/lib/types";
 export function CompetitorMovers() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
-  const token = params.get("token") || "";
+  const legacyToken = params.get("token") || "";
   const [watch, setWatch] = useState<WatchRecord | null>(sample ? sampleWatch() : null);
   const [host, setHost] = useState<HTMLElement | null>(null);
 
@@ -27,12 +27,13 @@ export function CompetitorMovers() {
   }, []);
 
   useEffect(() => {
-    if (sample || !token) return;
-    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
+    if (sample) return;
+    const endpoint = legacyToken ? `/api/watch?token=${encodeURIComponent(legacyToken)}` : "/api/watch";
+    fetch(endpoint, { cache: "no-store" })
       .then(async (response) => response.ok ? response.json() : null)
       .then((data) => { if (data) setWatch(data); })
       .catch(() => undefined);
-  }, [sample, token]);
+  }, [sample, legacyToken]);
 
   const diff = useMemo(() => watch ? compareWatchRuns(watch.baseline, watch.latest) : null, [watch]);
   if (!host || !watch || !diff?.comparable) return null;
@@ -40,7 +41,7 @@ export function CompetitorMovers() {
   const movers = diff.competitorDeltas.filter((item) => item.coverageDelta !== 0 || item.firstChoiceDelta !== 0 || item.newlyObserved).slice(0, 4);
   if (!movers.length) return null;
 
-  const workspaceHref = sample ? "/workspace?sample=1&view=competitors" : `/workspace?token=${encodeURIComponent(token)}&view=competitors`;
+  const workspaceHref = sample ? "/workspace?sample=1&view=competitors" : "/workspace?view=competitors";
   const top = movers[0];
 
   return createPortal(<section className="competitor-movers-section">
