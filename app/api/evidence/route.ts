@@ -1,4 +1,4 @@
-import { addEvidence } from "@/lib/storage";
+import { addEvidence, updateWatch } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
@@ -19,7 +19,8 @@ export async function POST(request: Request) {
     if (!token || !gapId || !value) return Response.json({ error: "入力内容が不足しています。" }, { status: 400 });
     const watch = await addEvidence(token, { gapId, value, sourceUrl: sourceUrl(body.sourceUrl?.trim() || "") });
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
-    return Response.json(watch, { headers: { "cache-control": "private, no-store" } });
+    const updated = watch.changePack ? (await updateWatch(token, { changePack: null }) || watch) : watch;
+    return Response.json(updated, { headers: { "cache-control": "private, no-store" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Evidenceを保存できませんでした。" }, { status: 400 });
   }
