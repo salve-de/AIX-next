@@ -10,15 +10,23 @@ export function HeroShortlistVisual() {
 }
 
 export function ProductOutputPreview() {
-  return <div className="ux2-report-preview" aria-label="AIX無料診断の架空サンプル">
-    <header><strong>診断結果 · NEXORA Cloud</strong><span>架空データ · 36/36測定完了</span></header>
-    <div className="ux2-preview-summary"><small>今回の結論</small><strong>13社中 <b>9位</b></strong><p>12の比較質問のうち、候補入り2問 / 候補外10問</p></div>
-    <div className="ux2-preview-grid">
-      <article><small>自社が候補入り</small><strong>2 / 12</strong><span>NEXORA Cloud</span></article>
-      <article><small>首位競合が候補入り</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
+  return <div className="ux2-report-preview ux3-report-preview" aria-label="AIX無料診断の架空サンプル">
+    <header><strong>AIX REPORT · NEXORA Cloud</strong><span>架空データ · 2026/09/02 · 36 / 36観測完了</span></header>
+    <div className="ux3-preview-top">
+      <div className="ux2-preview-summary"><small>今回の結論</small><strong>AI比較で <b>13社中9位</b></strong><p>12の「買う前に聞く質問」のうち、候補入り2問 / 候補外10問。</p></div>
+      <div className="ux3-preview-engines"><span>ChatGPT</span><span>Gemini</span><span>Perplexity</span></div>
     </div>
-    <div className="ux2-preview-loss"><small>候補外になっている重要な比較質問</small><strong>「従業員300名の企業に合う取引先審査ツールは？」</strong><div><span>最も選ばれた競合<b>TrustOrbit</b></span><span>主な情報差<b>同規模の導入実績</b></span></div></div>
-    <div className="ux2-preview-action"><span><small>まず直すこと</small><strong>企業規模別の導入実績を公開する</strong></span><span>10質問に関連</span></div>
+    <div className="ux3-preview-kpis">
+      <article><small>自社が候補入り</small><strong>2 / 12</strong><span>NEXORA Cloud</span></article>
+      <article className="negative"><small>自社が候補外</small><strong>10 / 12</strong><span>比較質問</span></article>
+      <article><small>首位競合が候補入り</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
+      <article><small>AI観測</small><strong>36 / 36</strong><span>3 AI × 12質問</span></article>
+    </div>
+    <div className="ux3-preview-body">
+      <div className="ux2-preview-loss"><small>候補外になっている重要な比較質問</small><strong>「従業員300名の企業に合う取引先審査ツールは？」</strong><div><span>最も選ばれた競合<b>TrustOrbit</b></span><span>自社<b>候補外</b></span><span>確認できない根拠<b>同規模の導入実績</b></span></div></div>
+      <aside className="ux3-preview-why"><small>なぜこの差が重要か</small><p>競合は企業規模別の導入実績を比較できる形で公開。自社では同条件の事実を公開Webから確認できませんでした。</p></aside>
+    </div>
+    <div className="ux2-preview-action ux3-preview-action"><span><small>最優先Action · 10質問に関連</small><strong>企業規模別の導入実績を、比較できる形で公開する</strong></span><span>Change Packで見出し・本文・FAQへ <ArrowIcon /></span></div>
   </div>;
 }
 
