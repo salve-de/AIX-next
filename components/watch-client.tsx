@@ -13,6 +13,10 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Tokyo" }).format(new Date(value));
 }
 
+function panelDescription(watch: WatchRecord) {
+  return watch.latest.panel.kind === "core" ? "固定Core Panel" : "同じBuyer Prompt";
+}
+
 export function WatchClient() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
@@ -88,10 +92,20 @@ export function WatchClient() {
   const points = watch.history.map((item, index) => ({ x: 44 + index * (520 / Math.max(1, watch.history.length - 1)), y: 170 - item.recommendationCoverage * 2.8 }));
   const path = points.map((point, index) => `${index ? "L" : "M"}${point.x} ${Math.max(25, point.y)}`).join(" ");
   const pendingGaps = watch.latest.evidenceGaps.filter((gap) => !watch.evidence.some((answer) => answer.gapId === gap.id));
+  const stopped = ["expired", "cancelled"].includes(watch.status);
+  const statusText = watch.status === "expired"
+    ? "14日無料Watchは終了しました。自動課金はされていません。"
+    : watch.status === "cancelled"
+      ? "有料Watchは解約済みです。過去の測定結果はこの画面で確認できます。"
+      : watch.status === "past_due"
+        ? "決済の確認が必要です。契約管理から支払情報を確認してください。"
+        : "";
 
   return <main>
     <SiteHeader compact />
-    <section className="watch-hero"><div className="shell"><div className="watch-title-row"><div><p className="eyebrow">AIX WATCH · {sample ? "FICTIONAL SAMPLE" : watch.status.toUpperCase()}</p><h1>AI比較での順位、<br />{watch.baseline.marketPosition}位 → {watch.latest.marketPosition}位。</h1><p>{watch.latest.discovery.brandName}を同じCore Panelで再測定し、購買質問ごとの候補入り・候補外を比較しています。</p></div><div className="live-pill"><i />次回測定 {formatDate(watch.nextRunAt)}</div></div></div></section>
+    <section className="watch-hero"><div className="shell"><div className="watch-title-row"><div><p className="eyebrow">AIX WATCH · {sample ? "FICTIONAL SAMPLE" : watch.status.toUpperCase()}</p><h1>AI比較での順位、<br />{watch.baseline.marketPosition}位 → {watch.latest.marketPosition}位。</h1><p>{watch.latest.discovery.brandName}を{panelDescription(watch)}で再測定し、購買質問ごとの候補入り・候補外を比較しています。</p></div>{stopped ? <div className="live-pill stopped"><i />測定停止</div> : <div className="live-pill"><i />次回測定 {formatDate(watch.nextRunAt)}</div>}</div></div></section>
+
+    {statusText ? <section className={`watch-status-banner watch-status-${watch.status}`}><div className="shell"><WarningIcon /><div><strong>{statusText}</strong><span>{watch.status === "expired" ? "継続する場合だけStripe Checkoutで有料Watchを開始します。" : watch.status === "past_due" ? "Watchは自動で新しい測定を行いません。" : "必要なら同じWatchを再開できます。"}</span></div></div></section> : null}
 
     <section className="watch-change-panel"><div className="shell"><div className="watch-change-grid"><article><small>AI比較での順位</small><strong>{watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b></strong><span>{change.comparable ? `${change.rank >= 0 ? "+" : ""}${change.rank}順位` : "新しいBaseline"}</span></article><article><small>候補に入った購買質問</small><strong>{change.baselineShortlisted} → <b>{change.latestShortlisted}</b></strong><span>{watch.latest.panel.promptCount} Buyer Prompts</span></article><article><small>候補外になった購買質問</small><strong>{change.baselineLost} → <b>{change.latestLost}</b></strong><span>{watch.latest.panel.promptCount} Buyer Prompts</span></article><article><small>新しく候補入り</small><strong><b>+{change.newPromptWins}質問</b></strong><span>{change.newPromptLosses ? `新しく候補外 ${change.newPromptLosses}質問` : "新しい候補外なし"}</span></article></div><p className="watch-change-note">{change.comparable ? "同じPanel種別・version・Prompt数だけを比較しています。" : "測定条件が変わったため、今回は新しいBaselineとして扱います。"}</p></div></section>
 
@@ -109,7 +123,7 @@ export function WatchClient() {
 
     <section className="result-section shell"><div className="section-heading"><p className="eyebrow">NEXT ACTIONS</p><h2>次に直す順番。</h2><p>候補外Buyer Prompt、Citation、Evidence差、実装負担から優先順位を付けます。</p></div><div className="action-list">{watch.latest.actions.slice(0, 5).map((action, index) => <article key={action.id}><span className={`priority priority-${action.priority}`}>{action.priority}</span><div><small>0{index + 1} · {action.type}</small><h3>{action.title}</h3><p>{action.rationale}</p></div><aside><strong>{action.relatedPromptCount}</strong><small>related prompts</small><em>{action.target}</em></aside></article>)}</div></section>
 
-    <section className="paid-cta"><div className="shell paid-grid"><div><p className="eyebrow">FOUNDER WATCH</p><h2>この順位を、<br />毎週追跡する。</h2><p>固定Core Prompt 50件を、OpenAI・Gemini・Perplexityで各3回、毎週観測します。</p><ul><li>全AI回答とCitation</li><li>Evidence Inbox</li><li>優先Action</li><li>12か月履歴</li></ul></div><article><small>月額・税別・1ブランド</small><strong>¥29,800</strong><button className="button button-accent" type="button" onClick={checkout} disabled={checkoutBusy || watch.paid}>{watch.paid ? "契約中" : checkoutBusy ? "Checkoutを準備中…" : "このWatchを継続する"}<ArrowIcon /></button><p>無料Watchから自動課金されません。Stripe Checkoutで契約条件を確認します。</p></article></div></section>
+    <section className="paid-cta"><div className="shell paid-grid"><div><p className="eyebrow">FOUNDER WATCH</p><h2>この順位を、<br />毎週追跡する。</h2><p>固定Core Prompt 50件を、OpenAI・Gemini・Perplexityで各3回、毎週観測します。</p><ul><li>全AI回答とCitation</li><li>Evidence Inbox</li><li>優先Action</li><li>12か月履歴</li></ul></div><article><small>月額・税別・1ブランド</small><strong>¥29,800</strong>{watch.paid ? <Link className="button button-accent" href={`/billing?token=${encodeURIComponent(token)}`}>契約を管理 <ArrowIcon /></Link> : <button className="button button-accent" type="button" onClick={checkout} disabled={checkoutBusy}>{checkoutBusy ? "Checkoutを準備中…" : watch.status === "expired" || watch.status === "cancelled" ? "毎週Watchを開始する" : "このWatchを継続する"}<ArrowIcon /></button>}<p>{watch.paid ? "支払方法、請求履歴、更新、解約はStripe Customer Portalで管理します。" : "無料Watchから自動課金されません。Stripe Checkoutで契約条件を確認してから開始します。"}</p></article></div></section>
     {error ? <p className="floating-error" role="alert">{error}</p> : null}
     <SiteFooter />
   </main>;
