@@ -1,3 +1,4 @@
+import { PROVIDER_ORDER } from "@/lib/provider-meta";
 import type { BuyerPrompt, CompanyDiscovery, NarrativeInsight, Observation, PromptCluster, ProviderName, ScanResult } from "@/lib/types";
 
 export type PromptIntelligenceRow = {
@@ -50,7 +51,7 @@ export function withPromptRationale(prompts: BuyerPrompt[], discovery: CompanyDi
 export function buildPromptIntelligence(result: Pick<ScanResult, "prompts" | "observations" | "discovery">): PromptIntelligenceRow[] {
   return result.prompts.map((prompt) => {
     const rows = result.observations.filter((item) => item.promptId === prompt.id && item.status === "success");
-    const providers = (["openai", "gemini", "perplexity"] as ProviderName[]).map((provider) => {
+    const providers = PROVIDER_ORDER.map((provider) => {
       const providerRows = rows.filter((item) => item.provider === provider);
       return {
         provider,
