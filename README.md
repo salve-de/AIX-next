@@ -1,122 +1,169 @@
 # AIX Next
 
-AIX Next is a Japanese B2B service for finding the comparison questions where AI recommends competitors instead of a company, turning the observed information gap into a concrete website change, and checking the same questions again after the change.
-
-The user-facing promise is intentionally simple:
-
-> ChatGPTで、競合に負けている質問がわかる。
+> **Product source of truth**
 >
-> 会社URLを入れるだけ。候補外になる比較質問、代わりに選ばれる競合、その理由、まず直すべき1件まで診断する。
+> 1. [`docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md`](docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md)
+> 2. [`docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md`](docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md)
+>
+> Do not implement conflicting behavior from older handoffs.
 
-The commercial loop is:
+AIX Next is a Japanese B2B service for continuously finding the comparison questions where AI recommends competitors instead of a company, turning the observed difference into an executable AI SEO task, handing that task to the right person, and checking comparable questions again after the team implements it.
+
+The current product model is:
 
 ```text
-FIND where the company is excluded
-→ EXPLAIN who is selected and what public comparison material differs
-→ ACT on the highest-priority change
-→ PROVE what moved under comparable remeasurement
+monitor AI comparison
+→ diagnose competitor / information difference
+→ prioritize one Action
+→ prepare an Action Pack
+→ recommend owner
+→ share / hand off
+→ customer implements through its normal workflow
+→ mark complete
+→ remeasure comparable questions
+→ choose next Action
 ```
 
-AIX never converts comparison-question counts into customer or revenue counts and does not claim a universal ChatGPT rank.
+## Non-negotiable boundary
+
+**AIX does not connect to or edit customer production websites.**
+
+It must not require:
+
+- CMS admin access;
+- production GitHub write access;
+- deployment access;
+- automatic merges;
+- automatic publishing.
+
+AIX owns research, monitoring, prioritization, briefing, draft preparation, handoff, task state and remeasurement. The customer/team owns factual approval and production publication.
+
+## Intended first impression
+
+0.1 second:
+
+> **AI SEO / ChatGPT競合改善のサービス。**
+
+1 second:
+
+> **ここに払えば、AI検索で競合に負けている場所を継続監視して、毎週次に何を直すか出してくれる。**
+
+3–5 seconds:
+
+```text
+競合に負けている比較質問を発見
+→ 理由を特定
+→ 今週の改善Actionを作る
+→ 担当者へ共有
+→ 実施後に再測定
+```
+
+The user must not infer guaranteed traffic/ranking or automatic site editing.
+
+## Why this is not just a ChatGPT prompt
+
+A general AI can perform useful one-off analysis.
+
+AIX only becomes defensible by persisting and operating:
+
+```text
+Company
+× fixed comparison questions
+× AI surfaces
+× competitors
+× citations
+× evidence gaps
+× Action
+× owner
+× task status
+× completion
+× weekly history
+× comparable remeasurement
+```
+
+The product moat is continuity and operating state, not raw LLM generation.
 
 ## UX architecture
 
-Page roles are separated even though the Home page contains the scan input:
-
 ```text
 Home / LP
-  explain what AIX is, what changes, why it matters, and show a real-looking sample
-  ↓ URL submit
+  explain AI SEO value + recurring paid value + URL input
+  ↓
 Scan
-  execute the diagnosis; no marketing pitch
+  execute diagnosis only
   ↓
 Result
-  current situation → important excluded questions → competitors → information gaps → first action
+  what is happening + first Action + comparison details
   ↓
 14-day free monitoring
-  rerun comparable questions and show what changed
+  check comparable movement after first improvement
   ↓
 AIX Monitor
-  weekly remeasurement → next action → editable Change Pack
+  weekly change → next Action → Action Pack → handoff → completion → remeasurement
 ```
 
-The interface is light-first and report-oriented. Dark surfaces are limited mainly to the footer and major conversion bands. Internal implementation terms are kept out of the primary UI.
+## Current implemented surfaces
 
-## What is implemented
+### Home and Scan
 
-### Home and scan
+- Home URL input;
+- fictional result preview;
+- simplified scan progress;
+- dedicated failure/rate-limit states;
+- no radar/HUD requirement.
 
-- first-view explanation of the service and its value;
-- company URL input directly on Home;
-- report-like fictional result preview in the first viewport;
-- concise three-step value explanation;
-- explanation of why AI comparison matters before a site visit;
-- simplified four-step scan progress;
-- dedicated rate-limit and scan-failure states;
-- no radar/HUD-style AI animation.
+### Result
 
-### Result report
-
-- one-page, decision-first report;
-- top viewport contains both the current situation and the first action;
-- important excluded comparison questions first, with the remainder collapsed;
+- one-page decision-first result;
+- summary and first Action in the first viewport;
+- important excluded comparison questions;
 - named competitor comparison;
-- observable information gaps without claiming nonexistent facts;
-- first action before detailed raw observations;
-- 14-day free monitoring CTA;
-- raw AI answers and measurement conditions collapsed under details;
-- browser print/PDF layout;
-- mobile sticky CTA after the report is opened;
-- zero-successful-observation runs use a dedicated partial-result state rather than a fake ranking report.
+- observable information gaps;
+- free monitoring CTA;
+- collapsed raw AI answers/details;
+- print/PDF support;
+- mobile CTA;
+- explicit partial-result state when no successful observations exist.
 
-### AIX Monitor
+### Monitoring / AIX Monitor
 
-- baseline and comparable weekly history;
-- newly shortlisted and newly excluded questions;
-- remaining important losses before the chart;
-- next action before long-term trend visualization;
-- private company evidence inputs;
-- Change Pack generation using only public or company-asserted facts;
-- Change Pack title, lead, sections, FAQ and publish checks;
-- stale Change Pack invalidation after company evidence changes;
-- on-demand and post-measurement paid Change Pack generation when provider configuration is available;
-- no direct publishing to the customer site.
+- baseline and comparable history;
+- newly shortlisted/excluded questions;
+- important remaining losses;
+- Action before chart;
+- private company evidence input;
+- generated draft/Change Pack using public or company-asserted facts;
+- stale-pack invalidation;
+- no direct publishing.
 
-### Commercial, account and trust surfaces
+### Commercial / trust surfaces
 
-- value-led pricing: Free Scan / 14-day free monitoring / AIX Monitor;
-- prompt counts and repetitions moved into expandable measurement specifications;
-- Billing opened from the monitoring context instead of asking normal users for a token;
-- Data Rights opened from the monitoring context, with token entry only as fallback;
-- Privacy / Terms / Support / Commerce use a compact document layout rather than marketing heroes;
-- unset seller fields are not presented as public product copy;
-- `/setup` returns not-found in production and is development-only;
-- private scan/result/monitoring/billing/data pages are noindex/noarchive and excluded from the sitemap/robots public surface.
+- value-led pricing;
+- compact document layouts for Privacy / Terms / Support / Commerce;
+- production `/setup` hidden/not-found;
+- billing/data pages private/noindex;
+- GitHub Actions intentionally removed.
 
-### Measurement and infrastructure
+## Next implementation priority
 
-- URL normalization and SSRF guards;
-- DNS and redirect revalidation;
-- path-aware robots policy;
-- bounded site crawl;
-- company, brand, market, use-case and competitor discovery;
-- comparison-question generation;
-- OpenAI web-search adapter;
-- Gemini Google Search grounding adapter;
-- Perplexity Sonar adapter;
-- raw answers and citations;
-- deterministic shortlist extraction;
-- evidence-gap and action analysis;
-- partial-result handling;
-- per-IP and per-domain free-scan limits;
-- Supabase persistence with in-memory local fallback;
-- protected scheduler route for due monitoring runs;
-- Stripe subscription Checkout and signed lifecycle webhook;
-- optional email notifications.
+The next product milestone is **not more charts** and **not website integration**.
+
+Implement the workflow layer in [`docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md`](docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md):
+
+1. persistent Action Work Item;
+2. owner/department recommendation;
+3. missing-fact request UX;
+4. user-facing Action Pack;
+5. shareable Action page;
+6. copy / PDF / share controls;
+7. mark Action complete;
+8. bind completion to comparable remeasurement;
+9. compressed weekly notification;
+10. Home/Pricing copy that makes this recurring paid value obvious.
 
 ## Measurement boundary
 
-Free Scan:
+Free Scan example:
 
 ```text
 12 comparison questions
@@ -125,20 +172,17 @@ Free Scan:
 = up to 36 observations
 ```
 
-AIX Monitor core measurement:
+AIX Monitor core measurement may use a larger fixed panel and repeated observations, but prompt/provider volume is a technical specification rather than the paid value proposition.
+
+Failed or unconfigured provider calls reduce measurement completeness. They are not negative recommendations.
+
+## Run locally
+
+Active implementation branch:
 
 ```text
-50 fixed comparison questions
-× OpenAI / Gemini / Perplexity
-× 3 repetitions
-= up to 450 observations per full core run
+codex/aix-next-v2
 ```
-
-Failed or unconfigured provider calls reduce measurement completeness. They are not counted as negative recommendations.
-
-## Run the current implementation locally
-
-The active implementation is on `codex/aix-next-v2`, not `main`.
 
 ```bash
 git clone https://github.com/salve-de/AIX-next.git
@@ -149,36 +193,26 @@ cp .env.example .env.local
 npm run dev -- -p 3001
 ```
 
-Open:
+Sample surfaces:
 
 ```text
-http://localhost:3001
 http://localhost:3001/result?sample=1
 http://localhost:3001/watch?sample=1
 ```
 
-The fictional sample surfaces do not require provider credentials. A real URL scan requires the relevant provider configuration and must not be represented as verified until it actually completes.
+Do not claim live provider results until a real URL scan has actually completed with the intended provider configuration.
 
-## Environment and database
+## Environment / database
 
-Use `.env.example` as the authoritative variable inventory and never commit secrets.
+Use `.env.example` as the variable inventory. Never commit secrets.
 
-Apply every SQL file in `supabase/migrations/` in numeric order. The current sequence includes `001_core.sql` through `009_watch_change_pack.sql`.
+Apply `supabase/migrations/` in numeric order. Future workflow-state migrations must preserve historical Action/completion/measurement relationships.
 
-Without Supabase, local development uses a single-process in-memory store and is not suitable for multi-instance production.
-
-## Scheduler
-
-A scheduler may call the protected due-monitoring route. The route itself selects only due records and resumes chunked paid measurements when required.
-
-```http
-GET /api/cron/watch
-Authorization: Bearer $CRON_SECRET
-```
-
-GitHub Actions are intentionally not used on this branch. Validation is run explicitly in the development environment.
+Without durable storage, local in-memory mode is development-only.
 
 ## Validation
+
+GitHub Actions are intentionally not used on this branch. Run explicitly:
 
 ```bash
 npm run lint
@@ -193,28 +227,35 @@ or:
 npm run check
 ```
 
-Do not claim a change is release-ready until these checks have actually passed and the desktop/mobile flows have been visually reviewed.
+Do not call a change release-ready until these commands pass and desktop/mobile flows are visually reviewed.
 
-## Product decisions and research
+## Product documents
+
+### Authoritative
+
+- [`docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md`](docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md)
+- [`docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md`](docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md)
+
+### Supporting
 
 - [`docs/PRODUCT_STRATEGY.md`](docs/PRODUCT_STRATEGY.md)
+- [`docs/UX_RATIONALE.md`](docs/UX_RATIONALE.md)
 - [`docs/VALUE_PROPOSITION_RESEARCH_2026-09-02.md`](docs/VALUE_PROPOSITION_RESEARCH_2026-09-02.md)
 - [`docs/B2B_AI_BUYER_BEHAVIOR_2026.md`](docs/B2B_AI_BUYER_BEHAVIOR_2026.md)
-- [`docs/UX_RATIONALE.md`](docs/UX_RATIONALE.md)
 - [`docs/MEASUREMENT.md`](docs/MEASUREMENT.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - [`docs/CHAT_HANDOFF_2026-09-02.md`](docs/CHAT_HANDOFF_2026-09-02.md)
 
-## Truth and safety boundaries
+## Truth / safety boundaries
 
 - public `http` / `https` target URLs only;
-- internal and metadata targets rejected;
+- internal/metadata targets rejected;
 - `robots.txt` respected;
-- missing credentials never create fabricated live observations;
+- missing credentials never fabricate live observations;
 - company-entered evidence is private by default;
-- Change Pack generation may send relevant entered evidence to OpenAI as disclosed in Privacy;
-- comparison questions are not customers, leads or lost revenue;
-- no universal rank, recommendation, citation, inquiry or revenue guarantee;
-- no causal claim from a simple before/after movement;
-- no invented customer results, implementation times, certifications or ROI;
-- no automatic customer-site publishing without an explicit future approval and rollback design.
+- relevant evidence may be processed by configured AI providers only as disclosed;
+- comparison questions are not customers/leads/revenue;
+- no universal rank, recommendation, citation, traffic, inquiry or revenue guarantee;
+- no causal claim from simple before/after movement;
+- no invented customer results, implementation times, certifications, pricing or ROI;
+- **no customer production-site editing or automatic publishing.**
