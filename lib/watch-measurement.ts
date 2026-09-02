@@ -1,4 +1,5 @@
 import "server-only";
+import { generateChangePack } from "@/lib/change-pack";
 import { crawlCompanySite } from "@/lib/crawler";
 import { generateBuyerPrompts } from "@/lib/discovery";
 import { env } from "@/lib/env";
@@ -115,11 +116,15 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     throw new Error("成功したAI観測が0件だったためWatch結果を更新しませんでした。");
   }
 
+  const changePack = watch.paid
+    ? await generateChangePack({ result, pages: crawl.pages, evidence: watch.evidence }).catch(() => null)
+    : null;
   const expiresAfterRun = trialExpiredAfterThisRun(watch);
   const history = run.switchToCore ? [result] : [...watch.history, result].slice(-52);
   const baseline = run.switchToCore ? result : watch.baseline;
   const status = expiresAfterRun ? "expired" as const : watch.status;
-  const updated = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });
+  const finalized = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });
+  const updated = changePack ? (await updateWatch(watch.token, { changePack }) || finalized) : finalized;
   await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
   return {
     status: expiresAfterRun ? "completed_and_expired" as const : run.switchToCore ? "core_baseline_created" as const : "completed" as const,
@@ -127,5 +132,6 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     completedPrompts: run.prompts.length,
     totalPrompts: run.prompts.length,
     observations: run.observations.length,
+    changePackItems: updated.changePack?.items.length || 0,
   };
 }
