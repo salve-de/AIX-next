@@ -1,15 +1,16 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./ux-refinement.css";
+import "./status-refinement.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "AIX — AI shortlist intelligence for B2B", template: "%s | AIX" },
-  description: "会社URLだけで、AIの購入候補に入る質問、競合、Citation、不足Evidenceを調べて継続追跡します。",
+  title: { default: "AIX — AI検索で、あなたの会社は何社中何位か", template: "%s | AIX" },
+  description: "会社URLだけで、AI比較での順位、候補外になった購買質問、先に選ばれた競合、Citation、不足Evidence、最優先Actionを測定します。",
   applicationName: "AIX",
-  openGraph: { type: "website", locale: "ja_JP", title: "AIX — AI比較で候補から外れる理由を特定", description: "AIが競合を選び、自社を候補外にしたBuyer PromptとEvidence差を調べます。", url: "/" },
+  openGraph: { type: "website", locale: "ja_JP", title: "AIX — AI検索で、あなたの会社は何社中何位か", description: "ChatGPTなどで競合が選ばれている購買質問と、自社が候補から外れる理由まで測定します。", url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 
