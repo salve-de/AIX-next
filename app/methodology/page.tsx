@@ -1,13 +1,31 @@
-import { MarketingShell } from "@/components/marketing-shell";
+import { DocumentShell } from "@/components/document-shell";
 
 export default function MethodologyPage() {
-  return <MarketingShell eyebrow="METHODOLOGY" title="AIXは、何を測っているのか。" lead="AIXの数値は、全世界のChatGPT順位ではありません。条件を固定したAI観測パネルです。">
-    <h2>測定単位</h2><p>会社の市場から生成したBuyer Promptを、OpenAIのWeb検索、GeminiのGoogle Search Grounding、Perplexity Sonarへ同じ週・同じ言語・同じ地域条件で送ります。各回答は独立したObservationとして保存します。</p>
-    <div className="document-callout"><strong>無料Scan</strong><p>12 Buyer Prompts × 3 AI surfaces × 1回 = 最大36 Observations</p></div>
-    <div className="document-callout"><strong>有料Watch</strong><p>50固定Core Prompts × 3 AI surfaces × 3回 = 週450 Observations</p></div>
-    <h2>主要指標</h2><dl className="definition-list"><div><dt>Recommendation Coverage</dt><dd>成功したAI回答のうち、自社が明示的な購入候補として挙げられた割合。</dd></div><div><dt>First Choice Rate</dt><dd>自社が最初の推薦候補として挙げられた割合。</dd></div><div><dt>Mention Coverage</dt><dd>推薦かどうかに関係なく、自社名が登場した割合。Recommendationとは分けます。</dd></div><div><dt>Citation Coverage</dt><dd>自社の確認済みドメインまたはサブドメインが引用元に含まれた割合。</dd></div><div><dt>Repeat Agreement</dt><dd>同じPromptとAIを複数回実行した際に、候補入り・順位・第一候補が一致した割合。</dd></div><div><dt>Measurement Completeness</dt><dd>予定したObservationのうち成功した割合。失敗や未設定を自社の負けとして数えません。</dd></div></dl>
-    <h2>CoreとDiscoveryを分ける理由</h2><p>毎週質問を入れ替えると、数値変化が実際の改善なのか質問変更なのか分かりません。Core Promptは固定して時系列比較に使い、Discovery Promptは新しい買い手表現や競合の発見にだけ使います。</p>
-    <h2>因果関係について</h2><p>施策後に推薦率が上がっても、その施策だけが原因とは限りません。競合の更新、Web上の新しいSource、モデル更新、検索結果、非決定性も影響します。AIXは観測変化と関連を示しますが、MVPでは因果効果を断定しません。</p>
-    <h2>Raw evidence</h2><p>有料Watchでは、Prompt、AI surface、モデル、日時、反復、生回答、候補順、Citation、抽出Version、成功・失敗状態を保存します。数値から元回答へ遡れることを、AIXの信頼性の中核にします。</p>
-  </MarketingShell>;
+  return <DocumentShell label="Methodology" title="AIXは何を測っているのか" lead="AIXの数値は全世界のChatGPT順位ではありません。同じ比較質問を決めた条件で観測し、自社と競合を比較した結果です。">
+    <h2>何を測るか</h2>
+    <p>会社URLから市場・競合・買い手の比較質問を整理し、ChatGPT / OpenAI、Gemini、Perplexityへ同じ期間・言語・地域条件で送ります。各AI回答で、自社が購入候補として挙げられたか、どの競合が挙げられたか、どのURLが引用されたかを保存します。</p>
+
+    <h2>無料診断</h2>
+    <p>12の比較質問を3つのAIで各1回確認します。最大36回答です。目的は方向性を知ることで、絶対順位を確定することではありません。</p>
+
+    <h2>AIX Monitor</h2>
+    <p>固定した比較質問を毎週繰り返し、前回との差を確認します。有料モニタリングでは固定質問50件を3つのAIで複数回測定し、単発の揺れと継続的な変化を分けやすくします。</p>
+
+    <h2>結果で見る数字</h2>
+    <dl>
+      <div><dt>候補入り質問</dt><dd>比較質問ごとに、過半数の成功したAI回答で自社が購入候補に入った質問数です。</dd></div>
+      <div><dt>候補外質問</dt><dd>比較質問ごとに、自社が購入候補に入らなかった質問数です。顧客数や失注数ではありません。</dd></div>
+      <div><dt>AI比較での位置</dt><dd>同じ観測パネルで、自社と競合の候補入り状況を比較した相対位置です。</dd></div>
+      <div><dt>測定完了</dt><dd>予定したAI回答のうち成功した数です。Provider失敗や未設定は自社の負けとして数えません。</dd></div>
+    </dl>
+
+    <h2>なぜ同じ質問で再測定するのか</h2>
+    <p>毎週質問を入れ替えると、数字が変わった理由がサイト改善なのか質問変更なのか分からなくなります。継続モニタリングでは固定質問を基準にし、新しい質問の探索は別に扱います。</p>
+
+    <h2>因果関係について</h2>
+    <p>施策後に候補入りが増えても、その施策だけが原因とは限りません。競合の更新、Web上の新しい情報、モデル更新、検索結果、AI回答の非決定性も影響します。AIXは観測した変化と関連を示しますが、単純な前後比較だけで売上効果や因果関係を断定しません。</p>
+
+    <h2>AI回答まで確認できる理由</h2>
+    <p>結果画面では、必要に応じて元のAI回答、候補順、引用元、測定日時へ遡れます。AIX独自の点数だけを信じるのではなく、元データを監査できることを重視しています。</p>
+  </DocumentShell>;
 }
