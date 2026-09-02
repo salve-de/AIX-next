@@ -54,14 +54,6 @@ export default function HomePage() {
     </section>
 
     <section className="ux2-home-section soft">
-      <div className="shell">
-        <div className="ux2-section-head"><p className="ux2-label">SAMPLE REPORT</p><h2>診断結果は、こう見えます。</h2><p>数字だけではなく、候補外になっている質問、競合、情報差、最優先の改善を同じレポートで確認します。</p></div>
-        <ProductOutputPreview />
-        <div className="ux2-home-links"><Link className="button button-dark" href="/result?sample=1">サンプルレポートを開く <ArrowIcon /></Link></div>
-      </div>
-    </section>
-
-    <section className="ux2-home-section">
       <div className="shell ux2-watch-preview">
         <WatchTrendVisual />
         <div className="ux2-watch-copy">
