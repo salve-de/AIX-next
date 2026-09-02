@@ -31,6 +31,23 @@ test("prompt intelligence separates mention, recommendation and first choice", (
   assert.equal(row?.recommendations, 1);
   assert.equal(row?.firstChoices, 1);
   assert.equal(row?.recommendationCoverage, 50);
+  assert.equal(row?.providerOutcomes.find((item) => item.provider === "openai")?.firstChoice, 1);
+  assert.equal(row?.providerOutcomes.find((item) => item.provider === "gemini")?.firstChoice, 0);
+});
+
+test("prompt text echoed in an answer is not counted as a brand mention", () => {
+  const echo: Observation = {
+    ...observations[2],
+    id: "echo",
+    promptId: "p1",
+    prompt: prompts[0].text,
+    provider: "perplexity",
+    rawText: `${prompts[0].text} Rivalを第一候補にします`,
+    citations: [],
+  };
+  const row = buildPromptIntelligence({ discovery, prompts, observations: [...observations, echo] }).find((item) => item.prompt.id === "p1");
+  assert.equal(row?.mentions, 1);
+  assert.equal(row?.providerOutcomes.find((item) => item.provider === "perplexity")?.mentioned, 0);
 });
 
 test("citation intelligence separates owned, competitor and third party sources", () => {
