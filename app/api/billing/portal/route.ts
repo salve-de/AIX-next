@@ -1,5 +1,6 @@
 import { env } from "@/lib/env";
 import { getWatch } from "@/lib/storage";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 
@@ -18,15 +19,18 @@ async function stripe(path: string, body: URLSearchParams) {
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { token?: string };
-    if (!body.token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
-    const watch = await getWatch(body.token);
+    const token = resolveWatchToken(request, body.token);
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    const watch = await getWatch(token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     if (!watch.paid) return Response.json({ error: "有料契約後に利用できます。" }, { status: 403 });
     if (!watch.stripeCustomerId) return Response.json({ error: "Stripe Customerとの紐付けを確認できません。Webhook設定を確認してください。" }, { status: 409 });
 
+    const base = env.siteUrl.replace(/\/$/, "");
+    const returnUrl = `${base}/api/session/exchange?token=${encodeURIComponent(watch.token)}&next=${encodeURIComponent("/watch")}`;
     const form = new URLSearchParams();
     form.set("customer", watch.stripeCustomerId);
-    form.set("return_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}`);
+    form.set("return_url", returnUrl);
     const session = await stripe("/billing_portal/sessions", form);
     if (!session.url) throw new Error("Customer Portalを作成できませんでした。");
     return Response.json({ url: session.url }, { headers: { "cache-control": "no-store" } });
