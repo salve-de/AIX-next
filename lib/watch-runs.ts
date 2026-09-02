@@ -1,7 +1,8 @@
 import "server-only";
 import { env } from "@/lib/env";
 import { id } from "@/lib/ids";
-import type { BuyerPrompt, CompanyDiscovery, Observation, PromptPanelKind, WatchMeasurementRun } from "@/lib/types";
+import { getWatch, updateWatch } from "@/lib/storage";
+import type { BuyerPrompt, CompanyDiscovery, Observation, PromptPanelKind, ScanResult, WatchMeasurementRun, WatchStatus } from "@/lib/types";
 
 const globalRuns = globalThis as unknown as { aixNextWatchRuns?: Map<string, WatchMeasurementRun> };
 const memoryRuns = globalRuns.aixNextWatchRuns ?? new Map<string, WatchMeasurementRun>();
@@ -137,6 +138,39 @@ export async function updateWatchRun(runId: string, patch: Partial<Pick<WatchMea
   const next = { ...current, ...patch, updatedAt };
   memoryRuns.set(runId, next);
   return next;
+}
+
+export async function finalizeWatchRun(input: {
+  run: WatchMeasurementRun;
+  latest: ScanResult;
+  baseline: ScanResult;
+  history: ScanResult[];
+  status: WatchStatus;
+  nextRunAt: string;
+}) {
+  const completedAt = new Date().toISOString();
+  if (durable()) {
+    await supabase("rpc/aix_next_finalize_watch_run", {
+      method: "POST",
+      body: JSON.stringify({
+        p_run_id: input.run.id,
+        p_watch_token: input.run.watchToken,
+        p_latest: input.latest,
+        p_baseline: input.baseline,
+        p_history: input.history,
+        p_watch_status: input.status,
+        p_next_run_at: input.nextRunAt,
+        p_completed_at: completedAt,
+      }),
+    });
+    const watch = await getWatch(input.run.watchToken);
+    if (!watch) throw new Error("Watch完了後の状態を取得できませんでした。");
+    return watch;
+  }
+  const watch = await updateWatch(input.run.watchToken, { latest: input.latest, baseline: input.baseline, history: input.history, status: input.status, nextRunAt: input.nextRunAt });
+  if (!watch) throw new Error("Watch完了後の状態を取得できませんでした。");
+  await updateWatchRun(input.run.id, { status: "completed", nextPromptIndex: input.run.prompts.length, error: null, completedAt });
+  return watch;
 }
 
 export function mergeObservations(current: Observation[], incoming: Observation[]) {
