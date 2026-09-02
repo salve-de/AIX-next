@@ -187,6 +187,27 @@ export type WatchRecord = {
   updatedAt: string;
 };
 
+export type WatchMeasurementRunStatus = "pending" | "running" | "completed" | "failed";
+
+export type WatchMeasurementRun = {
+  id: string;
+  watchId: string;
+  watchToken: string;
+  status: WatchMeasurementRunStatus;
+  targetUrl: string;
+  discovery: CompanyDiscovery;
+  prompts: BuyerPrompt[];
+  panelKind: PromptPanelKind;
+  repetitions: number;
+  switchToCore: boolean;
+  nextPromptIndex: number;
+  observations: Observation[];
+  error: string | null;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string;
+};
+
 export type ScanProgressEvent = {
   stage: ScanStage;
   progress: number;
