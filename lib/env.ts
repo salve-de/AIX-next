@@ -29,6 +29,9 @@ export const env = {
   adminSecret: text("ADMIN_SECRET"),
   rateLimitSalt: text("RATE_LIMIT_SALT", "development-only"),
   freeScansPerHour: Math.max(1, integer("FREE_SCANS_PER_HOUR", 4)),
+  watchPromptBatchSize: Math.min(12, Math.max(1, integer("WATCH_PROMPT_BATCH_SIZE", 8))),
+  watchObservationConcurrency: Math.min(12, Math.max(1, integer("WATCH_OBSERVATION_CONCURRENCY", 9))),
+  watchResumeMinutes: Math.min(60, Math.max(5, integer("WATCH_RESUME_MINUTES", 15))),
 };
 
 export function providerReadiness() {
