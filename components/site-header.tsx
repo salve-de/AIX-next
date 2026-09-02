@@ -9,7 +9,6 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
         <Link href="/result?sample=1">サンプル結果</Link>
         <Link href="/pricing">料金</Link>
         <Link href="/methodology">測定方法</Link>
-        <Link href="/support">サポート</Link>
         <Link className="header-cta" href="/#scan">無料診断</Link>
       </nav>
       <details className="ux2-mobile-nav">
@@ -18,7 +17,6 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
           <Link href="/result?sample=1">サンプル結果</Link>
           <Link href="/pricing">料金</Link>
           <Link href="/methodology">測定方法</Link>
-          <Link href="/support">サポート</Link>
           <Link href="/#scan">無料診断</Link>
         </nav>
       </details>
