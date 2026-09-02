@@ -93,6 +93,19 @@ export async function getScan(scanId: string) {
   return scans.get(scanId) || null;
 }
 
+export async function getRecentCompletedScan(targetUrl: string, maxAgeMs = 10 * 60_000) {
+  const cutoff = Date.now() - maxAgeMs;
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_scans?target_url=eq.${encodeURIComponent(targetUrl)}&stage=in.(complete,partial)&order=updated_at.desc&limit=1`);
+    if (!rows[0]) return null;
+    const scan = scanFromRow(rows[0]);
+    return scan.result && new Date(scan.updatedAt).getTime() >= cutoff ? scan : null;
+  }
+  return [...scans.values()]
+    .filter((scan) => scan.targetUrl === targetUrl && scan.result && ["complete", "partial"].includes(scan.stage) && new Date(scan.updatedAt).getTime() >= cutoff)
+    .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())[0] || null;
+}
+
 async function existingWatch(scanId: string, email: string) {
   if (durable()) {
     const rows = await supabase<any[]>(`aix_next_watches?scan_id=eq.${encodeURIComponent(scanId)}&email=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=1`);
