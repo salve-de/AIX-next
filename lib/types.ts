@@ -1,4 +1,4 @@
-export type ProviderName = "openai" | "gemini" | "perplexity";
+export type ProviderName = "openai" | "gemini" | "perplexity" | "claude" | "grok";
 export type ScanStage = "created" | "validating" | "crawling" | "discovering" | "prompting" | "measuring" | "analyzing" | "complete" | "partial" | "failed";
 export type PromptPanelKind = "free" | "core" | "discovery" | "custom";
 export type PromptCluster = "category" | "segment" | "use_case" | "feature" | "alternative" | "comparison" | "value" | "implementation" | "trust" | "support";
