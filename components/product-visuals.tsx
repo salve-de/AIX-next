@@ -16,21 +16,21 @@ export function HeroShortlistVisual() {
 export function ProductOutputPreview() {
   return <div className="home-result-preview" aria-label="AIX無料診断の架空サンプル">
     <header className="home-result-preview-header">
-      <div><p className="eyebrow">FICTIONAL SAMPLE · NEXORA CLOUD</p><h3>AI比較で、<strong>13社中9位</strong>です。</h3><p>12の購買質問のうち、候補に入ったのは2問だけです。</p></div>
-      <span>OpenAI · Gemini · Perplexity<br />12 prompts · 36 observations</span>
+      <div><p className="eyebrow">FICTIONAL SAMPLE · NEXORA CLOUD</p><h3>AI比較で、<strong>13社中9位</strong>です。</h3><p>12の購買質問のうち、候補に入ったのは2問。首位競合は7問で候補入りしています。</p></div>
+      <span>2026/09/02 · 架空データ<br />3 AI · 12 prompts · 36 / 36 observations</span>
     </header>
     <div className="home-result-preview-kpis">
-      <article><small>自社の候補入り</small><strong>2 / 12</strong><span>Buyer Prompts</span></article>
-      <article><small>競合トップ</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
+      <article><small>自社の候補入り</small><strong>2 / 12</strong><span>NEXORA Cloud</span></article>
+      <article><small>首位競合の候補入り</small><strong>7 / 12</strong><span>TrustOrbit</span></article>
       <article className="negative"><small>候補外になった質問</small><strong>10 / 12</strong><span>Buyer Prompts</span></article>
-      <article><small>測定完了</small><strong>36 / 36</strong><span>AI observations</span></article>
+      <article><small>AI観測の完了</small><strong>36 / 36</strong><span>OpenAI · Gemini · Perplexity</span></article>
     </div>
     <div className="home-result-preview-body">
       <article className="home-result-loss-preview">
-        <small>候補外になった購買質問</small>
+        <small>最も重要な候補外Buyer Prompt</small>
         <h4>「従業員300名の企業に合う取引先審査ツールは？」</h4>
-        <div><span><small>最頻推薦</small><strong>TrustOrbit</strong></span><span><small>自社</small><strong className="lost">候補外</strong></span></div>
-        <p>競合は企業規模別の導入実績と標準導入期間を比較可能な形で公開。NEXORA Cloudでは同条件の根拠を確認できませんでした。</p>
+        <div><span><small>最頻推薦</small><strong>TrustOrbit</strong></span><span><small>NEXORA Cloud</small><strong className="lost">候補外</strong></span></div>
+        <p>競合は企業規模別の導入実績と標準導入期間を比較可能な形で公開。自社では同条件の根拠を公開Webから確認できませんでした。</p>
       </article>
       <aside className="home-result-action-preview">
         <div><EvidenceIcon /><span><small>確認できないEvidence</small><strong>従業員100〜500名での導入実績</strong></span></div>
@@ -58,7 +58,7 @@ export function WatchTrendVisual() {
       <article><small>候補に入った質問</small><strong>2 <ArrowIcon /> 4</strong></article>
       <article><small>候補外の質問</small><strong>10 <ArrowIcon /> 8</strong></article>
       <article><small>新しく候補入り</small><strong className="positive">+2質問</strong></article>
-      <article><small>次に確認</small><strong>2 Evidence</strong></article>
+      <article><small>新しいCitation</small><strong>+3 URLs</strong></article>
     </div>
     <div className="watch-home-footer"><TrendIcon /><span><small>今回の変化</small><strong>順位 +2 / 候補入り質問 +2</strong></span></div>
   </div>;
