@@ -24,21 +24,21 @@ export async function POST(request: Request) {
     const body = await request.json() as { url?: string };
     targetUrl = normalizePublicUrl(body.url || "");
   } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "URLが不正です。" }, { status: 400 });
+    return Response.json({ error: error instanceof Error ? error.message : "URLが不正です。", code: "invalid_url" }, { status: 400 });
   }
 
   const cached = await getRecentCompletedScan(targetUrl, 10 * 60_000).catch(() => null);
   if (cached?.stage === "complete" && cached.result) {
     return ndjsonResponse((emit, close) => {
       emit({ type: "accepted", scanId: cached.id, reused: true });
-      emit({ type: "progress", scanId: cached.id, stage: cached.stage, progress: 100, message: "直近の公開Web診断を再利用します。", detail: `測定 ${cached.result?.measuredAt}` });
+      emit({ type: "progress", scanId: cached.id, stage: cached.stage, progress: 100, message: "直近の診断結果を再利用します。", detail: `測定 ${cached.result?.measuredAt}` });
       emit({ type: "complete", scanId: cached.id, reused: true });
       close();
     });
   }
 
   const limit = await consumeFreeScan(request, targetUrl);
-  if (!limit.allowed) return Response.json({ error: "無料診断の利用上限に達しました。時間を空けて再度お試しください。" }, { status: 429, headers: { "retry-after": String(limit.retryAfter) } });
+  if (!limit.allowed) return Response.json({ error: "無料診断の利用上限に達しました。", code: "rate_limited", retryAfter: limit.retryAfter }, { status: 429, headers: { "retry-after": String(limit.retryAfter) } });
 
   const scan = await createScan(targetUrl);
   return ndjsonResponse(async (emit, close) => {
