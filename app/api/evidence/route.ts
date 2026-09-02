@@ -1,4 +1,5 @@
 import { addEvidence } from "@/lib/storage";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 
@@ -13,10 +14,11 @@ function sourceUrl(value: string) {
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { token?: string; gapId?: string; value?: string; sourceUrl?: string };
-    const token = body.token?.trim() || "";
+    const token = resolveWatchToken(request, body.token);
     const gapId = body.gapId?.trim().slice(0, 160) || "";
     const value = body.value?.trim().slice(0, 5_000) || "";
-    if (!token || !gapId || !value) return Response.json({ error: "入力内容が不足しています。" }, { status: 400 });
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    if (!gapId || !value) return Response.json({ error: "入力内容が不足しています。" }, { status: 400 });
     const watch = await addEvidence(token, { gapId, value, sourceUrl: sourceUrl(body.sourceUrl?.trim() || "") });
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     return Response.json(watch, { headers: { "cache-control": "private, no-store" } });
