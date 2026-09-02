@@ -7,37 +7,46 @@ import { recommendationInstruction } from "@/lib/providers/common";
 function extractText(data: any) {
   if (typeof data.output_text === "string") return data.output_text;
   return (Array.isArray(data.output) ? data.output : [])
+    .filter((item: any) => item?.type === "message")
     .flatMap((item: any) => Array.isArray(item.content) ? item.content : [])
     .map((part: any) => typeof part.text === "string" ? part.text : "")
     .filter(Boolean)
     .join("\n");
 }
 
+function addCitation(result: Map<string, Citation>, url: unknown, title?: unknown) {
+  if (typeof url !== "string" || !url) return;
+  try {
+    const parsed = new URL(url);
+    result.set(parsed.toString(), {
+      title: typeof title === "string" && title ? title : parsed.hostname,
+      url: parsed.toString(),
+      domain: parsed.hostname.replace(/^www\./, ""),
+    });
+  } catch { /* ignore invalid source */ }
+}
+
 function extractCitations(data: any): Citation[] {
   const result = new Map<string, Citation>();
   for (const item of Array.isArray(data.output) ? data.output : []) {
-    for (const part of Array.isArray(item.content) ? item.content : []) {
-      for (const annotation of Array.isArray(part.annotations) ? part.annotations : []) {
-        const url = annotation.url || annotation.url_citation?.url;
-        if (!url) continue;
-        try {
-          const parsed = new URL(url);
-          result.set(parsed.toString(), { title: annotation.title || annotation.url_citation?.title || parsed.hostname, url: parsed.toString(), domain: parsed.hostname.replace(/^www\./, "") });
-        } catch { /* ignore invalid source */ }
+    if (item?.type === "message") {
+      for (const part of Array.isArray(item.content) ? item.content : []) {
+        for (const annotation of Array.isArray(part.annotations) ? part.annotations : []) {
+          addCitation(result, annotation?.url || annotation?.url_citation?.url, annotation?.title || annotation?.url_citation?.title);
+        }
+      }
+    }
+    if (item?.type === "web_search_call") {
+      for (const source of Array.isArray(item?.action?.sources) ? item.action.sources : []) {
+        addCitation(result, source?.url, source?.title);
       }
     }
   }
-  const included = Array.isArray(data.include) ? data.include : [];
-  for (const item of included) {
-    const sources = item?.action?.sources || item?.sources || [];
-    for (const source of sources) {
-      try {
-        const parsed = new URL(source.url);
-        result.set(parsed.toString(), { title: source.title || parsed.hostname, url: parsed.toString(), domain: parsed.hostname.replace(/^www\./, "") });
-      } catch { /* ignore */ }
-    }
-  }
   return [...result.values()].slice(0, 20);
+}
+
+function searchRequestCount(data: any) {
+  return (Array.isArray(data.output) ? data.output : []).filter((item: any) => item?.type === "web_search_call").length;
 }
 
 export const openAiProvider: AiSearchProvider = {
@@ -63,10 +72,10 @@ export const openAiProvider: AiSearchProvider = {
     return {
       rawText,
       citations: extractCitations(data),
-      model: env.openAiSearchModel,
+      model: data.model || env.openAiSearchModel,
       inputTokens: data.usage?.input_tokens,
       outputTokens: data.usage?.output_tokens,
-      searchRequests: 1,
+      searchRequests: searchRequestCount(data),
     };
   },
 };
