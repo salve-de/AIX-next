@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./watch-v3.css";
+import "./competitor-movers.css";
 
 export const metadata: Metadata = {
   title: "AIX Watch",
