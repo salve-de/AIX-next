@@ -1,7 +1,7 @@
 import "server-only";
 import { id } from "@/lib/ids";
 import { env } from "@/lib/env";
-import type { EvidenceAnswer, ScanRecord, ScanResult, WatchRecord } from "@/lib/types";
+import type { EvidenceAnswer, ScanRecord, WatchRecord } from "@/lib/types";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -77,13 +77,25 @@ export async function getScan(scanId: string) {
   return scans.get(scanId) || null;
 }
 
+async function existingWatch(scanId: string, email: string) {
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_watches?scan_id=eq.${encodeURIComponent(scanId)}&email=eq.${encodeURIComponent(email)}&order=created_at.desc&limit=1`);
+    return rows[0] ? watchFromRow(rows[0]) : null;
+  }
+  return [...watches.values()].find((watch) => watch.scanId === scanId && watch.email === email) || null;
+}
+
 export async function createWatch(scan: ScanRecord, email: string) {
   if (!scan.result) throw new Error("診断結果が完成していません。");
+  const normalizedEmail = email.toLowerCase();
+  const existing = await existingWatch(scan.id, normalizedEmail);
+  if (existing) return existing;
+
   const now = new Date();
   const record: WatchRecord = {
     id: id("watch"),
     token: id("token"),
-    email: email.toLowerCase(),
+    email: normalizedEmail,
     scanId: scan.id,
     status: "trial",
     paid: false,
