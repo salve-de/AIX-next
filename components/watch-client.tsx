@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowIcon, QuoteIcon, TrendIcon, WarningIcon } from "@/components/icons";
+import { ArrowIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { sampleWatch } from "@/lib/sample-data";
@@ -14,7 +14,7 @@ function formatDate(value: string) {
 }
 
 function panelDescription(watch: WatchRecord) {
-  return watch.latest.panel.kind === "core" ? "固定Core Panel" : "同じBuyer Prompt";
+  return watch.latest.panel.kind === "core" ? "固定した比較質問" : "前回と同じ比較質問";
 }
 
 export function WatchClient() {
@@ -31,10 +31,10 @@ export function WatchClient() {
 
   useEffect(() => {
     if (sample) return;
-    if (!token) { setError("Watch tokenがありません。"); setLoading(false); return; }
+    if (!token) { setError("モニタリングURLが正しくありません。"); setLoading(false); return; }
     fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
-      .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "Watchを取得できませんでした。"); setWatch(data); })
-      .catch((caught) => setError(caught instanceof Error ? caught.message : "Watchを取得できませんでした。"))
+      .then(async (response) => { const data = await response.json(); if (!response.ok) throw new Error(data.error || "モニタリング結果を取得できませんでした。"); setWatch(data); })
+      .catch((caught) => setError(caught instanceof Error ? caught.message : "モニタリング結果を取得できませんでした。"))
       .finally(() => setLoading(false));
   }, [sample, token]);
 
@@ -45,8 +45,8 @@ export function WatchClient() {
     const latestLost = new Set(watch.latest.lostPrompts.map((item) => item.promptId));
     const baselineShortlisted = Math.max(0, watch.baseline.panel.promptCount - baselineLost.size);
     const latestShortlisted = Math.max(0, watch.latest.panel.promptCount - latestLost.size);
-    const newPromptWins = [...baselineLost].filter((promptId) => !latestLost.has(promptId)).length;
-    const newPromptLosses = [...latestLost].filter((promptId) => !baselineLost.has(promptId)).length;
+    const wonPrompts = watch.baseline.lostPrompts.filter((item) => !latestLost.has(item.promptId));
+    const newlyLostPrompts = watch.latest.lostPrompts.filter((item) => !baselineLost.has(item.promptId));
     const baselineCitations = new Set(watch.baseline.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
     const latestCitations = new Set(watch.latest.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
     return {
@@ -56,8 +56,8 @@ export function WatchClient() {
       latestShortlisted,
       baselineLost: baselineLost.size,
       latestLost: latestLost.size,
-      newPromptWins,
-      newPromptLosses,
+      wonPrompts,
+      newlyLostPrompts,
       newCitations: [...latestCitations].filter((url) => !baselineCitations.has(url)).length,
     };
   }, [watch]);
@@ -81,9 +81,9 @@ export function WatchClient() {
     try {
       const response = await fetch("/api/billing/checkout", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Checkoutを開始できませんでした。");
+      if (!response.ok) throw new Error(data.error || "契約手続きを開始できませんでした。");
       window.location.assign(data.url);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Checkoutを開始できませんでした。"); }
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "契約手続きを開始できませんでした。"); }
     finally { setCheckoutBusy(false); }
   }
 
@@ -93,23 +93,25 @@ export function WatchClient() {
     try {
       const response = await fetch("/api/change-pack", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Change Packを生成できませんでした。");
+      if (!response.ok) throw new Error(data.error || "変更原稿を作成できませんでした。");
       setWatch((current) => current ? { ...current, changePack: data.changePack } : current);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "Change Packを生成できませんでした。"); }
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "変更原稿を作成できませんでした。"); }
     finally { setChangePackBusy(false); }
   }
 
-  if (loading) return <div className="full-loading">Watchを読み込んでいます。</div>;
-  if (!watch || !change) return <main className="empty-page"><h1>Watchを表示できません。</h1><p>{error}</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
+  if (loading) return <div className="full-loading">モニタリング結果を読み込んでいます。</div>;
+  if (!watch || !change) return <main className="empty-page"><h1>モニタリング結果を表示できません。</h1><p>{error}</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
 
   const points = watch.history.map((item, index) => ({ x: 44 + index * (520 / Math.max(1, watch.history.length - 1)), y: 170 - item.recommendationCoverage * 2.8 }));
   const path = points.map((point, index) => `${index ? "L" : "M"}${point.x} ${Math.max(25, point.y)}`).join(" ");
   const pendingGaps = watch.latest.evidenceGaps.filter((gap) => !watch.evidence.some((answer) => answer.gapId === gap.id));
   const stopped = ["expired", "cancelled"].includes(watch.status);
+  const firstAction = watch.latest.actions[0];
+  const remainingLosses = watch.latest.lostPrompts.slice(0, 3);
   const statusText = watch.status === "expired"
-    ? "14日無料Watchは終了しました。自動課金はされていません。"
+    ? "14日間の無料モニタリングは終了しました。自動課金はされていません。"
     : watch.status === "cancelled"
-      ? "有料Watchは解約済みです。過去の測定結果はこの画面で確認できます。"
+      ? "有料モニタリングは解約済みです。過去の結果は引き続き確認できます。"
       : watch.status === "past_due"
         ? "決済の確認が必要です。契約管理から支払情報を確認してください。"
         : "";
@@ -138,32 +140,57 @@ export function WatchClient() {
   } : null;
   const visibleChangePack = watch.changePack || samplePack;
 
-  return <main>
+  return <main className="ux2-watch-page">
     <SiteHeader compact />
-    <section className="watch-hero"><div className="shell"><div className="watch-title-row"><div><p className="eyebrow">AIX WATCH · {sample ? "FICTIONAL SAMPLE" : watch.status.toUpperCase()}</p><h1>前回の改善は効いたか。<br />AI比較 {watch.baseline.marketPosition}位 → {watch.latest.marketPosition}位。</h1><p>{watch.latest.discovery.brandName}を{panelDescription(watch)}で再測定。候補入り質問は {change.baselineShortlisted} → {change.latestShortlisted}、候補外は {change.baselineLost} → {change.latestLost}。前回から「何が良くなり、何がまだ残っているか」を見ます。</p></div>{stopped ? <div className="live-pill stopped"><i />測定停止</div> : <div className="live-pill"><i />次回測定 {formatDate(watch.nextRunAt)}</div>}</div></div></section>
 
-    {statusText ? <section className={`watch-status-banner watch-status-${watch.status}`}><div className="shell"><WarningIcon /><div><strong>{statusText}</strong><span>{watch.status === "expired" ? "継続する場合だけStripe Checkoutで有料Watchを開始します。" : watch.status === "past_due" ? "Watchは自動で新しい測定を行いません。" : "必要なら同じWatchを再開できます。"}</span></div></div></section> : null}
-
-    <section className="watch-change-panel"><div className="shell"><div className="watch-change-grid"><article><small>AI比較での順位</small><strong>{watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b></strong><span>{change.comparable ? `${change.rank >= 0 ? "+" : ""}${change.rank}順位` : "新しいBaseline"}</span></article><article><small>候補に入った購買質問</small><strong>{change.baselineShortlisted} → <b>{change.latestShortlisted}</b></strong><span>{watch.latest.panel.promptCount} Buyer Prompts</span></article><article><small>候補外になった購買質問</small><strong>{change.baselineLost} → <b>{change.latestLost}</b></strong><span>{watch.latest.panel.promptCount} Buyer Prompts</span></article><article><small>新しく候補入り</small><strong><b>+{change.newPromptWins}質問</b></strong><span>{change.newPromptLosses ? `新しく候補外 ${change.newPromptLosses}質問` : "新しい候補外なし"}</span></article></div><p className="watch-change-note">{change.comparable ? "同じPanel種別・version・Prompt数だけを比較しています。順位変化だけで施策の因果を断定しません。" : "測定条件が変わったため、今回は新しいBaselineとして扱います。"}</p></div></section>
-
-    <section className="watch-overview shell">
-      <div className="watch-chart-card"><header><div><small>AI回答での自社候補入り</small><strong>{watch.latest.ownRecommendationCount} / {watch.latest.successfulObservations}</strong></div><span>週次推移</span></header><div className="watch-chart"><svg viewBox="0 0 610 210" preserveAspectRatio="none" aria-hidden="true"><path className="grid" d="M35 40H590M35 95H590M35 150H590" /><path className="line" d={path || "M44 150L566 150"} />{points.map((point, index) => <circle key={index} className={index === points.length - 1 ? "last" : ""} cx={point.x} cy={Math.max(25, point.y)} r={index === points.length - 1 ? 7 : 5} />)}</svg><span className="chart-baseline">Baseline {watch.baseline.ownRecommendationCount}/{watch.baseline.successfulObservations}</span><span className="chart-now">Now {watch.latest.ownRecommendationCount}/{watch.latest.successfulObservations}</span></div></div>
-    </section>
-
-    <section className="result-section shell"><div className="section-heading"><p className="eyebrow">WHAT MOVED</p><h2>どの比較場面を取り戻したか。</h2><p>作業履歴ではなく、同じBuyer Promptで候補入りしたかどうかの差分だけを表示します。改善が効いた可能性のある場所と、まだ候補外の場所を分けます。</p></div><div className="movement-grid"><article><span><TrendIcon />候補入り</span><h3>{change.newPromptWins ? `${change.newPromptWins}質問で新しく候補入り` : "新しい候補入りは未確認"}</h3><p>Baselineでは候補外、今回の測定では候補入りになったBuyer Promptです。</p></article><article><span><WarningIcon />候補外</span><h3>{change.newPromptLosses ? `${change.newPromptLosses}質問で新しく候補外` : "新しい候補外は未確認"}</h3><p>一時的な変化は次回測定も確認し、単発の揺れと継続変化を分けます。</p></article><article><span><QuoteIcon />Citation</span><h3>{change.newCitations}件の新しい引用元</h3><p>自社・競合の推薦理由に使われたURLの差分です。</p></article></div></section>
-
-    <section className="result-section evidence-section"><div className="shell"><div className="section-heading"><p className="eyebrow">NEXT GAP · {pendingGaps.length}</p><h2>次に埋めるべき情報差。</h2><p>AIXが公開Webで確認できない情報だけを聞きます。入力内容は一般公開しません。有料Change Pack生成時は、ドラフト作成に必要な内容をOpenAIへ送信する場合があります。</p></div><div className="evidence-grid evidence-input-grid">{watch.latest.evidenceGaps.slice(0, 4).map((gap) => {
-      const answer = watch.evidence.find((item) => item.gapId === gap.id);
-      return <article key={gap.id}><header><span>{gap.relatedPromptCount} prompts</span><strong>{answer ? "入力済み" : "未確認"}</strong></header><h3>{gap.label}</h3><p>{answer ? answer.value : gap.whyItMatters}</p>{answer ? <small>{answer.status}</small> : <form onSubmit={(event) => saveEvidence(event, gap.id)}><input value={values[gap.id] || ""} onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))} placeholder="分かる範囲で入力" /><button className="button button-dark" disabled={saving === gap.id}>{saving === gap.id ? "保存中…" : "企業情報として保存"}<ArrowIcon /></button></form>}</article>;
-    })}</div></div></section>
-
-    <section className="result-section shell"><div className="section-heading"><p className="eyebrow">NEXT ACTIONS</p><h2>次に効かせる順番。</h2><p>候補外Buyer Prompt、Citation、Evidence差、実装負担から、次に検証する変更を優先順位付けします。</p></div><div className="action-list">{watch.latest.actions.slice(0, 5).map((action, index) => <article key={action.id}><span className={`priority priority-${action.priority}`}>{action.priority}</span><div><small>0{index + 1} · {action.type}</small><h3>{action.title}</h3><p>{action.rationale}</p></div><aside><strong>{action.relatedPromptCount}</strong><small>related prompts</small><em>{action.target}</em></aside></article>)}</div></section>
-
-    <section className="change-pack-section"><div className="shell"><div className="section-heading"><p className="eyebrow">CHANGE PACK</p><h2>「何を直す？」を、<br />そのまま編集できる原稿にする。</h2><p>公開Webと企業が確認した事実だけを使い、見出し・リード・本文・FAQ・公開前チェックまで作ります。AIXが勝手にサイトへ公開することはありません。</p></div>
-      {visibleChangePack ? <div className="change-pack-list">{visibleChangePack.items.map((item, index) => <article key={item.id}><header><div><small>CHANGE {String(index + 1).padStart(2, "0")} · {item.target}</small><h3>{item.title}</h3></div><span>{item.relatedPromptIds.length} prompts</span></header><div className="change-pack-draft"><small>提案見出し</small><strong>{item.proposedTitle}</strong>{item.proposedLead ? <p>{item.proposedLead}</p> : null}</div>{item.sections.slice(0, 3).map((section) => <div className="change-pack-section-copy" key={section.heading}><small>{section.heading}</small><p>{section.body}</p></div>)}{item.faq.length ? <div className="change-pack-faq"><small>FAQ</small>{item.faq.slice(0, 2).map((faq) => <p key={faq.question}><b>{faq.question}</b><span>{faq.answer}</span></p>)}</div> : null}{item.publishChecks.length ? <footer><small>公開前に確認</small><span>{item.publishChecks.join(" · ")}</span></footer> : null}</article>)}</div> : watch.paid ? <div className="change-pack-empty"><h3>最新測定からChange Packを作成</h3><p>現在の候補外質問・Evidence差・企業入力を使って、最大3件の変更ドラフトを生成します。</p><button className="button button-dark" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "Change Packを作成中…" : "変更原稿を作成する"}<ArrowIcon /></button></div> : <div className="change-pack-locked"><div><small>FOUNDER WATCH</small><h3>分析結果を、サイトに貼れる変更案まで変換。</h3><p>有料Watchでは、最優先Actionを「見出し・リード・本文・FAQ・公開前チェック」に変換します。企業が確認してから使うドラフトなので、未確認の実績や数値は作りません。</p></div><Link className="button button-dark" href="/pricing">Change Packの内容を見る <ArrowIcon /></Link></div>}
+    <section className="ux2-watch-top"><div className="shell">
+      <div className="ux2-watch-top-row"><div><p className="ux2-label">{sample ? "架空サンプル · 継続モニタリング" : "継続モニタリング"}</p><h1>前回の改善後、<br />AI比較は {watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b>。</h1><p>{panelDescription(watch)}で再測定。候補入り質問は {change.baselineShortlisted} → {change.latestShortlisted}。まず「何が良くなったか」と「次に何を直すか」を確認します。</p></div><span className="ux2-next-run">{stopped ? "測定停止" : `次回 ${formatDate(watch.nextRunAt)}`}</span></div>
+      <div className="ux2-watch-kpis"><article><small>AI比較での位置</small><strong>{watch.baseline.marketPosition}位 → <b>{watch.latest.marketPosition}位</b></strong><span>{change.comparable ? `${change.rank >= 0 ? "+" : ""}${change.rank}順位` : "新しい基準値"}</span></article><article><small>候補入り質問</small><strong>{change.baselineShortlisted} → <b>{change.latestShortlisted}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article><article><small>候補外質問</small><strong>{change.baselineLost} → <b>{change.latestLost}</b></strong><span>{watch.latest.panel.promptCount}質問</span></article><article><small>新しく候補入り</small><strong><b>+{change.wonPrompts.length}質問</b></strong><span>{change.newlyLostPrompts.length ? `新しく候補外 ${change.newlyLostPrompts.length}` : "新しい候補外なし"}</span></article></div>
     </div></section>
 
-    <section className="paid-cta"><div className="shell paid-grid"><div><p className="eyebrow">FOUNDER WATCH</p><h2>毎週、<br />「何が効いたか → 次に何を直すか」を回す。</h2><p>固定Core Prompt 50件を同じ条件で追跡し、改善の答え合わせと次の優先Actionを更新します。</p><ul><li>候補入り / 候補外の差分</li><li>全AI回答とCitation</li><li>Evidence Inbox</li><li>Change Packと優先Action</li><li>12か月履歴</li></ul></div><article><small>月額・税別・1ブランド</small><strong>¥29,800</strong>{watch.paid ? <Link className="button button-accent" href={`/billing?token=${encodeURIComponent(token)}`}>契約を管理 <ArrowIcon /></Link> : <button className="button button-accent" type="button" onClick={checkout} disabled={checkoutBusy}>{checkoutBusy ? "Checkoutを準備中…" : watch.status === "expired" || watch.status === "cancelled" ? "改善サイクルを毎週回す" : "このWatchを継続する"}<ArrowIcon /></button>}<p>{watch.paid ? "支払方法、請求履歴、更新、解約はStripe Customer Portalで管理します。" : "無料Watchから自動課金されません。Stripe Checkoutで契約条件を確認してから開始します。"}</p></article></div></section>
+    {statusText ? <section className="watch-status-banner"><div className="shell"><strong>{statusText}</strong></div></section> : null}
+
+    <section className="ux2-watch-section white"><div className="shell">
+      <div className="ux2-report-heading"><div><p className="ux2-label">今回の変化</p><h2>どの比較質問を取り戻したか。</h2><p>単なる作業履歴ではなく、前回は候補外だった質問が今回どう変わったかを見ます。</p></div></div>
+      <div className="ux2-movement-grid">
+        <article><small>新しく候補入り</small><h3>{change.wonPrompts.length ? `${change.wonPrompts.length}質問で候補入り` : "新しい候補入りは未確認"}</h3><p>{change.wonPrompts.slice(0, 2).map((item) => `「${item.prompt}」`).join(" / ") || "次回も同じ質問で変化を確認します。"}</p></article>
+        <article><small>新しく候補外</small><h3>{change.newlyLostPrompts.length ? `${change.newlyLostPrompts.length}質問で候補外` : "新しい候補外なし"}</h3><p>{change.newlyLostPrompts.slice(0, 2).map((item) => `「${item.prompt}」`).join(" / ") || "今回、新たに落ちた比較質問は確認されませんでした。"}</p></article>
+        <article><small>新しい引用元</small><h3>{change.newCitations}件</h3><p>自社・競合の推薦理由に使われたURLの差分です。</p></article>
+      </div>
+    </div></section>
+
+    <section className="ux2-watch-section"><div className="shell">
+      <div className="ux2-report-heading"><div><p className="ux2-label">まだ残っている問題</p><h2>重要な候補外質問と、次に直すこと。</h2><p>改善した箇所だけでなく、まだ比較候補に入れていない場所を次のActionへつなげます。</p></div></div>
+      <div className="ux2-question-table">
+        <div className="ux2-question-row header"><div>まだ候補外の比較質問</div><div>自社</div><div>最も選ばれた競合</div><div>状態</div></div>
+        {remainingLosses.map((loss) => <div className="ux2-question-row" key={loss.promptId}><div><strong>「{loss.prompt}」</strong></div><div><span className="ux2-status-lost">候補外</span></div><div><strong>{loss.winner || "特定できず"}</strong></div><div><small>継続確認</small></div></div>)}
+      </div>
+      {firstAction ? <div className="ux2-next-action" style={{ marginTop: 16 }}><small>次に検証する変更</small><h2>{firstAction.title}</h2><p>{firstAction.rationale}</p><div className="ux2-action-meta"><span>{firstAction.relatedPromptCount}質問に関連</span><span>対象: {firstAction.target}</span></div></div> : null}
+    </div></section>
+
+    <section className="ux2-watch-section white"><div className="shell">
+      <div className="ux2-report-heading"><div><p className="ux2-label">変更原稿</p><h2>「何を直す？」を、そのまま編集できる形へ。</h2><p>公開Webと企業が確認した事実だけを使い、見出し・本文・FAQ・公開前チェックまで作ります。AIXが勝手にサイトへ公開することはありません。</p></div></div>
+      {visibleChangePack ? <div className="ux2-change-pack">{visibleChangePack.items.map((item) => <article className="ux2-change-item" key={item.id}><header><div><small>{item.target}</small><h3>{item.title}</h3></div><span>{item.relatedPromptIds.length}質問</span></header><div className="ux2-change-body"><small>提案見出し</small><strong>{item.proposedTitle}</strong>{item.proposedLead ? <p>{item.proposedLead}</p> : null}{item.sections.slice(0, 3).map((section) => <div className="ux2-change-section" key={section.heading}><b>{section.heading}</b><p>{section.body}</p></div>)}{item.faq.slice(0, 2).map((faq) => <div className="ux2-change-section" key={faq.question}><b>FAQ: {faq.question}</b><p>{faq.answer}</p></div>)}</div>{item.publishChecks.length ? <div className="ux2-change-checks">公開前に確認: {item.publishChecks.join(" · ")}</div> : null}</article>)}</div> : watch.paid ? <div className="ux2-account-card"><h2>最新測定から変更原稿を作成</h2><p>現在の候補外質問・比較材料の差・企業入力を使って、最大3件の変更ドラフトを生成します。</p><button className="button button-dark" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "作成中…" : <>変更原稿を作成 <ArrowIcon /></>}</button></div> : <div className="ux2-account-card"><h2>AIX Monitorで利用できます</h2><p>最優先の改善を、見出し・本文・FAQ・公開前チェックまで編集可能な原稿へ変換します。サンプルでは実際の形式を確認できます。</p><Link className="button button-dark" href="/pricing">料金と内容を見る <ArrowIcon /></Link></div>}
+    </div></section>
+
+    <section className="ux2-watch-section"><div className="shell">
+      <div className="ux2-report-heading"><div><p className="ux2-label">確認が必要な事実</p><h2>企業にしか分からない情報を補う。</h2><p>公開Webで確認できなかった事実だけを聞きます。変更原稿を生成するときは、入力内容がOpenAIへ送信される場合があります。</p></div></div>
+      <div className="ux2-evidence-list">{watch.latest.evidenceGaps.slice(0, 3).map((gap) => {
+        const answer = watch.evidence.find((item) => item.gapId === gap.id);
+        return <article className="ux2-evidence-card" key={gap.id}><small>{gap.relatedPromptCount}質問に関連 · {answer ? "入力済み" : "未確認"}</small><h3>{gap.label}</h3><p>{answer ? answer.value : gap.whyItMatters}</p>{answer ? null : <form onSubmit={(event) => saveEvidence(event, gap.id)}><input value={values[gap.id] || ""} onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))} placeholder="分かる範囲で入力" /><button className="button button-dark" disabled={saving === gap.id}>{saving === gap.id ? "保存中…" : "保存"}</button></form>}</article>;
+      })}</div>
+    </div></section>
+
+    <section className="ux2-watch-section white"><div className="shell">
+      <div className="ux2-report-heading"><div><p className="ux2-label">推移</p><h2>長期的な変化を確認する。</h2><p>Actionを確認したあとで、同条件の測定推移を補助的に見ます。</p></div></div>
+      <div className="ux2-chart-card"><header><div><small>AI回答で自社が候補入り</small><strong>{watch.latest.ownRecommendationCount} / {watch.latest.successfulObservations}</strong></div><span>{watch.history.length}回の測定</span></header><div className="ux2-chart"><svg viewBox="0 0 610 210" preserveAspectRatio="none" aria-hidden="true"><path className="grid" d="M35 40H590M35 95H590M35 150H590" /><path className="line" d={path || "M44 150L566 150"} />{points.map((point, index) => <circle key={index} className={index === points.length - 1 ? "last" : ""} cx={point.x} cy={Math.max(25, point.y)} r={index === points.length - 1 ? 7 : 5} />)}</svg></div></div>
+    </div></section>
+
+    <section className="ux2-paid-cta"><div className="shell ux2-paid-grid">
+      <div><p className="ux2-label">AIX MONITOR</p><h2>毎週、「何が変わった → 次に何を直す」を更新する。</h2><p>固定した比較質問を継続測定し、候補入り・候補外の差分、次のAction、変更原稿を更新します。</p>{!sample && token ? <p><Link className="ux2-link" href={`/data-rights?token=${encodeURIComponent(token)}`}>データ管理</Link></p> : null}</div>
+      <aside className="ux2-paid-card"><small>月額・税別・1ブランド</small><strong>¥29,800</strong>{watch.paid && !sample ? <Link className="button button-accent" href={`/billing?token=${encodeURIComponent(token)}`}>契約を管理 <ArrowIcon /></Link> : <button className="button button-accent" type="button" onClick={checkout} disabled={checkoutBusy}>{checkoutBusy ? "準備中…" : "AIX Monitorを開始"}<ArrowIcon /></button>}<p>無料期間から自動課金されません。契約条件はCheckoutで確認できます。</p></aside>
+    </div></section>
+
     {error ? <p className="floating-error" role="alert">{error}</p> : null}
     <SiteFooter />
   </main>;
