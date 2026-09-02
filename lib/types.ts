@@ -125,6 +125,7 @@ export type ScanResult = {
   targetUrl: string;
   discovery: CompanyDiscovery;
   panel: MeasurementPanel;
+  prompts?: BuyerPrompt[];
   measuredAt: string;
   observations: Observation[];
   scheduledObservations: number;
@@ -166,7 +167,7 @@ export type EvidenceAnswer = {
   updatedAt: string;
 };
 
-export type WatchStatus = "trial" | "active" | "past_due" | "cancelled";
+export type WatchStatus = "trial" | "active" | "past_due" | "cancelled" | "expired";
 
 export type WatchRecord = {
   id: string;
