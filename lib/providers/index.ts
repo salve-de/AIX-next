@@ -1,7 +1,7 @@
 import "server-only";
 import { extractRecommendedEntities } from "@/lib/entity-extraction";
 import { id } from "@/lib/ids";
-import type { BuyerPrompt, CompanyDiscovery, Observation } from "@/lib/types";
+import type { BuyerPrompt, CompanyDiscovery, Observation, ProviderName } from "@/lib/types";
 import type { AiSearchProvider } from "@/lib/providers/common";
 import { observationFromFailure } from "@/lib/providers/common";
 import { openAiProvider } from "@/lib/providers/openai";
@@ -11,19 +11,27 @@ import { claudeProvider } from "@/lib/providers/claude";
 import { grokProvider } from "@/lib/providers/grok";
 
 export const providers: AiSearchProvider[] = [openAiProvider, geminiProvider, perplexityProvider, claudeProvider, grokProvider];
+export const freeProviders: ProviderName[] = ["openai", "gemini", "perplexity"];
+export const paidProviders: ProviderName[] = providers.map((provider) => provider.name);
 
 export async function runObservationPanel(input: {
   prompts: BuyerPrompt[];
   discovery: CompanyDiscovery;
   repetitions: number;
+  providerNames?: ProviderName[];
   onProgress?: (completed: number, total: number, detail: string) => Promise<void> | void;
 }) {
-  const tasks = input.prompts.flatMap((prompt) => providers.flatMap((provider) => Array.from({ length: input.repetitions }, (_, index) => ({ prompt, provider, repetition: index + 1 }))));
+  const selected = input.providerNames?.length
+    ? providers.filter((provider) => input.providerNames!.includes(provider.name))
+    : providers;
+  if (!selected.length) throw new Error("測定対象AI surfaceがありません。");
+
+  const tasks = input.prompts.flatMap((prompt) => selected.flatMap((provider) => Array.from({ length: input.repetitions }, (_, index) => ({ prompt, provider, repetition: index + 1 }))));
   const observations: Observation[] = [];
   let completed = 0;
 
-  for (let offset = 0; offset < tasks.length; offset += 5) {
-    const batch = tasks.slice(offset, offset + 5);
+  for (let offset = 0; offset < tasks.length; offset += selected.length) {
+    const batch = tasks.slice(offset, offset + selected.length);
     const rows = await Promise.all(batch.map(async ({ prompt, provider, repetition }) => {
       const providerInput = { prompt, discovery: input.discovery, repetition };
       if (!provider.configured()) return observationFromFailure(providerInput, provider.name, "unconfigured", "API credential is not configured", "skipped");
