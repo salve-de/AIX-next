@@ -1,17 +1,12 @@
-# AIX Next — current handoff redirect (2026-09-02)
+# AIX Next — CURRENT HANDOFF REDIRECT
 
-> **Do not resume from the historical `eb75456` / `d9fcf1b` implementation or from the intermediate value-pass UI.**
+> **Do not resume from historical implementation handoffs or intermediate redesign documents.**
 
-The current implementation and UX source of truth is:
-
-```text
-docs/CHAT_HANDOFF_2026-09-02_B2B_REDESIGN.md
-```
-
-GitHub:
+The current product and implementation source of truth is:
 
 ```text
-https://github.com/salve-de/AIX-next/blob/codex/aix-next-v2/docs/CHAT_HANDOFF_2026-09-02_B2B_REDESIGN.md
+docs/AIX_PRODUCT_IMPLEMENTATION_MASTER_CURRENT.md
+docs/AIX_IMPLEMENTATION_BACKLOG_CURRENT.md
 ```
 
 Repository / branch:
@@ -21,23 +16,73 @@ salve-de/AIX-next
 codex/aix-next-v2
 ```
 
-Current product promise:
+## Current product model
 
-> **ChatGPTで、競合に負けている質問がわかる。会社URLを入れるだけ。候補外になる比較質問、代わりに選ばれる競合、その理由、まず直すべき1件まで診断し、改善後を同じ質問で確認する。**
+> **AI検索で競合に負けている場所を継続監視し、今週やるAI SEO Actionを実行可能な形まで作って担当者へ渡し、実施後に同じ条件で答え合わせする。**
 
-The active branch uses the redesigned page roles:
+## Critical boundary
+
+AIX does **not** connect to or edit customer production websites.
+
+The product owns:
 
 ```text
-Home / LP with URL input
-→ Scan execution
-→ decision-first Result
-→ 14-day free comparable monitoring
-→ AIX Monitor + Change Pack
+monitor
+→ diagnose
+→ prioritize
+→ prepare Action Pack
+→ recommend owner
+→ share
+→ track completion
+→ remeasure
 ```
 
-GitHub Actions are intentionally not used on this branch.
+The customer/team owns production publication and factual/legal approval.
 
-Before calling the current redesign release-ready, run in the real local worktree:
+## Why this matters
+
+AIX must not degrade into:
+
+- a one-off AI SEO report;
+- a generic ChatGPT wrapper;
+- a rank-only dashboard;
+- an auto-publishing CMS.
+
+The paid value is recurring workflow and continuity:
+
+```text
+fixed questions
+× AI surfaces
+× competitors
+× citations
+× evidence gaps
+× Action
+× owner
+× status
+× completion
+× before/after history
+```
+
+## User-facing paid product
+
+Use:
+
+- `AIX Monitor`
+- `継続モニタリング`
+- `今週のAction`
+- `改善パック`
+
+Retire:
+
+- `Founder Watch`
+
+## GitHub Actions
+
+GitHub Actions are intentionally not used and must not be reintroduced unless explicitly requested.
+
+## Validation before release
+
+Run manually:
 
 ```bash
 npm run lint
@@ -46,4 +91,4 @@ npm run typecheck
 npm run build
 ```
 
-and visually review the new desktop/mobile flows. The ChatGPT execution container used for this redesign cannot resolve/connect to `github.com`, so a clean-clone build was not executable there.
+Then review desktop and mobile flows, including any new Action/share/status surfaces.
