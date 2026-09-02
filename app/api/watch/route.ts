@@ -1,5 +1,6 @@
 import { createWatch, getScan, getWatch } from "@/lib/storage";
 import { sendWatchStarted } from "@/lib/watch-email";
+import { getActiveWatchRun } from "@/lib/watch-runs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,5 +32,18 @@ export async function GET(request: Request) {
   if (!token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
   const watch = await getWatch(token);
   if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
-  return Response.json(watch, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
+  const run = await getActiveWatchRun(watch.id);
+  return Response.json({
+    ...watch,
+    measurementRun: run ? {
+      id: run.id,
+      status: run.status,
+      panelKind: run.panelKind,
+      completedPrompts: run.nextPromptIndex,
+      totalPrompts: run.prompts.length,
+      completedObservations: run.observations.length,
+      totalObservations: run.prompts.length * 3 * run.repetitions,
+      updatedAt: run.updatedAt,
+    } : null,
+  }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
 }
