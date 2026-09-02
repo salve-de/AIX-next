@@ -3,8 +3,16 @@ import { env } from "@/lib/env";
 import { shortHash } from "@/lib/ids";
 import type { ScanResult, WatchRecord } from "@/lib/types";
 
+const HTML_ESCAPE: Record<string, string> = {
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+};
+
 function escapeHtml(value: string) {
-  return value.replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character] || character);
+  return value.replace(/[&<>"']/g, (character) => HTML_ESCAPE[character] || character);
 }
 
 function cleanSubject(value: string) {
