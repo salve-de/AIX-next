@@ -3,6 +3,7 @@ import { freeProviders, paidProviders } from "@/lib/providers";
 import { runScan } from "@/lib/scan-runner";
 import { getWatch, saveChangePack } from "@/lib/storage";
 import type { Observation } from "@/lib/types";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -16,8 +17,10 @@ function coverage(rows: Observation[]) {
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { token?: string; packId?: string };
-    if (!body.token || !body.packId) return Response.json({ error: "tokenとpackIdが必要です。" }, { status: 400 });
-    const watch = await getWatch(body.token);
+    const token = resolveWatchToken(request, body.token);
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    if (!body.packId) return Response.json({ error: "packIdが必要です。" }, { status: 400 });
+    const watch = await getWatch(token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     const pack = (watch.changePacks || []).find((item) => item.id === body.packId);
     if (!pack) return Response.json({ error: "Change Packが見つかりません。" }, { status: 404 });
@@ -34,7 +37,7 @@ export async function POST(request: Request) {
       prompts,
       promptCount: prompts.length,
       repetitions: watch.paid ? 3 : 1,
-      panelKind: "discovery",
+      panelKind: "custom",
       providerNames,
     });
     const validation = {
@@ -46,7 +49,7 @@ export async function POST(request: Request) {
       note: `同じ対象Promptを${providerNames.length} AI surfaceで再観測した差です。Change Packが差の原因であるとは断定しません。`,
     };
     const updatedPack = { ...pack, validation };
-    const updatedWatch = await saveChangePack(body.token, updatedPack);
+    const updatedWatch = await saveChangePack(token, updatedPack);
     return Response.json({ pack: updatedPack, watch: updatedWatch, result }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "再測定できませんでした。" }, { status: 400 });
