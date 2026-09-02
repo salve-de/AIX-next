@@ -14,14 +14,16 @@ export async function runObservationPanel(input: {
   prompts: BuyerPrompt[];
   discovery: CompanyDiscovery;
   repetitions: number;
+  concurrency?: number;
   onProgress?: (completed: number, total: number, detail: string) => Promise<void> | void;
 }) {
   const tasks = input.prompts.flatMap((prompt) => providers.flatMap((provider) => Array.from({ length: input.repetitions }, (_, index) => ({ prompt, provider, repetition: index + 1 }))));
   const observations: Observation[] = [];
   let completed = 0;
+  const concurrency = Math.min(12, Math.max(1, Math.floor(input.concurrency || 3)));
 
-  for (let offset = 0; offset < tasks.length; offset += 3) {
-    const batch = tasks.slice(offset, offset + 3);
+  for (let offset = 0; offset < tasks.length; offset += concurrency) {
+    const batch = tasks.slice(offset, offset + concurrency);
     const rows = await Promise.all(batch.map(async ({ prompt, provider, repetition }) => {
       const providerInput = { prompt, discovery: input.discovery, repetition };
       if (!provider.configured()) return observationFromFailure(providerInput, provider.name, "unconfigured", "API credential is not configured", "skipped");
