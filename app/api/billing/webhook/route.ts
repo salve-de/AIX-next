@@ -1,44 +1,48 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "@/lib/env";
-import { updateWatch } from "@/lib/storage";
+import { beginStripeEvent, completeStripeEvent, releaseStripeEvent, updateWatch } from "@/lib/storage";
+import { stripeWatchPatch, validStripeSignature, watchTokenFromStripeEvent, type StripeEventLike } from "@/lib/stripe-webhook";
 
 export const runtime = "nodejs";
 
-function validSignature(payload: string, header: string) {
-  if (!env.stripeWebhookSecret) return false;
-  const parts = header.split(",").map((part) => part.split("=", 2));
-  const timestamp = parts.find(([key]) => key === "t")?.[1];
-  const signatures = parts.filter(([key]) => key === "v1").map(([, value]) => value);
-  if (!timestamp || !signatures.length) return false;
-  const issuedAt = Number(timestamp);
-  if (!Number.isFinite(issuedAt) || Math.abs(Date.now() / 1000 - issuedAt) > 300) return false;
-  const expected = createHmac("sha256", env.stripeWebhookSecret).update(`${timestamp}.${payload}`).digest("hex");
-  const left = Buffer.from(expected);
-  return signatures.some((signature) => {
-    const right = Buffer.from(signature || "");
-    return left.length === right.length && timingSafeEqual(left, right);
-  });
-}
-
 export async function POST(request: Request) {
   const payload = await request.text();
-  if (!validSignature(payload, request.headers.get("stripe-signature") || "")) return new Response("Invalid signature", { status: 400 });
-  let event: any;
-  try { event = JSON.parse(payload); } catch { return new Response("Invalid payload", { status: 400 }); }
-  const object = event.data?.object || {};
-  const metadata = { ...(object.subscription_details?.metadata || {}), ...(object.metadata || {}) };
-  const token = metadata.watch_token;
-  if (!token) return Response.json({ received: true, ignored: "watch_token missing" });
-
-  if (event.type === "checkout.session.completed") {
-    const paid = ["paid", "no_payment_required"].includes(object.payment_status || "");
-    await updateWatch(token, { paid, status: paid ? "active" : "trial" });
-  } else if (["customer.subscription.created", "customer.subscription.updated"].includes(event.type)) {
-    if (["active", "trialing"].includes(object.status)) await updateWatch(token, { paid: true, status: "active" });
-    else if (object.status === "past_due") await updateWatch(token, { paid: true, status: "past_due" });
-    else if (["canceled", "unpaid", "incomplete_expired"].includes(object.status)) await updateWatch(token, { paid: false, status: "cancelled" });
-  } else if (event.type === "customer.subscription.deleted") {
-    await updateWatch(token, { paid: false, status: "cancelled" });
+  if (!validStripeSignature(payload, request.headers.get("stripe-signature") || "", env.stripeWebhookSecret)) {
+    return new Response("Invalid signature", { status: 400 });
   }
-  return Response.json({ received: true });
+
+  let event: StripeEventLike;
+  try { event = JSON.parse(payload) as StripeEventLike; }
+  catch { return new Response("Invalid payload", { status: 400 }); }
+  if (!event.id || !event.type) return new Response("Invalid event", { status: 400 });
+
+  const requiredTypes = new Set([
+    "checkout.session.completed",
+    "customer.subscription.created",
+    "customer.subscription.updated",
+    "customer.subscription.deleted",
+  ]);
+  if (!requiredTypes.has(event.type)) return Response.json({ received: true, ignored: event.type });
+
+  const firstAttempt = await beginStripeEvent(event.id, event.type);
+  if (!firstAttempt) return Response.json({ received: true, duplicate: true });
+
+  try {
+    const token = watchTokenFromStripeEvent(event);
+    if (!token) {
+      await completeStripeEvent(event.id);
+      return Response.json({ received: true, ignored: "watch_token missing" });
+    }
+
+    const patch = stripeWatchPatch(event);
+    const updated = await updateWatch(token, patch);
+    if (!updated) throw new Error("Watch referenced by Stripe event was not found.");
+
+    await completeStripeEvent(event.id);
+    return Response.json({ received: true });
+  } catch (error) {
+    // Release the event lock so Stripe's automatic/manual retry can safely retry the same Event ID.
+    await releaseStripeEvent(event.id).catch(() => undefined);
+    console.error("Stripe webhook processing failed", event.id, event.type, error);
+    return new Response("Webhook processing failed", { status: 500 });
+  }
 }
