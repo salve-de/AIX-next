@@ -83,7 +83,7 @@ export async function addAgentEvents(watchId: string, input: AgentEventInput[]) 
         conversion_type: event.conversionType || null,
         conversion_value: event.conversionValue ?? null,
         currency: event.currency || null,
-      })),
+      }))),
     });
     return rows.length;
   }
