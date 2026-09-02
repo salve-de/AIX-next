@@ -21,6 +21,16 @@ function confidenceLabel(value: number) {
   return value >= .8 ? "高" : value >= .6 ? "中" : "低";
 }
 
+function promptRecommendationCount(result: ScanResult, entity: string) {
+  const promptIds = result.prompts?.map((prompt) => prompt.id) || [...new Set(result.observations.map((item) => item.promptId))];
+  return promptIds.filter((promptId) => {
+    const rows = result.observations.filter((item) => item.promptId === promptId && item.status === "success");
+    if (!rows.length) return false;
+    const recommended = rows.filter((item) => item.recommendedEntities.includes(entity)).length;
+    return recommended >= Math.ceil(rows.length / 2);
+  }).length;
+}
+
 export function ResultClient() {
   const params = useSearchParams();
   const router = useRouter();
@@ -78,6 +88,14 @@ export function ResultClient() {
   const firstAction = result.actions[0];
   const hasMeasurement = result.successfulObservations > 0;
   const shortlistedPromptCount = Math.max(0, result.panel.promptCount - result.lostPrompts.length);
+  const topCompetitorPromptCount = topCompetitor ? promptRecommendationCount(result, topCompetitor.name) : 0;
+  const primaryWinner = primaryLoss?.winner || topCompetitor?.name || null;
+  const primaryWinnerObservationCount = primaryLoss && primaryWinner
+    ? primaryLoss.observations.filter((item) => item.status === "success" && item.recommendedEntities.includes(primaryWinner)).length
+    : topCompetitor?.recommendedCount || 0;
+  const primaryWinnerObservationTotal = primaryLoss
+    ? primaryLoss.observations.filter((item) => item.status === "success").length
+    : result.successfulObservations;
   const firstChoiceCount = Math.round(result.successfulObservations * result.firstChoiceRate / 100);
   const mentionCount = Math.round(result.successfulObservations * result.mentionCoverage / 100);
   const citationCount = Math.round(result.successfulObservations * result.citationCoverage / 100);
@@ -95,7 +113,7 @@ export function ResultClient() {
         <div className="decision-map">
           <div className="decision-query"><QuoteIcon /><div><small>BIGGEST BUYER QUESTION</small><strong>{primaryLoss?.prompt || "測定完了後に、最も重要な候補外質問を表示します。"}</strong></div></div>
           <div className="decision-engines"><span><BotIcon />OpenAI</span><span><SparkIcon />Gemini</span><span><NetworkIcon />Perplexity</span></div>
-          <div className="decision-outcomes"><article className="winner"><small>最頻推薦</small><strong>{primaryLoss?.winner || topCompetitor?.name || "未測定"}</strong><span>{topCompetitor ? `${topCompetitor.recommendedCount} / ${result.successfulObservations}回答で候補入り` : "回答待ち"}</span></article><article className="own"><small>自社</small><strong>{result.discovery.brandName}</strong><span>{primaryLoss ? "この質問では候補外" : hasMeasurement ? `${result.ownRecommendationCount} / ${result.successfulObservations}回答で候補入り` : "未測定"}</span></article></div>
+          <div className="decision-outcomes"><article className="winner"><small>最頻推薦</small><strong>{primaryWinner || "未測定"}</strong><span>{primaryWinner ? `${primaryWinnerObservationCount} / ${primaryWinnerObservationTotal}回答で候補入り` : "回答待ち"}</span></article><article className="own"><small>自社</small><strong>{result.discovery.brandName}</strong><span>{primaryLoss ? "この質問では候補外" : hasMeasurement ? `${result.ownRecommendationCount} / ${result.successfulObservations}回答で候補入り` : "未測定"}</span></article></div>
           <div className="decision-diagnosis"><EvidenceIcon /><p><small>AIX DIAGNOSIS</small><strong>{result.evidenceGaps[0]?.label || "Evidence差を解析中"}</strong></p><span>{result.evidenceGaps[0]?.relatedPromptCount || 0} prompts</span></div>
         </div>
       </div>
@@ -103,7 +121,7 @@ export function ResultClient() {
 
     <section className="result-section shell">
       <div className="section-heading"><p className="eyebrow">BOTTOM LINE</p><h2>まず、勝敗だけを見る。</h2><p>順位とBuyer Promptの勝敗を先に確認し、その後で根拠を掘ります。</p></div>
-      <div className="metric-grid"><article><small>AI比較での位置</small><strong>{hasMeasurement ? `${result.marketPosition} / ${result.marketSize}` : "—"}</strong><span>{result.discovery.market}</span></article><article className="alert"><small>候補に入った購買質問</small><strong>{shortlistedPromptCount} / {result.panel.promptCount}</strong><span>Buyer Prompt単位</span></article><article><small>首位競合の候補入り</small><strong>{topCompetitor ? `${topCompetitor.recommendedCount} / ${result.successfulObservations}` : "—"}</strong><span>{topCompetitor?.name || "未特定"}</span></article><article className="alert"><small>候補外になった購買質問</small><strong>{result.lostPrompts.length} / {result.panel.promptCount}</strong><span>Buyer Prompt単位</span></article></div>
+      <div className="metric-grid"><article><small>AI比較での位置</small><strong>{hasMeasurement ? `${result.marketPosition} / ${result.marketSize}` : "—"}</strong><span>{result.discovery.market}</span></article><article className="alert"><small>候補に入った購買質問</small><strong>{shortlistedPromptCount} / {result.panel.promptCount}</strong><span>Buyer Prompt単位</span></article><article><small>首位競合の候補入り</small><strong>{topCompetitor ? `${topCompetitorPromptCount} / ${result.panel.promptCount}` : "—"}</strong><span>{topCompetitor?.name || "未特定"} · Buyer Prompt単位</span></article><article className="alert"><small>候補外になった購買質問</small><strong>{result.lostPrompts.length} / {result.panel.promptCount}</strong><span>Buyer Prompt単位</span></article></div>
       <div className="secondary-metrics"><article><small>AI回答で自社候補入り</small><strong>{result.ownRecommendationCount} / {result.successfulObservations}</strong></article><article><small>First Choice</small><strong>{firstChoiceCount} / {result.successfulObservations}</strong></article><article><small>自社への言及</small><strong>{mentionCount} / {result.successfulObservations}</strong></article><article><small>自社Citation</small><strong>{citationCount} / {result.successfulObservations}</strong></article><article><small>測定完了</small><strong>{result.successfulObservations} / {result.scheduledObservations}</strong></article></div>
       <div className="provider-health">{providerHealth.map((item) => <article key={item.provider}><div><span className={`provider-dot ${item.successful ? "ready" : "down"}`} /><strong>{providerLabel(item.provider)}</strong></div><small>成功 {item.successful}/{item.total}</small><span>自社候補入り {item.own}</span></article>)}</div>
     </section>
@@ -113,7 +131,7 @@ export function ResultClient() {
       <div className="result-lost-grid">{result.lostPrompts.slice(0, 6).map((loss, index) => <article key={loss.promptId}><header><span>{String(index + 1).padStart(2, "0")}</span><span>{loss.observations.filter((item) => item.ownRecommended).length} / {loss.observations.length}回答で自社候補入り</span></header><h3>「{loss.prompt}」</h3><footer><span><small>最頻推薦</small><strong>{loss.winner || "特定できず"}</strong></span><span><small>自社</small><strong className="lost">候補外</strong></span></footer></article>)}</div>
     </section>
 
-    <section className="result-section result-dark"><div className="shell result-split"><div><div className="section-heading"><p className="eyebrow">COMPETITOR EVIDENCE</p><h2>同じ回答面で、<br />誰が先に選ばれたか。</h2><p>バーは候補入り率の相対表示です。数値は成功AI回答の件数で示します。</p></div><div className="rank-bars">{result.competitors.slice(0, 6).map((competitor, index) => <div key={competitor.name}><span>{index + 1}</span><strong>{competitor.name}</strong><i><b style={{ width: `${competitor.coverage}%` }} /></i><em>{competitor.recommendedCount}/{result.successfulObservations}</em></div>)}<div className="own-row"><span>{result.marketPosition || "—"}</span><strong>{result.discovery.brandName}</strong><i><b style={{ width: `${result.recommendationCoverage}%` }} /></i><em>{result.ownRecommendationCount}/{result.successfulObservations}</em></div></div></div><div className="lost-panel"><p className="eyebrow">MOST IMPORTANT LOSS</p><h3>「{primaryLoss?.prompt || "候補外質問はまだありません"}」</h3><div className="loss-outcome"><span><small>最頻推薦</small><strong>{primaryLoss?.winner || "—"}</strong></span><span><small>自社</small><strong className="lost-status">{primaryLoss ? "候補外" : "候補入り"}</strong></span></div><p>{primaryLoss?.summary || "主要な質問では候補に入っています。次回のDiscovery Panelで新しい比較場面を確認します。"}</p>{primaryLoss?.citations.length ? <ul className="citation-list">{primaryLoss.citations.slice(0, 5).map((citation) => <li key={citation.url}><a href={citation.url} target="_blank" rel="noreferrer"><QuoteIcon />{citation.title || citation.domain}</a></li>)}</ul> : null}</div></div></section>
+    <section className="result-section result-dark"><div className="shell result-split"><div><div className="section-heading"><p className="eyebrow">COMPETITOR EVIDENCE</p><h2>同じ回答面で、<br />誰が先に選ばれたか。</h2><p>バーは成功AI回答の候補入り率です。右端は候補入り回答数 / 成功回答数を示します。</p></div><div className="rank-bars">{result.competitors.slice(0, 6).map((competitor, index) => <div key={competitor.name}><span>{index + 1}</span><strong>{competitor.name}</strong><i><b style={{ width: `${competitor.coverage}%` }} /></i><em>{competitor.recommendedCount}/{result.successfulObservations}</em></div>)}<div className="own-row"><span>{result.marketPosition || "—"}</span><strong>{result.discovery.brandName}</strong><i><b style={{ width: `${result.recommendationCoverage}%` }} /></i><em>{result.ownRecommendationCount}/{result.successfulObservations}</em></div></div></div><div className="lost-panel"><p className="eyebrow">MOST IMPORTANT LOSS</p><h3>「{primaryLoss?.prompt || "候補外質問はまだありません"}」</h3><div className="loss-outcome"><span><small>最頻推薦</small><strong>{primaryLoss?.winner || "—"}</strong></span><span><small>自社</small><strong className="lost-status">{primaryLoss ? "候補外" : "候補入り"}</strong></span></div><p>{primaryLoss?.summary || "主要な質問では候補に入っています。次回のDiscovery Panelで新しい比較場面を確認します。"}</p>{primaryLoss?.citations.length ? <ul className="citation-list">{primaryLoss.citations.slice(0, 5).map((citation) => <li key={citation.url}><a href={citation.url} target="_blank" rel="noreferrer"><QuoteIcon />{citation.title || citation.domain}</a></li>)}</ul> : null}</div></div></section>
 
     <section className="result-section evidence-section"><div className="shell"><div className="section-heading"><p className="eyebrow">INFORMATION TO CONFIRM</p><h2>競合にはあり、自社では確認できないEvidence。</h2><p>「存在しない」と断定せず、公開Webから確認できなかった比較材料だけを示します。</p></div><div className="evidence-grid">{result.evidenceGaps.slice(0, 4).map((gap, index) => <article key={gap.id}><header><span>{String(index + 1).padStart(2, "0")}</span><strong>{gap.relatedPromptCount} prompts</strong></header><h3>{gap.label}</h3><p>{gap.whyItMatters}</p>{gap.competitorEvidence ? <small>競合側: {gap.competitorEvidence}</small> : null}<footer>診断確度: {confidenceLabel(gap.confidence)}</footer></article>)}</div></div></section>
 
@@ -121,7 +139,7 @@ export function ResultClient() {
 
     {primaryLoss ? <section className="result-section shell"><div className="section-heading"><p className="eyebrow">RAW OBSERVATIONS</p><h2>必要なら、生回答まで確認する。</h2><p>候補順と引用元をProviderごとに開いて監査できます。</p></div><div className="raw-observations">{primaryLoss.observations.map((observation: Observation) => <article key={observation.id}><button type="button" onClick={() => setOpenObservation(openObservation === observation.id ? "" : observation.id)} aria-expanded={openObservation === observation.id}><span>{providerLabel(observation.provider)}</span><strong>{observation.ownPosition ? `自社 ${observation.ownPosition}番目` : "自社候補外"}</strong><em>Run {observation.repetition}</em><ArrowIcon /></button>{openObservation === observation.id ? <div><pre>{observation.rawText}</pre>{observation.citations.length ? <ul>{observation.citations.map((citation) => <li key={citation.url}><a href={citation.url} target="_blank" rel="noreferrer">{citation.title || citation.domain}</a></li>)}</ul> : null}</div> : null}</article>)}</div></section> : null}
 
-    <section className="watch-cta"><div className="shell watch-cta-grid"><div><p className="eyebrow">14-DAY FREE WATCH</p><h2>この順位を、14日間無料で追跡する。</h2><p>同じCore Promptで順位、候補入り質問、候補外質問、競合、Citationの変化を再測定します。</p><ul><li>会社メールのみ</li><li>カード不要</li><li>無料期間から自動課金なし</li></ul></div><form onSubmit={startWatch}><label htmlFor="watch-email">会社メール</label><input id="watch-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.jp" /><button className="button button-accent" disabled={watchBusy}>{watchBusy ? "開始しています…" : "無料Watchを開始"}<ArrowIcon /></button><small>結果と次回測定リンクを送ります。</small></form></div></section>
+    <section className="watch-cta"><div className="shell watch-cta-grid"><div><p className="eyebrow">14-DAY FREE WATCH</p><h2>この順位を、14日間無料で追跡する。</h2><p>同じBuyer Promptで順位、候補入り質問、候補外質問、競合、Citationの変化を再測定します。</p><ul><li>会社メールのみ</li><li>カード不要</li><li>無料期間から自動課金なし</li></ul></div><form onSubmit={startWatch}><label htmlFor="watch-email">会社メール</label><input id="watch-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.jp" /><button className="button button-accent" disabled={watchBusy}>{watchBusy ? "開始しています…" : "無料Watchを開始"}<ArrowIcon /></button><small>会社メールでWatchを保存します。カード登録は不要です。</small></form></div></section>
     {error ? <p className="floating-error" role="alert">{error}</p> : null}
     <SiteFooter />
   </main>;
