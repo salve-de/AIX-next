@@ -27,6 +27,7 @@ export function WatchClient() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState("");
   const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [changePackBusy, setChangePackBusy] = useState(false);
 
   useEffect(() => {
     if (sample) return;
@@ -86,6 +87,18 @@ export function WatchClient() {
     finally { setCheckoutBusy(false); }
   }
 
+  async function generateChangePack() {
+    if (sample || !token) return;
+    setChangePackBusy(true); setError("");
+    try {
+      const response = await fetch("/api/change-pack", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Change Packを生成できませんでした。");
+      setWatch((current) => current ? { ...current, changePack: data.changePack } : current);
+    } catch (caught) { setError(caught instanceof Error ? caught.message : "Change Packを生成できませんでした。"); }
+    finally { setChangePackBusy(false); }
+  }
+
   if (loading) return <div className="full-loading">Watchを読み込んでいます。</div>;
   if (!watch || !change) return <main className="empty-page"><h1>Watchを表示できません。</h1><p>{error}</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
 
@@ -100,6 +113,30 @@ export function WatchClient() {
       : watch.status === "past_due"
         ? "決済の確認が必要です。契約管理から支払情報を確認してください。"
         : "";
+
+  const samplePack = sample ? {
+    generatedAt: watch.latest.measuredAt,
+    sourceMeasurementId: watch.latest.scanId,
+    model: "fictional-sample",
+    items: [{
+      id: "sample-change-1",
+      actionId: "action-segment-proof",
+      title: "企業規模別の導入実績ページを追加",
+      target: "導入事例・サービス概要",
+      objective: "同規模企業の導入実績を比較材料として確認できる状態にする",
+      factsUsed: [],
+      proposedTitle: "従業員100〜500名企業でのNEXORA Cloud導入事例",
+      proposedLead: "法務・購買部門で取引先審査を行う中規模企業向けに、導入背景・対象業務・導入期間を確認できる事例をまとめます。",
+      sections: [
+        { heading: "導入前の課題", body: "審査対象の増加により、Excelとメールでの確認・更新管理が分散していた背景を、確認済み事実だけで記載します。" },
+        { heading: "導入範囲と運用", body: "対象部署、審査対象、標準導入期間、運用フローを比較しやすい形式で掲載します。数値は企業確認後に公開します。" },
+      ],
+      faq: [{ question: "従業員300名規模でも利用できますか？", answer: "確認済みの対象規模・導入条件をもとに、適用範囲を明記します。" }],
+      relatedPromptIds: ["prompt_1", "prompt_2"],
+      publishChecks: ["導入企業から公開許諾を取得", "導入期間と対象部署の事実確認"],
+    }],
+  } : null;
+  const visibleChangePack = watch.changePack || samplePack;
 
   return <main>
     <SiteHeader compact />
@@ -121,6 +158,10 @@ export function WatchClient() {
     })}</div></div></section>
 
     <section className="result-section shell"><div className="section-heading"><p className="eyebrow">NEXT ACTIONS</p><h2>次に効かせる順番。</h2><p>候補外Buyer Prompt、Citation、Evidence差、実装負担から、次に検証する変更を優先順位付けします。</p></div><div className="action-list">{watch.latest.actions.slice(0, 5).map((action, index) => <article key={action.id}><span className={`priority priority-${action.priority}`}>{action.priority}</span><div><small>0{index + 1} · {action.type}</small><h3>{action.title}</h3><p>{action.rationale}</p></div><aside><strong>{action.relatedPromptCount}</strong><small>related prompts</small><em>{action.target}</em></aside></article>)}</div></section>
+
+    <section className="change-pack-section"><div className="shell"><div className="section-heading"><p className="eyebrow">CHANGE PACK</p><h2>「何を直す？」を、<br />そのまま編集できる原稿にする。</h2><p>公開Webと企業が確認した事実だけを使い、見出し・リード・本文・FAQ・公開前チェックまで作ります。AIXが勝手にサイトへ公開することはありません。</p></div>
+      {visibleChangePack ? <div className="change-pack-list">{visibleChangePack.items.map((item, index) => <article key={item.id}><header><div><small>CHANGE {String(index + 1).padStart(2, "0")} · {item.target}</small><h3>{item.title}</h3></div><span>{item.relatedPromptIds.length} prompts</span></header><div className="change-pack-draft"><small>提案見出し</small><strong>{item.proposedTitle}</strong>{item.proposedLead ? <p>{item.proposedLead}</p> : null}</div>{item.sections.slice(0, 3).map((section) => <div className="change-pack-section-copy" key={section.heading}><small>{section.heading}</small><p>{section.body}</p></div>)}{item.faq.length ? <div className="change-pack-faq"><small>FAQ</small>{item.faq.slice(0, 2).map((faq) => <p key={faq.question}><b>{faq.question}</b><span>{faq.answer}</span></p>)}</div> : null}{item.publishChecks.length ? <footer><small>公開前に確認</small><span>{item.publishChecks.join(" · ")}</span></footer> : null}</article>)}</div> : watch.paid ? <div className="change-pack-empty"><h3>最新測定からChange Packを作成</h3><p>現在の候補外質問・Evidence差・企業入力を使って、最大3件の変更ドラフトを生成します。</p><button className="button button-dark" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "Change Packを作成中…" : "変更原稿を作成する"}<ArrowIcon /></button></div> : <div className="change-pack-locked"><div><small>FOUNDER WATCH</small><h3>分析結果を、サイトに貼れる変更案まで変換。</h3><p>有料Watchでは、最優先Actionを「見出し・リード・本文・FAQ・公開前チェック」に変換します。企業が確認してから使うドラフトなので、未確認の実績や数値は作りません。</p></div><Link className="button button-dark" href="/pricing">Change Packの内容を見る <ArrowIcon /></Link></div>}
+    </div></section>
 
     <section className="paid-cta"><div className="shell paid-grid"><div><p className="eyebrow">FOUNDER WATCH</p><h2>毎週、<br />「何が効いたか → 次に何を直すか」を回す。</h2><p>固定Core Prompt 50件を同じ条件で追跡し、改善の答え合わせと次の優先Actionを更新します。</p><ul><li>候補入り / 候補外の差分</li><li>全AI回答とCitation</li><li>Evidence Inbox</li><li>Change Packと優先Action</li><li>12か月履歴</li></ul></div><article><small>月額・税別・1ブランド</small><strong>¥29,800</strong>{watch.paid ? <Link className="button button-accent" href={`/billing?token=${encodeURIComponent(token)}`}>契約を管理 <ArrowIcon /></Link> : <button className="button button-accent" type="button" onClick={checkout} disabled={checkoutBusy}>{checkoutBusy ? "Checkoutを準備中…" : watch.status === "expired" || watch.status === "cancelled" ? "改善サイクルを毎週回す" : "このWatchを継続する"}<ArrowIcon /></button>}<p>{watch.paid ? "支払方法、請求履歴、更新、解約はStripe Customer Portalで管理します。" : "無料Watchから自動課金されません。Stripe Checkoutで契約条件を確認してから開始します。"}</p></article></div></section>
     {error ? <p className="floating-error" role="alert">{error}</p> : null}
