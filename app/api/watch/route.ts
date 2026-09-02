@@ -2,6 +2,7 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { id } from "@/lib/ids";
 import { runScan } from "@/lib/scan-runner";
 import { createWatch, getScan, getWatch } from "@/lib/storage";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
     const watch = await createWatch(scan, email, coreBaseline);
     return Response.json({
       token: watch.token,
-      watchUrl: `/watch?token=${encodeURIComponent(watch.token)}`,
+      watchUrl: `/api/session/exchange?token=${encodeURIComponent(watch.token)}&next=${encodeURIComponent("/watch")}`,
       trialEndsAt: watch.trialEndsAt,
       corePromptCount: coreBaseline.panel.promptCount,
     }, { headers: { "cache-control": "no-store", "referrer-policy": "no-referrer" } });
@@ -48,8 +49,9 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-  const token = new URL(request.url).searchParams.get("token") || "";
-  if (!token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
+  const explicit = new URL(request.url).searchParams.get("token");
+  const token = resolveWatchToken(request, explicit);
+  if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401, headers: { "cache-control": "no-store" } });
   const watch = await getWatch(token);
   if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
   return Response.json(watch, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
