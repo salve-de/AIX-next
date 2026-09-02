@@ -76,16 +76,24 @@ function sitemapUrls(base: URL, xml: string) {
   return urls;
 }
 
+async function robotsFor(url: URL, cache: Map<string, string>) {
+  if (cache.has(url.origin)) return cache.get(url.origin) || "";
+  let robots = "";
+  try { robots = (await safeFetchText(`${url.origin}/robots.txt`, 300_000)).text; } catch { /* absent robots */ }
+  cache.set(url.origin, robots);
+  return robots;
+}
+
 export async function crawlCompanySite(input: string, maxPages = 24) {
   const start = new URL(input);
-  const root = `${start.protocol}//${start.host}`;
-  let robots = "";
-  try { robots = (await safeFetchText(`${root}/robots.txt`, 300_000)).text; } catch { /* absent robots */ }
+  const robotsCache = new Map<string, string>();
+  const startRobots = await robotsFor(start, robotsCache);
+  const queue = new Set<string>([start.toString(), `${start.origin}/`]);
 
-  const queue = new Set<string>([start.toString(), root + "/"]);
   try {
-    const sitemap = await safeFetchText(`${root}/sitemap.xml`, 1_500_000);
-    sitemapUrls(start, sitemap.text).sort((a, b) => priority(a) - priority(b)).slice(0, maxPages * 4).forEach((url) => queue.add(url));
+    const sitemap = await safeFetchText(`${start.origin}/sitemap.xml`, 1_500_000);
+    const sitemapBase = new URL(sitemap.response.url || `${start.origin}/sitemap.xml`);
+    sitemapUrls(sitemapBase, sitemap.text).sort((a, b) => priority(a) - priority(b)).slice(0, maxPages * 4).forEach((url) => queue.add(url));
   } catch { /* sitemap is optional */ }
 
   const pages: CrawledPage[] = [];
@@ -95,20 +103,24 @@ export async function crawlCompanySite(input: string, maxPages = 24) {
     queue.delete(next);
     if (visited.has(next)) continue;
     visited.add(next);
-    const url = new URL(next);
-    if (robots && !isAllowedByRobots(robots, url.pathname, "aixnextbot")) continue;
+    const requestedUrl = new URL(next);
+    const requestedRobots = await robotsFor(requestedUrl, robotsCache);
+    if (requestedRobots && !isAllowedByRobots(requestedRobots, requestedUrl.pathname, "aixnextbot")) continue;
     try {
-      const { text, response } = await safeFetchText(url.toString(), 1_500_000);
+      const { text, response } = await safeFetchText(requestedUrl.toString(), 1_500_000);
       const type = response.headers.get("content-type") || "";
       if (!/html|xhtml/i.test(type)) continue;
-      const page = parsePage(response.url || url.toString(), text);
+      const effectiveUrl = new URL(response.url || requestedUrl.toString());
+      const effectiveRobots = await robotsFor(effectiveUrl, robotsCache);
+      if (effectiveRobots && !isAllowedByRobots(effectiveRobots, effectiveUrl.pathname, "aixnextbot")) continue;
+      const page = parsePage(effectiveUrl.toString(), text);
       if (page.text.length < 80) continue;
       pages.push(page);
-      linksFromHtml(start, text).sort((a, b) => priority(a) - priority(b)).slice(0, 40).forEach((link) => {
+      linksFromHtml(effectiveUrl, text).sort((a, b) => priority(a) - priority(b)).slice(0, 40).forEach((link) => {
         if (!visited.has(link)) queue.add(link);
       });
     } catch { /* partial crawl is valid */ }
   }
   if (!pages.length) throw new Error("公開ページを取得できませんでした。robots.txt、URL、サイト構成を確認してください。");
-  return { pages, robots, attempted: visited.size };
+  return { pages, robots: startRobots, attempted: visited.size };
 }
