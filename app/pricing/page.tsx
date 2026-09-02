@@ -1,27 +1,40 @@
 import Link from "next/link";
-import { ArrowIcon, CheckIcon } from "@/components/icons";
-import { MarketingShell } from "@/components/marketing-shell";
-
-const free = ["会社URL 1件", "Buyer Prompt 12件を自動生成", "ChatGPT・Gemini・Perplexityで競合比較", "候補外になった購買質問", "先に選ばれた競合とCitation", "最大のEvidence Gapと最優先Action 1件"];
-const paid = ["1ブランド", "固定Core Prompt 50件 + Discovery Prompt 20件", "3 AI × 各3回 × 週次で再測定", "新しく候補入り / 候補外になった質問の差分", "全生回答・全Citation", "Evidence Inbox", "Change Pack（必要事実・見出し・本文・FAQ）", "優先Actionの再ランキング", "12か月履歴"];
+import { ArrowIcon } from "@/components/icons";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 
 export default function PricingPage() {
-  return <MarketingShell eyebrow="PRICING" title="負けている場所を知るのは無料。改善を回し続けるところから有料。" lead="AIXは順位表を見るためのサブスクではありません。どこで競合に負け、何を直し、その変更が効いたかを同じ条件で追い続けるためのサービスです。">
-    <div className="pricing-value-strip">
-      <article><small>FREE SCAN</small><strong>まず、見つける</strong><span>どの購買質問で候補外か、誰に負けているか、最初に何を直すか。</span></article>
-      <article><small>14-DAY WATCH</small><strong>次に、確かめる</strong><span>同じ質問でもう一度測り、改善後に順位・候補入りが動いたかを見る。</span></article>
-      <article><small>FOUNDER WATCH</small><strong>その後、回し続ける</strong><span>毎週の差分から次のActionを更新し、AI比較での取りこぼしを継続的に減らす。</span></article>
-    </div>
+  return <main className="ux2-pricing-page">
+    <SiteHeader compact />
+    <section className="ux2-pricing-hero"><div className="shell"><p className="ux2-label">料金</p><h1>まず無料で問題を特定。<br />継続改善が必要なら月額。</h1><p>無料診断で「どこで候補から外れているか」を確認し、14日間の無料モニタリングで改善後の変化を体験してから有料を判断できます。</p></div></section>
 
-    <div className="pricing-grid">
-      <article><p className="eyebrow">FREE MARKET SCAN</p><h2>¥0</h2><p>「AIで自社は強いのか？」を曖昧なスコアではなく、買う前の質問ごとの勝敗で確認します。</p><ul>{free.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul><Link className="button button-dark" href="/#scan">競合に負けている質問を無料診断 <ArrowIcon /></Link></article>
-      <article className="featured"><p className="eyebrow">FOUNDER WATCH</p><h2>¥29,800<small> / 月・税別</small></h2><p>毎週「何が動いたか → 次に何を直すか」を更新。担当者がダッシュボードを読み解かなくても改善サイクルを回せる状態を目指します。</p><ul>{paid.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul><Link className="button button-accent" href="/#scan">まず無料診断で必要性を確認 <ArrowIcon /></Link><small className="price-note">月ごとの自動更新。契約後は次回更新日前まで解約できます。</small></article>
-    </div>
+    <section className="ux2-pricing-body"><div className="shell">
+      <div className="ux2-plan-grid">
+        <article className="ux2-plan">
+          <small>無料診断</small>
+          <h2>¥0</h2>
+          <p>まず、自社がAI比較のどこで候補から外れているかを確認します。</p>
+          <div className="ux2-plan-value"><strong>どこで負けているか分かる</strong><span>比較質問・競合・情報差・最優先の改善を1レポートで確認</span></div>
+          <ul><li>自社が候補外になる重要な比較質問</li><li>代わりに選ばれる競合</li><li>競合にはあり、自社で確認できない比較材料</li><li>まず直すべき1件</li><li>AI回答と引用元の詳細</li></ul>
+          <Link className="button button-dark" href="/#scan">無料で診断 <ArrowIcon /></Link>
+          <details className="ux2-spec-details"><summary>測定仕様を見る</summary><div>会社URL 1件 / 比較質問 12件 / ChatGPT・Gemini・Perplexity / 各1回。Provider失敗は負けとして数えず、測定欠損として表示します。</div></details>
+        </article>
 
-    <h2>14日間の無料Watchで、払う価値があるか先に確認</h2><p>無料Scanの結果を保存した後、会社メールだけで開始します。Baselineと次回測定を比較し、「直したあとに本当に候補入りが増えたか」というAIXの継続価値を体験してから有料を判断できます。カード登録は不要で、有料契約へ自動移行しません。</p>
+        <article className="ux2-plan featured">
+          <small>AIX Monitor</small>
+          <h2>¥29,800<small> / 月・税別</small></h2>
+          <p>毎週「何が変わった → 次に何を直す」を更新し、改善判断を継続できる状態を作ります。</p>
+          <div className="ux2-plan-value"><strong>毎週、次に直すことが分かる</strong><span>差分確認、優先Action、編集できる変更原稿まで更新</span></div>
+          <ul><li>候補入り / 候補外になった質問の差分</li><li>まだ負けている重要な比較質問</li><li>次に検証する改善Action</li><li>見出し・本文・FAQまで作る変更原稿</li><li>企業にしか分からない情報の確認タスク</li><li>AI回答・引用元・12か月の測定履歴</li></ul>
+          <Link className="button button-accent" href="/#scan">まず無料診断 <ArrowIcon /></Link>
+          <details className="ux2-spec-details"><summary>測定仕様を見る</summary><div>1ブランド / 固定比較質問 50件 + 探索質問 20件 / 3 AI × 各3回 / 週次測定。変更原稿は人間確認前提で、自動公開しません。</div></details>
+        </article>
+      </div>
 
-    <h2>特に価値が出やすい会社</h2><p>B2B SaaS、ITサービス、コンサルティングなど、買い手が複数社を比較してから問い合わせる会社です。1件の有望商談の価値が高いほど、「問い合わせが発生する前の比較候補に入れているか」を把握する意味が大きくなります。</p>
-
-    <h2>保証しないこと</h2><p>AIXが測るのは、設定したBuyer PromptとAI観測面における再現可能な観測です。AI上の絶対順位、推薦、Citation、問い合わせ、売上の増加を保証しません。外部媒体掲載費、広告費、大規模サイト改修、法務確認、個別コンサルティングも料金には含みません。</p>
-  </MarketingShell>;
+      <section className="ux2-pricing-note"><h2>14日間は無料で改善後の変化を確認</h2><p>無料診断後、会社メールだけで開始できます。カード登録は不要で、有料契約へ自動移行しません。同じ質問を再測定して、AIXを継続利用する価値があるか先に確認できます。</p></section>
+      <section className="ux2-pricing-note"><h2>特に価値が出やすい会社</h2><p>B2B SaaS、ITサービス、コンサルティングなど、買い手が複数社を比較してから問い合わせる会社です。AIXは実顧客数や失注数を推定するサービスではなく、問い合わせ前のAI比較で自社が検討候補に入れているかを観測します。</p></section>
+      <section className="ux2-pricing-note"><h2>保証しないこと</h2><p>AI上の絶対順位、推薦、引用、問い合わせ、契約、売上の増加は保証しません。AIXは明示した比較質問とAI観測面を同条件で継続測定し、変化と改善候補を確認するサービスです。</p></section>
+    </div></section>
+    <SiteFooter />
+  </main>;
 }
