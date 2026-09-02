@@ -1,18 +1,25 @@
 import { env } from "@/lib/env";
 import { sellerReady } from "@/lib/legal";
 import { getWatch, updateWatch } from "@/lib/storage";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { token?: string };
-    if (!body.token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
-    const watch = await getWatch(body.token);
+    const token = resolveWatchToken(request, body.token);
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    const watch = await getWatch(token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     if (watch.paid) return Response.json({ error: "このWatchはすでに契約中です。" }, { status: 409 });
     if (!sellerReady()) return Response.json({ error: "販売者情報の本番設定が完了していないため、決済を開始できません。" }, { status: 503 });
     if (!env.stripeSecretKey || !env.stripePriceId) return Response.json({ error: "Stripeの本番設定が完了していません。" }, { status: 503 });
+
+    const base = env.siteUrl.replace(/\/$/, "");
+    const successNext = encodeURIComponent("/watch?checkout=success");
+    const cancelNext = encodeURIComponent("/watch?checkout=cancelled");
+    const exchangeBase = `${base}/api/session/exchange?token=${encodeURIComponent(watch.token)}&next=`;
 
     const form = new URLSearchParams();
     form.set("mode", "subscription");
@@ -23,8 +30,8 @@ export async function POST(request: Request) {
     if (watch.stripeCustomerId) form.set("customer", watch.stripeCustomerId);
     else form.set("customer_email", watch.email);
     form.set("billing_address_collection", "required");
-    form.set("success_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}&checkout=success`);
-    form.set("cancel_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}&checkout=cancelled`);
+    form.set("success_url", `${exchangeBase}${successNext}`);
+    form.set("cancel_url", `${exchangeBase}${cancelNext}`);
     form.set("metadata[watch_token]", watch.token);
     form.set("metadata[watch_id]", watch.id);
     form.set("subscription_data[metadata][watch_token]", watch.token);
