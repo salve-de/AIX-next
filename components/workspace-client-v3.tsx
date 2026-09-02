@@ -22,7 +22,7 @@ export function WorkspaceClientV3() {
     let cancelled = false;
     async function load() {
       try {
-        if (legacyToken) {
+        if (legacyToken && legacyToken !== "session") {
           const exchange = await fetch("/api/session/exchange", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token: legacyToken }) });
           const exchangeData = await exchange.json().catch(() => ({}));
           if (!exchange.ok) throw new Error(exchangeData.error || "Workspace sessionを開始できませんでした。");
@@ -46,5 +46,6 @@ export function WorkspaceClientV3() {
 
   if (loading) return <main className="workspace-loading">AIX Workspaceを読み込んでいます。</main>;
   if (!watch) return <main className="workspace-loading"><div><strong>Workspaceを表示できません。</strong><p>{error}</p><Link href="/">無料診断へ戻る</Link></div></main>;
-  return <><SurfaceStatus watch={watch} /><WorkspaceLoadedV4 initialWatch={watch} sample={sample} token={legacyToken} initialView={requestedView} /></>;
+  const clientMarker = sample ? "sample" : legacyToken || "session";
+  return <><SurfaceStatus watch={watch} /><WorkspaceLoadedV4 initialWatch={watch} sample={sample} token={clientMarker} initialView={requestedView} /></>;
 }
