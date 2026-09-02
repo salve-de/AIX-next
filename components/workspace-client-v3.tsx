@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SurfaceStatus } from "@/components/surface-status";
-import { WorkspaceLoadedV3 } from "@/components/workspace-loaded-v3";
+import { WorkspaceLoadedV4 } from "@/components/workspace-loaded-v4";
 import { sampleWatch } from "@/lib/sample-data";
 import type { WatchRecord } from "@/lib/types";
 
@@ -32,5 +32,5 @@ export function WorkspaceClientV3() {
 
   if (loading) return <main className="workspace-loading">AIX Workspaceを読み込んでいます。</main>;
   if (!watch) return <main className="workspace-loading"><div><strong>Workspaceを表示できません。</strong><p>{error}</p><Link href="/">無料診断へ戻る</Link></div></main>;
-  return <><SurfaceStatus watch={watch} /><WorkspaceLoadedV3 initialWatch={watch} sample={sample} token={token} initialView={requestedView} /></>;
+  return <><SurfaceStatus watch={watch} /><WorkspaceLoadedV4 initialWatch={watch} sample={sample} token={token} initialView={requestedView} /></>;
 }
