@@ -1,170 +1,299 @@
 # AIX Next — UX Rationale
 
-Every element must reduce one of four uncertainties: “Is this relevant to me?”, “Is the result real?”, “What should I do?”, or “Why should I keep paying?” Decorative UI that does not answer one of these questions is removed.
+Every screen must reduce one of five uncertainties:
+
+1. **What is this?**
+2. **Why does it matter to my business?**
+3. **Is the result real and bounded?**
+4. **What should I do next?**
+5. **Why should I keep paying?**
+
+Decorative UI or copy that does not answer one of those questions should be removed.
+
+## Understanding hierarchy
+
+### 0.1 second — visual gist
+
+The visitor cannot fully understand a new B2B category in 100 ms. The realistic requirement is that the first visual impression reads as:
+
+```text
+ChatGPT / AI
++ my company versus competitors
++ concrete result
++ URL input
+```
+
+The first viewport therefore uses large concrete nouns and numbers rather than category jargon.
+
+### 1–3 seconds — category understanding
+
+The visitor should be able to say:
+
+> This checks the buyer questions where AI recommends competitors instead of us.
+
+### 5–10 seconds — value understanding
+
+The visitor should be able to say:
+
+> It tells us why we were excluded, what to change first, and whether that change improved the same comparison later.
+
+### 30–60 seconds — trust
+
+The user can inspect prompts, providers, denominators, raw answers, citations, measurement time, completeness and uncertainty.
 
 ## Global principles
 
-1. **Show the buying event, not the category jargon.** “A buyer asks AI, a competitor enters the shortlist, your company is omitted” is understood faster than “GEO visibility”.
-2. **Show evidence before asking for trust.** Raw answers, citations, dates and denominators are visible near the headline result.
-3. **One primary action per stage.** Home: scan. Result: start Watch. Watch: complete evidence or continue paid monitoring.
-4. **Never hide uncertainty.** Low market confidence, provider failure and unstable prompts are visible.
-5. **Do not ask for information before value is demonstrated.** Email is requested only after the result.
-6. **Visuals are explanatory, not stock decoration.** Diagrams depict the actual product loop and dashboard states.
+1. **Show the buying event, not category jargon.** “A buyer asks ChatGPT, a competitor is recommended, your company is omitted” is understood faster than AEO/GEO/LLMO terminology.
+2. **Lead with the customer outcome, then explain the mechanism.** The product is not sold as prompt tracking; it is sold as finding lost consideration opportunities and turning them into a testable improvement.
+3. **Show evidence before asking for trust.** Raw answers, citations, dates and denominators remain inspectable.
+4. **One primary decision per stage.** Home: scan. Result: start comparable Watch. Watch: verify movement, resolve evidence, review Change Pack or continue the loop.
+5. **Never hide uncertainty.** Low market confidence, provider failure, unstable prompts and causal limits remain visible.
+6. **Do not ask for information before value is demonstrated.** Email and company-only evidence are requested after the initial result.
+7. **Visuals are explanatory.** They show an actual result, buyer journey or product output rather than generic AI decoration.
+8. **Do not repeat the same metric merely to fill space.** Each section must advance the decision.
 
 ## Home
 
 ### Header
 
-- **Logo:** returns to the public starting point.
-- **Sample result:** serves visitors who will not submit their domain before seeing the output.
-- **Methodology:** resolves distrust around AI ranking claims.
-- **Pricing:** supports high-intent visitors without interrupting the scan path.
+The brand descriptor must itself be understandable: `ChatGPT競合診断`.
 
-There is no early “Autopilot” CTA. Before diagnosis, execution has no context and creates a credibility gap.
+Navigation exists for:
+- fictional result sample;
+- methodology;
+- pricing;
+- direct scan CTA.
+
+The primary CTA is outcome-specific: find the questions where competitors beat the company.
 
 ### Hero
 
-- **Headline:** states the commercial loss—being excluded from an AI shortlist—not the technology.
-- **URL field:** the lowest-friction input that can create company-specific value.
-- **Primary button “無料でAI比較状況を調べる”:** describes the immediate action and removes a vague “Get started”.
-- **Trust line:** registration, card and data-source constraints sit next to the decision, not in a distant FAQ.
-- **Hero visual:** shows buyer question → three AI surfaces → competitor shortlist → missing evidence. Its role is to explain the product in under five seconds.
+The hero must answer both “what?” and “so what?” before scrolling.
 
-### Output preview
+Required elements:
+- `ChatGPT` in the service statement;
+- competitor-selection problem in the headline;
+- value promise: identify what to change to increase shortlist inclusion opportunities;
+- company URL field;
+- a visible fictional result showing rank, excluded-prompt denominator, top competitor, one buyer question and one Action;
+- micro-flow: find loss → choose change → remeasure.
 
-A real-looking but explicitly fictional dashboard follows immediately. It shows rank, coverage, one lost prompt and one evidence gap. This answers “What will I get?” before presenting product features.
+The first viewport must not require the visitor to understand “Buyer Intelligence”, “Evidence OS”, “AEO”, “GEO” or “LLMO”.
 
-### Product loop
+### Value loop
 
-The four-step loop is ordered by customer value:
+Immediately after the hero, explain the causal workflow rather than listing features:
 
-1. discover the market;
-2. observe shortlist outcomes;
-3. explain evidence gaps;
-4. watch changes.
+```text
+FIND
+where we are excluded
+→ EXPLAIN
+who wins and what evidence differs
+→ ACT
+turn it into one concrete change
+→ PROVE
+rerun the same panel and see what moved
+```
 
-Execution is described as a later approval-gated output, not implied as automatic magic.
+The final stated objective is not a higher AI score. It is more chances to enter the buyer’s consideration set before sales contact.
 
-### Final scan CTA
+### Buyer journey
 
-The URL field repeats after the user has understood the product. This avoids forcing a scroll back to the hero.
+Show where AIX sits in the commercial process:
+
+```text
+Buyer asks AI
+→ AI shortlist
+→ deeper evaluation / website / sales contact
+```
+
+AIX observes the shortlist stage that ordinary post-visit analytics may not reveal when the buyer never visits a vendor.
+
+Do not label an excluded Buyer Prompt as a lost customer.
+
+### Product output preview
+
+The fictional preview proves what the scan actually returns:
+- market position;
+- shortlisted/excluded Buyer Prompt counts;
+- top competitor;
+- one exact buying question;
+- evidence gap;
+- first Action.
+
+### Watch preview
+
+Watch is framed as the answer to:
+
+> Did the change work under comparable measurement conditions?
+
+Show movement, not internal activity.
 
 ## Scan progress
 
-The user has already invested attention but has no result. The page therefore shows factual progress and partial discoveries:
+The user has already committed attention but has no result. Show truthful product work in terms they value:
 
-- pages found;
-- company/brand candidate;
-- market candidate;
-- competitors found;
-- AI observations completed.
+- company/product understanding;
+- public evidence reading;
+- market and competitor discovery;
+- buyer-question creation;
+- AI shortlist observation;
+- citation/evidence analysis;
+- first Action.
 
-A fake countdown is prohibited. A cancel button is visible because a live crawl can take time or target the wrong domain.
+No fake countdown. Cancellation remains visible.
 
 ## Result
 
-The result is a single reading path rather than tabs. The sequence follows executive decision logic.
+The result is one decision path, not a dashboard maze.
 
 ### 1. Verdict
 
-“AI比較で13社中9位” is the fastest comparative orientation. It is paired with the denominator and observation count so it is not mistaken for a universal market rank.
+Lead with:
+- measured market position;
+- excluded Buyer Prompt count / total;
+- shortlist count / total where useful.
 
-### 2. Measurement strip
+The copy immediately explains that the next step is not staring at the rank; it is finding the reason and the first change.
 
-Provider, locale, prompt count, repetitions, date and completion rate appear directly below the verdict. The purpose is to make the score auditable before the user questions it.
+### 2. Action bridge
 
-### 3. Competitive map
+Directly after the verdict, show the causal chain:
 
-A visual distribution shows where the company sits relative to named competitors. The chart uses the same panel and denominator for all brands.
+```text
+X prompts excluded
+→ biggest evidence gap
+→ first Action
+→ comparable remeasurement
+```
 
-### 4. Most important lost prompt
+This prevents the “so what?” failure.
 
-A specific buying question is more emotionally and operationally meaningful than a generic score. The card shows:
+### 3. Excluded buying questions
 
-- exact buyer question;
-- competitor selected;
-- company outcome;
-- reason summary;
-- source links;
-- expandable raw answers.
+Specific Buyer Prompts are more operationally useful than generic percentages. Each card shows the exact question and the competitor selected instead.
 
-### 5. Why they win
+### 4. Competitor evidence
 
-The comparison separates three causes:
+Show named competitors, recommendation counts and citations. The purpose is to explain the difference, not to create a decorative leaderboard.
 
-- cited third-party proof;
-- owned evidence availability;
-- retrieval/entity problems.
+### 5. Evidence gap
 
-This prevents every loss from becoming “write more content”.
+Use “could not verify” rather than “does not exist”. Show how many tracked prompts relate to the gap without claiming the gap will necessarily improve all of them.
 
-### 6. Evidence gap
+### 6. First Action
 
-Each item states what could not be verified and how many tracked Core prompts relate to it. The phrasing is “related to”, not “will improve”, because causality is not established.
+The free result gives one highest-priority change. The framing is:
 
-### 7. First action
+> Do not fix everything. Test this first.
 
-Only the highest-priority action appears in the free result. It includes target page and facts required. The purpose is to convert diagnosis into a credible next step without dumping an SEO checklist.
+No ranking or revenue guarantee.
 
-### 8. Watch CTA
+### 7. Watch CTA
 
-The result’s primary button is “この会社を14日間追跡する”. The user is not buying a PDF; they are preserving a baseline and seeing whether the market changes. Email is requested here because the value has already been shown.
+The CTA is an experiment continuation:
+
+> この改善が効いたか、14日間無料で確かめる。
+
+The user preserves a baseline and sees whether the same buying questions move.
+
+### 8. Raw observations
+
+Raw answers and citations remain available after the decision path for auditability. They are not the primary product story.
 
 ## Watch
 
-The Watch page starts with change, not activity logs.
+Watch is an **improvement-verification surface**.
 
-- current versus baseline;
-- new shortlist entries;
-- new omissions;
-- citation changes;
-- prompt stability.
+The first questions are:
+- Did rank move under a comparable panel?
+- How many buying questions newly entered the shortlist?
+- How many newly fell out?
+- Which citation sources changed?
+- Which evidence gap remains most important?
 
-AIX activity is secondary. Customers care about market movement, not a list of internal jobs.
+AIX activity logs are secondary.
 
-### Evidence task button
+### Evidence input
 
-“確認する” is used instead of “プロフィールを完成する”. It frames the request as resolving a specific decision gap.
+Ask only for facts the public site cannot verify. Explain clearly:
+- the input is not generally published;
+- the user must have the right to submit it;
+- paid Change Pack generation may send necessary evidence to OpenAI for processing;
+- entering evidence invalidates a stale Change Pack so an old draft is not mistaken for current output.
 
-### Paid continuation button
+### Next Actions
 
-“監視を継続する” accurately describes the paid product. “Autopilot” is reserved for a product that can create approved drafts or pull requests.
+Actions are ordered by observed Buyer Prompt impact, evidence difference, confidence and implementation burden. They are hypotheses to test, not guarantees.
+
+### Change Pack
+
+Change Pack is the key execution surface for paid Watch.
+
+It turns the Action into:
+- proposed title;
+- lead;
+- body sections;
+- FAQ;
+- facts used;
+- related Buyer Prompts;
+- publish checks.
+
+The UX must make three boundaries obvious:
+- only public or company-asserted facts are used;
+- unverified figures are not invented;
+- AIX does not publish to the customer site automatically.
+
+A fictional Change Pack is visible in the public Watch sample so the paid value can be understood before purchase.
+
+### Paid continuation
+
+The paid promise is not “more monitoring”. It is:
+
+> Every week, verify what moved and update what to change next.
+
+Monitoring volume is a capacity/detail proof, not the headline value.
 
 ## Pricing
 
-The pricing page explains the boundary between free diagnosis and paid continuous work. It includes:
+Pricing explains a three-stage value ladder:
 
-- exact panel size;
-- repetition frequency;
-- included history;
-- no automatic charge after free Watch;
-- no ranking guarantee;
-- cancellation terms.
+- **Free Scan:** find where the company loses and the first Action.
+- **14-day Watch:** verify whether the first improvement moves the same buyer questions.
+- **Founder Watch:** continue the measurement → Change Pack → remeasurement loop every week.
 
-One founder plan reduces decision complexity during initial product-market fit testing.
+The price page should explain who gets the most value: high-value B2B companies where buyers compare multiple vendors and a qualified commercial opportunity is meaningful.
+
+Do not manufacture ROI arithmetic without customer-specific first-party conversion data.
 
 ## Mobile
 
-- KPI cards use a 2×2 grid because a horizontal four-card row becomes unreadable.
-- Result sections remain in the same order as desktop.
-- Primary CTA becomes sticky only after the verdict and first lost prompt have been viewed.
+- The first viewport must retain the service category, value promise, URL input and a condensed result snapshot.
+- KPI groups may use a 2×2 grid, but the decision order must remain identical to desktop.
+- Long Change Pack sections stack vertically.
 - Raw answers collapse by default.
-- Decorative detail is reduced, but evidence and denominators are never removed.
+- Evidence, denominators and truth boundaries are never removed merely to save space.
 
 ## Copy rules
 
-Use:
+Prefer concrete language:
+- `競合に先に選ばれている質問`
+- `候補外になった購買質問`
+- `選ばれた競合`
+- `確認できないEvidence`
+- `まず直す1件`
+- `改善後に同じ質問で再測定`
 
-- AI shortlist / 購入候補
-- observed / 観測
-- could not verify / 確認できない
-- related prompts / 関連Prompt
-- measurement panel / 観測パネル
+Use internal terms only after the user understands the product:
+- Buyer Prompt;
+- observation panel;
+- Evidence gap;
+- Change Pack.
 
 Avoid:
-
-- guaranteed rank
-- universal ChatGPT position
-- “customers lost” when no actual lead is observed
-- “AI understands you” without evidence
-- “boost” or “optimize” as unexplained verbs
+- universal ChatGPT rank;
+- customers lost / lost revenue without actual attribution;
+- “AI understands you” without evidence;
+- generic “boost”, “optimize”, “AI SEO” as unexplained promises;
+- monitoring-volume copy as the main paid value;
+- causal language from simple before/after movement.
