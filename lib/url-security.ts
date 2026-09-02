@@ -1,6 +1,7 @@
 import "server-only";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
+import { env } from "@/lib/env";
 
 const IPV4_PRIVATE = [
   /^0\./,
@@ -71,7 +72,7 @@ export async function safeFetch(input: string, init: RequestInit & { timeoutMs?:
         redirect: "manual",
         signal: controller.signal,
         headers: {
-          "user-agent": "AIXNextBot/0.1 (+https://example.com/bot)",
+          "user-agent": `AIXNextBot/0.1 (+${env.siteUrl.replace(/\/$/, "")}/methodology)`,
           accept: "text/html,application/xhtml+xml,application/xml,text/plain;q=0.8,*/*;q=0.2",
           ...(init.headers || {}),
         },
