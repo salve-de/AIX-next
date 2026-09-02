@@ -1,4 +1,5 @@
 import { id } from "@/lib/ids";
+import { freeProviders, paidProviders } from "@/lib/providers";
 import { runScan } from "@/lib/scan-runner";
 import { getWatch, saveChangePack } from "@/lib/storage";
 import type { Observation } from "@/lib/types";
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
     const prompts = watch.latest.prompts.filter((prompt) => promptIds.has(prompt.id));
     if (!prompts.length) return Response.json({ error: "再測定対象Promptがありません。" }, { status: 409 });
     const beforeRows = watch.latest.observations.filter((item) => promptIds.has(item.promptId));
+    const providerNames = watch.paid ? paidProviders : freeProviders;
     const result = await runScan({
       scanId: id("validation"),
       url: watch.latest.targetUrl,
@@ -33,6 +35,7 @@ export async function POST(request: Request) {
       promptCount: prompts.length,
       repetitions: watch.paid ? 3 : 1,
       panelKind: "discovery",
+      providerNames,
     });
     const validation = {
       measuredAt: result.measuredAt,
@@ -40,7 +43,7 @@ export async function POST(request: Request) {
       beforeCoverage: coverage(beforeRows),
       afterCoverage: result.recommendationCoverage,
       successfulObservations: result.successfulObservations,
-      note: "同じ対象Promptの観測差です。Change Packが差の原因であるとは断定しません。",
+      note: `同じ対象Promptを${providerNames.length} AI surfaceで再観測した差です。Change Packが差の原因であるとは断定しません。`,
     };
     const updatedPack = { ...pack, validation };
     const updatedWatch = await saveChangePack(body.token, updatedPack);
