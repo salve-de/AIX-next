@@ -108,8 +108,14 @@ export async function createWatch(scan: ScanRecord, email: string) {
     updatedAt: now.toISOString(),
   };
   if (durable()) {
-    const rows = await supabase<any[]>("aix_next_watches", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify({ id: record.id, token: record.token, email: record.email, scan_id: record.scanId, status: record.status, paid: false, baseline: record.baseline, latest: record.latest, history: record.history, evidence: [], next_run_at: record.nextRunAt }) });
-    return watchFromRow(rows[0]);
+    try {
+      const rows = await supabase<any[]>("aix_next_watches", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify({ id: record.id, token: record.token, email: record.email, scan_id: record.scanId, status: record.status, paid: false, baseline: record.baseline, latest: record.latest, history: record.history, evidence: [], next_run_at: record.nextRunAt }) });
+      return watchFromRow(rows[0]);
+    } catch (error) {
+      const concurrent = await existingWatch(scan.id, normalizedEmail);
+      if (concurrent) return concurrent;
+      throw error;
+    }
   }
   watches.set(record.token, record);
   return record;
