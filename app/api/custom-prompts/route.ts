@@ -1,6 +1,7 @@
 import { shortHash } from "@/lib/ids";
 import { getWatch, saveCustomPrompts } from "@/lib/storage";
 import type { BuyerPrompt, PromptCluster } from "@/lib/types";
+import { resolveWatchToken } from "@/lib/watch-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -17,8 +18,9 @@ function cleanText(value: string) {
 export async function POST(request: Request) {
   try {
     const body = await request.json() as { token?: string; text?: string; cluster?: PromptCluster; importance?: number };
-    if (!body.token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
-    const watch = await getWatch(body.token);
+    const token = resolveWatchToken(request, body.token);
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    const watch = await getWatch(token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     const current = watch.customPrompts || [];
     const limit = watch.paid ? 25 : 5;
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
       version: 1,
       whyTracked: "ユーザーが自社の購買プロセス上、明示的に追跡指定したCustom Promptです。Coreトレンドには自動で混ぜません。",
     };
-    const updated = await saveCustomPrompts(body.token, [...current, prompt]);
+    const updated = await saveCustomPrompts(token, [...current, prompt]);
     return Response.json({ prompt, watch: updated }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Custom Promptを追加できませんでした。" }, { status: 400 });
@@ -46,12 +48,14 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const body = await request.json() as { token?: string; promptId?: string };
-    if (!body.token || !body.promptId) return Response.json({ error: "tokenとpromptIdが必要です。" }, { status: 400 });
-    const watch = await getWatch(body.token);
+    const token = resolveWatchToken(request, body.token);
+    if (!token) return Response.json({ error: "Watch sessionが必要です。" }, { status: 401 });
+    if (!body.promptId) return Response.json({ error: "promptIdが必要です。" }, { status: 400 });
+    const watch = await getWatch(token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     const next = (watch.customPrompts || []).filter((item) => item.id !== body.promptId);
     if (next.length === (watch.customPrompts || []).length) return Response.json({ error: "Custom Promptが見つかりません。" }, { status: 404 });
-    const updated = await saveCustomPrompts(body.token, next);
+    const updated = await saveCustomPrompts(token, next);
     return Response.json({ watch: updated }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "Custom Promptを削除できませんでした。" }, { status: 400 });
