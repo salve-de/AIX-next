@@ -3,11 +3,11 @@ import { getWatch } from "@/lib/storage";
 
 export const runtime = "nodejs";
 
-async function stripe(path: string, body?: URLSearchParams) {
+async function stripe(path: string, body: URLSearchParams) {
   if (!env.stripeSecretKey) throw new Error("Stripeが設定されていません。");
   const response = await fetch(`https://api.stripe.com/v1${path}`, {
-    method: body ? "POST" : "GET",
-    headers: { authorization: `Bearer ${env.stripeSecretKey}`, ...(body ? { "content-type": "application/x-www-form-urlencoded" } : {}) },
+    method: "POST",
+    headers: { authorization: `Bearer ${env.stripeSecretKey}`, "content-type": "application/x-www-form-urlencoded" },
     body,
   });
   const data = await response.json() as any;
@@ -22,15 +22,14 @@ export async function POST(request: Request) {
     const watch = await getWatch(body.token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
     if (!watch.paid) return Response.json({ error: "有料契約後に利用できます。" }, { status: 403 });
-    const customers = await stripe(`/customers?email=${encodeURIComponent(watch.email)}&limit=10`);
-    const customer = customers.data?.[0];
-    if (!customer?.id) return Response.json({ error: "Stripe Customerが見つかりません。" }, { status: 404 });
+    if (!watch.stripeCustomerId) return Response.json({ error: "Stripe Customerとの紐付けを確認できません。Webhook設定を確認してください。" }, { status: 409 });
+
     const form = new URLSearchParams();
-    form.set("customer", customer.id);
+    form.set("customer", watch.stripeCustomerId);
     form.set("return_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}`);
     const session = await stripe("/billing_portal/sessions", form);
     if (!session.url) throw new Error("Customer Portalを作成できませんでした。");
-    return Response.json({ url: session.url });
+    return Response.json({ url: session.url }, { headers: { "cache-control": "no-store" } });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "契約管理を開始できませんでした。" }, { status: 400 });
   }
