@@ -7,8 +7,10 @@ import { observationFromFailure } from "@/lib/providers/common";
 import { openAiProvider } from "@/lib/providers/openai";
 import { geminiProvider } from "@/lib/providers/gemini";
 import { perplexityProvider } from "@/lib/providers/perplexity";
+import { claudeProvider } from "@/lib/providers/claude";
+import { grokProvider } from "@/lib/providers/grok";
 
-export const providers: AiSearchProvider[] = [openAiProvider, geminiProvider, perplexityProvider];
+export const providers: AiSearchProvider[] = [openAiProvider, geminiProvider, perplexityProvider, claudeProvider, grokProvider];
 
 export async function runObservationPanel(input: {
   prompts: BuyerPrompt[];
@@ -20,8 +22,8 @@ export async function runObservationPanel(input: {
   const observations: Observation[] = [];
   let completed = 0;
 
-  for (let offset = 0; offset < tasks.length; offset += 3) {
-    const batch = tasks.slice(offset, offset + 3);
+  for (let offset = 0; offset < tasks.length; offset += 5) {
+    const batch = tasks.slice(offset, offset + 5);
     const rows = await Promise.all(batch.map(async ({ prompt, provider, repetition }) => {
       const providerInput = { prompt, discovery: input.discovery, repetition };
       if (!provider.configured()) return observationFromFailure(providerInput, provider.name, "unconfigured", "API credential is not configured", "skipped");
