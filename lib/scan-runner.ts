@@ -1,10 +1,10 @@
 import "server-only";
 import { crawlCompanySite } from "@/lib/crawler";
-import { analyzeEvidence, discoverCompany, generateBuyerPrompts } from "@/lib/discovery";
-import { competitorMetrics, citationCoverage, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
+import { discoverCompany, generateBuyerPrompts } from "@/lib/discovery";
 import { runObservationPanel } from "@/lib/providers";
+import { buildScanResult } from "@/lib/scan-result";
 import { normalizePublicUrl } from "@/lib/url-security";
-import type { BuyerPrompt, PromptPanelKind, ScanProgressEvent, ScanResult } from "@/lib/types";
+import type { BuyerPrompt, PromptPanelKind, ScanProgressEvent } from "@/lib/types";
 
 export async function runScan(input: {
   scanId: string;
@@ -13,6 +13,7 @@ export async function runScan(input: {
   repetitions?: number;
   panelKind?: PromptPanelKind;
   prompts?: BuyerPrompt[];
+  observationConcurrency?: number;
   onProgress?: (event: ScanProgressEvent) => Promise<void> | void;
 }) {
   const url = normalizePublicUrl(input.url);
@@ -36,46 +37,12 @@ export async function runScan(input: {
     prompts,
     discovery,
     repetitions,
+    concurrency: input.observationConcurrency,
     onProgress: async (completed, total, detail) => emit("measuring", 55 + Math.round((completed / total) * 25), `AI回答を観測しています。${completed}/${total}`, detail),
   });
 
   await emit("analyzing", 84, "推薦、Citation、競合差を同じ定義で集計しています。");
-  const eligible = successful(observations);
-  const lost = lostPrompts(prompts, observations, discovery);
-  const analysis = await analyzeEvidence({ discovery, pages: crawl.pages, lostPrompts: lost });
-  const position = marketPosition(observations, discovery);
-  const warnings: string[] = [];
-  if (discovery.confidence < .65) warnings.push("市場認識の信頼度が低いため、Watch開始前に市場と競合を確認してください。");
-  if (eligible.length < observations.length) warnings.push(`${observations.length - eligible.length}件のAI観測が失敗または未設定です。Recommendation指標の分母から除外しています。`);
-  if (!eligible.length) warnings.push("AI Providerの有効な回答がありません。API設定後に再測定してください。サンプル結果は /result?sample=1 で確認できます。");
-  if (!discovery.competitors.length) warnings.push("十分な競合候補を特定できませんでした。市場認識を確認してください。");
-
-  const result: ScanResult = {
-    scanId: input.scanId,
-    targetUrl: url,
-    discovery,
-    panel: { kind: panelKind, version: 1, promptCount: prompts.length, repetitions, locale: "ja-JP", country: "JP" },
-    prompts,
-    measuredAt: new Date().toISOString(),
-    observations,
-    scheduledObservations: observations.length,
-    successfulObservations: eligible.length,
-    measurementCompleteness: observations.length ? Math.round((eligible.length / observations.length) * 100) : 0,
-    recommendationCoverage: recommendationCoverage(observations),
-    firstChoiceRate: firstChoiceRate(observations, discovery.brandName),
-    mentionCoverage: mentionCoverage(observations, discovery.aliases),
-    citationCoverage: citationCoverage(observations, discovery.domain),
-    repeatAgreement: repeatAgreement(observations),
-    ownRecommendationCount: eligible.filter((item) => item.ownRecommended).length,
-    marketPosition: eligible.length ? position.position : 0,
-    marketSize: position.size,
-    competitors: competitorMetrics(observations, discovery),
-    lostPrompts: lost,
-    evidenceGaps: analysis.gaps,
-    actions: analysis.actions,
-    totalCostUsd: observations.reduce((sum, item) => sum + (item.costUsd || 0), 0),
-    warnings,
-  };
-  await emit(eligible.length === observations.length ? "complete" : "partial", 100, eligible.length ? "診断結果を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName);
+  const result = await buildScanResult({ scanId: input.scanId, targetUrl: url, discovery, prompts, repetitions, panelKind, observations, pages: crawl.pages });
+  await emit(result.successfulObservations === result.scheduledObservations ? "complete" : "partial", 100, result.successfulObservations ? "診断結果を作成しました。" : "市場解析は完了しましたが、AI観測を完了できませんでした。", discovery.brandName);
   return result;
 }
