@@ -224,11 +224,38 @@ export type ActionableMessage = {
   instruction: string;
 };
 
+export type StrategyDeliverable = {
+  label: string;
+  text: string;
+};
+
+export type StrategyCompetitorAnalysis = {
+  name: string;
+  gap: string;
+  differentiation: string;
+};
+
+export type StrategyOption = {
+  id: string;
+  code: string;
+  name: string;
+  targetMarket: string;
+  coreThesis: string;
+  strategicReason: string;
+  competitorAnalysis: StrategyCompetitorAnalysis[];
+  deliverables: {
+    profile: StrategyDeliverable;
+    website: StrategyDeliverable;
+    brief: StrategyDeliverable;
+  };
+};
+
 export type PositioningAdvice = {
   winningAngle: string;
   summary: string;
   competitorWeaknesses: CompetitorWeakness[];
   actionableMessages: ActionableMessage[];
+  strategies?: StrategyOption[];
 };
 
 export type ChangePack = {

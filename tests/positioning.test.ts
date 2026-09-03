@@ -26,4 +26,12 @@ test("derivePositioningAdvice: 競合の弱点、自社の看板、全方位発�
     assert.ok(msg.copy.length > 10, "コピペ用の本文が存在すること");
     assert.ok(msg.instruction.length > 5, "使い方指示が存在すること");
   }
+
+  assert.equal(positioning.strategies?.length, 3, "戦略が3件生成されること");
+  const strategy1 = positioning.strategies![0];
+  assert.equal(strategy1.code, "戦略 01");
+  assert.ok(strategy1.name.length > 0);
+  assert.ok(strategy1.coreThesis.length > 0);
+  assert.ok(strategy1.deliverables.profile.text.includes(sampleResult.discovery.brandName));
+  assert.equal(strategy1.competitorAnalysis.length, 3);
 });
