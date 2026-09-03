@@ -11,8 +11,8 @@ export default function HomePage() {
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
         <p className="overline">自社サイトの改修ゼロ・入力するだけで即時強化</p>
-        <h1>ChatGPTは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
-        <p className="landing-hero-lead">自社サイトの改修は一切不要。会社名や商品名を入れるだけで、ChatGPTやGeminiが最も正確に読み取る「AI専用公式データベース」を即座に発行。ライバルに奪われていた客を、自社の指名買いへと逆転させます。</p>
+        <h1>生成AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
+        <p className="landing-hero-lead">自社サイトの改修は一切不要。会社名や商品名を入れるだけで、主要な生成AI（ChatGPTやGemini等）が正確に読み取る「AI専用公式データベース」を即座に発行。ライバルに奪われていた商談機会を、自社の推薦獲得へと導きます。</p>
         
         {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
         <div style={{ maxWidth: "800px", margin: "24px auto 36px" }}>

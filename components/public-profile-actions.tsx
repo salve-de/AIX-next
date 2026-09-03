@@ -78,7 +78,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
     return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
       <div className="public-profile-card-copy">
         <p className="overline">【無料特典】自社サイトの改修ゼロでOK</p>
-        <h2>ChatGPT専用の「AI公式データベース」を即座に発行しました。</h2>
+        <h2>主要な生成AIに対応した「AI公式データベース」を即座に発行しました。</h2>
         <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
         <ul>
           <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
@@ -99,7 +99,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
     <div className="public-profile-card-copy">
       <p className="overline">【無料特典】自社サイトの改修ゼロでOK</p>
-      <h2>ChatGPT専用の「AI公式データベース」を即座に発行しました。</h2>
+      <h2>主要な生成AIに対応した「AI公式データベース」を即座に発行しました。</h2>
       <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
       <ul>
         <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
