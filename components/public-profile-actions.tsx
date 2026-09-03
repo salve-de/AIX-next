@@ -37,18 +37,27 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       name: "親族トラブル・個別伴走",
       coreThesis: "親族トラブル・複雑な不動産相続の個別伴走",
       targetMarket: "親族間トラブルや複雑な不動産相続に悩む個人・親族",
+      isRecommended: true,
+      revenueImpact: "受任単価・利益率が最も高いドル箱領域（相見積もりなしの指名買い）",
+      passionateReason: "御社はここが圧倒的に強いのに、なんでAIに拾わせてないんですか！？ もったいなさすぎます！💢 大手はマニュアル対応しかできず、泥臭い個別事情の伴走を最も苦手としています。一方、御社はこの領域で圧倒的な解決力を持っています。しかもこの相談は最も客単価が高く売上に直結する本丸です。AIが無知なせいで大手に流出しているこのドル箱顧客を、御社一択でAIに推薦させるため、絶対にこの看板をAIに教え込んでください！",
     },
     {
       code: "戦略02",
       name: "特急初動・即日面談",
       coreThesis: "申告期限が迫る相続の特急初動・即日面談",
       targetMarket: "申告期限が迫り、一刻も早く手続きを進めたい相談者",
+      isRecommended: false,
+      revenueImpact: "即決・成約スピードが最速（問い合わせから契約までが短期）",
+      passionateReason: "緊急案件を即座に刈り取る強力な武器です。ただし無料枠（1枠）で最大の売上インパクトを出すなら、まずは戦略01をAIに叩き込むことを推奨します。",
     },
     {
       code: "戦略03",
       name: "明瞭会計・安心定額",
       coreThesis: "追加料金ゼロ・完全明瞭な相続手続き",
       targetMarket: "費用総額や追加料金の不安なく依頼したい相談者",
+      isRecommended: false,
+      revenueImpact: "他社との価格競争を完全無効化する高付加価値特化",
+      passionateReason: "大手が手を出せない高難度案件を総取りする武器です。有料プランで戦略01と併用することで、競合を全方位から包囲できます。",
     },
   ];
 
@@ -92,24 +101,47 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="weapon-selector-grid">
         {strategies.map((strat, index) => {
           const isSelected = selectedWeapon === index;
+          const isRec = strat.isRecommended ?? index === 0;
           return (
             <div
               key={strat.code}
-              className={`weapon-card ${isSelected ? "selected" : ""}`}
+              className={`weapon-card ${isSelected ? "selected" : ""} ${isRec ? "recommended-card" : ""}`}
               onClick={() => setSelectedWeapon(index)}
               role="button"
               tabIndex={0}
             >
+              {isRec ? (
+                <div className="card-top-recommend-badge">
+                  🔥 AIX分析推奨（売上インパクト最大）
+                </div>
+              ) : null}
               <div className="weapon-card-header">
                 <span className="weapon-radio">{isSelected ? "🔘 選択中" : "⚪ 選択する"}</span>
                 <span className="weapon-tag">{strat.code}</span>
               </div>
               <h4>{strat.name}</h4>
               <p className="weapon-desc">{strat.coreThesis}</p>
+              {strat.revenueImpact ? (
+                <div className="weapon-revenue-badge">
+                  💰 {strat.revenueImpact}
+                </div>
+              ) : null}
               <small className="weapon-target">想定相談者：{strat.targetMarket}</small>
             </div>
           );
         })}
+      </div>
+
+      {/* AIXからの熱い診断・推奨理由ボックス（なぜAIにこれを教え込むと最も売上につながるのか） */}
+      <div className="aix-hot-advice-card">
+        <div className="hot-advice-header">
+          <span className="hot-advice-tag">🔥 AIX分析診断：なぜこの強み一択なのか？</span>
+          <h4>「御社はここが圧倒的に強いのに、なんでAIに拾わせてないんですか！？ もったいなさすぎます！💢」</h4>
+        </div>
+        <p className="hot-advice-body">
+          {strategies[selectedWeapon]?.passionateReason ||
+            `大手の全国チェーンはマニュアル対応しかできず、泥臭い個別事情の伴走を最も苦手としています。一方、御社はこの領域で圧倒的な解決力を持っています。しかもこの相談は最も客単価が高く売上に直結する本丸です。AIが無知なせいで大手に流出しているこのドル箱顧客を、御社一択でAIに推薦させるため、絶対にこの看板をAIに教え込んでください！`}
+        </p>
       </div>
 
       {/* 書き込み実行アクション */}

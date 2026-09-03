@@ -243,6 +243,9 @@ export type StrategyOption = {
   coreThesis: string;
   strategicReason: string;
   competitorAnalysis: StrategyCompetitorAnalysis[];
+  isRecommended?: boolean;
+  revenueImpact?: string;
+  passionateReason?: string;
   deliverables: {
     profile: StrategyDeliverable;
     website: StrategyDeliverable;

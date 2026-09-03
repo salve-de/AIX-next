@@ -2200,6 +2200,82 @@ svg { width: 1.1em; height: 1.1em; }
   flex-direction: column;
 }
 
+.weapon-card.recommended-card {
+  border-color: #fdba74;
+  background: #fffaf5;
+}
+
+.weapon-card.recommended-card.selected {
+  border-color: #ea580c;
+  background: #fff7ed;
+  box-shadow: 0 0 0 1px #ea580c;
+}
+
+.card-top-recommend-badge {
+  background: #ea580c;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: inline-block;
+  letter-spacing: 0.02em;
+}
+
+.weapon-revenue-badge {
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 6px 0 10px;
+  border: 1px solid #a7f3d0;
+  line-height: 1.4;
+}
+
+/* AIX熱狂アドバイスボックス (なぜこれを教え込むと最も売上になるのか) */
+.aix-hot-advice-card {
+  background: #fff7ed;
+  border: 2px solid #fdba74;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.06);
+}
+
+.hot-advice-header {
+  margin-bottom: 8px;
+}
+
+.hot-advice-tag {
+  display: inline-block;
+  background: #ea580c;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.hot-advice-header h4 {
+  margin: 4px 0 0;
+  font-size: 1.08rem;
+  color: #9a3412;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.hot-advice-body {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #7c2d12;
+  line-height: 1.65;
+  font-weight: 500;
+}
+
 .weapon-card:hover {
   border-color: #94a3b8;
   background: #ffffff;
