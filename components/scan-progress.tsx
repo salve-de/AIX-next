@@ -255,8 +255,14 @@ export function ScanProgress() {
           </p>
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
           {phase === "choose" ? <>
+            <div className="disambiguation-guide-box">
+              <span className="disambiguation-tag">🛡️ 同名他社・人違い防止確認</span>
+              <p>
+                「{displayInput(rawInput)}」に該当する公開候補が見つかりました。AIが別の会社と誤認しないよう、<strong>ご自身の会社・店舗・サービスのサイト</strong>を選択してください。
+              </p>
+            </div>
             <fieldset className="scan-resolve-options">
-              <legend>診断する公開サイト</legend>
+              <legend>診断する公開サイト（目視で確定）</legend>
               {candidates.map((candidate) => {
                 const host = hostOf(candidate.url);
                 return <label className={`scan-resolve-option ${selectedUrl === candidate.url ? "selected" : ""}`} key={candidate.url}>
@@ -265,8 +271,11 @@ export function ScanProgress() {
                 </label>;
               })}
             </fieldset>
-            <button className="button button-primary scan-resolve-start" type="button" disabled={!selectedUrl} onClick={() => void startScan(selectedUrl)}>このサイトを診断する <span aria-hidden="true">→</span></button>
-            <p className="scan-resolve-note">候補は公開検索から見つけたサイトです。ドメインを確認してから診断を開始します。</p>
+            <div className="scan-resolve-actions">
+              <button className="button button-primary scan-resolve-start" type="button" disabled={!selectedUrl} onClick={() => void startScan(selectedUrl)}>このサイトを確定して診断する <span aria-hidden="true">→</span></button>
+              <button className="button button-secondary" type="button" onClick={() => setPhase("no_site")} style={{ marginLeft: "12px" }}>自社サイトがない・候補にない（直接発行する）</button>
+            </div>
+            <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を100%防ぎます。</p>
           </> : null}
           {phase === "no_site" ? (
             <div className="scan-no-site-container">

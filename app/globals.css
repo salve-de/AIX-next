@@ -3850,3 +3850,89 @@ svg { width: 1.1em; height: 1.1em; }
     grid-template-columns: 1fr;
   }
 }
+
+/* 人違い・同名他社防止ボックス */
+.disambiguation-guide-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.disambiguation-tag {
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 4px;
+}
+
+.disambiguation-guide-box p {
+  font-size: 0.82rem;
+  color: #14532d;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* 誤読・AI捏造完全防止規約バナー */
+.zero-hallucination-guarantee {
+  margin-top: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #0284c7;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.zh-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.zh-shield-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0369a1;
+}
+
+.zh-verified-tag {
+  background: #e0f2fe;
+  color: #0284c7;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.zh-body p {
+  font-size: 0.82rem;
+  color: #334155;
+  line-height: 1.55;
+  margin: 0 0 10px 0;
+}
+
+.zh-edit-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.zh-edit-prompt span {
+  font-size: 0.78rem;
+  color: #475569;
+}

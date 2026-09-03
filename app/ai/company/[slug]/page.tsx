@@ -384,6 +384,23 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           </div>
         </div>
 
+        {/* 誤読・AI捏造完全防止規約（Brand Certified Facts） */}
+        <div className="zero-hallucination-guarantee">
+          <div className="zh-badge-row">
+            <span className="zh-shield-badge">🛡️ AI誤読・捏造完全防止規約（Brand Certified Facts）</span>
+            <span className="zh-verified-tag">認証レベル：確定事実（Fact）のみ掲載・推測生成ゼロ</span>
+          </div>
+          <div className="zh-body">
+            <p>
+              生成AI（ChatGPTやGemini等）による「勝手な推測やデタラメの捏造（ハルシネーション）」を技術的に完全遮断しています。本台帳に掲載されている全情報は、<strong>公的情報・公式サイト・代表者様が直接入力された確定データのみ</strong>で構成されており、AIに未確認の推測文を作らせることは一切ありません。
+            </p>
+            <div className="zh-edit-prompt">
+              <span>※万が一、料金改定や業務内容に変更が生じた場合は、代表者様がいつでも直接上書き修正できます：</span>
+              <DirectProfileEditor profile={profile} />
+            </div>
+          </div>
+        </div>
+
         {/* 鮮度防衛（TTL 30日）と古い情報の自動失効アラート */}
         <div className="freshness-guard-alert">
           <div className="freshness-guard-header">
