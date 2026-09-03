@@ -10,9 +10,9 @@ export default function HomePage() {
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
-        <p className="overline">自社サイトの改修ゼロ・入力するだけで診断</p>
+        <p className="overline">自社サイトがなくてもOK・会社名を入れるだけで診断</p>
         <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
-        <p className="landing-hero-lead">会社名や商品名を入れるだけで、AIが競合を先に勧めた理由と、今すぐ選ばれるための看板がわかります。自社サイトの改修は一切不要です。</p>
+        <p className="landing-hero-lead">会社名や商品名を入れるだけで、AIが競合を先に勧めた理由と勝てる看板がわかります。自社サイトがない企業様も、会社名だけでAI専用の公式Web拠点を即時発行できます。</p>
         
         {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
         <div style={{ maxWidth: "800px", margin: "24px auto 36px" }}>

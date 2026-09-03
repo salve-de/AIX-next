@@ -120,20 +120,69 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </p>
       </div>
 
-      {/* 鮮度防衛アーキテクチャ・リスク管理と自動見守りプランの案内 */}
-      <div className="freshness-risk-notice-card">
-        <div className="freshness-risk-header">
-          <span className="risk-guard-tag">リスク管理・鮮度防衛規約</span>
-          <h4>無料登録の有効期限は「30日間」です（古い情報のAI残留を完全防止）</h4>
+      {/* 無料枠 vs フル見守りプラン 機能格差スペック表 */}
+      <div className="plan-comparison-box">
+        <div className="plan-comparison-header">
+          <span className="spec-table-tag">運用仕様・スペック比較</span>
+          <h4>無料お試し枠 と フル常時見守りプラン の提供差</h4>
+          <p>古い情報の残留トラブルを防ぐ安全設計と、全方位でAIの指名推薦を獲得するためのスペック比較です。</p>
         </div>
-        <p className="freshness-risk-body">
-          料金改定や提供条件の変更があった際に「AIに古い情報が残る」と、相談者との間で深刻な価格トラブル・信用失墜を招く重大なリスクがあります。AIXでは古い情報が一人歩きするのを防ぐため、無料枠レコードは30日後に自動失効（データ完全破棄 / AIキャッシュ強制消去）されます。
-        </p>
-        <div className="freshness-risk-upsell">
-          <span>公式サイトの変更を週次で自動検知し、常に100%最新の正しい情報をAIに教え続けるには：</span>
-          <Link className="upsell-inline-link" href="/pricing">
-            月額10,780円の「定期見守りプラン（全自動同期）」を確認する ↗
-          </Link>
+
+        <div className="table-responsive">
+          <table className="plan-comparison-table">
+            <thead>
+              <tr>
+                <th>提供機能・運用仕様</th>
+                <th className="th-free">無料お試し枠（即時発行）</th>
+                <th className="th-pro">フル常時見守りプラン</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AIに学習させる看板・強み</strong></td>
+                <td>選択した1看板のみ（単科）</td>
+                <td className="col-highlight"><strong>全10業務・全方位完全網羅</strong></td>
+              </tr>
+              <tr>
+                <td><strong>生成AI引用用公式FAQ</strong></td>
+                <td>抜粋2問のみ</td>
+                <td className="col-highlight"><strong>厳選10連発すべて直接注入</strong></td>
+              </tr>
+              <tr>
+                <td><strong>有効期間（データの鮮度保証）</strong></td>
+                <td>30日間（古い情報の残留防止）</td>
+                <td className="col-highlight"><strong>無期限（365日常時直結・自動延長）</strong></td>
+              </tr>
+              <tr>
+                <td><strong>ライバルの順位逆転監視</strong></td>
+                <td>なし（手動でも不可）</td>
+                <td className="col-highlight"><strong>毎週自動計測・緊急警報アラート</strong></td>
+              </tr>
+              <tr>
+                <td><strong>サイトがある企業様</strong></td>
+                <td>手動更新のみ</td>
+                <td className="col-highlight"><strong>公式サイトから週次全自動同期</strong></td>
+              </tr>
+              <tr>
+                <td><strong>サイトがない企業様（町工場・農家等）</strong></td>
+                <td>公式Web拠点として公開</td>
+                <td className="col-highlight"><strong>公式Web拠点 ＋ スマホから直接編集</strong></td>
+              </tr>
+              <tr>
+                <td><strong>AIクローラー認証ランク</strong></td>
+                <td>TRIAL（一般認可）</td>
+                <td className="col-highlight"><strong>ENTERPRISE GOLD（最優先巡回）</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* 自社サイトがない企業様への救済案内 */}
+        <div className="no-website-benefit-note">
+          <span className="benefit-badge">自社サイトをお持ちでない企業様へ</span>
+          <p>
+            数十万円かかるホームページ制作は不要です。発行される公式ページ（<code>https://aix.jp/ai/company/...</code>）をGoogleマップや名刺・SNSに貼るだけで、<strong>人間にもAIにも100%伝わる「世界唯一の公式Webサイト兼AI推薦データベース」</strong>としてそのままご活用いただけます。
+          </p>
         </div>
       </div>
 
