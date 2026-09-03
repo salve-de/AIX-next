@@ -119,7 +119,7 @@ export function ResultClient() {
         {primaryLoss ? <p className="summary-question">「{primaryLoss.prompt}」</p> : null}
         <p>
           {primaryLoss
-            ? `${primaryWinner || "競合"}が先に紹介され、${result.discovery.brandName}は候補から外れています。相手が持っていて自社がネット上で伝えていない「${primaryGap?.label || "選ばれる理由"}」があるためです。今すぐ下の対策で看板を整えましょう。`
+            ? `御社の実力や親身な実績は本来ライバルに負けていません。しかし、ChatGPTがその価値を知らないため、知名度だけで${primaryWinner || "競合"}を優先してしまっています。下の作戦カルテから御社のこだわりを選び、AIに正しく教え込みましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
       </div>
@@ -177,23 +177,23 @@ export function ResultClient() {
       </div>
     </section>
 
-    {/* 5. 毎週の自動見守り（Watch） */}
-    <section className="report-watch" id="watch-start">
+    {/* 5. 毎週の自動見守り（オートパイロット） */}
+    <section className="report-watch" id="watch-plan">
       <div className="shell report-watch-inner">
         <div>
-          <p className="overline">ライバル自動見守りプラン</p>
-          <h2>発信したあと、<br />ライバルから取り返せたか。</h2>
-          <p>同じ比較質問を毎週自動で調べ、自社が新しくおすすめに入ったかをメールでお届けします。ライバルの急浮上や季節の改善アドバイスも自動配信。</p>
+          <p className="overline">【完全自動】AI推薦枠オートパイロット</p>
+          <h2>社長は本業・現場に集中してください。<br />AI推薦枠の死守は「完全自動」で代行します。</h2>
+          <p>毎週のライバル動向を24時間監視し、発行されたAI専用公式データベースを裏側で全自動メンテナンス。ChatGPTで御社が1位推薦され続けるよう最新状態を保ちます。あなたの作業は一生ゼロです。</p>
           <ul>
-            <li>月額 10,780円（税込）</li>
-            <li>カード登録後いつでもワンクリック解約可能</li>
-            <li>最初14日間は無料でお試しいただけます</li>
+            <li>月額 10,780円（税込 / 税別 ¥9,800）</li>
+            <li>契約期間の縛りなし・いつでも1クリックで即時解約可能</li>
+            <li>最初14日間は全機能を無料でお試しいただけます</li>
           </ul>
         </div>
         <form onSubmit={startWatch}>
-          <label htmlFor="watch-email">ご連絡先メールアドレス</label>
+          <label htmlFor="watch-email">ご連絡先メールアドレス（14日間無料体験）</label>
           <input id="watch-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.jp" />
-          <button className="button button-primary" disabled={watchBusy}>{watchBusy ? "準備しています…" : "14日間無料で試す"}<ArrowIcon /></button>
+          <button className="button button-primary" disabled={watchBusy}>{watchBusy ? "準備しています…" : "14日間無料で試してみる"}<ArrowIcon /></button>
           <small>見本画面では入力不要です。そのままお試しいただけます。</small>
         </form>
       </div>

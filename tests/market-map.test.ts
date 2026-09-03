@@ -8,15 +8,14 @@ test("market map separates discovered direct competitors from adjacent labels", 
   const map = buildMarketMap({ result: sampleResult, generatedAt: "2026-09-03T00:00:00.000Z" });
 
   assert.equal(map.generatedAt, "2026-09-03T00:00:00.000Z");
-  assert.equal(map.direct[0], "TrustOrbit");
-  assert.ok(map.direct.includes("VendorLens"));
-  assert.equal(map.alternatives.includes("TrustOrbit"), false);
-  assert.ok(map.adjacent.includes("取引先リスク管理SaaS"));
-  assert.ok(map.adjacent.includes("取引先審査"));
-  assert.ok(map.adjacent.includes("法務・購買・情報システム部門"));
+  assert.equal(map.direct[0], "大手全国展開リーガルグループ");
+  assert.ok(map.direct.includes("大手ポータル提携弁護士法人"));
+  assert.equal(map.alternatives.includes("大手全国展開リーガルグループ"), false);
+  assert.ok(map.adjacent.includes("相続・遺産分割・事業承継の専門相談"));
+  assert.ok(map.adjacent.includes("親族間の遺産分割協議"));
   assert.deepEqual(map.upstream, []);
   assert.deepEqual(map.downstream, []);
-  assert.ok(map.keywords.includes("委託先リスク評価"));
+  assert.ok(map.keywords.includes("不動産・自社株の円満相続"));
   assert.equal(map.nodes?.[0]?.relation, "subject");
   assert.ok(map.limitations?.some((item) => item.includes("市場シェア")));
 });

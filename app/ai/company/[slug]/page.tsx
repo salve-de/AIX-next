@@ -31,7 +31,7 @@ function sampleProfile(): PublicProfile {
 }
 
 async function profileFor(slug: string, sample = false) {
-  if (sample && slug === "nexora-cloud") return sampleProfile();
+  if (sample && (slug === "nexora-cloud" || slug === "aoba-souzoku")) return sampleProfile();
   const record = await getActivePublicProfileBySlug(slug);
   return record ? toPublicProfile(record) : null;
 }

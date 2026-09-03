@@ -13,7 +13,7 @@ function sampleProfile(): PublicProfile {
 
 export async function GET(request: Request, context: { params: Promise<{ slug: string }> }) {
   const { slug } = await context.params;
-  if (slug === "nexora-cloud" && new URL(request.url).searchParams.get("sample") === "1") {
+  if ((slug === "nexora-cloud" || slug === "aoba-souzoku") && new URL(request.url).searchParams.get("sample") === "1") {
     return new Response(JSON.stringify(sampleProfile(), null, 2), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=300, s-maxage=300", "x-content-type-options": "nosniff" } });
   }
   const record = await getActivePublicProfileBySlug(slug);

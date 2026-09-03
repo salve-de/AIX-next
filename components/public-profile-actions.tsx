@@ -88,7 +88,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       </div>
       <div className="public-profile-card-actions">
         <div className="public-profile-sample-links">
-          <Link className="button button-primary" href="/ai/company/nexora-cloud?sample=1" target="_blank" rel="noreferrer">発行されたAI専用ページを見る <ArrowIcon /></Link>
+          <Link className="button button-primary" href="/ai/company/aoba-souzoku?sample=1" target="_blank" rel="noreferrer">発行されたAI専用ページを見る <ArrowIcon /></Link>
           <Link className="text-button" href="/ai-info?sample=1">掲載内容の下書きを確認する <ArrowIcon /></Link>
         </div>
         <small><LockIcon />自社サイトを書き換えたり、勝手に情報を改変することはありません。</small>

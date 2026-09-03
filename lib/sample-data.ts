@@ -4,62 +4,62 @@ import { derivePositioningAdvice } from "@/lib/positioning";
 import type { ActionCard, AiVisibilityAudit, BuyerPrompt, Citation, CompanyDiscovery, EvidenceGap, Observation, ScanResult, WatchRecord } from "@/lib/types";
 
 const discovery: CompanyDiscovery = {
-  legalName: "Nexora Works株式会社（架空）",
-  brandName: "NEXORA Cloud",
-  domain: "nexora.example",
-  summary: "取引先審査・委託先リスク管理をまとめる架空のB2B SaaS。",
-  market: "取引先リスク管理SaaS",
-  targetCustomers: ["従業員100〜500名の企業", "法務・購買・情報システム部門"],
-  useCases: ["取引先審査", "委託先リスク評価", "更新確認の自動化"],
-  aliases: ["NEXORA Cloud", "Nexora Works", "nexora.example"],
+  legalName: "あおば相続法務事務所",
+  brandName: "あおば相続法務事務所",
+  domain: "aoba-souzoku.example.jp",
+  summary: "遺産分割・不動産相続・事業承継の個別親身な対応に特化した専門法務事務所。",
+  market: "相続・遺産分割・事業承継の専門相談",
+  targetCustomers: ["遺産相続や親族間トラブルに悩む個人・ご遺族", "中小企業オーナー・事業承継の後継者"],
+  useCases: ["親族間の遺産分割協議", "不動産・自社株の円満相続", "他社で断られた複雑案件の解決"],
+  aliases: ["あおば相続法務事務所", "あおば法務", "aoba-souzoku.example.jp"],
   competitors: [
-    { name: "TrustOrbit", domain: "trustorbit.example", reason: "同じ取引先審査予算で比較される架空SaaS", confidence: .94 },
-    { name: "VendorLens", domain: "vendorlens.example", reason: "委託先リスク評価の架空SaaS", confidence: .88 },
-    { name: "RiskCanvas", domain: "riskcanvas.example", reason: "購買・法務向けの架空代替", confidence: .83 },
-    { name: "ThirdCheck", domain: "thirdcheck.example", reason: "取引先情報確認の架空代替", confidence: .76 },
-    { name: "AuditLoop", domain: "auditloop.example", reason: "監査証跡を強みにする架空SaaS", confidence: .73 },
-    { name: "VendorScope", domain: "vendorscope.example", reason: "委託先管理の架空代替", confidence: .71 },
-    { name: "SafeChain", domain: "safechain.example", reason: "サプライヤーリスク管理の架空SaaS", confidence: .69 },
-    { name: "DueTrack", domain: "duetrack.example", reason: "継続審査の架空代替", confidence: .67 },
-    { name: "ComplyNest", domain: "complynest.example", reason: "コンプライアンス確認の架空代替", confidence: .64 },
-    { name: "ClearVendor", domain: "clearvendor.example", reason: "取引先確認の架空代替", confidence: .62 },
-    { name: "RiskDock", domain: "riskdock.example", reason: "リスク台帳の架空代替", confidence: .60 },
-    { name: "ChainProof", domain: "chainproof.example", reason: "サプライヤー証跡管理の架空代替", confidence: .58 },
+    { name: "大手全国展開リーガルグループ", domain: "zenkoku-legal.example", reason: "全国拠点数と知名度で先行する全国チェーン", confidence: .95 },
+    { name: "大手ポータル提携弁護士法人", domain: "portal-law.example", reason: "ポータル広告経由で大量集客する大手グループ", confidence: .88 },
+    { name: "オンライン一括士業ネットワーク", domain: "online-shigyo.example", reason: "一括見積もり・オンライン相談を掲げる競合", confidence: .83 },
+    { name: "都心総合法律事務所", domain: "toshin-law.example", reason: "法人・個人総合対応の大手事務所", confidence: .76 },
+    { name: "遺産相続専門センター", domain: "souzoku-center.example", reason: "Web広告で露出の多い相続特化法人", confidence: .73 },
+    { name: "中央法務グループ", domain: "chuo-legal.example", reason: "士業ネットワーク提携の大手", confidence: .71 },
+    { name: "全国相続支援センター", domain: "shien-center.example", reason: "全国ネットワークの相談窓口", confidence: .69 },
+    { name: "相続トラブル解決相談室", domain: "trouble-kaiketsu.example", reason: "親族紛争対応の専門窓口", confidence: .67 },
+    { name: "親族承継パートナーズ", domain: "shinzoku-shoukei.example", reason: "事業承継特化の競合", confidence: .64 },
+    { name: "みらい法務総合事務所", domain: "mirai-legal.example", reason: "都心部の総合法務事務所", confidence: .62 },
+    { name: "東京遺産コンサルティング", domain: "tokyo-isan.example", reason: "不動産相続特化のコンサル法人", confidence: .60 },
+    { name: "首都圏士業コンソーシアム", domain: "shutoken-shigyo.example", reason: "士業連携の総合相談窓口", confidence: .58 },
   ],
-  confidence: .93,
+  confidence: .94,
 };
 
 const promptSeed: Array<[string, BuyerPrompt["cluster"], number]> = [
-  ["日本でおすすめの取引先リスク管理SaaSは？", "category", 5],
-  ["従業員300名の企業に合う取引先審査ツールは？", "segment", 5],
-  ["委託先リスクを継続監視できるサービスは？", "use_case", 5],
-  ["反社・制裁・情報セキュリティをまとめて確認できるツールは？", "feature", 5],
-  ["Excelの取引先審査から乗り換えやすいサービスは？", "alternative", 4],
-  ["取引先リスク管理SaaSの主要3社を比較して", "comparison", 5],
-  ["費用対効果が高い取引先審査サービスは？", "value", 5],
-  ["短期間で導入できる取引先審査ツールは？", "implementation", 4],
-  ["監査証跡を残せる信頼性の高いサービスは？", "trust", 5],
-  ["導入支援が充実した取引先リスク管理SaaSは？", "support", 4],
-  ["海外取引先にも対応できるリスク管理サービスは？", "use_case", 4],
-  ["購買部門と法務部門が共同利用しやすいツールは？", "segment", 4],
+  ["東京でおすすめの相続専門の法務事務所は？", "category", 5],
+  ["複雑な不動産相続に悩む個人・親族向けの専門事務所は？", "segment", 5],
+  ["複雑な相続トラブルの継続相談・円満解決ができる法務事務所は？", "use_case", 5],
+  ["自社株の事業承継と生前対策をまとめて確認できる事務所は？", "feature", 5],
+  ["大手の事務的対応から乗り換えやすい相続専門事務所は？", "alternative", 4],
+  ["相続専門の法律事務所・法務事務所を比較して", "comparison", 5],
+  ["費用対効果が高く費用が明瞭な相続専門事務所は？", "value", 5],
+  ["即日面談など短期間で相談できる相続専門事務所は？", "implementation", 4],
+  ["解決実績が豊富で信頼できる安全な相続専門事務所は？", "trust", 5],
+  ["個別相談や親身な支援・サポートが充実した相続専門事務所は？", "support", 4],
+  ["遠方の不動産や複数相続人の更新手続きに対応できる法務事務所は？", "use_case", 4],
+  ["中小企業のオーナー経営者・後継者向けの事業承継事務所は？", "segment", 4],
 ];
 
 const prompts: BuyerPrompt[] = promptSeed.map(([text, cluster, importance], index) => ({ id: `prompt_${index + 1}`, text, cluster, importance, panel: "free", version: 1 }));
 const providerNames: Observation["provider"][] = ["openai", "gemini", "perplexity"];
 
 const competitorPlan: Array<{ name: string; recommendedCount: number }> = [
-  { name: "TrustOrbit", recommendedCount: 26 },
-  { name: "VendorLens", recommendedCount: 20 },
-  { name: "RiskCanvas", recommendedCount: 13 },
-  { name: "ThirdCheck", recommendedCount: 12 },
-  { name: "AuditLoop", recommendedCount: 11 },
-  { name: "VendorScope", recommendedCount: 11 },
-  { name: "SafeChain", recommendedCount: 9 },
-  { name: "DueTrack", recommendedCount: 9 },
-  { name: "ComplyNest", recommendedCount: 7 },
-  { name: "ClearVendor", recommendedCount: 6 },
-  { name: "RiskDock", recommendedCount: 5 },
-  { name: "ChainProof", recommendedCount: 4 },
+  { name: "大手全国展開リーガルグループ", recommendedCount: 26 },
+  { name: "大手ポータル提携弁護士法人", recommendedCount: 20 },
+  { name: "オンライン一括士業ネットワーク", recommendedCount: 13 },
+  { name: "都心総合法律事務所", recommendedCount: 12 },
+  { name: "遺産相続専門センター", recommendedCount: 11 },
+  { name: "中央法務グループ", recommendedCount: 11 },
+  { name: "全国相続支援センター", recommendedCount: 9 },
+  { name: "相続トラブル解決相談室", recommendedCount: 9 },
+  { name: "親族承継パートナーズ", recommendedCount: 7 },
+  { name: "みらい法務総合事務所", recommendedCount: 6 },
+  { name: "東京遺産コンサルティング", recommendedCount: 5 },
+  { name: "首都圏士業コンソーシアム", recommendedCount: 4 },
 ];
 
 const baselineOwnRecommended = new Set([0, 1, 3, 6, 9, 12, 33, 34]);
@@ -144,15 +144,15 @@ function buildLostPrompts(observations: Observation[]) {
 }
 
 const gaps: EvidenceGap[] = [
-  { id: "segment-proof", label: "従業員100〜500名での導入実績", whyItMatters: "同じ規模の会社で使った実績を、公開情報から確認できません。", relatedPromptIds: prompts.slice(0, 10).map((item) => item.id), relatedPromptCount: 10, competitorEvidence: "TrustOrbitは会社の規模ごとに導入事例を載せています。", confidence: .91, status: "missing" },
-  { id: "implementation-time", label: "標準導入期間", whyItMatters: "契約から使い始めるまでの期間と条件を確認できません。", relatedPromptIds: prompts.slice(1, 9).map((item) => item.id), relatedPromptCount: 8, competitorEvidence: "TrustOrbitは標準3〜5週間と明記しています。", confidence: .87, status: "missing" },
-  { id: "operational-proof", label: "審査工数の削減実績", whyItMatters: "どれくらい楽になるかを比べる材料が、公開情報から見つかりません。", relatedPromptIds: prompts.slice(4, 10).map((item) => item.id), relatedPromptCount: 6, competitorEvidence: "VendorLensは更新確認の工数が減った例を載せています。", confidence: .79, status: "partial" },
+  { id: "segment-proof", label: "親身な個別伴走と解決実績", whyItMatters: "複雑な親族間トラブルや不動産相続を個別親身に解決した実績が、AIに伝わっていません。", relatedPromptIds: prompts.slice(0, 10).map((item) => item.id), relatedPromptCount: 10, competitorEvidence: "大手リーガルグループは全国拠点数と形式的な解決数を前面に出しています。", confidence: .91, status: "missing" },
+  { id: "implementation-time", label: "即日相談・初動対応スピード", whyItMatters: "急を要する相談者が知りたい「即日面談や初動対応の流れ」が公開情報で不足しています。", relatedPromptIds: prompts.slice(1, 9).map((item) => item.id), relatedPromptCount: 8, competitorEvidence: "大手ポータル提携先は初動対応フローを明記しています。", confidence: .87, status: "missing" },
+  { id: "operational-proof", label: "明瞭な報酬体系と費用目安", whyItMatters: "着手金や報酬の明確な目安が、比較検討している相談者に見えていません。", relatedPromptIds: prompts.slice(4, 10).map((item) => item.id), relatedPromptCount: 6, competitorEvidence: "オンライン士業は定額プランや見積もり例を載せています。", confidence: .79, status: "partial" },
 ];
 
 const actions: ActionCard[] = [
-  { id: "action-segment-proof", title: "同じ規模の導入事例を、比べられる形で載せる", rationale: "10問で、同じ規模の導入実績が見つかりませんでした。", type: "owned", relatedPromptIds: gaps[0].relatedPromptIds, relatedPromptCount: 10, priority: "critical", confidence: .91, target: "導入事例・サービス概要", audience: "従業員100〜500名の企業・法務／購買部門", stage: "比較", customerConcern: "自社と同じ規模で使えるか", placement: "導入事例・サービス概要", cta: "導入条件を確認する", successMetric: "同じ比較質問で自社が候補に入ったか", evidenceType: "observed" },
-  { id: "action-implementation", title: "導入までの期間と条件を載せる", rationale: "導入までの判断材料が、8問で足りませんでした。", type: "owned", relatedPromptIds: gaps[1].relatedPromptIds, relatedPromptCount: 8, priority: "high", confidence: .87, target: "導入の流れ・FAQ", audience: "導入時期を決めたい法務・購買担当", stage: "導入", customerConcern: "いつから使い始められるか", placement: "導入の流れ・FAQ", cta: "導入条件を確認する", successMetric: "導入に関する質問で自社が候補に入ったか", evidenceType: "observed" },
-  { id: "action-third-party", title: "第三者が確認できる導入事例を増やす", rationale: "競合には、自社サイト以外にも確かめられる情報があります。", type: "third_party", relatedPromptIds: prompts.slice(3, 8).map((item) => item.id), relatedPromptCount: 5, priority: "medium", confidence: .72, target: "業界媒体・顧客事例", audience: "導入実績を比較している担当者", stage: "検討", customerConcern: "自社以外の情報でも確かめられるか", placement: "顧客事例・業界媒体", cta: "事例を確認する", successMetric: "同じ比較質問で自社の引用が増えたか", evidenceType: "hypothesis" },
+  { id: "action-segment-proof", title: "親身な個別解決の事例を、比べられる形で載せる", rationale: "10問で、親身な個別対応の実績がAIに確認できませんでした。", type: "owned", relatedPromptIds: gaps[0].relatedPromptIds, relatedPromptCount: 10, priority: "critical", confidence: .91, target: "解決実績・事務所案内", audience: "相続トラブルに悩む個人・親族", stage: "比較", customerConcern: "親身に相談に乗ってくれるか", placement: "解決事例・事務所概要", cta: "個別相談の流れを確認する", successMetric: "親身な相談の比較質問で自社が候補に入ったか", evidenceType: "observed" },
+  { id: "action-implementation", title: "即日相談と初動対応の流れを明記する", rationale: "初動対応の早さが、8問で判断材料として足りませんでした。", type: "owned", relatedPromptIds: gaps[1].relatedPromptIds, relatedPromptCount: 8, priority: "high", confidence: .87, target: "相談の流れ・FAQ", audience: "今すぐ相談したい相談者", stage: "導入", customerConcern: "いつ相談できるか", placement: "相談の流れ・FAQ", cta: "初動対応を確認する", successMetric: "即日相談に関する質問で自社が候補に入ったか", evidenceType: "observed" },
+  { id: "action-third-party", title: "公式の紹介ページでAIへの認知を確立する", rationale: "大手に対抗するため、AIが参照しやすい公式情報を整えます。", type: "third_party", relatedPromptIds: prompts.slice(3, 8).map((item) => item.id), relatedPromptCount: 5, priority: "medium", confidence: .72, target: "AI公式データベース", audience: "専門家を探している相談者", stage: "検討", customerConcern: "信頼できる事務所か", placement: "AI公式ページ", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか", evidenceType: "hypothesis" },
 ];
 
 function sampleVisibilityAudit(measuredAt: string): AiVisibilityAudit {
@@ -163,16 +163,16 @@ function sampleVisibilityAudit(measuredAt: string): AiVisibilityAudit {
     crawl: {
       robotsTxtFound: true,
       sitemapFound: true,
-      sitemapUrl: "https://nexora.example/sitemap.xml",
+      sitemapUrl: "https://aoba-souzoku.example.jp/sitemap.xml",
       attempted: 8,
       pagesCrawled: 8,
       pagesBlockedByRobots: 0,
       pagesNoindex: 0,
-      pagesMissingCanonical: 2,
+      pagesMissingCanonical: 0,
       pagesCanonicalMismatch: 0,
       pagesWithStructuredData: 3,
       pagesMissingTitle: 0,
-      pagesMissingDescription: 1,
+      pagesMissingDescription: 0,
       pagesMissingH1: 0,
       aiSearchBotAllowed: true,
       gptBotAllowed: true,
@@ -181,11 +181,11 @@ function sampleVisibilityAudit(measuredAt: string): AiVisibilityAudit {
       { id: "crawler-access", group: "access", status: "ready", title: "AI検索が公開ページを読める", detail: "公開ページを取得できる設定です。", action: "この設定を維持する" },
       { id: "indexability", group: "access", status: "ready", title: "重要ページが検索対象になっている", detail: "重要ページにnoindexはありません。", action: "重要ページのindex設定を定期確認する" },
       { id: "sitemap", group: "access", status: "ready", title: "更新ページを知らせる入口がある", detail: "sitemap.xmlを取得できました。", action: "sitemapのURLと内容を定期確認する" },
-      { id: "structured-data", group: "clarity", status: "ready", title: "ページの内容を機械にも説明できる", detail: "JSON-LDを確認できました。", action: "見える本文とJSON-LDの内容をそろえる" },
-      { id: "entity-clarity", group: "clarity", status: "ready", title: "会社とサービスの関係が分かる", detail: "会社情報とサービス情報を公開ページで確認しました。", action: "見える会社情報・サービス情報と構造化データをそろえる" },
-      { id: "buyer-facts", group: "clarity", status: "review", title: "購入前に知りたい情報がそろっている", detail: "導入期間の説明を公開ページから確認できませんでした。", action: "導入期間を、事実と条件つきで公開する" },
-      { id: "proof", group: "proof", status: "missing", title: "選ぶ理由を第三者が確かめられる", detail: "従業員100〜500名での導入実績を自社の公開ページから確認できませんでした。", action: "導入実績を、許諾と原典を確認したうえで公開する" },
-      { id: "measurement", group: "measurement", status: "ready", title: "同じ質問で変化を確かめられる", detail: "12問を同じ条件で確認しました。", action: "変更後も同じ質問・地域・AI面で再測定する" },
+      { id: "structured-data", group: "clarity", status: "ready", title: "事務所の情報を機械にも説明できる", detail: "JSON-LD構造化データを確認できました。", action: "見える本文と構造化データの内容をそろえる" },
+      { id: "entity-clarity", group: "clarity", status: "ready", title: "事務所と専門分野の関係が分かる", detail: "事務所情報と取扱分野を公開ページで確認しました。", action: "見える事務所情報と専門分野をそろえる" },
+      { id: "buyer-facts", group: "clarity", status: "review", title: "相談前に知りたい情報がそろっている", detail: "初動対応や相談の流れがAIに十分伝わっていません。", action: "相談の流れと費用目安を公開する" },
+      { id: "proof", group: "proof", status: "missing", title: "親身な解決実績がAIに伝わっている", detail: "複雑な相続を円満解決した実績がAIに認識されていません。", action: "個人情報を伏せた解決事例を公開する" },
+      { id: "measurement", group: "measurement", status: "ready", title: "同じ質問で変化を確かめられる", detail: "12問を同じ条件で確認しました。", action: "変更後も同じ質問で再測定する" },
     ],
   };
 }
@@ -207,7 +207,7 @@ function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndex
   const ownCitationCount = observations.filter((item) => item.citations.some((itemCitation) => itemCitation.domain === discovery.domain)).length;
   const result: ScanResult = {
     scanId,
-    targetUrl: "https://nexora.example",
+    targetUrl: "https://aoba-souzoku.example.jp",
     discovery,
     panel: { kind: "free", version: 1, promptCount: prompts.length, repetitions: 1, locale: "ja-JP", country: "JP" },
     measuredAt,

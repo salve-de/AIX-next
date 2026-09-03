@@ -1624,3 +1624,255 @@ svg { width: 1.1em; height: 1.1em; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Positioning 軍師カルテ & オートパイロット
+   ========================================================================== */
+.loss-alert-box {
+  background: #fff1f2;
+  border: 2px solid #fda4af;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.loss-alert-badge {
+  display: inline-block;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  align-self: flex-start;
+}
+
+.loss-alert-main strong {
+  display: block;
+  font-size: 1.15rem;
+  color: #9f1239;
+  margin-bottom: 6px;
+}
+
+.loss-alert-main p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #881337;
+  line-height: 1.5;
+}
+
+.strategy-selector-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.strategy-tab-btn {
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  gap: 4px;
+}
+
+.strategy-tab-btn:hover {
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+
+.strategy-tab-btn.active {
+  border-color: var(--navy, #0f172a);
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.strategy-tab-btn .tab-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: #e2e8f0;
+  color: #475569;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.strategy-tab-btn.active .tab-badge {
+  background: var(--navy, #0f172a);
+  color: #ffffff;
+}
+
+.strategy-tab-btn strong {
+  font-size: 0.95rem;
+  color: var(--navy, #0f172a);
+}
+
+.strategy-tab-btn small {
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.competitor-gap {
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+.our-advantage-box {
+  background: #f0fdf4;
+  border-left: 3px solid #10b981;
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+  margin-top: 8px;
+}
+
+.our-advantage-box .advantage-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #047857;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.our-advantage-box p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #065f46;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+/* オートパイロット比較表 */
+.autopilot-comparison-box {
+  margin-top: 40px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 2px solid #0f172a;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.autopilot-pill {
+  display: inline-block;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin-bottom: 12px;
+}
+
+.autopilot-head h3 {
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.autopilot-head p {
+  font-size: 0.9rem;
+  color: #475569;
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.autopilot-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  background: #ffffff;
+}
+
+.autopilot-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 1.2fr;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.autopilot-row:last-child {
+  border-bottom: none;
+}
+
+.autopilot-row.head {
+  background: #f1f5f9;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #334155;
+}
+
+.autopilot-row > div {
+  padding: 14px 18px;
+  font-size: 0.86rem;
+  display: flex;
+  align-items: center;
+}
+
+.col-feature {
+  font-weight: 700;
+  color: #475569;
+  background: #fafafa;
+}
+
+.col-free {
+  color: #64748b;
+  border-left: 1px solid #e2e8f0;
+}
+
+.col-paid {
+  border-left: 1px solid #cbd5e1;
+  background: #fcfdfc;
+  color: #0f172a;
+}
+
+.col-paid.highlight strong {
+  color: #047857;
+  font-weight: 800;
+}
+
+.autopilot-cta-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.autopilot-cta-row small {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 800px) {
+  .strategy-selector-tabs {
+    grid-template-columns: 1fr;
+  }
+  .autopilot-row {
+    grid-template-columns: 1fr;
+  }
+  .col-feature {
+    background: #f1f5f9;
+    font-size: 0.78rem;
+    padding: 6px 14px;
+  }
+  .col-free {
+    border-left: none;
+    padding: 10px 14px;
+  }
+  .col-paid {
+    border-left: none;
+    border-top: 1px dashed #cbd5e1;
+    padding: 10px 14px;
+  }
+}
