@@ -231,42 +231,163 @@ export function ScanProgress() {
   const activeIndex = steps.findIndex((item) => item.stage === stage);
   const completedCount = stage === "complete" ? steps.length : Math.max(0, activeIndex);
 
+  if (phase === "social_site" || phase === "product_site" || phase === "no_site") {
+    const isSocial = phase === "social_site";
+    const isProduct = phase === "product_site";
+
+    const badgeText = isSocial
+      ? (socialInfo.displayLabel || "Instagram連携モード")
+      : isProduct
+      ? "📦 商品・サービス専用台帳モード"
+      : "🏢 ホームページ未開設・直接発行モード";
+
+    const titleText = isSocial
+      ? `Instagram「${displayInput(rawInput)}」からAI公式Web拠点を発行`
+      : isProduct
+      ? `商品「${displayInput(rawInput)}」のAI推薦用公式台帳を発行`
+      : `「${displayInput(rawInput)}」のAI公式Web拠点を無料発行`;
+
+    const descText = isSocial
+      ? "Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため生成AI（ChatGPTやGemini等）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。AIXなら、SNSアカウントからAIが100%読み取れる公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。"
+      : isProduct
+      ? "生成AIは「おすすめの〇〇（商品ジャンル）」を聞かれた際、商品名と用途、独自の強みがWeb上で構造化されていないと他社製品を優先推薦してしまいます。商品名・サービス名単体から、AIが第一想起で推薦する公式台帳を即座に無料発行します。"
+      : "自社サイトをお持ちでない場合でも、AIXでは会社名（屋号）をもとに、AI専用の公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。高額なホームページ制作費用は不要です。";
+
+    const brandLabel = isSocial
+      ? "店舗名・屋号・ブランド名"
+      : isProduct
+      ? "商品名・サービス名（ブランド名）"
+      : "会社名・屋号（表示名）";
+
+    const marketLabel = isSocial
+      ? "専門ジャンル・主な取扱メニュー"
+      : isProduct
+      ? "カテゴリー・主な用途"
+      : "専門分野・主な取扱品目";
+
+    const locationLabel = isSocial
+      ? "所在地・店舗エリア"
+      : isProduct
+      ? "提供形態・購入方法"
+      : "所在地・対応エリア";
+
+    const buttonText = isSocial
+      ? "Instagram連携のAI公式Web拠点を無料発行する"
+      : isProduct
+      ? "この商品のAI公式台帳を無料発行する"
+      : "この会社名でAI公式Web拠点を無料発行する";
+
+    const noteText = isSocial
+      ? "※発行されたURLは、Instagramのプロフィール欄（リンク）に貼ることで、フォロワーにもAIにも伝わる公式Web拠点として機能します。"
+      : isProduct
+      ? "※発行された商品台帳は、ChatGPTやGeminiなどのAIクローラーが「商品仕様・おすすめ理由」として直接引用・グラウンディングされます。"
+      : "※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。";
+
+    return (
+      <main className="scan-page">
+        <SiteHeader compact />
+        <section className="scan-stage shell" style={{ maxWidth: "800px", margin: "40px auto 60px", width: "100%" }}>
+          <div className="no-site-card" style={{ padding: "32px", background: "#ffffff", borderRadius: "12px", border: "1.5px solid #cbd5e1", boxShadow: "0 10px 25px -5px rgba(15, 23, 42, 0.08)" }}>
+            <div style={{ marginBottom: "14px" }}>
+              <span
+                className="no-site-tag"
+                style={
+                  isSocial
+                    ? { background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)", color: "#fff", padding: "4px 10px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 800 }
+                    : isProduct
+                    ? { background: "#7c3aed", color: "#fff", padding: "4px 10px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 800 }
+                    : { padding: "4px 10px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 800 }
+                }
+              >
+                {badgeText}
+              </span>
+            </div>
+            <h1 style={{ fontSize: "1.55rem", fontWeight: 800, margin: "0 0 12px 0", lineHeight: 1.4, color: "#0f172a" }}>
+              {titleText}
+            </h1>
+            <p style={{ fontSize: "0.88rem", lineHeight: 1.6, color: "#475569", margin: "0 0 24px 0" }}>
+              {descText}
+            </p>
+
+            <div className="no-site-form-grid">
+              <div className="no-site-input-group">
+                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{brandLabel}</label>
+                <input
+                  type="text"
+                  value={directBrandName}
+                  onChange={(e) => setDirectBrandName(e.target.value)}
+                  placeholder="例: サロン名、店舗名、農園名、商品名"
+                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
+                />
+              </div>
+              <div className="no-site-input-group">
+                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{marketLabel}</label>
+                <input
+                  type="text"
+                  value={directMarket}
+                  onChange={(e) => setDirectMarket(e.target.value)}
+                  placeholder="例: オーガニックカフェ、精密板金、D2Cコスメ"
+                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
+                />
+              </div>
+              <div className="no-site-input-group">
+                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{locationLabel}</label>
+                <input
+                  type="text"
+                  value={directLocation}
+                  onChange={(e) => setDirectLocation(e.target.value)}
+                  placeholder="例: 東京都目黒区 / 自由が丘駅徒歩3分"
+                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
+                />
+              </div>
+            </div>
+
+            <div className="no-site-action-row" style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+              <div className="no-site-target-brand">
+                <span style={{ fontSize: "0.78rem", color: "#64748b" }}>登録対象：</span>
+                <strong style={{ fontSize: "0.95rem", color: "#0f172a", marginLeft: "6px" }}>{socialInfo.displayLabel || directBrandName || rawInput}</strong>
+              </div>
+              <button
+                className="button button-primary scan-resolve-start"
+                type="button"
+                disabled={directCreating}
+                onClick={() => void createDirectProfile()}
+                style={{ padding: "12px 24px", fontSize: "0.95rem", fontWeight: 800 }}
+              >
+                {directCreating ? "公式拠点を即時発行中…" : buttonText} <ArrowIcon />
+              </button>
+            </div>
+            {error ? <p className="form-error" style={{ marginTop: "12px" }}>{error}</p> : null}
+            <small className="no-site-small-note" style={{ display: "block", marginTop: "14px", color: "#64748b", fontSize: "0.75rem" }}>
+              {noteText}
+            </small>
+          </div>
+          <div style={{ marginTop: "16px", textAlign: "center" }}>
+            <button className="button button-secondary" type="button" onClick={() => router.push("/")}>
+              ← 入力をやり直す
+            </button>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (phase !== "scanning") {
     return <main className="scan-page">
       <SiteHeader compact />
       <section className="scan-stage shell scan-resolve-stage">
         <div className="scan-stage-main scan-resolve-main">
           <p className="overline">
-            {phase === "resolving"
-              ? "診断先を検索中"
-              : phase === "social_site"
-              ? "📸 Instagram連携・AI公式拠点発行"
-              : phase === "product_site"
-              ? "📦 商品専用AI公式台帳発行"
-              : phase === "no_site"
-              ? "🏢 公式Web拠点ダイレクト発行"
-              : "診断先の同定確認"}
+            {phase === "resolving" ? "診断先を検索中" : "診断先の同定確認"}
           </p>
           <h1>
             {phase === "resolving"
               ? `「${displayInput(rawInput)}」の公開サイトを探しています。`
-              : phase === "social_site"
-              ? `Instagram「${displayInput(rawInput)}」からAI公式Web拠点を発行します`
-              : phase === "product_site"
-              ? `商品「${displayInput(rawInput)}」のAI推薦用台帳を発行します`
-              : phase === "no_site"
-              ? `「${displayInput(rawInput)}」のAI公式Web拠点を直接発行します`
               : `「${displayInput(rawInput)}」の公式サイトを確認してください`}
           </h1>
           <p className="scan-message">
             {phase === "resolving"
               ? "会社名・商品名から、診断できる公開サイトを調べています。"
-              : phase === "social_site"
-              ? "Instagramは画像が中心のため、ChatGPTやGemini等の生成AIは料金やサービス詳細を読み取れません。AIが直接引用できる公的台帳を発行し、おすすめの第一想起を獲得します。"
-              : phase === "product_site"
-              ? "商品名・サービス名から、AIが第一想起で推薦するための専用スペック台帳を即座に無料発行します。"
-              : phase === "no_site"
-              ? "自社サイトをお持ちでない企業様でも、会社名だけでAI専用の公式Web拠点を即座に発行できます。"
               : "AIが同名の別会社と誤認しないよう、ドメインを確認して公式サイトを確定します。"}
           </p>
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
@@ -293,196 +414,6 @@ export function ScanProgress() {
             </div>
             <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を100%防ぎます。</p>
           </> : null}
-          {phase === "no_site" ? (
-            <div className="scan-no-site-container">
-              <div className="no-site-card">
-                <span className="no-site-tag">ホームページがなくても大丈夫</span>
-                <h3>高額なWebサイト制作は不要です</h3>
-                <p>
-                  公式Webサイトが見つかりませんでした。自社サイトをお持ちでない場合でも、AIXでは会社名（屋号）をもとに、<strong>AI専用の公式Web拠点（公的ナレッジ台帳）</strong>を即座に無料発行できます。
-                </p>
-
-                <div className="no-site-form-grid">
-                  <div className="no-site-input-group">
-                    <label>会社名・屋号（表示名）</label>
-                    <input type="text" value={rawInput} readOnly className="input-readonly" />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>専門分野・主な取扱品目</label>
-                    <input
-                      type="text"
-                      value={directMarket}
-                      onChange={(e) => setDirectMarket(e.target.value)}
-                      placeholder="例: 精密板金加工、有機野菜栽培、地域密着リフォーム"
-                    />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>所在地・対応エリア</label>
-                    <input
-                      type="text"
-                      value={directLocation}
-                      onChange={(e) => setDirectLocation(e.target.value)}
-                      placeholder="例: 東京都大田区 / 全国対応"
-                    />
-                  </div>
-                </div>
-
-                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
-                  <div className="no-site-target-brand">
-                    <span>発行される公式URL：</span>
-                    <strong>{`https://aix.jp/ai/company/${encodeURIComponent(rawInput.toLowerCase().replace(/\s+/g, "-"))}`}</strong>
-                  </div>
-                  <button
-                    className="button button-primary scan-resolve-start"
-                    type="button"
-                    disabled={directCreating}
-                    onClick={() => void createDirectProfile()}
-                  >
-                    {directCreating ? "公式拠点を即時発行中…" : "この会社名でAI公式Web拠点を無料発行する"} <ArrowIcon />
-                  </button>
-                </div>
-                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
-                <small className="no-site-small-note">
-                  ※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。
-                </small>
-              </div>
-              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
-                ← 別の会社名やURLでやり直す
-              </button>
-            </div>
-          ) : null}
-          {phase === "social_site" ? (
-            <div className="scan-no-site-container">
-              <div className="no-site-card">
-                <span className="no-site-tag" style={{ background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)", color: "#fff" }}>
-                  {socialInfo.displayLabel || "Instagram連携モード"}
-                </span>
-                <h3>Instagramをホームページ代わりにされている事業者様へ</h3>
-                <p>
-                  Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため<strong>生成AI（ChatGPTやGemini）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。</strong><br />
-                  AIXなら、SNSアカウントから<strong>AIが100%読み取れる公式Web拠点（公的ナレッジ台帳）</strong>を即座に無料発行できます。
-                </p>
-
-                <div className="no-site-form-grid">
-                  <div className="no-site-input-group">
-                    <label>店舗名・屋号・ブランド名</label>
-                    <input
-                      type="text"
-                      value={directBrandName}
-                      onChange={(e) => setDirectBrandName(e.target.value)}
-                      placeholder="例: サロン名、店舗名、農園名"
-                    />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>専門ジャンル・主な取扱メニュー</label>
-                    <input
-                      type="text"
-                      value={directMarket}
-                      onChange={(e) => setDirectMarket(e.target.value)}
-                      placeholder="例: オーガニックカフェ、プライベートサロン、産直野菜"
-                    />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>所在地・店舗エリア</label>
-                    <input
-                      type="text"
-                      value={directLocation}
-                      onChange={(e) => setDirectLocation(e.target.value)}
-                      placeholder="例: 東京都目黒区 / 自由が丘駅徒歩3分"
-                    />
-                  </div>
-                </div>
-
-                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
-                  <div className="no-site-target-brand">
-                    <span>連携SNSアカウント：</span>
-                    <strong>{socialInfo.displayLabel || rawInput}</strong>
-                  </div>
-                  <button
-                    className="button button-primary scan-resolve-start"
-                    type="button"
-                    disabled={directCreating}
-                    onClick={() => void createDirectProfile()}
-                  >
-                    {directCreating ? "公式拠点を即時発行中…" : "Instagram連携のAI公式Web拠点を無料発行する"} <ArrowIcon />
-                  </button>
-                </div>
-                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
-                <small className="no-site-small-note">
-                  ※発行されたURLは、Instagramのプロフィール欄（リンク）に貼ることで、フォロワーにもAIにも伝わる公式拠点として機能します。
-                </small>
-              </div>
-              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
-                ← 別の会社名やURLでやり直す
-              </button>
-            </div>
-          ) : null}
-          {phase === "product_site" ? (
-            <div className="scan-no-site-container">
-              <div className="no-site-card">
-                <span className="no-site-tag" style={{ background: "#7c3aed", color: "#fff" }}>
-                  📦 商品・サービス専用台帳モード
-                </span>
-                <h3>「{displayInput(rawInput)}」のAI推薦用公式台帳を発行します</h3>
-                <p>
-                  生成AI（ChatGPTやGemini）は「おすすめの〇〇（商品ジャンル）」を聞かれた際、<strong>商品名と用途、独自の強みがWeb上で構造化されていないと他社製品を優先推薦してしまいます。</strong><br />
-                  AIXなら、商品名・サービス名単体からでも、AIが第一想起で推薦する公式商品台帳（Product Knowledge Master）を即座に無料発行できます。
-                </p>
-
-                <div className="no-site-form-grid">
-                  <div className="no-site-input-group">
-                    <label>商品名・サービス名（ブランド名）</label>
-                    <input
-                      type="text"
-                      value={directBrandName}
-                      onChange={(e) => setDirectBrandName(e.target.value)}
-                      placeholder="例: 熟成黒にんにく、Nexoraクラウド、匠の包丁"
-                    />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>カテゴリー・主な用途</label>
-                    <input
-                      type="text"
-                      value={directMarket}
-                      onChange={(e) => setDirectMarket(e.target.value)}
-                      placeholder="例: 健康食品・滋養強壮、業務効率化SaaS、特注調理器具"
-                    />
-                  </div>
-                  <div className="no-site-input-group">
-                    <label>提供形態・購入方法</label>
-                    <input
-                      type="text"
-                      value={directLocation}
-                      onChange={(e) => setDirectLocation(e.target.value)}
-                      placeholder="例: 公式通販・全国送料無料 / 初回お試し1,980円"
-                    />
-                  </div>
-                </div>
-
-                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
-                  <div className="no-site-target-brand">
-                    <span>発行対象プロダクト：</span>
-                    <strong>{directBrandName || rawInput}</strong>
-                  </div>
-                  <button
-                    className="button button-primary scan-resolve-start"
-                    type="button"
-                    disabled={directCreating}
-                    onClick={() => void createDirectProfile()}
-                  >
-                    {directCreating ? "商品台帳を即時発行中…" : "この商品のAI公式台帳を無料発行する"} <ArrowIcon />
-                  </button>
-                </div>
-                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
-                <small className="no-site-small-note">
-                  ※発行された商品台帳は、ChatGPTやGeminiなどのAIクローラーが「商品仕様・おすすめ理由」として直接引用・グラウンディングされます。
-                </small>
-              </div>
-              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
-                ← 別の会社名やURLでやり直す
-              </button>
-            </div>
-          ) : null}
           {phase === "failed" ? <div className="scan-error" role="alert"><strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button></div> : null}
         </div>
         {phase === "choose" || phase === "resolving" ? (
