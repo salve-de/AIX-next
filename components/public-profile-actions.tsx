@@ -5,6 +5,8 @@ import { useState } from "react";
 import { ArrowIcon } from "@/components/icons";
 import type { PublicProfile, ScanResult } from "@/lib/types";
 
+import { derivePositioningAdvice } from "@/lib/positioning";
+
 type ProfileShape = PublicProfile;
 
 type PublicProfileActionsProps = {
@@ -30,36 +32,8 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
   const [isSaved, setIsSaved] = useState<boolean>(sample);
 
-  // サイト解析から抽出された3つの強み候補
-  const strategies = result.positioning?.strategies || [
-    {
-      code: "戦略01",
-      name: "親族トラブル・個別伴走",
-      coreThesis: "親族トラブル・複雑な不動産相続の個別伴走",
-      targetMarket: "親族間トラブルや複雑な不動産相続に悩む個人・親族",
-      isRecommended: true,
-      revenueImpact: "受任単価・利益率が最も高いドル箱領域（相見積もりなしの指名買い）",
-      passionateReason: "御社はここが圧倒的に強いのに、なんでAIに拾わせてないんですか！？ もったいなさすぎます！💢 大手はマニュアル対応しかできず、泥臭い個別事情の伴走を最も苦手としています。一方、御社はこの領域で圧倒的な解決力を持っています。しかもこの相談は最も客単価が高く売上に直結する本丸です。AIが無知なせいで大手に流出しているこのドル箱顧客を、御社一択でAIに推薦させるため、絶対にこの看板をAIに教え込んでください！",
-    },
-    {
-      code: "戦略02",
-      name: "特急初動・即日面談",
-      coreThesis: "申告期限が迫る相続の特急初動・即日面談",
-      targetMarket: "申告期限が迫り、一刻も早く手続きを進めたい相談者",
-      isRecommended: false,
-      revenueImpact: "即決・成約スピードが最速（問い合わせから契約までが短期）",
-      passionateReason: "緊急案件を即座に刈り取る強力な武器です。ただし無料枠（1枠）で最大の売上インパクトを出すなら、まずは戦略01をAIに叩き込むことを推奨します。",
-    },
-    {
-      code: "戦略03",
-      name: "明瞭会計・安心定額",
-      coreThesis: "追加料金ゼロ・完全明瞭な相続手続き",
-      targetMarket: "費用総額や追加料金の不安なく依頼したい相談者",
-      isRecommended: false,
-      revenueImpact: "他社との価格競争を完全無効化する高付加価値特化",
-      passionateReason: "大手が手を出せない高難度案件を総取りする武器です。有料プランで戦略01と併用することで、競合を全方位から包囲できます。",
-    },
-  ];
+  // サイト解析結果（ScanResult）から100%動的に抽出された3つの強み候補
+  const strategies = result.positioning?.strategies || derivePositioningAdvice(result).strategies || [];
 
   async function preview() {
     if (sample) {
@@ -138,11 +112,11 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="aix-hot-advice-card">
         <div className="hot-advice-header">
           <span className="hot-advice-tag">戦略分析所見：看板選定の論理的根拠</span>
-          <h4>大手が対応できない「個別事情の調整力」こそが、御社の収益性を最大化する決定打です</h4>
+          <h4>大手が対応できない「{strategies[selectedWeapon]?.name || "固有の強み"}」こそが、{result.discovery.brandName || "御社"}の収益性を最大化する決定打です</h4>
         </div>
         <p className="hot-advice-body">
           {strategies[selectedWeapon]?.passionateReason ||
-            `大手全国グループはマニュアル対応に依存しており、親族間の複雑な個別事情の調整力に構造的な弱点を抱えています。一方、御社はここに明確な優位性と解決実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は、重大な機会損失です。AI公式データベースへ本看板を最優先で登録することを強く推奨します。`}
+            `大手全国チェーンはマニュアル対応に依存しており、個別事情への柔軟な対応力に構造的な弱点を抱えています。一方、${result.discovery.brandName || "御社"}はここに明確な優位性と実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は重大な機会損失です。AI公式データベースへ本看板を最優先で登録することを強く推奨します。`}
         </p>
       </div>
 

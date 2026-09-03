@@ -85,35 +85,48 @@ export function ResultClient() {
   const host = (() => { try { return new URL(result.targetUrl).hostname.replace(/^www\./, ""); } catch { return result.targetUrl; } })();
   const displayWarnings = [...new Set(result.warnings.map(userFacingWarning))];
 
+  const brand = result.discovery.brandName || "貴社";
+  const market = result.discovery.market || "専門サービス";
+  const target1 = result.discovery.targetCustomers[0] || "お客様";
+  const useCase1 = result.discovery.useCases[0] || "専門的な課題の相談";
+  const comp1Name = primaryWinner || topCompetitor?.name || "業界大手グループ";
+  const comp2Name = result.competitors[1]?.name || "大手ポータル提携法人";
+
+  // 実測の lostPrompts があればそれを最優先し、未測定時もスキャン対象の業界・用途に100%合致した自然な相談プロンプトを展開
+  const prompt1 = result.lostPrompts[0]?.prompt || `大手のような事務的・マニュアル対応ではなく、${target1}の個別事情や複雑な状況に親身に寄り添って${useCase1}を円満解決してくれる、おすすめの${market}を教えてください。`;
+  const prompt2 = result.lostPrompts[1]?.prompt || `${useCase1}について至急で相談・依頼したいです。問い合わせから初動着手までのスピードが早く、即日面談など迅速に対応してくれる${market}のおすすめはどこですか？`;
+  const prompt3 = result.lostPrompts[2]?.prompt || `${useCase1}を依頼したいのですが、追加費用がどんどん膨らまないか心配です。事前に総額や料金体系が明確で、費用対効果が高い${market}を教えてください。`;
+  const prompt4 = result.lostPrompts[3]?.prompt || `${target1}向けの${market}で、実績が豊富で評判が良く、安心して任せられるおすすめの専門機関・サービスを教えてください。`;
+
   // 全方位の質問バリエーション（親身・トラブル、スピード、費用、総合）
   const proofScenarios = [
     {
-      tab: "領域1：親族トラブル・個別解決",
-      prompt: "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。",
-      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "全国に拠点を持ち知名度と実績が豊富ですが、組織が大きいため担当者による対応の差や事務的なマニュアル対応になりやすい傾向があります。" },
-      winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "全国規模の提携ネットワークを持つ大手窓口です。定型手続きに強いですが、複雑な親族間の個別事情に深く伴走するサポートは限定的です。" },
-      lostReason: "【判定：推薦圏外】AIはこの質問に対して貴社を言及しませんでした。貴社のような『親身な個別伴走』こそが相談者の課題に合致しているにもかかわらず、Web上にAI用公式データが存在しないため、知名度だけで大手が機械的に推薦されています。",
+      tab: `領域1：個別伴走・柔軟対応（${useCase1}）`,
+      prompt: prompt1,
+      winner1: { name: comp1Name, comment: `知名度と実績が豊富な大手グループです。組織力は高いですが、担当者による対応の差や画一的なマニュアル対応になりやすい傾向があります。` },
+      winner2: { name: comp2Name, comment: `全国規模の提携ネットワークを持つ大手窓口です。定型業務に強いですが、個別事情に深く伴走するサポートは限定的です。` },
+      lostReason: `【判定：推薦圏外】AIはこの質問に対して${brand}を言及しませんでした。${brand}のような個別伴走体制こそが相談者の課題に合致しているにもかかわらず、Web上にAI用公式データが存在しないため、知名度だけで大手が機械的に推薦されています。`,
     },
     {
       tab: "領域2：初動スピード・即日対応",
-      prompt: "相続税の申告期限が迫っていて焦っています。即日面談など短期間ですぐに初動対応してくれる相続に強い事務所はどこ？",
-      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "人員規模が大きく、全国主要都市にコールセンターを持つため初回受付の早さで選定されています。" },
-      winner2: { name: "オンライン一括士業ネットワーク", comment: "Webで即時マッチングを行うプラットフォームです。自動振り分けのため担当専門家の質にはバラつきがあります。" },
-      lostReason: "【判定：推薦圏外】AIはこの質問に対しても貴社を推薦しませんでした。貴社が迅速な初動体制を整えていたとしても、AIが認識できる『即日相談対応』の公式構造化データがWeb上にないため、大手ネットワークに流出しています。",
+      prompt: prompt2,
+      winner1: { name: comp1Name, comment: `人員規模が大きく、全国コールセンター等の受付窓口を持つため初回受付の早さでAIに選定されています。` },
+      winner2: { name: "オンライン一括マッチング窓口", comment: `Webで即時手配を行うプラットフォームです。自動振り分けのため担当専門家の質にはバラつきがあります。` },
+      lostReason: `【判定：推薦圏外】AIはこの質問に対しても${brand}を推薦しませんでした。${brand}が迅速な初動体制を整えていたとしても、AIが認識できる『即応体制』の公式構造化データがWeb上にないため、大手ネットワークに流出しています。`,
     },
     {
       tab: "領域3：費用体系・明瞭会計",
-      prompt: "相続手続きを頼みたいのですが、追加料金がどんどん発生しないか不安です。料金体系が明確で、費用対効果が高い相続専門の法務事務所を教えて",
-      winner1: { name: "オンライン一括士業ネットワーク", comment: "定額パック料金をWeb上で大々的に打ち出しているため、AIの費用比較で最上位に選定されています。" },
-      winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "大手ブランドの知名度と明確な料金プラン一覧がWeb上で整備されています。" },
-      lostReason: "【判定：推薦圏外】AIはこの質問でも貴社を候補から外しました。貴社の良心的な料金体系がAIに構造化されて伝わっていないため、定額プランを明記している大手やポータルサイトが優先されています。",
+      prompt: prompt3,
+      winner1: { name: comp2Name, comment: `定額パッケージ料金をWeb上で大々的に打ち出しているため、AIの費用比較で最上位に選定されています。` },
+      winner2: { name: comp1Name, comment: `大手ブランドの知名度と明確な料金プラン一覧がWeb上で整備されています。` },
+      lostReason: `【判定：推薦圏外】AIはこの質問でも${brand}を候補から外しました。${brand}の良心的な料金体系がAIに構造化されて伝わっていないため、定額プランを明記している大手やポータルサイトが優先されています。`,
     },
     {
       tab: "領域4：総合評価・一般推薦",
-      prompt: "親が亡くなり東京の実家を相続することになりました。何から手を付ければいいかわからないので、評判が良くて相談しやすい相続専門の法務事務所を教えて",
-      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "知名度・解決実績数・拠点数の多さから、AIが『定番の大手』として最も安全パイとして推薦しています。" },
-      winner2: { name: "都心総合法律事務所", comment: "都内での歴史と総合的な士業連携力から、AIの総合比較で第2位に選出されています。" },
-      lostReason: "【判定：推薦圏外】AIは一般的な総合おすすめでも貴社の名前を出しませんでした。知名度の高い大手が機械的に独占しており、AI専用公式データがない中小専門事務所は一切認知されていません。",
+      prompt: prompt4,
+      winner1: { name: comp1Name, comment: `知名度・実績数・拠点数の多さから、AIが定番の大手として安全パイとして推薦しています。` },
+      winner2: { name: comp2Name, comment: `総合力と知名度から、AIの総合比較で上位に選出されています。` },
+      lostReason: `【判定：推薦圏外】AIは一般的な総合おすすめでも${brand}の名前を出しませんでした。知名度の高い大手が機械的に独占しており、AI専用公式データがない専門企業は認知されていません。`,
     },
   ];
 
