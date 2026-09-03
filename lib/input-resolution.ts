@@ -186,7 +186,10 @@ export async function resolvePublicInput(value: string): Promise<InputResolution
     { provider: "gemini", enabled: Boolean(env.geminiKey), run: () => searchWithGemini(input) },
     { provider: "perplexity", enabled: Boolean(env.perplexityKey), run: () => searchWithPerplexity(input) },
   ];
-  if (!attempts.some((attempt) => attempt.enabled)) throw new Error("名前から探すには検索機能の設定が必要です。URLを入力すれば、すぐ診断できます。");
+  if (!attempts.some((attempt) => attempt.enabled)) {
+    // 検索APIキーが未設定の場合でも、自社サイトなし企業救済フローへシームレスに誘導する
+    return { input, kind: "name", candidates: [] };
+  }
 
   for (const attempt of attempts) {
     if (!attempt.enabled) continue;
@@ -198,5 +201,6 @@ export async function resolvePublicInput(value: string): Promise<InputResolution
       // A provider can be temporarily unavailable. Try the next configured search source.
     }
   }
-  throw new Error("入力に一致する公開サイトを見つけられませんでした。正式名称か公式サイトのURLを入力してください。");
+  // 候補が見つからなかった場合もエラーとせず、空配列を返してサイトなし企業救済画面へ遷移させる
+  return { input, kind: "name", candidates: [] };
 }
