@@ -83,7 +83,7 @@ function inferCluster(prompt: string): BuyerPrompt["cluster"] {
   if (/比較|主要\s*\d+社|比べ/i.test(prompt)) return "comparison";
   if (/費用対効果|コスパ|費用|価格|料金/i.test(prompt)) return "value";
   if (/乗り換え|Excel|スプレッドシート|代替/i.test(prompt)) return "alternative";
-  if (/導入|短期間|いつから|始め/i.test(prompt)) return "implementation";
+  if (/導入|短期間|いつから|始め|即日|すぐに|急ぎ|スピード/i.test(prompt)) return "implementation";
   if (/監査|信頼|安全|証跡|認証/i.test(prompt)) return "trust";
   if (/支援|サポート|問い合わせ/i.test(prompt)) return "support";
   if (/従業員|企業規模|部門|担当者|向け/i.test(prompt)) return "segment";

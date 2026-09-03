@@ -142,7 +142,7 @@ export function ResultClient() {
           </div>
           <div className="ai-proof-prompt-bubble">
             <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
-            <p>「{primaryLoss?.prompt || "東京でおすすめの専門事務所は？"}」</p>
+            <p>「{primaryLoss?.prompt || "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。"}」</p>
           </div>
           <div className="ai-proof-response-box">
             <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
@@ -151,7 +151,7 @@ export function ResultClient() {
                 <span className="rank-num gold">🥇 1位 推薦</span>
                 <div>
                   <strong>{primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ"}</strong>
-                  <p>「全国に拠点を持ち、豊富な相談実績と知名度がある大手グループです。」</p>
+                  <p>「全国に拠点を持ち、知名度と相談実績が豊富な大手グループです。組織力は高いですが、担当者による対応の差や事務的なマニュアル対応になりやすい傾向があります。」</p>
                 </div>
               </li>
               {result.competitors[1] ? (
@@ -159,7 +159,7 @@ export function ResultClient() {
                   <span className="rank-num silver">🥈 2位 推薦</span>
                   <div>
                     <strong>{result.competitors[1].name}</strong>
-                    <p>「オンライン相談に対応し、Web上で広く情報公開されている大手窓口です。」</p>
+                    <p>「全国規模の提携ネットワークを持つ大手窓口です。定型手続きに強いですが、複雑な親族間の個別事情に深く伴走するサポートは限定的です。」</p>
                   </div>
                 </li>
               ) : null}
@@ -167,7 +167,7 @@ export function ResultClient() {
                 <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
                 <div>
                   <strong>{result.discovery.brandName}（貴社）</strong>
-                  <p className="lost-reason">⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。Web上にAIが読み取れる公式構造化データが存在しないため、知名度の高い競合のみが機械的に推薦されています。</p>
+                  <p className="lost-reason">⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。貴社のような『親身な個別伴走』こそが相談者の悩みに合致しているにもかかわらず、Web上にAIが読み取れる公式データがないため、AIは知名度だけで大手を機械的に推薦してしまっています。</p>
                 </div>
               </li>
             </ul>
