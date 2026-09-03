@@ -1726,73 +1726,83 @@ svg { width: 1.1em; height: 1.1em; }
   border-radius: 2px;
 }
 
-/* AI実測エビデンスカード (Show the Proof) */
+/* AI実測エビデンスカード (Show the Proof: 文字を読まなくても0.1秒で分かるUI) */
 .ai-observation-proof-card {
   background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 24px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 24px 28px;
   margin-top: 16px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
 .ai-proof-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+.ai-proof-head-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .ai-proof-tag {
   background: #0f172a;
   color: #ffffff;
   font-size: 0.72rem;
-  font-weight: 700;
-  padding: 2px 8px;
+  font-weight: 800;
+  padding: 3px 8px;
   border-radius: 4px;
   letter-spacing: 0.04em;
 }
 
 .ai-proof-head h4 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: #0f172a;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .ai-proof-prompt-bubble {
-  background: #f8fafc;
-  border-left: 3px solid #3b82f6;
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .bubble-speaker {
-  display: block;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #64748b;
-  margin-bottom: 4px;
+  color: #475569;
 }
 
 .ai-proof-prompt-bubble p {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: #0f172a;
 }
 
 .ai-proof-response-box {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 16px;
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
 }
 
 .ai-proof-ranking {
   list-style: none;
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -1801,61 +1811,75 @@ svg { width: 1.1em; height: 1.1em; }
 
 .ai-proof-ranking .rank-item {
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: flex-start;
-  padding: 12px 14px;
+  padding: 14px 18px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  transition: transform 0.15s ease;
 }
 
 .ai-proof-ranking .rank-item.winner {
-  border-left: 3px solid #10b981;
+  border-left: 4px solid #10b981;
 }
 
 .ai-proof-ranking .rank-item.lost {
-  border-left: 3px solid #f59e0b;
-  background: #fffbeb;
+  border: 2px solid #ef4444;
+  border-left: 5px solid #ef4444;
+  background: #fff5f5;
 }
 
 .ai-proof-ranking .rank-num {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
   white-space: nowrap;
-  background: #e2e8f0;
+  letter-spacing: 0.02em;
+}
+
+.ai-proof-ranking .rank-num.gold {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #facc15;
+}
+
+.ai-proof-ranking .rank-num.silver {
+  background: #f1f5f9;
   color: #334155;
+  border: 1px solid #cbd5e1;
 }
 
-.ai-proof-ranking .rank-item.winner .rank-num {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.ai-proof-ranking .rank-num.alert {
+.ai-proof-ranking .rank-num.lost-alert {
   background: #fee2e2;
   color: #991b1b;
+  border: 1px solid #f87171;
+  font-size: 0.82rem;
 }
 
 .ai-proof-ranking strong {
   display: block;
-  font-size: 0.92rem;
+  font-size: 1rem;
   color: #0f172a;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .ai-proof-ranking p {
   margin: 0;
-  font-size: 0.85rem;
-  color: #475569;
-  line-height: 1.45;
+  font-size: 0.88rem;
+  color: #4b5563;
+  line-height: 1.5;
 }
 
 .ai-proof-ranking .lost-reason {
-  color: #92400e;
-  font-weight: 500;
-  margin-top: 4px;
+  color: #991b1b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  background: #fee2e2;
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 
 .strategy-selector-tabs {

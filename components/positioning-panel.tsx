@@ -53,6 +53,11 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
       </div>
 
       {/* 3つの戦略タブ（サイト解析から動的生成） */}
+      <div style={{ marginBottom: "8px" }}>
+        <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "#2563eb", margin: "0 0 8px" }}>
+          👇 タブをクリックして、御社が最も誇れる強みを1つ選んでください（表示内容が切り替わります）
+        </p>
+      </div>
       <div className="strategy-selector-tabs" role="tablist" aria-label="戦略方針の選択">
         {strategies.map((item, index) => {
           const isActive = selectedIndex === index;
@@ -81,7 +86,8 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
 
       {/* 大手の弱点 vs 御社の強み（コンパクト対比） */}
       <div className="competitor-weakness-block">
-        <h3 style={{ fontSize: "1.05rem", marginBottom: "12px" }}>ライバル大手の隙間と御社の強み</h3>
+        <h3 style={{ fontSize: "1.05rem", marginBottom: "8px" }}>ライバル大手の隙間と御社の強み</h3>
+        <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "0 0 12px" }}>AIが「なぜ競合ではなく御社を選ぶべきか」を判定する決定的な理由です。</p>
         <div className="weakness-grid">
           {current.competitorAnalysis.map((item) => (
             <article className="weakness-card" key={item.name}>
@@ -102,6 +108,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
       <div className="actionable-messages-block">
         <div className="actionable-messages-head">
           <h3>そのまま使える紹介文（ワンクリックコピー）</h3>
+          <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "4px 0 0" }}>自社のホームページやSNS、資料にそのまま貼り付けて使える文章です。下の「コピー」ボタンを押してご利用ください。</p>
         </div>
 
         <div className="actionable-messages-list">
@@ -119,7 +126,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
                     onClick={() => copyToClipboard(item.text, key)}
                     aria-label={`${item.label}をコピー`}
                   >
-                    {copiedKey === key ? "コピー完了！" : "文章をコピー"}
+                    {copiedKey === key ? "✅ コピー完了！" : "📋 文章をコピーする"}
                   </button>
                 </div>
                 <div className="actionable-copy-box">
@@ -131,16 +138,13 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
         </div>
       </div>
 
-      {/* 運用体制の比較：手動運用 vs 自動継続モニタリング */}
+      {/* 【ステップ 3】運用体制の比較：手動運用 vs 自動継続モニタリング */}
       <div className="autopilot-comparison-box">
         <div className="autopilot-head">
-          <span className="autopilot-pill">運用体制の検討</span>
-          <h3>AI検索市場の変化に合わせた「継続的アップデート」が必要です。</h3>
-          <p>
-            AI検索エンジンの回答ロジックや競合他社のWeb更新は毎週変動しています。一度の施策で終わらせず、貴社が常に最適な候補として推薦され続けるための運用体制をお選びいただけます。
-          </p>
+          <span className="autopilot-pill">【ステップ 3】継続的な改善</span>
+          <h3>看板を設定したあと、AIの推薦はどう変わるか？</h3>
+          <p>情報発信を行った後、実際にAIがライバルから御社へおすすめを切り替えたかを毎週定期的に観測します。</p>
         </div>
-
         <div className="autopilot-table">
           <div className="autopilot-row head">
             <div className="col-feature">管理項目</div>

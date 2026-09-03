@@ -114,12 +114,7 @@ export function ResultClient() {
           <div className="instant-empower-badge">🎉 即時強化完了</div>
           <div className="instant-empower-main">
             <h3>{result.discovery.brandName} 専用の「AI公式データベース」を即座に構築しました</h3>
-            <p>自社サイトの改修は不要です。主要な生成AI（ChatGPTやGemini等）が直接参照して推薦に使う専用ページ（構造化データ付き）を自動生成しました。これでAIが御社の存在を認識できるようになります。</p>
-          </div>
-          <div className="instant-empower-action">
-            <Link className="button button-primary" href={sample ? "/ai/company/aoba-souzoku?sample=1" : "#ai-database"}>
-              発行された専用ページを確認する <ArrowIcon />
-            </Link>
+            <p>自社サイトの改修は不要です。主要な生成AI（ChatGPTやGemini等）が直接参照して推薦に使う専用ページ（構造化データ付き）を自動生成しました。下の【ステップ1】で公開内容を確認できます。</p>
           </div>
         </div>
       </div>
@@ -139,18 +134,21 @@ export function ResultClient() {
         {/* 実測観測データ（AI回答モック：何が起きたかを0秒で理解させる） */}
         <div className="ai-observation-proof-card">
           <div className="ai-proof-head">
-            <span className="ai-proof-tag">実測観測データ</span>
-            <h4>実際にAIが返した回答の比較</h4>
+            <div className="ai-proof-head-title">
+              <span className="ai-proof-tag">実測観測データ</span>
+              <h4>実際にAIが返した回答の比較</h4>
+            </div>
+            <span style={{ fontSize: "0.8rem", color: "#64748b" }}>主要な生成AIの実測ログ</span>
           </div>
           <div className="ai-proof-prompt-bubble">
-            <span className="bubble-speaker">購買・相談検討者がAIに入力した質問</span>
+            <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
             <p>「{primaryLoss?.prompt || "東京でおすすめの専門事務所は？"}」</p>
           </div>
           <div className="ai-proof-response-box">
-            <span className="bubble-speaker">主要な生成AI（ChatGPT等）の実際の回答結果</span>
+            <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
             <ul className="ai-proof-ranking">
               <li className="rank-item winner">
-                <span className="rank-num">1位 推薦</span>
+                <span className="rank-num gold">🥇 1位 推薦</span>
                 <div>
                   <strong>{primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ"}</strong>
                   <p>「全国に拠点を持ち、豊富な相談実績と知名度がある大手グループです。」</p>
@@ -158,7 +156,7 @@ export function ResultClient() {
               </li>
               {result.competitors[1] ? (
                 <li className="rank-item winner">
-                  <span className="rank-num">2位 推薦</span>
+                  <span className="rank-num silver">🥈 2位 推薦</span>
                   <div>
                     <strong>{result.competitors[1].name}</strong>
                     <p>「オンライン相談に対応し、Web上で広く情報公開されている大手窓口です。」</p>
@@ -166,7 +164,7 @@ export function ResultClient() {
                 </li>
               ) : null}
               <li className="rank-item lost">
-                <span className="rank-num alert">圏外（未言及）</span>
+                <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
                 <div>
                   <strong>{result.discovery.brandName}（貴社）</strong>
                   <p className="lost-reason">⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。Web上にAIが読み取れる公式構造化データが存在しないため、知名度の高い競合のみが機械的に推薦されています。</p>
@@ -234,13 +232,13 @@ export function ResultClient() {
     <section className="report-watch" id="watch-plan">
       <div className="shell report-watch-inner">
         <div>
-          <p className="overline">継続的AI最適化プログラム</p>
-          <h2>AI検索市場の変動に合わせ、<br />貴社の推薦ポジションを継続管理します。</h2>
-          <p>毎週の競合動向を定点観測し、発行されたAI専用公式データベースの構造化データを最新状態へ自動更新。社内工数をかけることなく、AIからの第一想起ポジションを維持します。</p>
+          <p className="overline">【ステップ 3】AI推薦枠・自動見守りプラン（14日間無料）</p>
+          <h2>発信したあと、ライバルから取り返せたか。<br />毎週自動で追跡します。</h2>
+          <p>同じ比較質問を毎週自動で調べ、自社が新しくおすすめに入ったか、競合がどう動いたかをバックグラウンドで継続管理します。</p>
           <ul>
-            <li>月額 10,780円（税込 / 税別 ¥9,800）</li>
-            <li>契約期間の縛りなし・いつでも管理画面から即時停止可能</li>
-            <li>最初14日間は全機能を無料でお試しいただけます</li>
+            <li>✅ 月額 10,780円（税込）</li>
+            <li>✅ いつでも解約可能・契約の縛りなし</li>
+            <li>✅ 最初の14日間は完全無料（クレジットカード不要）</li>
           </ul>
         </div>
         <form onSubmit={startWatch}>
