@@ -1,4 +1,4 @@
-import { buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
+import { buildDirectPublicProfileDraft, buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
 import {
   createPublicProfilePreview,
   getActivePublicProfileBySlug,
@@ -6,8 +6,10 @@ import {
   listActivePublicProfiles,
   publishPublicProfile,
   revokePublicProfile,
+  updatePublicProfileDirect,
 } from "@/lib/storage";
 import { getScan } from "@/lib/storage";
+import { env } from "@/lib/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -65,6 +67,73 @@ export async function POST(request: Request) {
       return json({ profile: toPublicProfile(record), token: record.token }, 201);
     }
 
+    if (action === "create_direct") {
+      const brandName = stringField(body, "brandName");
+      if (!brandName) return json({ error: "会社名または屋号を入力してください。" }, 400);
+
+      const market = stringField(body, "market");
+      const summary = stringField(body, "summary");
+      const location = stringField(body, "location");
+      const hours = stringField(body, "hours");
+      const pricingInfo = stringField(body, "pricingInfo");
+
+      const draft = buildDirectPublicProfileDraft({
+        brandName,
+        market,
+        summary,
+        location,
+        hours,
+        pricingInfo,
+      });
+
+      const record = await createPublicProfilePreview(draft, {
+        sourceScanId: "direct-creation",
+        expiresInDays: 30,
+      });
+
+      // 即時公開ステータスへ移行
+      const published = await publishPublicProfile(record.id, record.token);
+      const finalRecord = published || record;
+
+      return json({
+        profile: toPublicProfile(finalRecord),
+        token: finalRecord.token,
+        slug: finalRecord.slug,
+        url: `/ai/company/${encodeURIComponent(finalRecord.slug)}`,
+      }, 201);
+    }
+
+    if (action === "update_direct") {
+      const slug = stringField(body, "slug");
+      if (!slug) return json({ error: "slugが必要です。" }, 400);
+
+      const brandName = stringField(body, "brandName");
+      const market = stringField(body, "market");
+      const summary = stringField(body, "summary");
+      const location = stringField(body, "location");
+      const hours = stringField(body, "hours");
+      const pricingInfo = stringField(body, "pricingInfo");
+
+      const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
+      const facts = [
+        { label: "正式名称・屋号", value: brandName, sourceUrl: targetUrl },
+        { label: "専門分野・業種", value: market, sourceUrl: targetUrl },
+        { label: "所在地・対応エリア", value: location, sourceUrl: targetUrl },
+        { label: "営業時間・受付体制", value: hours, sourceUrl: targetUrl },
+        { label: "明瞭料金規約", value: pricingInfo, sourceUrl: targetUrl },
+      ].filter((item) => item.value);
+
+      const updated = await updatePublicProfileDirect(slug, {
+        brandName: brandName || undefined,
+        market: market || undefined,
+        summary: summary || undefined,
+        facts: facts.length ? facts : undefined,
+      });
+
+      if (!updated) return json({ error: "更新対象の公的台帳が見つかりません。" }, 404);
+      return json({ profile: toPublicProfile(updated), success: true });
+    }
+
     if (action === "publish" || action === "revoke") {
       const profileId = stringField(body, "profileId");
       const token = stringField(body, "token");
@@ -76,9 +145,10 @@ export async function POST(request: Request) {
       return json({ profile: toPublicProfile(record) });
     }
 
-    return json({ error: "actionはpreview、publish、revokeのいずれかです。" }, 400);
+    return json({ error: "actionはpreview、create_direct、publish、revokeのいずれかです。" }, 400);
   } catch (error) {
-    return json({ error: safeError(error) }, 400);
+    console.error("AI PROFILE ERROR:", error);
+    return json({ error: error instanceof Error ? error.message : safeError(error) }, 400);
   }
 }
 

@@ -52,6 +52,35 @@ export function ScanProgress() {
   const [message, setMessage] = useState("診断を準備しています。");
   const [detail, setDetail] = useState("診断先を確認しています");
   const [error, setError] = useState("");
+  const [directMarket, setDirectMarket] = useState("専門技術・加工・サービス");
+  const [directLocation, setDirectLocation] = useState("全国対応 / 地域密着");
+  const [directCreating, setDirectCreating] = useState(false);
+
+  const createDirectProfile = useCallback(async () => {
+    setDirectCreating(true);
+    setError("");
+    try {
+      const response = await fetch("/api/ai-profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          action: "create_direct",
+          brandName: rawInput,
+          market: directMarket,
+          location: directLocation,
+          summary: `${rawInput}の公式エンタープライズ・ナレッジ台帳。自社サイトを持たない企業様向けに直接発行された、主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.slug) throw new Error(data.error || "公式Web拠点の発行に失敗しました。");
+      
+      // 発行された本物の公式ナレッジ台帳ページへジャンプ！
+      router.push(`/ai/company/${encodeURIComponent(data.slug)}`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "公式Web拠点の発行に失敗しました。");
+      setDirectCreating(false);
+    }
+  }, [directLocation, directMarket, rawInput, router]);
 
   const startScan = useCallback(async (inputUrl: string) => {
     const targetUrl = normalize(inputUrl);
@@ -209,19 +238,47 @@ export function ScanProgress() {
                 <p>
                   公式Webサイトが見つかりませんでした。自社サイトをお持ちでない場合でも、AIXでは会社名（屋号）をもとに、<strong>AI専用の公式Web拠点（公的ナレッジ台帳）</strong>を即座に無料発行できます。
                 </p>
-                <div className="no-site-action-row">
+
+                <div className="no-site-form-grid">
+                  <div className="no-site-input-group">
+                    <label>会社名・屋号（表示名）</label>
+                    <input type="text" value={rawInput} readOnly className="input-readonly" />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>専門分野・主な取扱品目</label>
+                    <input
+                      type="text"
+                      value={directMarket}
+                      onChange={(e) => setDirectMarket(e.target.value)}
+                      placeholder="例: 精密板金加工、有機野菜栽培、地域密着リフォーム"
+                    />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>所在地・対応エリア</label>
+                    <input
+                      type="text"
+                      value={directLocation}
+                      onChange={(e) => setDirectLocation(e.target.value)}
+                      placeholder="例: 東京都大田区 / 全国対応"
+                    />
+                  </div>
+                </div>
+
+                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
                   <div className="no-site-target-brand">
-                    <span>発行対象：</span>
-                    <strong>{displayInput(rawInput)}</strong>
+                    <span>発行される公式URL：</span>
+                    <strong>{`https://aix.jp/ai/company/${encodeURIComponent(rawInput.toLowerCase().replace(/\s+/g, "-"))}`}</strong>
                   </div>
                   <button
                     className="button button-primary scan-resolve-start"
                     type="button"
-                    onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput)}`)}
+                    disabled={directCreating}
+                    onClick={() => void createDirectProfile()}
                   >
-                    この会社名でAI公式Web拠点を無料発行する <ArrowIcon />
+                    {directCreating ? "公式拠点を即時発行中…" : "この会社名でAI公式Web拠点を無料発行する"} <ArrowIcon />
                   </button>
                 </div>
+                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
                 <small className="no-site-small-note">
                   ※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。
                 </small>

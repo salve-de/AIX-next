@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
+import { DirectProfileEditor } from "@/components/direct-profile-editor";
 import { sampleResult } from "@/lib/sample-data";
 import { buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
 import { getActivePublicProfileBySlug } from "@/lib/storage";
@@ -307,9 +308,29 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <span className="hero-score-tag">構造化完全性：100% (JSON-LD + Markdown + OpenAPI)</span>
         </div>
         <h1>{profile.brandName}</h1>
-        <p className="public-company-domain">
-          公的確認済ドメイン：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{profile.targetUrl}</a>
-        </p>
+        {profile.targetUrl.includes("/ai/company/") ? (
+          <div className="public-company-url-box">
+            <div className="direct-official-tag">AIX公認 公式Web拠点（自社ホームページ）</div>
+            <p className="public-company-domain">
+              公式Web拠点URL：<a href={profile.targetUrl}>{profile.targetUrl}</a>
+            </p>
+            <small className="direct-domain-note">
+              ※本ページをそのまま名刺・SNS・Googleマップの「ウェブサイト」欄にご登録いただけます。
+            </small>
+            <div style={{ marginTop: "12px" }}>
+              <DirectProfileEditor profile={profile} />
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="public-company-domain">
+              公的確認済ドメイン：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{profile.targetUrl}</a>
+            </p>
+            <div style={{ marginTop: "12px" }}>
+              <DirectProfileEditor profile={profile} />
+            </div>
+          </>
+        )}
         <p className="public-company-summary">
           {profile.summary || "遺産分割・不動産相続・事業承継の個別親身な対応に特化した専門法務事務所。大手のマニュアル対応では解決困難な親族間の複雑な個別事情や感情対立に深く伴走し、対面での円満調停と公正な遺産承継を実現する国家資格者チーム。"}
         </p>

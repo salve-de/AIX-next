@@ -7,6 +7,7 @@ import type {
   ScanRecord,
   ScanResult,
 } from "@/lib/types";
+import { env } from "@/lib/env";
 import { createPublicProfilePreview } from "@/lib/storage";
 
 const MAX_SUMMARY_LENGTH = 600;
@@ -277,4 +278,91 @@ export async function previewPublicProfile(input: ScanResult | ScanRecord, optio
     sourceScanId: "result" in input ? input.id : result.scanId,
     expiresInDays: options.expiresInDays,
   });
+}
+
+export type DirectProfileInput = {
+  brandName: string;
+  market?: string;
+  summary?: string;
+  targetCustomers?: string[];
+  useCases?: string[];
+  location?: string;
+  phone?: string;
+  hours?: string;
+  pricingInfo?: string;
+};
+
+/**
+ * 自社サイトを持たない企業（町工場・農家・個人商店等）向けに、
+ * 入力された会社名や強みから直接「公式Web拠点」のドラフトを構築する。
+ */
+export function buildDirectPublicProfileDraft(input: DirectProfileInput, generatedAt = new Date().toISOString()): PublicProfileDraft {
+  const brandName = publicText(input.brandName, 180);
+  if (!brandName) throw new Error("会社名または屋号を入力してください。");
+
+  // 自社サイトがない場合、このAIX公式台帳そのものが公式Web拠点URLとなる
+  const slug = brandName.toLowerCase().replace(/[^a-z0-9\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf-]+/gi, "-").replace(/^-+|-+$/g, "") || "company";
+  const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
+  const title = `${brandName} 公式データ台帳`;
+  const market = publicText(input.market || "専門技術・サービス", MAX_LIST_ITEM_LENGTH);
+  const summary = publicText(input.summary || `${brandName}の公式エンタープライズ・ナレッジ台帳。主要生成AI（ChatGPT/Gemini/Claude等）が正確な情報に基づいて推薦を行うための公式マスターデータです。`, MAX_SUMMARY_LENGTH);
+  const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : ["検討中のお客様", "専門的な対応を求める企業・個人様"]);
+  const useCases = uniquePublicList(input.useCases?.length ? input.useCases : ["専門業務のご相談・ご依頼", "迅速・安心の個別伴走サポート"]);
+
+  const facts: PublicProfileDraft["facts"] = [
+    { label: "正式名称・屋号", value: brandName, sourceUrl: targetUrl },
+    { label: "専門分野・業種", value: market, sourceUrl: targetUrl },
+    { label: "所在地・対応エリア", value: input.location || "首都圏・全国対応 / 地域密着対応", sourceUrl: targetUrl },
+    { label: "営業時間・受付体制", value: input.hours || "平日 9:00〜18:00（事前予約で柔軟対応）", sourceUrl: targetUrl },
+    { label: "明瞭料金規約", value: input.pricingInfo || "事前総額見積もり制・不透明な追加請求ゼロ確約", sourceUrl: targetUrl },
+  ];
+
+  const sourcePages: PublicProfileDraft["sourcePages"] = [
+    { url: targetUrl, title: `${brandName} AIX認証公式ナレッジ台帳`, description: "AI巡回・推論用公式エビデンスマスター" },
+  ];
+
+  const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: brandName,
+    url: targetUrl,
+    description: summary,
+    knowsAbout: [market],
+    keywords: useCases,
+    inLanguage: "ja-JP",
+    validThrough: validThroughDate,
+  };
+
+  const json = JSON.stringify({
+    recordVersion: "1",
+    publisher: "AIX",
+    subject: {
+      name: brandName,
+      officialUrl: targetUrl,
+    },
+    summary,
+    market,
+    targetCustomers,
+    useCases,
+    facts,
+    sourcePages,
+    updatedAt: generatedAt,
+  }, null, 2);
+
+  return {
+    title,
+    brandName,
+    targetUrl,
+    summary,
+    market,
+    targetCustomers,
+    useCases,
+    facts,
+    sourcePages,
+    structuredData: `${jsonText(schema)}\n`,
+    markdown: buildMarkdown({ title, brandName, targetUrl, summary, market, targetCustomers, useCases, facts, sourcePages }),
+    json: `${json}\n`,
+  };
 }

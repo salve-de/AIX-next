@@ -3360,3 +3360,185 @@ svg { width: 1.1em; height: 1.1em; }
   color: #64748b;
   line-height: 1.5;
 }
+
+/* 自社サイトなし企業用簡単入力グリッド */
+.no-site-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.no-site-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.no-site-input-group label {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.no-site-input-group input {
+  font-size: 0.84rem;
+  padding: 8px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.no-site-input-group input:focus {
+  border-color: #2563eb;
+}
+
+.no-site-input-group .input-readonly {
+  background: #f1f5f9;
+  color: #64748b;
+  font-weight: 700;
+  cursor: not-allowed;
+}
+
+@media (max-width: 800px) {
+  .no-site-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 直接編集モーダル・公式Web拠点スタイル */
+.public-company-url-box {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid #2563eb;
+  border-radius: 6px;
+  padding: 14px 18px;
+  margin: 12px 0 18px;
+}
+
+.direct-official-tag {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.direct-domain-note {
+  display: block;
+  font-size: 0.76rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.direct-edit-trigger {
+  font-size: 0.82rem;
+  padding: 6px 14px;
+  font-weight: 700;
+  border-color: #94a3b8;
+}
+
+.direct-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.direct-modal-box {
+  background: #ffffff;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.direct-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.direct-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.direct-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.direct-modal-lead {
+  font-size: 0.84rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.direct-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.direct-modal-form .form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.direct-modal-form label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.direct-modal-form input,
+.direct-modal-form textarea {
+  font-size: 0.88rem;
+  padding: 8px 12px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+}
+
+.direct-modal-form input:focus,
+.direct-modal-form textarea:focus {
+  border-color: #2563eb;
+}
+
+.direct-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}

@@ -351,6 +351,48 @@ export async function revokePublicProfile(profileId: string, token: string, now?
   return revoked;
 }
 
+export async function updatePublicProfileDirect(slug: string, patch: {
+  brandName?: string;
+  market?: string;
+  summary?: string;
+  facts?: PublicProfileRecord["facts"];
+}) {
+  const current = await getPublicProfileBySlug(slug);
+  if (!current) return null;
+
+  const updatedAt = new Date().toISOString();
+  const nextBrand = patch.brandName || current.brandName;
+  const nextMarket = patch.market || current.market;
+  const nextSummary = patch.summary || current.summary;
+  const nextFacts = patch.facts || current.facts;
+
+  const updated: PublicProfileRecord = {
+    ...current,
+    brandName: nextBrand,
+    market: nextMarket,
+    summary: nextSummary,
+    facts: nextFacts,
+    updatedAt,
+  };
+
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?slug=eq.${encodeURIComponent(slug)}`, {
+      method: "PATCH",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify({
+        brand_name: nextBrand,
+        market: nextMarket,
+        summary: nextSummary,
+        facts: nextFacts,
+        updated_at: updatedAt,
+      }),
+    });
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+  publicProfiles.set(current.id, updated);
+  return updated;
+}
+
 export async function getRecentCompletedScan(targetUrl: string, maxAgeMs = 10 * 60_000) {
   const cutoff = Date.now() - maxAgeMs;
   if (durable()) {
