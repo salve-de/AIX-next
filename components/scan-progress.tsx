@@ -41,9 +41,12 @@ export function ScanProgress() {
   const router = useRouter();
   const params = useSearchParams();
   const rawInput = useMemo(() => (params.get("input") || params.get("url") || "").trim(), [params]);
+  const extraUrl = params.get("extraUrl");
+  const extraSocial = params.get("extraSocial");
+  const extraProduct = params.get("extraProduct");
   const inputKind = params.get("kind");
-  const socialInfo = useMemo(() => parseSocialInput(rawInput), [rawInput]);
-  const directUrl = useMemo(() => isUrlInput(rawInput) ? normalize(rawInput) : "", [rawInput]);
+  const socialInfo = useMemo(() => parseSocialInput(rawInput || extraSocial || ""), [extraSocial, rawInput]);
+  const directUrl = useMemo(() => isUrlInput(rawInput) ? normalize(rawInput) : extraUrl && isUrlInput(extraUrl) ? normalize(extraUrl) : "", [extraUrl, rawInput]);
   const controller = useRef<AbortController | null>(null);
   const startedScan = useRef("");
   const resolvedInput = useRef("");
@@ -56,17 +59,17 @@ export function ScanProgress() {
   const [detail, setDetail] = useState("診断先を確認しています");
   const [error, setError] = useState("");
   const [directBrandName, setDirectBrandName] = useState(
-    socialInfo.username ? socialInfo.username : rawInput
+    extraProduct ? extraProduct : socialInfo.username ? socialInfo.username : rawInput
   );
   const [directMarket, setDirectMarket] = useState(
-    inputKind === "product"
+    extraProduct || inputKind === "product"
       ? "D2Cブランド・特産品・プロダクト"
       : socialInfo.isSocial
       ? "飲食・美容・小売・地域サービス"
       : "専門技術・加工・サービス"
   );
   const [directLocation, setDirectLocation] = useState(
-    inputKind === "product" ? "全国通販・オンライン直販 / 発送" : "全国対応 / 地域密着"
+    extraProduct || inputKind === "product" ? "全国通販・オンライン直販 / 発送" : "全国対応 / 地域密着"
   );
   const [directCreating, setDirectCreating] = useState(false);
 
@@ -75,6 +78,14 @@ export function ScanProgress() {
     setError("");
     try {
       const finalBrand = (directBrandName || rawInput).trim();
+      const summaryParts = [
+        `${finalBrand}の公式エンタープライズ・ナレッジ台帳。`,
+        extraSocial ? `Instagram公式（${extraSocial}）と連携。` : socialInfo.isSocial ? `${socialInfo.displayLabel || "SNS"}公式と連携。` : "",
+        extraProduct ? `主力製品「${extraProduct}」の仕様・推薦データを包含。` : "",
+        extraUrl ? `自社公式サイト（${extraUrl}）と完全同期。` : "自社サイトを持たない企業様向けに直接発行され、",
+        `主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`
+      ].filter(Boolean).join(" ");
+
       const response = await fetch("/api/ai-profile", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -83,7 +94,7 @@ export function ScanProgress() {
           brandName: finalBrand,
           market: directMarket,
           location: directLocation,
-          summary: `${finalBrand}の公式エンタープライズ・ナレッジ台帳。${socialInfo.isSocial ? `${socialInfo.displayLabel || "SNS"}公式アカウントと連携し、` : "自社サイトを持たない企業様向けに直接発行され、"}主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`,
+          summary: summaryParts,
         }),
       });
       const data = await response.json();
@@ -95,7 +106,7 @@ export function ScanProgress() {
       setError(caught instanceof Error ? caught.message : "公式Web拠点の発行に失敗しました。");
       setDirectCreating(false);
     }
-  }, [directBrandName, directLocation, directMarket, rawInput, router, socialInfo.displayLabel, socialInfo.isSocial]);
+  }, [directBrandName, directLocation, directMarket, extraProduct, extraSocial, extraUrl, rawInput, router, socialInfo.displayLabel, socialInfo.isSocial]);
 
   const startScan = useCallback(async (inputUrl: string) => {
     const targetUrl = normalize(inputUrl);
@@ -174,7 +185,7 @@ export function ScanProgress() {
       setDetail("商品名から直接AI推薦用台帳を発行します");
       return () => undefined;
     }
-    if (isUrlInput(rawInput)) {
+    if (directUrl) {
       if (startedScan.current !== directUrl) void startScan(directUrl);
       return () => controller.current?.abort();
     }

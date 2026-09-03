@@ -3625,3 +3625,96 @@ svg { width: 1.1em; height: 1.1em; }
   color: #ffffff;
   box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
 }
+
+/* 追加入力アコーディオン */
+.extra-info-accordion {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.extra-info-toggle-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.extra-info-toggle-btn:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.extra-info-panel {
+  margin-top: 12px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 16px 20px;
+  text-align: left;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+  animation: fadeInDown 0.2s ease-out;
+}
+
+.extra-info-lead {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.extra-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.extra-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.extra-info-col label {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.extra-info-col input {
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.extra-info-col input:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 800px) {
+  .extra-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
