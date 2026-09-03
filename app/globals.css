@@ -1210,3 +1210,227 @@ svg { width: 1.1em; height: 1.1em; }
   .question-list > article, .visibility-item, .compare-row { break-inside: avoid; }
   a { color: inherit; text-decoration: none; }
 }
+
+/* ==========================================================================
+   Instant Value & Authentic Transformation Cards (Anti-AI Brutalist)
+   ========================================================================== */
+.hero-instant-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1040px;
+  margin: 48px auto 0;
+  text-align: left;
+}
+
+.hero-instant-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--line-strong, #cbd5e1);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+.hero-instant-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  background: #f1f5f9;
+  color: var(--navy, #0f172a);
+  border: 1px solid #cbd5e1;
+  margin-bottom: 12px;
+}
+
+.hero-instant-badge.highlight {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.hero-instant-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 10px;
+  color: var(--navy, #0f172a);
+}
+
+.hero-instant-card p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--ink-soft, #475569);
+  margin: 0;
+}
+
+.landing-story-section {
+  padding: 90px 0;
+  background: #f8fafc;
+  border-top: 1px solid var(--line, #e2e8f0);
+  border-bottom: 1px solid var(--line, #e2e8f0);
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.story-card {
+  background: var(--white, #ffffff);
+  border: 1px solid var(--line-strong, #cbd5e1);
+  padding: 32px;
+}
+
+.story-card-header {
+  border-bottom: 1px solid var(--line, #e2e8f0);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.story-card-header .category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--green, #147a52);
+  text-transform: uppercase;
+}
+
+.story-card-header h3 {
+  font-size: 1.25rem;
+  margin: 4px 0 0;
+  color: var(--navy, #0f172a);
+}
+
+.story-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.story-before {
+  background: #fff1f2;
+  border-left: 3px solid #e11d48;
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #881337;
+}
+
+.story-after {
+  background: #f0fdf4;
+  border-left: 3px solid #16a34a;
+  padding: 14px 16px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #14532d;
+}
+
+.story-after strong {
+  color: #166534;
+}
+
+/* AI Official Database Boost Card */
+.ai-boost-panel {
+  background: #f8fafc;
+  border: 2px solid var(--navy, #0f172a);
+  padding: 32px;
+  margin: 36px auto;
+  max-width: 1160px;
+}
+
+.ai-boost-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.ai-boost-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--navy, #0f172a);
+  color: #fff;
+  padding: 4px 10px;
+  margin-bottom: 8px;
+}
+
+.ai-boost-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--navy, #0f172a);
+}
+
+.ai-boost-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 28px;
+  background: #ffffff;
+  border: 1px solid var(--line-strong, #cbd5e1);
+  padding: 24px;
+}
+
+.ai-boost-lead {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink, #1e293b);
+  margin: 0 0 16px;
+}
+
+.ai-boost-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.88rem;
+  color: var(--ink-soft, #475569);
+}
+
+.ai-boost-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-boost-features li::before {
+  content: "✓";
+  color: var(--green, #147a52);
+  font-weight: bold;
+}
+
+.ai-boost-action-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  border-left: 1px solid var(--line, #e2e8f0);
+  padding-left: 28px;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .hero-instant-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .story-grid {
+    grid-template-columns: 1fr;
+  }
+  .ai-boost-content {
+    grid-template-columns: 1fr;
+  }
+  .ai-boost-action-box {
+    border-left: none;
+    border-top: 1px solid var(--line, #e2e8f0);
+    padding-left: 0;
+    padding-top: 20px;
+  }
+}

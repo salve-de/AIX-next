@@ -1,5 +1,10 @@
 import type { ActionableMessage, CompetitorWeakness, PositioningAdvice, ScanResult } from "@/lib/types";
 
+/**
+ * Build a small marketing handoff from observed scan evidence.
+ * It intentionally does not invent a competitor's weakness or promise a
+ * ranking/revenue outcome; every suggestion remains a draft for review.
+ */
 export function derivePositioningAdvice(result: ScanResult): PositioningAdvice {
   const brand = result.discovery.brandName || "自社製品";
   const market = result.discovery.market || "関連市場";
@@ -9,75 +14,59 @@ export function derivePositioningAdvice(result: ScanResult): PositioningAdvice {
   const gapLabel = primaryGap?.label || "選ぶ理由";
   const audience = result.discovery.targetCustomers[0] || "検討中の顧客";
 
-  // 競合各社が対応しきれていない「隙間・構造的な弱み」を整理
+  // 競合の弱点を推測せず、今回の比較で確認できた自社側の差だけを表示する。
   const competitorWeaknesses: CompetitorWeakness[] = competitors.map((comp, idx) => {
-    if (idx === 0) {
-      return {
-        competitor: comp.name,
-        weakness: "大手・知名度重視のため、細かな要望への柔軟な対応や特急・小ロット対応が難しい",
-        rationale: `AIは「知名度や一般的な実績」で${comp.name}を先に挙げやすい傾向がありますが、「細かな小回り」や「個別対応の早さ」を求める買い手の質問では、自社が選ばれる大きな隙間が存在します。`,
-      };
-    }
-    if (idx === 1) {
-      return {
-        competitor: comp.name,
-        weakness: "品揃えや機能は広いが、相談から納品・利用開始までの手続きやハードルが重い",
-        rationale: `比較検討の段階で「いますぐ相談したい」「手軽に試したい」と考える顧客にとって、${comp.name}の手順の重さは離脱要因になりやすく、自社の身軽さが強みになります。`,
-      };
-    }
-    return {
-      competitor: comp.name,
-      weakness: "一般的なスペック表示にとどまり、「なぜここを選ぶべきか」という決定打のこだわりが薄い",
-      rationale: `ネット上の公開情報が画一的なため、強いこだわりや特定の用途を持つ買い手に対して、自社の専門特化の看板が明確な差別化として刺さります。`,
-    };
+    const gap = result.evidenceGaps[idx % Math.max(result.evidenceGaps.length, 1)];
+    const loss = result.lostPrompts.find((item) => item.winner === comp.name);
+    const weakness = gap
+      ? `${gap.label}を、自社の公開ページで確認できる情報が不足`
+      : loss
+        ? `「${loss.prompt}」で${comp.name}が先に候補に入った`
+        : `今回の比較で${comp.name}が候補に入った`;
+    const rationale = loss
+      ? `今回の「${loss.prompt}」では${comp.name}が先に挙がりました。${gap?.whyItMatters || "自社を選ぶ根拠を、比較時に確認できる形へ整理します。"}`
+      : gap?.whyItMatters || "この差が生じた質問と公開根拠を、次回の比較でも確認します。";
+    return { competitor: comp.name, weakness, rationale };
   });
 
   if (!competitorWeaknesses.length) {
     competitorWeaknesses.push({
-      competitor: "大手・先行ライバル各社",
-      weakness: "画一的なサービス・商品展開ゆえの、柔軟性・個別対応力の不足",
-      rationale: "大手がカバーしきれない細かなニーズや、即座の相談対応にこそ、自社が選ばれる最大の商機があります。",
+      competitor: "今回の比較結果",
+      weakness: `${gapLabel}を、自社の公開ページで確認できる情報が不足`,
+      rationale: primaryGap?.whyItMatters || "比較された質問と、自社を選ぶ根拠を公開情報から確認できる形に整理します。",
     });
   }
 
-  // 自社が選ばれる看板（独自の強み）
-  const winningAngle = primaryGap?.label
-    ? `「${primaryGap.label}」に妥協しない、${brand}だけの特化ポジション`
-    : `大手・競合が対応できない「小回り・即応・高品質」の駆け込み寺`;
-
+  const winningAngle = primaryGap
+    ? `「${primaryGap.label}」を、${brand}を選ぶ理由として確認できる形にする`
+    : `${brand}が選ばれた質問の共通点を、次の発信に生かす`;
   const summary = primaryLoss?.winner
-    ? `AIは現在、知名度や一般的な情報量で「${primaryLoss.winner}」を先に勧めています。しかし、競合が対応しきれない「小回りや独自のこだわり（${gapLabel}）」をネットやSNSで明確に宣言することで、真剣に比較している買い手の質問で1位推薦を狙えます。`
-    : `${market}において、ライバルの隙間となる「確かなこだわり」を前面に出すことで、AIが『このお悩みならここ一択』と迷わず推薦する状態をつくります。`;
+    ? `今回の「${primaryLoss.prompt}」では${primaryLoss.winner}が先に挙がりました。${gapLabel}を公開情報で確認できるよう整理し、比較する人が判断できる材料を増やします。`
+    : `${market}の比較で確認できた質問をもとに、${brand}を選ぶ根拠を公開情報で伝わる形に整えます。`;
 
-  // そのまま使える紹介文（SNSプロフィール・ブログ・チラシ）
   const actionableMessages: ActionableMessage[] = [
     {
       channel: "profile",
-      channelLabel: "公式SNS・Webプロフィール（X / Instagram / HP概要）",
-      headline: "最初の1行で「誰のどんなお悩みを解決するか」を宣言する",
-      copy: `【${brand}】${market}の専門。${audience}向けに、他社で対応が難しかった方もご安心ください。${gapLabel}にこだわり、1点・少量から丁寧・迅速に対応いたします。実績やお問い合わせはこちら→`,
-      instruction: "X（旧Twitter）、Instagram、自社サイトの会社概要など、プロフィールの1行目にそのままコピペして設定してください。AIの読み取り優先度が最も高い情報です。",
+      channelLabel: "公式サイト・SNSのプロフィール",
+      headline: "誰向けのサービスかを最初の1行で伝える",
+      copy: `${brand}｜${audience}向けの${market}。${gapLabel}を、公開している事実と条件つきで案内します。詳しくはこちら→`,
+      instruction: "実際に確認できる対象・条件・実績だけを入れて、プロフィールに掲載してください。",
     },
     {
       channel: "blog",
-      channelLabel: "自社ブログ・note・お知らせ記事",
-      headline: "「他社で断られたお客様の事例」をストーリーで届ける",
-      copy: `記事タイトル: 「他社で条件が合わなかったお客様へ。${brand}が選ばれ続けている3つの理由」\n\n構成案:\n1. 業界でよくあるお悩み（納期・ロット・価格・相談のしにくさ）\n2. ${brand}だからこそ柔軟に対応できる仕組みと、現場のこだわり\n3. 実際にご利用いただいたお客様の声と具体的な実績\n4. まずはお気軽にご相談ください（お問い合わせ窓口）`,
-      instruction: "この構成に沿って記事を作成し、自社サイトに投稿してください。AIが『比較検討の信頼できる根拠』として優先的に引用元（参考リンク）に採用します。",
+      channelLabel: "自社サイトの記事・FAQ",
+      headline: "比較される質問に、確認できる答えを置く",
+      copy: `記事タイトル案：${brand}の${gapLabel}について\n\n${gapLabel}の対象・条件・手順・実績を、確認できる事実と出典つきで説明します。分からない項目は「確認中」と明記し、問い合わせ先を案内します。`,
+      instruction: "今回の比較で不足していた情報だけを選び、事実を確認してから記事やFAQに追加してください。",
     },
     {
       channel: "flyer",
-      channelLabel: "展示会チラシ・商品同梱状・名刺裏面",
-      headline: "手元に届いたお客様が、AIやネットで検索するキッカケをつくる",
-      copy: `「${market}でお困りなら、まず一度${brand}へご相談ください」\n大手にはできない小回りと、確かなこだわり品質。\nネット検索・AIで『${brand} ${gapLabel}』と検索していただければ、詳しい実績をご確認いただけます。`,
-      instruction: "チラシや名刺、商品に同封する手紙にそのまま印刷してください。手元でスマホやChatGPTを開いた顧客が、迷わず自社の名前で検索するようになります。",
+      channelLabel: "営業資料・提案書・商品ページ",
+      headline: "選ぶ前に知りたい条件を短く示す",
+      copy: `${brand}\n${audience}向けの${market}\n\n${gapLabel}：対象・条件・確認方法を掲載\n詳しい内容と問い合わせ先→`,
+      instruction: "営業資料や商品ページに置き、記載内容が現在の提供条件と一致しているか確認してください。",
     },
   ];
 
-  return {
-    winningAngle,
-    summary,
-    competitorWeaknesses,
-    actionableMessages,
-  };
+  return { winningAngle, summary, competitorWeaknesses, actionableMessages };
 }

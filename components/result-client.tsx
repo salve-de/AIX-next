@@ -10,6 +10,7 @@ import { CitationMap } from "@/components/citation-map";
 import { QuestionList } from "@/components/question-list";
 import { ReportActions } from "@/components/report-actions";
 import { PositioningPanel } from "@/components/positioning-panel";
+import { PublicProfileActions } from "@/components/public-profile-actions";
 import { sampleResult } from "@/lib/sample-data";
 import type { Observation, ProviderName, ScanRecord, ScanResult } from "@/lib/types";
 
@@ -135,7 +136,12 @@ export function ResultClient() {
     {/* 2. 【最優先】自社の勝てる看板・競合の弱点・すぐに使える紹介文（ファーストビュー直下） */}
     <PositioningPanel positioning={result.positioning} />
 
-    {/* 3. 顧客が比較する具体的な質問一覧 */}
+    {/* 3. 【即時発行特典】自社サイト改修ゼロでOK！ChatGPT専用のAI公式データベース */}
+    <div className="shell" style={{ margin: "32px auto" }}>
+      <PublicProfileActions result={result} sample={sample} />
+    </div>
+
+    {/* 4. 顧客が比較する具体的な質問一覧 */}
     <section className="report-section shell">
       <div className="section-heading-simple">
         <p className="overline">買い手がAIに聞く質問</p>

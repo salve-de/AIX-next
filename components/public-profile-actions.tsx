@@ -75,22 +75,46 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   }
 
   if (sample) {
-    return <section className="public-profile-card" aria-label="AIX上の公開ページの見本">
-      <div className="public-profile-card-copy"><p className="overline">AIX上の公開ページ</p><h2>会社の情報を、AIが読みやすいページにする。</h2><p>診断で確認した公開情報を、AIX上の会社ページとして整理できます。会社サイトの変更や、第三者の評価づくりは行いません。</p></div>
-      <div className="public-profile-card-actions"><div className="public-profile-sample-links"><Link className="button button-secondary" href="/ai-info?sample=1">公開前の見本を見る <ArrowIcon /></Link><Link className="text-button" href="/ai/company/nexora-cloud?sample=1">公開後のページを見る <ArrowIcon /></Link></div><small><LockIcon />実際の公開は、内容を確認してから</small></div>
+    return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
+      <div className="public-profile-card-copy">
+        <p className="overline">【無料特典】自社サイトの改修ゼロでOK</p>
+        <h2>ChatGPT専用の「AI公式データベース」を即座に発行しました。</h2>
+        <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
+        <ul>
+          <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
+          <li><CheckIcon />ChatGPTやGeminiが読み取りやすい構造化データ（JSON-LD）対応</li>
+          <li><CheckIcon />公開・停止はいつでも自由に切り替え可能</li>
+        </ul>
+      </div>
+      <div className="public-profile-card-actions">
+        <div className="public-profile-sample-links">
+          <Link className="button button-primary" href="/ai/company/nexora-cloud?sample=1" target="_blank" rel="noreferrer">発行されたAI専用ページを見る <ArrowIcon /></Link>
+          <Link className="text-button" href="/ai-info?sample=1">掲載内容の下書きを確認する <ArrowIcon /></Link>
+        </div>
+        <small><LockIcon />自社サイトを書き換えたり、勝手に情報を改変することはありません。</small>
+      </div>
     </section>;
   }
 
-  return <section className="public-profile-card" aria-label="AIX上の公開ページ">
-    <div className="public-profile-card-copy"><p className="overline">AIX上の公開ページ</p><h2>この会社の情報を、AIが参照しやすいページにする。</h2><p>診断で取得した公開ページだけを整理し、AIX上で会社・サービスの説明を公開できます。内容は公開前に確認できます。</p><ul><li><CheckIcon />公式ページへのリンク付き</li><li><CheckIcon />AIの回答や社内情報は掲載しない</li><li><CheckIcon />公開・停止をいつでも選べる</li></ul></div>
+  return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
+    <div className="public-profile-card-copy">
+      <p className="overline">【無料特典】自社サイトの改修ゼロでOK</p>
+      <h2>ChatGPT専用の「AI公式データベース」を即座に発行しました。</h2>
+      <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
+      <ul>
+        <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
+        <li><CheckIcon />ChatGPTやGeminiが読み取りやすい構造化データ（JSON-LD）対応</li>
+        <li><CheckIcon />公開・停止はいつでも自由に切り替え可能</li>
+      </ul>
+    </div>
     <div className="public-profile-card-actions">
-      {!profile ? <button className="button button-primary" type="button" onClick={() => void preview()} disabled={busy !== ""}>{busy === "preview" ? "内容をまとめています…" : "公開内容を確認する"}<ArrowIcon /></button> : <>
-        <div className={`public-profile-status public-profile-status-${profile.status}`}><span>{profile.status === "published" ? "公開中" : profile.status === "revoked" ? "停止中" : "下書き"}</span><strong>{profile.brandName}</strong><small>{profile.sourcePages.length}ページをもとに作成</small></div>
-        <div className="public-profile-preview" aria-label="公開内容のプレビュー"><div className="public-profile-preview-head"><span>公開される内容</span><strong>{profile.title}</strong></div>{profile.summary ? <p>{profile.summary}</p> : null}<div className="public-profile-preview-meta">{profile.market ? <span><small>分野</small><b>{profile.market}</b></span> : null}{profile.targetCustomers.length ? <span><small>対象</small><b>{profile.targetCustomers.slice(0, 2).join("・")}</b></span> : null}{profile.useCases.length ? <span><small>用途</small><b>{profile.useCases.slice(0, 2).join("・")}</b></span> : null}</div><div className="public-profile-preview-source"><small>公式ページの出典</small>{profile.sourcePages.slice(0, 3).map((page) => <a key={page.url} href={page.url} target="_blank" rel="noreferrer">{page.title}</a>)}{profile.sourcePages.length > 3 ? <span>ほか{profile.sourcePages.length - 3}ページ</span> : null}</div></div>
-        {profile.status !== "published" ? <button className="button button-primary" type="button" onClick={() => void changeStatus("publish")} disabled={busy !== ""}>{busy === "publish" ? "公開しています…" : "この内容で公開する"}<ArrowIcon /></button> : <Link className="button button-primary" href={`/ai/company/${encodeURIComponent(profile.slug)}`} target="_blank" rel="noreferrer">公開ページを見る <ArrowIcon /></Link>}
+      {!profile ? <button className="button button-primary" type="button" onClick={() => void preview()} disabled={busy !== ""}>{busy === "preview" ? "専用ページを準備しています…" : "AI専用ページの掲載内容を確認する"}<ArrowIcon /></button> : <>
+        <div className={`public-profile-status public-profile-status-${profile.status}`}><span>{profile.status === "published" ? "AI向け公開中" : profile.status === "revoked" ? "公開停止中" : "下書き"}</span><strong>{profile.brandName}</strong><small>{profile.sourcePages.length}ページをもとに作成</small></div>
+        <div className="public-profile-preview" aria-label="公開内容のプレビュー"><div className="public-profile-preview-head"><span>AIに学習させる内容</span><strong>{profile.title}</strong></div>{profile.summary ? <p>{profile.summary}</p> : null}<div className="public-profile-preview-meta">{profile.market ? <span><small>分野</small><b>{profile.market}</b></span> : null}{profile.targetCustomers.length ? <span><small>対象</small><b>{profile.targetCustomers.slice(0, 2).join("・")}</b></span> : null}{profile.useCases.length ? <span><small>用途</small><b>{profile.useCases.slice(0, 2).join("・")}</b></span> : null}</div><div className="public-profile-preview-source"><small>公式ページの出典</small>{profile.sourcePages.slice(0, 3).map((page) => <a key={page.url} href={page.url} target="_blank" rel="noreferrer">{page.title}</a>)}{profile.sourcePages.length > 3 ? <span>ほか{profile.sourcePages.length - 3}ページ</span> : null}</div></div>
+        {profile.status !== "published" ? <button className="button button-primary" type="button" onClick={() => void changeStatus("publish")} disabled={busy !== ""}>{busy === "publish" ? "AI向けに公開しています…" : "この内容でAI向けに公開する"}<ArrowIcon /></button> : <Link className="button button-primary" href={`/ai/company/${encodeURIComponent(profile.slug)}`} target="_blank" rel="noreferrer">公開されたAI専用ページを見る <ArrowIcon /></Link>}
         {profile.status === "published" ? <button className="text-button public-profile-revoke" type="button" onClick={() => void changeStatus("revoke")} disabled={busy !== ""}>{busy === "revoke" ? "停止しています…" : "公開を停止する"}</button> : null}
       </>}
-      <small><LockIcon />AIXが自社サイトを変更したり、勝手に公開したりすることはありません。</small>
+      <small><LockIcon />自社サイトを書き換えたり、勝手に情報を改変することはありません。</small>
       {error ? <p className="form-error" role="alert">{error}</p> : null}
     </div>
   </section>;

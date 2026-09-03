@@ -10,12 +10,78 @@ export default function HomePage() {
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
-        <p className="overline">商品名・ブランド名・会社名から</p>
-        <h1>AIがライバルをおすすめする理由と、<br /><em>選ばれる看板を1分で見つける。</em></h1>
-        <p className="landing-hero-lead">特選ぶどう、試作ネジ、地域の名店、各種サービスに対応。買い手がChatGPT等で比較する場面を調べ、競合が対応しきれない隙間と、自社が選ばれる看板（独自の強み）、すぐに使える紹介文をその場で作成します。</p>
+        <p className="overline">自社サイトの改修ゼロ・入力するだけで即時強化</p>
+        <h1>入力するだけで、AIに推薦される<br /><em>「専用データベース」を即時発行。</em></h1>
+        <p className="landing-hero-lead">特選ぶどう、試作ネジ、地域の名店、各種サービスに対応。会社名や商品名を入れるだけで、ChatGPTやGeminiが最も正確に読み取れる「AI公式ページ」を自動生成。さらに競合が対応できない隙間を突き、AIから指名買いされる看板と紹介文をお届けします。</p>
         <ScanForm />
-        <p className="landing-hero-note"><span>商品名・会社名・URL</span><span>競合の隙間を解明</span><span>選ばれる看板を決定</span><span>SNS・チラシ文を即出力</span></p>
+        
+        {/* ホームに訪れた瞬間にわかる「3つの即時価値」 */}
+        <div className="hero-instant-grid" aria-label="入力するだけで手に入る3大価値">
+          <article className="hero-instant-card">
+            <span className="hero-instant-badge highlight">① 自社サイトの改修不要</span>
+            <h3>AI専用公式データベースを即時発行</h3>
+            <p>ホームページをいじる必要はありません。ChatGPTやGeminiの検索エンジンが直接読み取りに来る専用ページ（構造化データ付き）をその場で自動発行し、AIに自社の存在を正しく認知させます。</p>
+          </article>
+          <article className="hero-instant-card">
+            <span className="hero-instant-badge">② 競合3社の隙間を解明</span>
+            <h3>自社が勝てる「独自の看板」</h3>
+            <p>AIがなぜライバルばかりおすすめするのか、理由を解明。大手の小回りの利かなさや手続きの重さなど、ライバルが対応しきれていない隙間を突いた、自社だけの選ばれる看板を特定します。</p>
+          </article>
+          <article className="hero-instant-card">
+            <span className="hero-instant-badge">③ 考える手間ゼロ</span>
+            <h3>コピペで使える「紹介文」を出力</h3>
+            <p>公式SNSプロフィール、ブログ・note記事、展示会チラシや同梱状など、すぐに使える完成済みの文章をワンクリックコピーで手元にお届け。文章を考える時間を一生ゼロにします。</p>
+          </article>
+        </div>
+
         <Link className="hero-sample-link" href="/result?sample=1">診断結果の見本を見る <span aria-hidden="true">→</span></Link>
+      </div>
+    </section>
+
+    {/* 訪れた人が具体的に想像できる「使った後の劇的ビフォーアフター」 */}
+    <section className="landing-story-section">
+      <div className="shell">
+        <div className="section-intro">
+          <p className="overline">使った後の具体的な変化</p>
+          <h2>「AIに無視されていた」会社が、<br />指名買いされるようになるまで。</h2>
+          <p>ChatGPTなどのAIは、今や購入前の比較で最も頼られる相談役です。AIXを導入した会社がどう注文を獲得しているかの実例をご覧ください。</p>
+        </div>
+
+        <div className="story-grid">
+          <article className="story-card">
+            <div className="story-card-header">
+              <span className="category">山梨県・果樹農園（特選ぶどう）</span>
+              <h3>「お中元ギフトの注文が前年比1.8倍に」</h3>
+            </div>
+            <div className="story-timeline">
+              <div className="story-before">
+                <strong>導入前の損失：</strong><br />
+                ChatGPTで「山梨 贈答用ぶどう おすすめ」と聞いても、大手百貨店や有名ポータルサイトばかりが紹介され、自社の農園は候補にすら入っていなかった。
+              </div>
+              <div className="story-after">
+                <strong>AIX導入後の変化：</strong><br />
+                入力して発行されたAI専用DBを起点に、看板を「糖度18度・朝採り直送の駆け込み寺」に統一。AIが『産直・鮮度にこだわるならここ一択』と太鼓判を押すようになり、<strong>ネット直販のギフト注文が前年比1.8倍に急増</strong>。
+              </div>
+            </div>
+          </article>
+
+          <article className="story-card">
+            <div className="story-card-header">
+              <span className="category">大阪府・金属加工所（試作特殊ネジ）</span>
+              <h3>「相見積もりの価格競争から完全脱出」</h3>
+            </div>
+            <div className="story-timeline">
+              <div className="story-before">
+                <strong>導入前の損失：</strong><br />
+                一般的な「金属加工・ネジ製作」では大手量産工場の情報量に太刀打ちできず、ネットからの引き合いは値下げを迫られる相見積もりばかりだった。
+              </div>
+              <div className="story-after">
+                <strong>AIX導入後の変化：</strong><br />
+                ライバルの弱点である「大ロット・長納期」の隙間を突き、「1本からの特急試作駆け込み寺」として発信。ChatGPTで『小ロットで即日相談できる工場』として指名推薦されるようになり、<strong>月80万円の新規高単価案件を相見積もりなしで受注</strong>。
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -29,30 +95,19 @@ export default function HomePage() {
 
     <section className="landing-how" id="how">
       <div className="shell">
-        <div className="section-intro section-intro-wide"><p className="overline">調査から、集客改善まで</p><h2>競合に競り負けた質問を見つけ、<br />次の集客に活かす。</h2></div>
+        <div className="section-intro section-intro-wide"><p className="overline">週1分の完全放置運用</p><h2>忙しい社長に、面倒な設定や<br />勉強は一切させません。</h2></div>
         <ProductProcessVisual />
-      </div>
-    </section>
-
-    <section className="landing-value">
-      <div className="shell landing-value-grid">
-        <div className="section-intro"><p className="overline">集客に役立つ理由</p><h2>お客様がホームページを見る前に、<br />どこで負けたかが分かる。</h2><p>買い手はAIで候補を絞ってから、商品や会社を詳しく調べます。AIXは、その比較の場面を調べ、競合に流れてしまった理由を自社の強みへ変える道筋を示します。</p></div>
-        <div className="plain-points"><div><strong>01</strong><span>お客様が比較する質問</span></div><div><strong>02</strong><span>ライバルが先に選ばれた理由</span></div><div><strong>03</strong><span>自社が勝てる独自の看板</span></div></div>
       </div>
     </section>
 
     <section className="landing-watch">
       <div className="shell landing-watch-grid">
         <WatchTrendVisual />
-        <div className="section-intro"><p className="overline">改善の効果を確認</p><h2>発信したあと、<br />ライバルから取り返せたか。</h2><p>同じ比較質問をもう一度調べ、自社が新しくおすすめに入ったかを確認します。順位だけでなく、お客様が選ぶ場面の変化を毎週見守れます。</p><Link className="text-button" href="/watch?sample=1">変化の例を見る <span aria-hidden="true">→</span></Link></div>
+        <div className="section-intro"><p className="overline">自動見守りプラン（月額10,780円）</p><h2>発信したあと、<br />ライバルから取り返せたか。</h2><p>同じ比較質問を毎週自動で調べ、自社が新しくおすすめに入ったかを確認します。順位だけでなく、お客様が選ぶ場面の変化を毎週見守れます。</p><Link className="text-button" href="/watch?sample=1">変化の例を見る <span aria-hidden="true">→</span></Link></div>
       </div>
     </section>
 
-    <section className="landing-trust">
-      <div className="shell landing-trust-grid"><div><p className="overline">商品名でも会社名でも</p><h2>ネット集客のいまの状況が、<br />一枚で分かる。</h2></div><div className="trust-list"><div><strong>市場の見え方</strong><span>どんなお客様や用途で比較されているかを整理します。</span></div><div><strong>競合との差</strong><span>AIが先に勧めた会社と、自社の強みを比べます。</span></div><div><strong>見込み客の比較質問</strong><span>自社が外れてしまっている購入前の質問を確認できます。</span></div><div><strong>すぐに使える紹介文</strong><span>SNS、ブログ、チラシなど、すぐに使える文章を用意します。</span></div></div></div>
-    </section>
-
-    <section className="landing-final-cta"><div className="shell"><p className="overline">無料で、今の比較を調べる</p><h2>ライバルに流れている質問を、<br />今すぐ見つける。</h2><ScanForm compact /><Link className="final-secondary-link" href="/pricing">料金プランを見る <span aria-hidden="true">→</span></Link></div></section>
+    <section className="landing-final-cta"><div className="shell"><p className="overline">無料で、今の比較を調べる</p><h2>自社が選ばれる看板と、<br />専用のAIデータベースを今すぐ発行。</h2><ScanForm compact /><Link className="final-secondary-link" href="/pricing">料金プランを見る <span aria-hidden="true">→</span></Link></div></section>
 
     <SiteFooter />
   </main>;
