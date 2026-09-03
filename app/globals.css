@@ -1628,6 +1628,52 @@ svg { width: 1.1em; height: 1.1em; }
 /* ==========================================================================
    Positioning 戦略提言 & 運用体制比較 (Executive Consulting Style)
    ========================================================================== */
+.instant-empower-banner {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+  border: 1.5px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.instant-empower-badge {
+  background: #059669;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.instant-empower-main {
+  flex: 1;
+  min-width: 280px;
+}
+
+.instant-empower-main h3 {
+  margin: 0 0 6px;
+  font-size: 1.05rem;
+  color: #065f46;
+  font-weight: 800;
+}
+
+.instant-empower-main p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #047857;
+  line-height: 1.5;
+}
+
+.instant-empower-action {
+  white-space: nowrap;
+}
+
 .audit-executive-summary {
   background: #f8fafc;
   border: 1px solid #cbd5e1;

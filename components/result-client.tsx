@@ -108,17 +108,31 @@ export function ResultClient() {
         <ReportActions result={result} sample={sample} />
         {sample ? <p className="sample-note">画面の使い方を見るためのサンプルです。実在の診断結果ではありません。</p> : null}
         {!sample ? displayWarnings.map((warning) => <p className="report-warning" key={warning}>{warning}</p>) : null}
+
+        {/* 【入力しただけで強くなった！】AI専用公式データベースの即時配備完了バナー */}
+        <div className="instant-empower-banner">
+          <div className="instant-empower-badge">🎉 即時強化完了</div>
+          <div className="instant-empower-main">
+            <h3>{result.discovery.brandName} 専用の「AI公式データベース」を即座に構築しました</h3>
+            <p>自社サイトの改修は不要です。主要な生成AI（ChatGPTやGemini等）が直接参照して推薦に使う専用ページ（構造化データ付き）を自動生成しました。これでAIが御社の存在を認識できるようになります。</p>
+          </div>
+          <div className="instant-empower-action">
+            <Link className="button button-primary" href={sample ? "/ai/company/aoba-souzoku?sample=1" : "#ai-database"}>
+              発行された専用ページを確認する <ArrowIcon />
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
 
-    {/* 1. 現状の診断サマリー ＆ 実測観測データ（幕1：現実の突きつけ） */}
+    {/* 1. 現状の診断サマリー ＆ 実測観測データ（何が起きたか？） */}
     <section className="report-summary shell">
       <div className="summary-copy">
-        <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AI推薦のいまの状況" : "診断結果"}</p>
+        <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AIの検索結果" : "診断結果"}</p>
         <h2>{primaryLoss ? <>AIは、<strong>{primaryWinner || "競合"}</strong>を<br />先に勧めました。</> : "AIの比較で、自社も選ばれています。"}</h2>
         <p>
           {primaryLoss
-            ? `競合大手は全国的な認知量で先行していますが、貴社が長年培ってきた専門性や親身な対応自体に問題はありません。下の実測データおよび戦略提言から、AI専用データベースに学習させるポジショニングを整えましょう。`
+            ? `御社の実績や親身さに問題があるわけではありません。単に「AIが御社の強みを知らない（AIが無知な状態）」ため、知名度だけで大手を機械的に選んでいます。下の2つのステップで、AIに正しい強みを学習させましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
 

@@ -45,22 +45,11 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
 
   return (
     <section className="positioning-section shell" aria-label="ポジショニング診断および戦略提言">
-      {/* 1. 客観的ファクト・機会損失分析（コンサルティング・サマリー） */}
-      <div className="audit-executive-summary">
-        <div className="audit-summary-header">
-          <span className="audit-label">市場観測結果</span>
-          <h3>AI検索における商談機会：競合他社への流出が確認されました</h3>
-        </div>
-        <p className="audit-summary-desc">
-          購入・相談直前の比較質問において、AI検索（ChatGPT等）は競合他社を優先して推薦しています。貴社が培ってきた実績や専門性自体には問題ありませんが、<strong>「AIが認識可能な構造化された客観的ファクト」がWeb上に存在しないこと</strong>が、推薦対象から外れている直接の構造的要因です。
-        </p>
-      </div>
-
-      {/* 2. ポジショニング戦略の選定軸 */}
-      <div className="section-heading-simple" style={{ textAlign: "left", margin: "32px 0 16px" }}>
-        <p className="overline">推奨戦略の選択</p>
-        <h2>AIに認識させる「貴社独自のポジショニング」を選択してください。</h2>
-        <p>AI検索のアルゴリズムは、単なる知名度ではなく「明確な比較軸」を持つ企業を優先します。貴社の事業方針や得意領域に合わせて、AI専用データベースに学習させる発信軸を決定してください。</p>
+      {/* ポジショニング戦略の選定軸（ステップ2） */}
+      <div className="section-heading-simple" style={{ textAlign: "left", margin: "16px 0 16px" }}>
+        <p className="overline">【ステップ 2】AIに教え込む「御社の看板」を選ぶ</p>
+        <h2>AIに認識させる独自の強みを、下の3つから1つ選択してください。</h2>
+        <p>AIはまだ御社の本当の強みを知りません（AIの認識不足）。知名度だけで大手を機械的に勧めてしまっているAIに対し、御社の最も誇れる強みを学習させましょう。</p>
       </div>
 
       {/* 3つの戦略タブ（サイト解析から動的生成） */}
