@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -37,13 +37,27 @@ export function ResultClient() {
   const params = useSearchParams();
   const router = useRouter();
   const sample = params.get("sample") === "1";
+  const customBrand = params.get("customBrand");
   const scanId = params.get("id");
-  const [result, setResult] = useState<ScanResult | null>(sample ? sampleResult : null);
+  const [rawResult, setResult] = useState<ScanResult | null>(sample ? sampleResult : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
   const [openObservation, setOpenObservation] = useState("");
   const [email, setEmail] = useState("");
   const [watchBusy, setWatchBusy] = useState(false);
+
+  const result = useMemo(() => {
+    if (!rawResult) return null;
+    if (!customBrand) return rawResult;
+    return {
+      ...rawResult,
+      discovery: {
+        ...rawResult.discovery,
+        brandName: customBrand,
+        legalName: customBrand,
+      },
+    };
+  }, [rawResult, customBrand]);
 
   useEffect(() => {
     if (sample) return;

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
+import { ArrowIcon } from "@/components/icons";
 import { isUrlInput } from "@/lib/input-kind";
 import type { InputResolutionCandidate } from "@/lib/input-resolution";
 import type { ScanProgressEvent, ScanStage } from "@/lib/types";
@@ -43,7 +44,7 @@ export function ScanProgress() {
   const controller = useRef<AbortController | null>(null);
   const startedScan = useRef("");
   const resolvedInput = useRef("");
-  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed">("resolving");
+  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site">("resolving");
   const [candidates, setCandidates] = useState<InputResolutionCandidate[]>([]);
   const [selectedUrl, setSelectedUrl] = useState("");
   const [stage, setStage] = useState<ScanStage>("created");
@@ -137,7 +138,12 @@ export function ScanProgress() {
         const data = await response.json().catch(() => ({})) as ResolutionPayload;
         if (!response.ok) throw new Error(data.error || `公開サイトを探せませんでした (${response.status})`);
         const nextCandidates = Array.isArray(data.candidates) ? data.candidates.filter((candidate) => candidate?.url) : [];
-        if (!nextCandidates.length) throw new Error("入力に一致する公開サイトを見つけられませんでした。正式名称か公式サイトのURLを入力してください。");
+        if (!nextCandidates.length) {
+          setPhase("no_site");
+          setMessage("自社サイトがない企業様専用の発行フロー");
+          setDetail("会社名から直接公式Web拠点を発行できます");
+          return;
+        }
         setCandidates(nextCandidates);
         setSelectedUrl(nextCandidates[0].url);
         setPhase("choose");
@@ -163,9 +169,23 @@ export function ScanProgress() {
       <SiteHeader compact />
       <section className="scan-stage shell scan-resolve-stage">
         <div className="scan-stage-main scan-resolve-main">
-          <p className="overline">{phase === "resolving" ? "診断先を検索中" : "診断先を確認"}</p>
-          <h1>{phase === "resolving" ? `「${displayInput(rawInput)}」の公開サイトを探しています。` : `「${displayInput(rawInput)}」の診断先を選んでください。`}</h1>
-          <p className="scan-message">{phase === "resolving" ? "会社名・商品名から、診断できる公開サイトを調べています。" : "候補のドメインを確認して、診断するサイトを選びます。"}</p>
+          <p className="overline">
+            {phase === "resolving" ? "診断先を検索中" : phase === "no_site" ? "公式Web拠点ダイレクト発行" : "診断先を確認"}
+          </p>
+          <h1>
+            {phase === "resolving"
+              ? `「${displayInput(rawInput)}」の公開サイトを探しています。`
+              : phase === "no_site"
+              ? `「${displayInput(rawInput)}」のAI公式Web拠点を直接発行します`
+              : `「${displayInput(rawInput)}」の診断先を選んでください。`}
+          </h1>
+          <p className="scan-message">
+            {phase === "resolving"
+              ? "会社名・商品名から、診断できる公開サイトを調べています。"
+              : phase === "no_site"
+              ? "自社サイトをお持ちでない企業様でも、会社名だけでAI専用の公式Web拠点を即座に発行できます。"
+              : "候補のドメインを確認して、診断するサイトを選びます。"}
+          </p>
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
           {phase === "choose" ? <>
             <fieldset className="scan-resolve-options">
@@ -181,6 +201,36 @@ export function ScanProgress() {
             <button className="button button-primary scan-resolve-start" type="button" disabled={!selectedUrl} onClick={() => void startScan(selectedUrl)}>このサイトを診断する <span aria-hidden="true">→</span></button>
             <p className="scan-resolve-note">候補は公開検索から見つけたサイトです。ドメインを確認してから診断を開始します。</p>
           </> : null}
+          {phase === "no_site" ? (
+            <div className="scan-no-site-container">
+              <div className="no-site-card">
+                <span className="no-site-tag">ホームページがなくても大丈夫</span>
+                <h3>高額なWebサイト制作は不要です</h3>
+                <p>
+                  公式Webサイトが見つかりませんでした。自社サイトをお持ちでない場合でも、AIXでは会社名（屋号）をもとに、<strong>AI専用の公式Web拠点（公的ナレッジ台帳）</strong>を即座に無料発行できます。
+                </p>
+                <div className="no-site-action-row">
+                  <div className="no-site-target-brand">
+                    <span>発行対象：</span>
+                    <strong>{displayInput(rawInput)}</strong>
+                  </div>
+                  <button
+                    className="button button-primary scan-resolve-start"
+                    type="button"
+                    onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput)}`)}
+                  >
+                    この会社名でAI公式Web拠点を無料発行する <ArrowIcon />
+                  </button>
+                </div>
+                <small className="no-site-small-note">
+                  ※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。
+                </small>
+              </div>
+              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
+                ← 別の会社名やURLでやり直す
+              </button>
+            </div>
+          ) : null}
           {phase === "failed" ? <div className="scan-error" role="alert"><strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button></div> : null}
         </div>
         <aside className="scan-stage-list scan-resolve-aside"><div className="scan-stage-list-head"><strong>入力できるもの</strong><span>URL / 名前</span></div><ul className="scan-input-types"><li><strong>会社名</strong><span>例：株式会社○○</span></li><li><strong>サービス名・商品名</strong><span>例：Notion、○○クラウド</span></li><li><strong>公開サイトのURL</strong><span>例：https://yourcompany.jp</span></li></ul><p className="scan-stage-note">名前で探した場合も、公開サイトを選んでから診断します。</p></aside>
