@@ -73,26 +73,24 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
         })}
       </div>
 
-      {/* 選択された戦略の核（Core Thesis） */}
-      <div className="winning-angle-card" style={{ marginTop: "24px" }}>
-        <div className="winning-angle-badge">AIに学習させる独自の看板（提供価値）</div>
+      {/* 選択された戦略の核（看板） */}
+      <div className="winning-angle-card" style={{ marginTop: "20px" }}>
+        <div className="winning-angle-badge">AIに教え込む「御社の看板」</div>
         <h3>{current.coreThesis}</h3>
-        <p className="winning-angle-summary">{current.strategicReason}</p>
       </div>
 
-      {/* 競合他社との構造的差別化分析 */}
+      {/* 大手の弱点 vs 御社の強み（コンパクト対比） */}
       <div className="competitor-weakness-block">
-        <h3>競合大手に対する構造的差別化ポイント</h3>
-        <p className="block-desc">AI検索エンジンが「なぜ貴社を優先すべきか」を論理的に判定するための客観的優位性です。</p>
+        <h3 style={{ fontSize: "1.05rem", marginBottom: "12px" }}>ライバル大手の隙間と御社の強み</h3>
         <div className="weakness-grid">
           {current.competitorAnalysis.map((item) => (
             <article className="weakness-card" key={item.name}>
               <div className="weakness-card-head">
                 <span className="competitor-tag">{item.name}</span>
-                <strong className="competitor-gap">競合の課題: {item.gap}</strong>
+                <strong className="competitor-gap">大手の課題: {item.gap}</strong>
               </div>
               <div className="our-advantage-box">
-                <span className="advantage-label">貴社が提示する優位性：</span>
+                <span className="advantage-label">御社の強み：</span>
                 <p>{item.differentiation}</p>
               </div>
             </article>
@@ -100,13 +98,10 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
         </div>
       </div>
 
-      {/* 成果物：すぐに公式展開できるテキスト群 */}
+      {/* すぐに使える発信文（タブ切り替えでコンパクトに） */}
       <div className="actionable-messages-block">
         <div className="actionable-messages-head">
-          <div>
-            <h3>公式チャネル向け展開案（実務用成果物）</h3>
-            <p className="block-desc">選定した戦略軸に合わせて整合させた公式プロフィール・Webコンテンツ・配布資料の下書きです。</p>
-          </div>
+          <h3>そのまま使える紹介文（ワンクリックコピー）</h3>
         </div>
 
         <div className="actionable-messages-list">
@@ -124,7 +119,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
                     onClick={() => copyToClipboard(item.text, key)}
                     aria-label={`${item.label}をコピー`}
                   >
-                    {copiedKey === key ? "コピーしました" : "文章をコピー"}
+                    {copiedKey === key ? "コピー完了！" : "文章をコピー"}
                   </button>
                 </div>
                 <div className="actionable-copy-box">
