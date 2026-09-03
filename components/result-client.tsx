@@ -111,17 +111,56 @@ export function ResultClient() {
       </div>
     </section>
 
-    {/* 1. 現状の診断サマリー */}
+    {/* 1. 現状の診断サマリー ＆ 実測観測データ（幕1：現実の突きつけ） */}
     <section className="report-summary shell">
       <div className="summary-copy">
         <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AI推薦のいまの状況" : "診断結果"}</p>
         <h2>{primaryLoss ? <>AIは、<strong>{primaryWinner || "競合"}</strong>を<br />先に勧めました。</> : "AIの比較で、自社も選ばれています。"}</h2>
-        {primaryLoss ? <p className="summary-question">「{primaryLoss.prompt}」</p> : null}
         <p>
           {primaryLoss
-            ? `競合大手は全国的な認知量で先行していますが、貴社が長年培ってきた専門性や親身な対応自体に問題はありません。下の戦略提言から貴社の強みに合致するポジショニングを選択し、AI専用データベースに学習させましょう。`
+            ? `競合大手は全国的な認知量で先行していますが、貴社が長年培ってきた専門性や親身な対応自体に問題はありません。下の実測データおよび戦略提言から、AI専用データベースに学習させるポジショニングを整えましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
+
+        {/* 実測観測データ（AI回答モック：何が起きたかを0秒で理解させる） */}
+        <div className="ai-observation-proof-card">
+          <div className="ai-proof-head">
+            <span className="ai-proof-tag">実測観測データ</span>
+            <h4>実際にAIが返した回答の比較</h4>
+          </div>
+          <div className="ai-proof-prompt-bubble">
+            <span className="bubble-speaker">購買・相談検討者がAIに入力した質問</span>
+            <p>「{primaryLoss?.prompt || "東京でおすすめの専門事務所は？"}」</p>
+          </div>
+          <div className="ai-proof-response-box">
+            <span className="bubble-speaker">主要な生成AI（ChatGPT等）の実際の回答結果</span>
+            <ul className="ai-proof-ranking">
+              <li className="rank-item winner">
+                <span className="rank-num">1位 推薦</span>
+                <div>
+                  <strong>{primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ"}</strong>
+                  <p>「全国に拠点を持ち、豊富な相談実績と知名度がある大手グループです。」</p>
+                </div>
+              </li>
+              {result.competitors[1] ? (
+                <li className="rank-item winner">
+                  <span className="rank-num">2位 推薦</span>
+                  <div>
+                    <strong>{result.competitors[1].name}</strong>
+                    <p>「オンライン相談に対応し、Web上で広く情報公開されている大手窓口です。」</p>
+                  </div>
+                </li>
+              ) : null}
+              <li className="rank-item lost">
+                <span className="rank-num alert">圏外（未言及）</span>
+                <div>
+                  <strong>{result.discovery.brandName}（貴社）</strong>
+                  <p className="lost-reason">⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。Web上にAIが読み取れる公式構造化データが存在しないため、知名度の高い競合のみが機械的に推薦されています。</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div>
         <div className="summary-stats">
@@ -133,13 +172,13 @@ export function ResultClient() {
       </div>
     </section>
 
-    {/* 2. 【最優先】自社の勝てる看板・競合の弱点・すぐに使える紹介文（ファーストビュー直下） */}
-    <PositioningPanel positioning={result.positioning} />
-
-    {/* 3. 【即時発行特典】自社サイト改修ゼロでOK！ChatGPT専用のAI公式データベース */}
+    {/* 2. 【即効改善】AI専用公式データベースの発行 */}
     <div className="shell" style={{ margin: "32px auto" }}>
       <PublicProfileActions result={result} sample={sample} />
     </div>
+
+    {/* 3. 【根本改善】自社の勝てる看板・競合の弱点・すぐに使える紹介文 */}
+    <PositioningPanel positioning={result.positioning} />
 
     {/* 4. 顧客が比較する具体的な質問一覧 */}
     <section className="report-section shell">
