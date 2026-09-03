@@ -120,13 +120,30 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </p>
       </div>
 
+      {/* 鮮度防衛アーキテクチャ・リスク管理と自動見守りプランの案内 */}
+      <div className="freshness-risk-notice-card">
+        <div className="freshness-risk-header">
+          <span className="risk-guard-tag">リスク管理・鮮度防衛規約</span>
+          <h4>無料登録の有効期限は「30日間」です（古い情報のAI残留を完全防止）</h4>
+        </div>
+        <p className="freshness-risk-body">
+          料金改定や提供条件の変更があった際に「AIに古い情報が残る」と、相談者との間で深刻な価格トラブル・信用失墜を招く重大なリスクがあります。AIXでは古い情報が一人歩きするのを防ぐため、無料枠レコードは30日後に自動失効（データ完全破棄 / AIキャッシュ強制消去）されます。
+        </p>
+        <div className="freshness-risk-upsell">
+          <span>公式サイトの変更を週次で自動検知し、常に100%最新の正しい情報をAIに教え続けるには：</span>
+          <Link className="upsell-inline-link" href="/pricing">
+            月額10,780円の「定期見守りプラン（全自動同期）」を確認する ↗
+          </Link>
+        </div>
+      </div>
+
       {/* 書き込み実行アクション */}
       <div className="weapon-action-box">
         <div className="weapon-action-status">
           <p>
             現在選択中の看板：<strong>{strategies[selectedWeapon]?.name}</strong>
           </p>
-          <small>自社サイトの改修は不要。主要生成AIが直接巡回・学習する公式構造化データ（JSON-LD）として即時発行されます。</small>
+          <small>自社サイトの改修は不要。主要生成AIが直接巡回・学習する公式構造化データ（JSON-LD）として即時発行されます（有効期限30日）。</small>
         </div>
 
         <div className="weapon-action-buttons">

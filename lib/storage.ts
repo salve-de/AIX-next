@@ -21,7 +21,7 @@ globalMemory.aixNextScans = scans;
 globalMemory.aixNextWatches = watches;
 globalMemory.aixNextPublicProfiles = publicProfiles;
 
-const PUBLIC_PROFILE_DEFAULT_TTL_DAYS = 90;
+const PUBLIC_PROFILE_DEFAULT_TTL_DAYS = 30;
 const PUBLIC_PROFILE_MAX_TTL_DAYS = 365;
 const DAY_MS = 86_400_000;
 

@@ -197,6 +197,8 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
     if (sourcePages.length >= 8) break;
   }
 
+  const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -207,6 +209,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
     ...(market ? { knowsAbout: [market] } : {}),
     ...(useCases.length ? { keywords: useCases } : {}),
     inLanguage: "ja-JP",
+    validThrough: validThroughDate,
   };
 
   const json = JSON.stringify({
