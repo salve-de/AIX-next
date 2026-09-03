@@ -1,4 +1,5 @@
 import { createWatch, getScan, getWatch } from "@/lib/storage";
+import { toPublicWatch, toPublicWatchMeasurementRun } from "@/lib/public-dto";
 import { sendWatchStarted } from "@/lib/watch-email";
 import { getActiveWatchRun } from "@/lib/watch-runs";
 
@@ -33,17 +34,9 @@ export async function GET(request: Request) {
   const watch = await getWatch(token);
   if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
   const run = await getActiveWatchRun(watch.id);
+  const publicWatch = toPublicWatch(watch);
   return Response.json({
-    ...watch,
-    measurementRun: run ? {
-      id: run.id,
-      status: run.status,
-      panelKind: run.panelKind,
-      completedPrompts: run.nextPromptIndex,
-      totalPrompts: run.prompts.length,
-      completedObservations: run.observations.length,
-      totalObservations: run.prompts.length * 3 * run.repetitions,
-      updatedAt: run.updatedAt,
-    } : null,
+    ...publicWatch,
+    measurementRun: run ? toPublicWatchMeasurementRun(run) : null,
   }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
 }

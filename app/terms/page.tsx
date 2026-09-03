@@ -2,7 +2,7 @@ import { MarketingShell } from "@/components/marketing-shell";
 
 export default function TermsPage() {
   return <MarketingShell eyebrow="TERMS" title="観測値と変更案を、保証と混同しないための条件。" lead="AIX NextはAI回答を観測し、改善候補とChange Packを作成するサービスです。外部AIの順位・推薦・引用・問い合わせ・売上を支配または保証するものではありません。">
-    <h2>サービス内容</h2><p>AIX Nextは、入力された公開URLを分析し、市場・競合・Buyer Promptを推定し、対応AI Providerの回答、候補企業、Citation、Evidence差、Action候補を表示・保存します。有料Watchでは、公開情報およびユーザーが入力した確認済み事実をもとに、見出し・本文・FAQ等のChange Packを生成する場合があります。</p>
+    <h2>サービス内容</h2><p>AIX Nextは、会社名・商品名・サービス名または公開URLを起点に診断対象の公開サイトを確認し、市場・競合・Buyer Promptを推定し、対応AI Providerの回答、候補企業、Citation、Evidence差、Action候補を表示・保存します。名前から始めた場合は、公開検索で見つけた候補をユーザーが確認してからサイトを診断します。有料Watchでは、公開情報およびユーザーが入力した確認済み事実をもとに、見出し・本文・FAQ等のChange Packを生成する場合があります。</p>
     <h2>測定上の制約</h2><p>AI回答はモデル、日時、場所、検索結果、質問表現、会話文脈、非決定性等により変動します。AIX Nextの数値は明示された観測パネルの結果であり、全利用者に共通する絶対順位ではありません。Buyer Promptの候補外件数は顧客・見込み客・失注件数を意味しません。</p>
     <h2>Change Packの制約</h2><p>Change Packは公開前の編集ドラフトです。AIX Nextは、入力・取得した事実の正確性、第三者権利、表示規制、業界規制、顧客許諾等を最終保証しません。ユーザーは公開前に事実、権利、法令、社内承認を確認します。AIX Nextは明示承認なしに顧客サイトへChange Packを公開しません。</p>
     <h2>保証しない事項</h2><ul><li>特定順位または推薦</li><li>特定Citation</li><li>Buyer Promptの候補入り増加</li><li>検索流入、問い合わせ、契約または売上</li><li>施策と数値変化の因果関係</li><li>第三者サイト・AI Providerの継続提供</li></ul>

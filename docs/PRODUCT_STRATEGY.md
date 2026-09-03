@@ -272,6 +272,14 @@ Company × Market × Buyer Intent × AI Surface × Competitor
 
 With sufficient observations, AIX can eventually rank Actions by outcomes observed in comparable companies rather than generic SEO advice, while preserving uncertainty and avoiding unsupported causal claims.
 
+## Revenue-outcome advisory extension (2026-09-03)
+
+AI推薦は目的ではなく、認知・候補入り・訪問・問い合わせ・商談・受注へつながる接点の一つである。AIXは顧客サイト、広告、CRM、第三者プロフィールを自動変更するサービスにはしない。顧客が会社名・商品名・サービス名またはURLを入れるだけで、AIが競合を選ぶ買い手の質問、公開根拠の不足、売上に近い改善の優先順位を返し、顧客が必要な施策を判断できることを価値にする。
+
+「AISEOで有利になる」は、順位上昇の保証ではなく、AIに選ばれるための判断を他社より早く・具体的にできるという意味で使う。AIXはAISEO Opportunity（候補外、競合、引用、根拠差）とSales Opportunity（顧客の不安、証拠、CTA、次の検証）を一枚にまとめ、Change PackとWatchで任意の変更を再確認する。
+
+唯一、AIX側の公開情報を増やす案として、所有者が明示的に参加した企業だけに検証済み公開プロフィールを提供する実験を検討する。出典、更新日、訂正・削除、スポンサー表示を必須にし、掲載順・AI推薦・売上を販売しない。大量ページや偽レビューは作らない。詳細な方法・公式根拠・実装順は [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md) に記録する。
+
 ## UX hierarchy
 
 ### 0.1 second — visual gist

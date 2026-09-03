@@ -2,7 +2,7 @@
 
 ## Goals
 
-- one URL creates a useful result without onboarding;
+- one company/product name or URL creates a useful result without onboarding;
 - long-running crawl and AI calls can fail independently;
 - raw evidence remains auditable;
 - private result links are not indexed;
@@ -33,8 +33,10 @@ Supabase JSON records (or memory in local development)
 ## Separation of concerns
 
 - `lib/url-security.ts`: URL normalization, DNS and SSRF checks.
+- `lib/input-kind.ts` / `lib/input-resolution.ts`: classify a name or URL and resolve names to public-site candidates through configured search providers.
 - `lib/robots.ts`: path-level robots policy.
 - `lib/crawler.ts`: page discovery and bounded extraction.
+- `lib/visibility-audit.ts`: crawl access, page clarity, public proof and measurement readiness checks.
 - `lib/discovery.ts`: company, market, competitor, prompt and evidence analysis.
 - `lib/providers/*`: provider-specific API contracts.
 - `lib/measurement.ts`: deterministic metrics and lost-prompt derivation.
@@ -76,6 +78,16 @@ A partial scan is a valid product state. Provider failures are shown, excluded f
 - anonymous result identifiers are random and unlisted;
 - company-provided evidence is private by default;
 - service credentials stay in server-only environment variables.
+
+### Public discovery surfaces
+
+- `robots.txt` allows public pages to OpenAI search crawlers while excluding private routes;
+- `sitemap.xml` lists only substantive public pages;
+- root JSON-LD, `ai-index.json` and `llms.txt` describe AIX itself;
+- paid Watch Change Packs may contain a human-reviewed AI-readable draft built only from crawled public pages.
+- every live Scan records a non-scoring visibility audit covering crawler access, indexability, sitemap/canonical signals, page clarity, buyer facts, public proof and measurement completeness.
+
+The customer draft is stored inside the existing Change Pack JSON and is never published automatically. It must be checked against the customer site before use.
 
 ### External writes
 

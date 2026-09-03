@@ -80,7 +80,7 @@ export function lostPrompts(prompts: BuyerPrompt[], observations: Observation[],
       promptId: prompt.id,
       prompt: prompt.text,
       winner,
-      summary: winner ? `${winner}がより多くのAI回答で購入候補として先に挙げられ、${discovery.brandName}は過半数の回答で候補に入りませんでした。` : `${discovery.brandName}は過半数のAI回答で購入候補に入りませんでした。`,
+      summary: winner ? `AIは${winner}を先に勧め、${discovery.brandName}はこの質問で候補外でした。` : `${discovery.brandName}はこの質問で候補に入りませんでした。`,
       citations,
       observations: rows,
     }];

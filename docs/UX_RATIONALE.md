@@ -74,7 +74,7 @@ Required elements:
 - `ChatGPT` in the service statement;
 - competitor-selection problem in the headline;
 - value promise: identify what to change to increase shortlist inclusion opportunities;
-- company URL field;
+- company, product, or service name / URL field;
 - a visible fictional result showing rank, excluded-prompt denominator, top competitor, one buyer question and one Action;
 - micro-flow: find loss → choose change → remeasure.
 

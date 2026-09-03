@@ -1,16 +1,76 @@
 import "server-only";
 import { id } from "@/lib/ids";
 import { env } from "@/lib/env";
-import type { EvidenceAnswer, ScanRecord, WatchRecord } from "@/lib/types";
+import type {
+  EvidenceAnswer,
+  PublicProfileDraft,
+  PublicProfileRecord,
+  ScanRecord,
+  WatchRecord,
+} from "@/lib/types";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
   aixNextWatches?: Map<string, WatchRecord>;
+  aixNextPublicProfiles?: Map<string, PublicProfileRecord>;
 };
 const scans = globalMemory.aixNextScans ?? new Map<string, ScanRecord>();
 const watches = globalMemory.aixNextWatches ?? new Map<string, WatchRecord>();
+const publicProfiles = globalMemory.aixNextPublicProfiles ?? new Map<string, PublicProfileRecord>();
 globalMemory.aixNextScans = scans;
 globalMemory.aixNextWatches = watches;
+globalMemory.aixNextPublicProfiles = publicProfiles;
+
+const PUBLIC_PROFILE_DEFAULT_TTL_DAYS = 90;
+const PUBLIC_PROFILE_MAX_TTL_DAYS = 365;
+const DAY_MS = 86_400_000;
+
+type PublicProfileStorageOptions = {
+  sourceScanId?: string;
+  expiresInDays?: number;
+  /** Test/maintenance hook; regular callers should use the current time. */
+  now?: Date | string;
+  /** Explicit expiry is useful when restoring a record; it is not user input. */
+  expiresAt?: string;
+};
+
+function profileDate(value?: Date | string) {
+  const date = value instanceof Date ? new Date(value.getTime()) : new Date(value || Date.now());
+  if (Number.isNaN(date.getTime())) throw new Error("公開レコードの日時が不正です。");
+  return date;
+}
+
+function profileSlug(targetUrl: string) {
+  let host = "company";
+  try {
+    host = new URL(targetUrl).hostname.replace(/^www\./i, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || host;
+  } catch {
+    // The public-profile builder validates the URL. Keep storage defensive for
+    // callers that restore a draft directly.
+  }
+  let slug = `${host}-${id("slug").slice(-12)}`;
+  while ([...publicProfiles.values()].some((profile) => profile.slug === slug)) slug = `${host}-${id("slug").slice(-12)}`;
+  return slug;
+}
+
+function clonePublicProfileDraft(draft: PublicProfileDraft): PublicProfileDraft {
+  return {
+    ...draft,
+    targetCustomers: [...draft.targetCustomers],
+    useCases: [...draft.useCases],
+    facts: draft.facts.map((fact) => ({ ...fact })),
+    sourcePages: draft.sourcePages.map((page) => ({ ...page })),
+  };
+}
+
+function markExpired(record: PublicProfileRecord, now: Date) {
+  if ((record.status === "draft" || record.status === "published") && new Date(record.expiresAt).getTime() <= now.getTime()) {
+    const expired = { ...record, status: "expired" as const, updatedAt: now.toISOString() };
+    publicProfiles.set(record.id, expired);
+    return expired;
+  }
+  return record;
+}
 
 function durable() {
   return Boolean(env.supabaseUrl && env.supabaseServiceKey);
@@ -56,6 +116,58 @@ function watchFromRow(row: any): WatchRecord {
   };
 }
 
+function publicProfileFromRow(row: any): PublicProfileRecord {
+  return {
+    id: String(row.id),
+    slug: String(row.slug),
+    status: row.status as PublicProfileRecord["status"],
+    title: String(row.title || ""),
+    brandName: String(row.brand_name || ""),
+    targetUrl: String(row.target_url || ""),
+    summary: String(row.summary || ""),
+    market: String(row.market || ""),
+    targetCustomers: Array.isArray(row.target_customers) ? row.target_customers.map(String) : [],
+    useCases: Array.isArray(row.use_cases) ? row.use_cases.map(String) : [],
+    facts: Array.isArray(row.facts) ? row.facts : [],
+    sourcePages: Array.isArray(row.source_pages) ? row.source_pages : [],
+    structuredData: String(row.structured_data || ""),
+    markdown: String(row.markdown || ""),
+    json: String(row.json || ""),
+    token: String(row.token || ""),
+    sourceScanId: String(row.source_scan_id || "unknown"),
+    createdAt: String(row.created_at),
+    updatedAt: String(row.updated_at),
+    expiresAt: String(row.expires_at),
+    ...(row.published_at ? { publishedAt: String(row.published_at) } : {}),
+  };
+}
+
+function publicProfileRow(record: PublicProfileRecord) {
+  return {
+    id: record.id,
+    slug: record.slug,
+    status: record.status,
+    title: record.title,
+    brand_name: record.brandName,
+    target_url: record.targetUrl,
+    summary: record.summary,
+    market: record.market,
+    target_customers: record.targetCustomers,
+    use_cases: record.useCases,
+    facts: record.facts,
+    source_pages: record.sourcePages,
+    structured_data: record.structuredData,
+    markdown: record.markdown,
+    json: record.json,
+    token: record.token,
+    source_scan_id: record.sourceScanId,
+    created_at: record.createdAt,
+    updated_at: record.updatedAt,
+    expires_at: record.expiresAt,
+    published_at: record.publishedAt || null,
+  };
+}
+
 export async function createScan(targetUrl: string) {
   const now = new Date().toISOString();
   const record: ScanRecord = { id: id("scan"), targetUrl, stage: "created", progress: 0, message: "診断を準備しています。", result: null, error: null, createdAt: now, updatedAt: now };
@@ -92,6 +204,151 @@ export async function getScan(scanId: string) {
     return rows[0] ? scanFromRow(rows[0]) : null;
   }
   return scans.get(scanId) || null;
+}
+
+/**
+ * Create a non-public preview. With Supabase configured the record is durable;
+ * local development keeps it in the process store. Only an explicit publish
+ * call changes its status to indexable. The bearer token is returned to the
+ * caller once and is never included in public views.
+ */
+export async function createPublicProfilePreview(draft: PublicProfileDraft, options: PublicProfileStorageOptions = {}) {
+  const now = profileDate(options.now);
+  const expiresAt = options.expiresAt
+    ? profileDate(options.expiresAt).toISOString()
+    : (() => {
+        const days = options.expiresInDays ?? PUBLIC_PROFILE_DEFAULT_TTL_DAYS;
+        if (!Number.isInteger(days) || days < 1 || days > PUBLIC_PROFILE_MAX_TTL_DAYS) {
+          throw new Error(`公開ページの期限は1〜${PUBLIC_PROFILE_MAX_TTL_DAYS}日で指定してください。`);
+        }
+        return new Date(now.getTime() + days * DAY_MS).toISOString();
+      })();
+  const record: PublicProfileRecord = {
+    ...clonePublicProfileDraft(draft),
+    id: id("profile"),
+    slug: profileSlug(draft.targetUrl),
+    status: "draft",
+    token: id("profile_token"),
+    sourceScanId: options.sourceScanId || "unknown",
+    createdAt: now.toISOString(),
+    updatedAt: now.toISOString(),
+    expiresAt,
+  };
+  if (durable()) {
+    try {
+      const rows = await supabase<any[]>("aix_next_public_profiles", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify(publicProfileRow(record)) });
+      const persisted = rows[0] ? publicProfileFromRow(rows[0]) : null;
+      if (!persisted) throw new Error("公開レコードを保存できませんでした。");
+      publicProfiles.set(persisted.id, persisted);
+      return persisted;
+    } catch (error) {
+      publicProfiles.delete(record.id);
+      throw error;
+    }
+  }
+  publicProfiles.set(record.id, record);
+  return record;
+}
+
+/** Alias that makes the lifecycle verb explicit at call sites. */
+export const previewPublicProfile = createPublicProfilePreview;
+export const previewPublicProfileRecord = createPublicProfilePreview;
+
+/**
+ * Read an internal profile record by id. Callers serving a response must pass
+ * it through `toPublicProfile` so the bearer token and source scan id cannot
+ * accidentally cross the API boundary.
+ */
+export async function getPublicProfile(profileId: string, now?: Date | string) {
+  const at = profileDate(now);
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(profileId)}&limit=1`);
+    const record = rows[0] ? publicProfileFromRow(rows[0]) : null;
+    return record ? markExpired(record, at) : null;
+  }
+  const record = publicProfiles.get(profileId);
+  return record ? markExpired(record, at) : null;
+}
+
+export async function getPublicProfileByToken(token: string, now?: Date | string) {
+  if (!token) return null;
+  const at = profileDate(now);
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?token=eq.${encodeURIComponent(token)}&limit=1`);
+    const record = rows[0] ? publicProfileFromRow(rows[0]) : null;
+    return record ? markExpired(record, at) : null;
+  }
+  const record = [...publicProfiles.values()].find((candidate) => candidate.token === token);
+  return record ? markExpired(record, at) : null;
+}
+
+export async function getPublicProfileBySlug(slug: string, now?: Date | string) {
+  if (!slug) return null;
+  const at = profileDate(now);
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?slug=eq.${encodeURIComponent(slug)}&limit=1`);
+    const record = rows[0] ? publicProfileFromRow(rows[0]) : null;
+    return record ? markExpired(record, at) : null;
+  }
+  const record = [...publicProfiles.values()].find((candidate) => candidate.slug === slug);
+  return record ? markExpired(record, at) : null;
+}
+
+/** A public route may resolve only an explicitly published, non-expired record. */
+export async function getActivePublicProfileBySlug(slug: string, now?: Date | string) {
+  const at = profileDate(now);
+  const record = await getPublicProfileBySlug(slug, at);
+  return record && record.status === "published" && new Date(record.expiresAt).getTime() > at.getTime() ? record : null;
+}
+
+export async function listActivePublicProfiles(now?: Date | string) {
+  const at = profileDate(now);
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?status=eq.published&expires_at=gt.${encodeURIComponent(at.toISOString())}&order=updated_at.desc`);
+    return rows.map(publicProfileFromRow);
+  }
+  return [...publicProfiles.values()]
+    .map((record) => markExpired(record, at))
+    .filter((record) => record.status === "published" && new Date(record.expiresAt).getTime() > at.getTime());
+}
+
+export const getActivePublicProfiles = listActivePublicProfiles;
+
+/** Publish requires both the profile id and the unguessable preview token. */
+export async function publishPublicProfile(profileId: string, token: string, now?: Date | string) {
+  const at = profileDate(now);
+  const record = await getPublicProfile(profileId, at);
+  if (!record || record.token !== token) return null;
+  if (!record || record.status === "revoked" || record.status === "expired") return null;
+  if (record.status === "published") return record;
+  const publishedAt = record.publishedAt || at.toISOString();
+  const published: PublicProfileRecord = {
+    ...record,
+    status: "published",
+    publishedAt,
+    updatedAt: at.toISOString(),
+  };
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(profileId)}&token=eq.${encodeURIComponent(token)}&status=eq.draft`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify({ status: "published", published_at: publishedAt, updated_at: at.toISOString() }) });
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+  publicProfiles.set(profileId, published);
+  return published;
+}
+
+/** Revoke is immediate for both the durable and local public route/list. */
+export async function revokePublicProfile(profileId: string, token: string, now?: Date | string) {
+  const at = profileDate(now);
+  const record = await getPublicProfile(profileId, at);
+  if (!record || record.token !== token) return null;
+  if (!record || record.status === "revoked") return null;
+  const revoked: PublicProfileRecord = { ...record, status: "revoked", updatedAt: at.toISOString() };
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(profileId)}&token=eq.${encodeURIComponent(token)}&status=in.(draft,published)`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify({ status: "revoked", updated_at: at.toISOString() }) });
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+  publicProfiles.set(profileId, revoked);
+  return revoked;
 }
 
 export async function getRecentCompletedScan(targetUrl: string, maxAgeMs = 10 * 60_000) {
@@ -158,6 +415,20 @@ export async function getWatch(token: string) {
     return rows[0] ? watchFromRow(rows[0]) : null;
   }
   return watches.get(token) || null;
+}
+
+/**
+ * Remove local fallback records used when Supabase is not configured.
+ * Production deletion is handled by the privacy service with its audit row;
+ * keeping this operation here prevents that service from reaching into the
+ * storage maps directly.
+ */
+export function deleteMemoryWatchData(token: string, scanId: string) {
+  const removed = watches.delete(token);
+  if (!removed) return false;
+  const scanStillReferenced = [...watches.values()].some((watch) => watch.scanId === scanId);
+  if (!scanStillReferenced) scans.delete(scanId);
+  return true;
 }
 
 export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "nextRunAt">>) {

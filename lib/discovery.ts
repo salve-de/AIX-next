@@ -1,10 +1,25 @@
 import "server-only";
 import { env } from "@/lib/env";
 import { shortHash } from "@/lib/ids";
-import type { ActionCard, BuyerPrompt, CompanyDiscovery, CrawledPage, EvidenceGap, LostPrompt, PromptCluster } from "@/lib/types";
+import type { ActionCard, BuyerPrompt, BuyerPromptIntent, BuyerPromptStage, CompanyDiscovery, CrawledPage, EvidenceGap, LostPrompt, PromptCluster } from "@/lib/types";
 
 function compactPages(pages: CrawledPage[]) {
   return pages.slice(0, 24).map((page) => ({ url: page.url, title: page.title, description: page.description, headings: page.headings, text: page.text.slice(0, 9_000) }));
+}
+
+function homePage(url: string, pages: CrawledPage[]) {
+  try {
+    const target = new URL(url);
+    const targetPath = target.pathname.replace(/\/$/, "") || "/";
+    return pages.find((page) => {
+      const current = new URL(page.url);
+      return current.origin === target.origin && (current.pathname.replace(/\/$/, "") || "/") === targetPath;
+    }) || pages.find((page) => {
+      try { return new URL(page.url).pathname.replace(/\/$/, "") === ""; } catch { return false; }
+    }) || pages[0];
+  } catch {
+    return pages[0];
+  }
 }
 
 function responseText(data: any) {
@@ -40,7 +55,7 @@ async function askJson<T>(prompt: string, webSearch = false) {
 
 function heuristicDiscovery(url: string, pages: CrawledPage[]): CompanyDiscovery {
   const domain = new URL(url).hostname.replace(/^www\./, "");
-  const home = pages[0];
+  const home = homePage(url, pages);
   const brandName = (home?.title || domain).split(/[|｜–—-]/)[0].trim().slice(0, 120) || domain;
   const summary = home?.description || home?.text.slice(0, 500) || "公開サイトから会社概要を抽出";
   const heading = pages.flatMap((page) => page.headings).find((item) => item.length >= 4 && item.length <= 80);
@@ -64,7 +79,7 @@ export async function discoverCompany(url: string, pages: CrawledPage[]) {
     legalName,
     brandName,
     domain,
-    summary: String(raw.summary || pages[0]?.description || "").slice(0, 1_200),
+    summary: String(raw.summary || homePage(url, pages)?.description || "").slice(0, 1_200),
     market: String(raw.market || "法人向けサービス").slice(0, 160),
     targetCustomers: (Array.isArray(raw.targetCustomers) ? raw.targetCustomers : []).map(String).slice(0, 12),
     useCases: (Array.isArray(raw.useCases) ? raw.useCases : []).map(String).slice(0, 12),
@@ -75,6 +90,40 @@ export async function discoverCompany(url: string, pages: CrawledPage[]) {
 }
 
 const clusters: PromptCluster[] = ["category", "segment", "use_case", "feature", "alternative", "comparison", "value", "implementation", "trust", "support"];
+
+function promptIntent(cluster: PromptCluster): BuyerPromptIntent {
+  if (cluster === "comparison" || cluster === "value") return "compare";
+  if (cluster === "alternative") return "switch";
+  if (cluster === "implementation" || cluster === "support") return "implement";
+  if (cluster === "trust" || cluster === "feature") return "evaluate";
+  return "discover";
+}
+
+function promptStage(cluster: PromptCluster): BuyerPromptStage {
+  if (cluster === "category" || cluster === "segment" || cluster === "use_case") return "認知";
+  if (cluster === "comparison" || cluster === "alternative" || cluster === "value") return "比較";
+  if (cluster === "implementation" || cluster === "support") return "導入";
+  return "検討";
+}
+
+function promptUrgency(cluster: PromptCluster, importance: number) {
+  const base = cluster === "comparison" || cluster === "value" || cluster === "implementation" ? 5 : cluster === "alternative" || cluster === "trust" ? 4 : 3;
+  return Math.max(1, Math.min(5, Math.max(base, importance)));
+}
+
+function enrichPrompt(input: { id: string; text: string; cluster: PromptCluster; importance: number; panel: BuyerPrompt["panel"]; version?: number }): BuyerPrompt {
+  return {
+    id: input.id,
+    text: input.text,
+    cluster: input.cluster,
+    importance: input.importance,
+    intent: promptIntent(input.cluster),
+    stage: promptStage(input.cluster),
+    urgency: promptUrgency(input.cluster, input.importance),
+    panel: input.panel,
+    version: input.version || 1,
+  };
+}
 
 function fallbackPrompts(discovery: CompanyDiscovery, count: number, panel: BuyerPrompt["panel"]) {
   const market = discovery.market;
@@ -96,7 +145,7 @@ function fallbackPrompts(discovery: CompanyDiscovery, count: number, panel: Buye
     const template = templates[index % templates.length];
     const round = Math.floor(index / templates.length) + 1;
     const text = round === 1 ? template[0] : template[0].replace("は？", `を${round}つ挙げると？`);
-    return { id: shortHash(`${panel}:${index}:${text}`), text, cluster: template[1], importance: template[2], panel, version: 1 } satisfies BuyerPrompt;
+    return enrichPrompt({ id: shortHash(`${panel}:${index}:${text}`), text, cluster: template[1], importance: template[2], panel });
   });
 }
 
@@ -108,7 +157,7 @@ export async function generateBuyerPrompts(discovery: CompanyDiscovery, count: n
     const text = String(item.text || "").trim().slice(0, 500);
     if (!text || prompts.some((prompt) => prompt.text === text)) continue;
     const cluster = clusters.includes(item.cluster) ? item.cluster as PromptCluster : "category";
-    prompts.push({ id: shortHash(`${panel}:${index}:${text}`), text, cluster, importance: Math.max(1, Math.min(5, Number(item.importance || 3))), panel, version: 1 });
+    prompts.push(enrichPrompt({ id: shortHash(`${panel}:${index}:${text}`), text, cluster, importance: Math.max(1, Math.min(5, Number(item.importance || 3))), panel }));
   }
   if (prompts.length < Math.min(8, count)) return fallbackPrompts(discovery, count, panel);
   return prompts.slice(0, count);
@@ -118,7 +167,12 @@ function textCorpus(pages: CrawledPage[]) {
   return pages.map((page) => `${page.title} ${page.description} ${page.headings.join(" ")} ${page.text}`).join(" ").toLowerCase();
 }
 
-function fallbackEvidence(pages: CrawledPage[], lostPrompts: LostPrompt[]): { gaps: EvidenceGap[]; actions: ActionCard[] } {
+function actionImpactScore(action: Pick<ActionCard, "relatedPromptCount" | "confidence" | "priority">) {
+  const priorityWeight = action.priority === "critical" ? 1.25 : action.priority === "high" ? 1 : .8;
+  return Math.round(action.relatedPromptCount * Math.max(0, Math.min(1, action.confidence)) * priorityWeight * 100) / 100;
+}
+
+function fallbackEvidence(discovery: CompanyDiscovery, pages: CrawledPage[], lostPrompts: LostPrompt[]): { gaps: EvidenceGap[]; actions: ActionCard[] } {
   const corpus = textCorpus(pages);
   const fields: Array<[string, string, RegExp]> = [
     ["customer-proof", "導入企業・顧客実績", /導入.{0,8}(社|企業|件)|利用.{0,8}(社|企業|件)/],
@@ -128,23 +182,66 @@ function fallbackEvidence(pages: CrawledPage[], lostPrompts: LostPrompt[]): { ga
     ["security", "セキュリティ・認証", /(iso ?27001|isms|soc ?2|セキュリティ|認証)/],
   ];
   const related = lostPrompts.map((item) => item.promptId);
-  const gaps = fields.filter(([, , pattern]) => !pattern.test(corpus)).slice(0, 3).map(([id, label], index) => ({ id, label, whyItMatters: "比較回答で候補を説明するための公開根拠を確認できません。", relatedPromptIds: related.slice(0, Math.max(1, related.length - index)), relatedPromptCount: Math.max(1, related.length - index), confidence: .55, status: "missing" as const }));
-  const actions = gaps.map((gap, index) => ({ id: `action-${gap.id}`, title: `${gap.label}を比較可能な形で明示する`, rationale: gap.whyItMatters, type: "owned" as const, relatedPromptIds: gap.relatedPromptIds, relatedPromptCount: gap.relatedPromptCount, priority: index === 0 ? "critical" as const : "high" as const, confidence: gap.confidence, target: "自社サイト" }));
+  const gaps = fields.filter(([, , pattern]) => !pattern.test(corpus)).slice(0, 3).map(([id, label], index) => ({ id, label, whyItMatters: "この情報が公開ページから見つからず、比べる材料が足りません。", relatedPromptIds: related.slice(0, Math.max(1, related.length - index)), relatedPromptCount: Math.max(1, related.length - index), confidence: .55, status: "missing" as const }));
+  const actions = gaps.map((gap, index) => {
+    const priority = index === 0 ? "critical" as const : "high" as const;
+    return {
+      id: `action-${gap.id}`,
+      title: `${gap.label}を、比べられる形で載せる`,
+      rationale: gap.whyItMatters,
+      type: "owned" as const,
+      relatedPromptIds: gap.relatedPromptIds,
+      relatedPromptCount: gap.relatedPromptCount,
+      priority,
+      confidence: gap.confidence,
+      target: "自社サイト",
+      impactScore: actionImpactScore({ relatedPromptCount: gap.relatedPromptCount, confidence: gap.confidence, priority }),
+      effort: "medium" as const,
+      audience: discovery.targetCustomers.slice(0, 2).join("・") || "公開ページから確認できる対象顧客",
+      stage: "比較" as const,
+      customerConcern: gap.label,
+      placement: "導入事例・サービス概要・FAQ",
+      cta: "導入条件を確認する",
+      successMetric: "同じ比較質問で自社が候補に入ったか",
+      evidenceType: "observed" as const,
+    };
+  });
   return { gaps, actions };
 }
 
 export async function analyzeEvidence(input: { discovery: CompanyDiscovery; pages: CrawledPage[]; lostPrompts: LostPrompt[] }) {
-  if (!env.openAiKey) return fallbackEvidence(input.pages, input.lostPrompts);
-  const raw = await askJson<any>(`あなたはLLMO/AEO監査責任者です。自社公開ページと、競合が先に推薦されたAI回答・引用元を比較し、公開Webから確認できないEvidenceと次のActionを出してください。「存在しない」と断定せず、「確認できない」と表現してください。順位上昇や因果効果を捏造しないでください。JSONだけ返してください。\n形式:{"gaps":[{"id":"","label":"","whyItMatters":"","relatedPromptIds":[""],"competitorEvidence":"","confidence":0.0,"status":"missing|partial"}],"actions":[{"id":"","title":"","rationale":"","type":"owned|third_party|technical|positioning|entity","relatedPromptIds":[""],"priority":"critical|high|medium","confidence":0.0,"target":""}]}\n会社:${JSON.stringify(input.discovery)}\n自社ページ:${JSON.stringify(compactPages(input.pages))}\n候補外質問:${JSON.stringify(input.lostPrompts.slice(0, 10))}`);
+  if (!env.openAiKey) return fallbackEvidence(input.discovery, input.pages, input.lostPrompts);
+  const raw = await askJson<any>(`あなたはB2Bサイト改善の責任者です。自社公開ページと、競合が先に推薦されたAI回答・引用元を比べ、公開Webから確認できない情報と次に直す内容を出してください。「存在しない」と断定せず、「確認できない」と表現してください。順位上昇や因果効果を捏造しないでください。画面に出すlabel、whyItMatters、title、rationale、customerConcern、ctaは、専門用語や英語の内部用語を使わず、普通の日本語で短く書いてください。actionのaudience、stage、placement、successMetricは今回の比較質問から導ける仮説として書き、売上や順位の保証にしないでください。JSONだけ返してください。\n形式:{"gaps":[{"id":"","label":"","whyItMatters":"","relatedPromptIds":[""],"competitorEvidence":"","confidence":0.0,"status":"missing|partial"}],"actions":[{"id":"","title":"","rationale":"","type":"owned|third_party|technical|positioning|entity","relatedPromptIds":[""],"priority":"critical|high|medium","confidence":0.0,"target":"","audience":"","stage":"認知|比較|検討|導入","customerConcern":"","placement":"","cta":"","successMetric":""}]}\n会社:${JSON.stringify(input.discovery)}\n自社ページ:${JSON.stringify(compactPages(input.pages))}\n候補外質問:${JSON.stringify(input.lostPrompts.slice(0, 10))}`);
   const gaps: EvidenceGap[] = (Array.isArray(raw.gaps) ? raw.gaps : []).slice(0, 10).map((item: any, index: number) => {
     const ids = Array.isArray(item.relatedPromptIds) ? item.relatedPromptIds.map(String) : [];
-    return { id: String(item.id || `gap-${index}`), label: String(item.label || "未確認のEvidence"), whyItMatters: String(item.whyItMatters || "比較判断の公開根拠を確認できません。"), relatedPromptIds: ids, relatedPromptCount: ids.length, competitorEvidence: item.competitorEvidence ? String(item.competitorEvidence) : undefined, confidence: Math.max(0, Math.min(1, Number(item.confidence || .6))), status: item.status === "partial" ? "partial" : "missing" };
+    return { id: String(item.id || `gap-${index}`), label: String(item.label || "確認できる情報の差"), whyItMatters: String(item.whyItMatters || "比較に必要な情報を公開ページから確認できません。"), relatedPromptIds: ids, relatedPromptCount: ids.length, competitorEvidence: item.competitorEvidence ? String(item.competitorEvidence) : undefined, confidence: Math.max(0, Math.min(1, Number(item.confidence || .6))), status: item.status === "partial" ? "partial" : "missing" };
   });
   const actions: ActionCard[] = (Array.isArray(raw.actions) ? raw.actions : []).slice(0, 10).map((item: any, index: number) => {
     const ids = Array.isArray(item.relatedPromptIds) ? item.relatedPromptIds.map(String) : [];
     const type = ["owned", "third_party", "technical", "positioning", "entity"].includes(item.type) ? item.type : "owned";
     const priority = ["critical", "high", "medium"].includes(item.priority) ? item.priority : "medium";
-    return { id: String(item.id || `action-${index}`), title: String(item.title || "Evidenceを明確化する"), rationale: String(item.rationale || "複数の購買質問に共通する不足を埋めます。"), type, relatedPromptIds: ids, relatedPromptCount: ids.length, priority, confidence: Math.max(0, Math.min(1, Number(item.confidence || .6))), target: String(item.target || "自社サイト") };
-  });
-  return gaps.length || actions.length ? { gaps, actions } : fallbackEvidence(input.pages, input.lostPrompts);
+    const confidence = Math.max(0, Math.min(1, Number(item.confidence || .6)));
+    const stage = ["認知", "比較", "検討", "導入"].includes(item.stage) ? item.stage as ActionCard["stage"] : "比較";
+    return {
+      id: String(item.id || `action-${index}`),
+      title: String(item.title || "足りない情報を、比べられる形で載せる"),
+      rationale: String(item.rationale || "複数の質問で比べる材料が増えます。"),
+      type,
+      relatedPromptIds: ids,
+      relatedPromptCount: ids.length,
+      priority,
+      confidence,
+      target: String(item.target || "自社サイト"),
+      impactScore: actionImpactScore({ relatedPromptCount: ids.length, confidence, priority }),
+      effort: type === "technical" ? "high" as const : "medium" as const,
+      audience: String(item.audience || input.discovery.targetCustomers.slice(0, 2).join("・") || "公開ページから確認できる対象顧客"),
+      stage,
+      customerConcern: String(item.customerConcern || "選ぶ前に確認したい情報"),
+      placement: String(item.placement || item.target || "自社サイト"),
+      cta: String(item.cta || "導入条件を確認する"),
+      successMetric: String(item.successMetric || "同じ比較質問で自社が候補に入ったか"),
+      evidenceType: item.evidenceType === "observed" ? "observed" : "hypothesis",
+    };
+  }).sort((a: ActionCard, b: ActionCard) => (b.impactScore || 0) - (a.impactScore || 0));
+  return gaps.length || actions.length ? { gaps, actions } : fallbackEvidence(input.discovery, input.pages, input.lostPrompts);
 }

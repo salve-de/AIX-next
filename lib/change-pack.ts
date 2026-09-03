@@ -1,4 +1,5 @@
 import "server-only";
+import { buildAiReadableDraft } from "@/lib/ai-readable";
 import { env } from "@/lib/env";
 import { id } from "@/lib/ids";
 import type { ChangePack, ChangePackFact, CrawledPage, EvidenceAnswer, ScanResult } from "@/lib/types";
@@ -102,5 +103,20 @@ export async function generateChangePack(input: { result: ScanResult; pages: Cra
     };
   }).filter((item) => item.proposedTitle || item.proposedLead || item.sections.length || item.faq.length);
   if (!items.length) return null;
-  return { generatedAt: new Date().toISOString(), sourceMeasurementId: input.result.scanId, model: data.model || env.openAiDiscoveryModel, items };
+  const generatedAt = new Date().toISOString();
+  const changeId = id("change-set");
+  const promptIds = [...new Set(items.flatMap((item) => item.relatedPromptIds))];
+  return {
+    generatedAt,
+    sourceMeasurementId: input.result.scanId,
+    model: data.model || env.openAiDiscoveryModel,
+    items,
+    changeId,
+    measurementPlan: {
+      promptIds,
+      successMetric: "同じ購入前質問で、自社が候補に入ったか",
+      nextCheck: "公開後、同じAI面・地域・質問で再測定する",
+    },
+    aiReadable: buildAiReadableDraft({ result: input.result, pages: input.pages, generatedAt }),
+  };
 }

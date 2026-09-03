@@ -1,4 +1,7 @@
-import type { ActionCard, BuyerPrompt, Citation, CompanyDiscovery, EvidenceGap, Observation, ScanResult, WatchRecord } from "@/lib/types";
+import { buildDemandProxy } from "@/lib/demand-proxy";
+import { buildMarketMap } from "@/lib/market-map";
+import { derivePositioningAdvice } from "@/lib/positioning";
+import type { ActionCard, AiVisibilityAudit, BuyerPrompt, Citation, CompanyDiscovery, EvidenceGap, Observation, ScanResult, WatchRecord } from "@/lib/types";
 
 const discovery: CompanyDiscovery = {
   legalName: "Nexora Works株式会社（架空）",
@@ -133,7 +136,7 @@ function buildLostPrompts(observations: Observation[]) {
       promptId: prompt.id,
       prompt: prompt.text,
       winner,
-      summary: winner ? `${winner}がより多くのAI回答で購入候補として先に挙げられ、${discovery.brandName}は過半数の回答で候補に入りませんでした。` : `${discovery.brandName}は過半数のAI回答で購入候補に入りませんでした。`,
+      summary: winner ? `AIは${winner}を先に勧め、自社はこの質問で候補外でした。` : "自社はこの質問で候補に入りませんでした。",
       citations,
       observations: rows,
     }];
@@ -141,16 +144,51 @@ function buildLostPrompts(observations: Observation[]) {
 }
 
 const gaps: EvidenceGap[] = [
-  { id: "segment-proof", label: "従業員100〜500名での導入実績", whyItMatters: "同規模企業向けの推薦理由を公開Webから確認できません。", relatedPromptIds: prompts.slice(0, 10).map((item) => item.id), relatedPromptCount: 10, competitorEvidence: "TrustOrbitは企業規模別の架空導入事例を公開。", confidence: .91, status: "missing" },
-  { id: "implementation-time", label: "標準導入期間", whyItMatters: "契約から稼働までの期間と条件を確認できません。", relatedPromptIds: prompts.slice(1, 9).map((item) => item.id), relatedPromptCount: 8, competitorEvidence: "TrustOrbitは標準3〜5週間と明示。", confidence: .87, status: "missing" },
-  { id: "operational-proof", label: "審査工数の削減実績", whyItMatters: "費用対効果を比較する数値根拠を確認できません。", relatedPromptIds: prompts.slice(4, 10).map((item) => item.id), relatedPromptCount: 6, competitorEvidence: "VendorLensは更新確認工数の削減例を掲載。", confidence: .79, status: "partial" },
+  { id: "segment-proof", label: "従業員100〜500名での導入実績", whyItMatters: "同じ規模の会社で使った実績を、公開情報から確認できません。", relatedPromptIds: prompts.slice(0, 10).map((item) => item.id), relatedPromptCount: 10, competitorEvidence: "TrustOrbitは会社の規模ごとに導入事例を載せています。", confidence: .91, status: "missing" },
+  { id: "implementation-time", label: "標準導入期間", whyItMatters: "契約から使い始めるまでの期間と条件を確認できません。", relatedPromptIds: prompts.slice(1, 9).map((item) => item.id), relatedPromptCount: 8, competitorEvidence: "TrustOrbitは標準3〜5週間と明記しています。", confidence: .87, status: "missing" },
+  { id: "operational-proof", label: "審査工数の削減実績", whyItMatters: "どれくらい楽になるかを比べる材料が、公開情報から見つかりません。", relatedPromptIds: prompts.slice(4, 10).map((item) => item.id), relatedPromptCount: 6, competitorEvidence: "VendorLensは更新確認の工数が減った例を載せています。", confidence: .79, status: "partial" },
 ];
 
 const actions: ActionCard[] = [
-  { id: "action-segment-proof", title: "企業規模別の導入実績を比較可能な形で公開する", rationale: "最重要10 Promptに共通するEvidence不足です。", type: "owned", relatedPromptIds: gaps[0].relatedPromptIds, relatedPromptCount: 10, priority: "critical", confidence: .91, target: "導入事例・サービス概要" },
-  { id: "action-implementation", title: "標準導入期間と導入条件を明示する", rationale: "導入負担を比較する8 Promptで判断材料が不足しています。", type: "owned", relatedPromptIds: gaps[1].relatedPromptIds, relatedPromptCount: 8, priority: "high", confidence: .87, target: "導入の流れ・FAQ" },
-  { id: "action-third-party", title: "第三者が検証できる導入成果を増やす", rationale: "競合は自社サイト外の比較可能な根拠も引用されています。", type: "third_party", relatedPromptIds: prompts.slice(3, 8).map((item) => item.id), relatedPromptCount: 5, priority: "medium", confidence: .72, target: "業界媒体・顧客事例" },
+  { id: "action-segment-proof", title: "同じ規模の導入事例を、比べられる形で載せる", rationale: "10問で、同じ規模の導入実績が見つかりませんでした。", type: "owned", relatedPromptIds: gaps[0].relatedPromptIds, relatedPromptCount: 10, priority: "critical", confidence: .91, target: "導入事例・サービス概要", audience: "従業員100〜500名の企業・法務／購買部門", stage: "比較", customerConcern: "自社と同じ規模で使えるか", placement: "導入事例・サービス概要", cta: "導入条件を確認する", successMetric: "同じ比較質問で自社が候補に入ったか", evidenceType: "observed" },
+  { id: "action-implementation", title: "導入までの期間と条件を載せる", rationale: "導入までの判断材料が、8問で足りませんでした。", type: "owned", relatedPromptIds: gaps[1].relatedPromptIds, relatedPromptCount: 8, priority: "high", confidence: .87, target: "導入の流れ・FAQ", audience: "導入時期を決めたい法務・購買担当", stage: "導入", customerConcern: "いつから使い始められるか", placement: "導入の流れ・FAQ", cta: "導入条件を確認する", successMetric: "導入に関する質問で自社が候補に入ったか", evidenceType: "observed" },
+  { id: "action-third-party", title: "第三者が確認できる導入事例を増やす", rationale: "競合には、自社サイト以外にも確かめられる情報があります。", type: "third_party", relatedPromptIds: prompts.slice(3, 8).map((item) => item.id), relatedPromptCount: 5, priority: "medium", confidence: .72, target: "業界媒体・顧客事例", audience: "導入実績を比較している担当者", stage: "検討", customerConcern: "自社以外の情報でも確かめられるか", placement: "顧客事例・業界媒体", cta: "事例を確認する", successMetric: "同じ比較質問で自社の引用が増えたか", evidenceType: "hypothesis" },
 ];
+
+function sampleVisibilityAudit(measuredAt: string): AiVisibilityAudit {
+  return {
+    generatedAt: measuredAt,
+    readiness: "needs-review",
+    priorityCheckId: "proof",
+    crawl: {
+      robotsTxtFound: true,
+      sitemapFound: true,
+      sitemapUrl: "https://nexora.example/sitemap.xml",
+      attempted: 8,
+      pagesCrawled: 8,
+      pagesBlockedByRobots: 0,
+      pagesNoindex: 0,
+      pagesMissingCanonical: 2,
+      pagesCanonicalMismatch: 0,
+      pagesWithStructuredData: 3,
+      pagesMissingTitle: 0,
+      pagesMissingDescription: 1,
+      pagesMissingH1: 0,
+      aiSearchBotAllowed: true,
+      gptBotAllowed: true,
+    },
+    checks: [
+      { id: "crawler-access", group: "access", status: "ready", title: "AI検索が公開ページを読める", detail: "公開ページを取得できる設定です。", action: "この設定を維持する" },
+      { id: "indexability", group: "access", status: "ready", title: "重要ページが検索対象になっている", detail: "重要ページにnoindexはありません。", action: "重要ページのindex設定を定期確認する" },
+      { id: "sitemap", group: "access", status: "ready", title: "更新ページを知らせる入口がある", detail: "sitemap.xmlを取得できました。", action: "sitemapのURLと内容を定期確認する" },
+      { id: "structured-data", group: "clarity", status: "ready", title: "ページの内容を機械にも説明できる", detail: "JSON-LDを確認できました。", action: "見える本文とJSON-LDの内容をそろえる" },
+      { id: "entity-clarity", group: "clarity", status: "ready", title: "会社とサービスの関係が分かる", detail: "会社情報とサービス情報を公開ページで確認しました。", action: "見える会社情報・サービス情報と構造化データをそろえる" },
+      { id: "buyer-facts", group: "clarity", status: "review", title: "購入前に知りたい情報がそろっている", detail: "導入期間の説明を公開ページから確認できませんでした。", action: "導入期間を、事実と条件つきで公開する" },
+      { id: "proof", group: "proof", status: "missing", title: "選ぶ理由を第三者が確かめられる", detail: "従業員100〜500名での導入実績を自社の公開ページから確認できませんでした。", action: "導入実績を、許諾と原典を確認したうえで公開する" },
+      { id: "measurement", group: "measurement", status: "ready", title: "同じ質問で変化を確かめられる", detail: "12問を同じ条件で確認しました。", action: "変更後も同じ質問・地域・AI面で再測定する" },
+    ],
+  };
+}
 
 function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndexes: Set<number>): ScanResult {
   const observations = buildObservations(ownRecommendedIndexes, measuredAt);
@@ -167,7 +205,7 @@ function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndex
   const firstChoiceCount = observations.filter((item) => item.firstCandidate === discovery.brandName).length;
   const mentionCount = observations.filter((item) => item.rawText.includes(discovery.brandName)).length;
   const ownCitationCount = observations.filter((item) => item.citations.some((itemCitation) => itemCitation.domain === discovery.domain)).length;
-  return {
+  const result: ScanResult = {
     scanId,
     targetUrl: "https://nexora.example",
     discovery,
@@ -189,9 +227,14 @@ function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndex
     lostPrompts: buildLostPrompts(observations),
     evidenceGaps: gaps,
     actions,
+    visibilityAudit: sampleVisibilityAudit(measuredAt),
     totalCostUsd: Number((observations.reduce((sum, item) => sum + (item.costUsd || 0), 0)).toFixed(3)),
     warnings: ["この画面は架空企業・架空競合・架空数値によるUIサンプルです。", "無料Scanは各AIを1回観測する方向性診断です。"],
   };
+  result.marketMap = buildMarketMap({ result, generatedAt: measuredAt });
+  result.demandProxy = buildDemandProxy({ result, generatedAt: measuredAt });
+  result.positioning = derivePositioningAdvice(result);
+  return result;
 }
 
 export const sampleResult: ScanResult = buildScanResult("sample_clean_room", "2026-09-01T09:00:00.000Z", baselineOwnRecommended);

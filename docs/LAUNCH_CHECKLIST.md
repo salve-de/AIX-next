@@ -81,6 +81,15 @@ The codebase can run locally and the fictional product experience requires no cr
 - [ ] Track variable cost per completed Scan and paid Project.
 - [ ] Stop or narrow the ICP if Watch → Paid remains below 5% after 200 qualified trials.
 
+## 8. AI visibility delivery gates
+
+- [ ] Confirm each live result stores the crawl/content/proof/measurement visibility audit.
+- [ ] Confirm generated JSON-LD matches visible customer content before publication.
+- [ ] Confirm `robots.txt`, noindex and sitemap checks are shown as observations, not rank promises.
+- [ ] Confirm every AI-readable draft is reviewed by the customer and no customer site is changed automatically.
+- [ ] If Search Console, Bing, GA4, GitHub or CMS integrations are added, require verified domain ownership, least privilege, preview, audit log and rollback before enabling writes.
+- [ ] After a customer publishes a change, rerun the same Buyer Prompt panel and keep provider/model/date conditions with the comparison.
+
 ## Launch command
 
 From a fresh Codex/local checkout:

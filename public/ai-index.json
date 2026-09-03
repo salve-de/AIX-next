@@ -1,0 +1,26 @@
+{
+  "name": "AIX",
+  "description": "会社URLから、AIが競合を先に勧めた購入前の質問と、その理由、最初に直す情報を確認するサービス。",
+  "language": "ja-JP",
+  "url": "/",
+  "publicPages": [
+    { "path": "/", "purpose": "サービス概要と結果の例" },
+    { "path": "/methodology", "purpose": "測定条件と結果の読み方" },
+    { "path": "/pricing", "purpose": "料金と利用範囲" },
+    { "path": "/support", "purpose": "問い合わせ窓口" },
+    { "path": "/privacy", "purpose": "情報の取り扱い" },
+    { "path": "/terms", "purpose": "利用条件" },
+    { "path": "/commerce", "purpose": "販売条件" }
+  ],
+  "capabilities": [
+    "公開サイトから購入前の質問を作る",
+    "AI回答で自社と競合の候補入りを比べる",
+    "回答の引用ページと公開情報の差を確認する",
+    "改善後に同じ質問を再測定する"
+  ],
+  "limits": [
+    "測定結果は指定したAI・質問・日時の観測であり、普遍的な順位ではない",
+    "AIの推薦、引用、検索順位、問い合わせ、契約、売上を保証しない",
+    "対象会社のサイトを自動変更しない"
+  ]
+}

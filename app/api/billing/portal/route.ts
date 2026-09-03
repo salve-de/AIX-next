@@ -33,6 +33,8 @@ export async function POST(request: Request) {
       await updateWatch(watch.token, { stripeCustomerId: customerId });
     }
 
+    if (!customerId) throw new Error("契約に紐づくStripe Customerを確認できません。");
+
     const form = new URLSearchParams();
     form.set("customer", customerId);
     form.set("return_url", `${env.siteUrl}/watch?token=${encodeURIComponent(watch.token)}`);

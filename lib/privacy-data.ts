@@ -1,7 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { env } from "@/lib/env";
-import { getWatch } from "@/lib/storage";
+import { deleteMemoryWatchData, getWatch } from "@/lib/storage";
 
 function hash(value: string) {
   return createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
@@ -44,6 +44,16 @@ export async function deleteWatchData(token: string, email: string) {
 
   if (watch.stripeSubscriptionId && watch.paid) await cancelStripeSubscription(watch.stripeSubscriptionId);
 
+  const subscriptionCancelled = Boolean(watch.stripeSubscriptionId && watch.paid);
+  if (!env.supabaseUrl || !env.supabaseServiceKey) {
+    // The app intentionally supports a memory-only preview/development mode.
+    // A privacy request must still remove those records instead of claiming
+    // that production storage is configured when it is not.
+    const deleted = deleteMemoryWatchData(token, watch.scanId);
+    if (!deleted) throw new Error("Watchデータを削除できませんでした。");
+    return { deleted: true, subscriptionCancelled, completedAt: new Date().toISOString() };
+  }
+
   await supabase("aix_next_deletion_audit", {
     method: "POST",
     body: JSON.stringify({ email_hash: hash(watch.email), domain_hash: hash(watch.latest.discovery.domain), watch_id: watch.id, scan_id: watch.scanId }),
@@ -53,5 +63,5 @@ export async function deleteWatchData(token: string, email: string) {
   const remaining = await supabase<Array<{ id: string }>>(`aix_next_watches?scan_id=eq.${encodeURIComponent(watch.scanId)}&select=id&limit=1`);
   if (!remaining?.length) await supabase(`aix_next_scans?id=eq.${encodeURIComponent(watch.scanId)}`, { method: "DELETE" });
 
-  return { deleted: true, subscriptionCancelled: Boolean(watch.stripeSubscriptionId && watch.paid), completedAt: new Date().toISOString() };
+  return { deleted: true, subscriptionCancelled, completedAt: new Date().toISOString() };
 }

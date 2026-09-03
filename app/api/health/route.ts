@@ -9,6 +9,7 @@ export async function GET() {
   const readiness = {
     providers,
     discovery: providers.openai,
+    inputResolution: liveProviders > 0,
     aiMeasurement: liveProviders === 3,
     persistence: Boolean(env.supabaseUrl && env.supabaseServiceKey),
     watchEmail: Boolean(env.resendApiKey && env.watchFromEmail),

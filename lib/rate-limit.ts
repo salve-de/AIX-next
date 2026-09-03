@@ -34,7 +34,10 @@ function consumeMemory(key: string, limit: number, windowSeconds: number) {
 }
 
 async function consume(key: string, limit: number, windowSeconds: number) {
-  if (env.supabaseUrl && env.supabaseServiceKey) return await consumeSupabase(key, limit, windowSeconds);
+  if (env.supabaseUrl && env.supabaseServiceKey) {
+    const value = await consumeSupabase(key, limit, windowSeconds);
+    if (value) return value;
+  }
   return consumeMemory(key, limit, windowSeconds);
 }
 
@@ -54,6 +57,18 @@ export async function consumeFreeScan(request: Request, url: string) {
 
     const targetLimit = await consume(`ip-target:${hash(`${ip}:${domain}`)}`, 3, 3600);
     return result(targetLimit);
+  } catch {
+    return { allowed: false, retryAfter: 60 };
+  }
+}
+
+/** Name resolution can call a paid web-search API before a scan exists, so it
+ * gets its own small per-IP budget instead of bypassing abuse protection. */
+export async function consumeNameResolution(request: Request) {
+  try {
+    const ip = clientIp(request);
+    const limit = await consume(`ip-resolve:${hash(ip)}`, Math.max(2, env.freeScansPerHour * 2), 3600);
+    return result(limit);
   } catch {
     return { allowed: false, retryAfter: 60 };
   }

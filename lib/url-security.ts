@@ -1,4 +1,3 @@
-import "server-only";
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 import { env } from "@/lib/env";
@@ -58,9 +57,19 @@ async function assertPublicHost(hostname: string) {
   if (!records.length || records.some((record) => blockedAddress(record.address))) throw new Error("安全でない接続先です。");
 }
 
-export async function safeFetch(input: string, init: RequestInit & { timeoutMs?: number } = {}) {
+export function isSameOrigin(input: string, allowedOrigin: string) {
+  try {
+    return new URL(input).origin === new URL(allowedOrigin).origin;
+  } catch {
+    return false;
+  }
+}
+
+export async function safeFetch(input: string, init: RequestInit & { timeoutMs?: number; allowedOrigin?: string } = {}) {
+  const { timeoutMs = 12_000, allowedOrigin, ...requestInit } = init;
   let current = new URL(normalizePublicUrl(input));
-  const timeoutMs = init.timeoutMs ?? 12_000;
+  const origin = allowedOrigin ? new URL(normalizePublicUrl(allowedOrigin)).origin : current.origin;
+  if (!isSameOrigin(current.toString(), origin)) throw new Error("許可されたドメイン以外には接続できません。");
   for (let redirects = 0; redirects <= 5; redirects += 1) {
     await assertPublicHost(current.hostname);
     const controller = new AbortController();
@@ -68,7 +77,7 @@ export async function safeFetch(input: string, init: RequestInit & { timeoutMs?:
     let response: Response;
     try {
       response = await fetch(current, {
-        ...init,
+        ...requestInit,
         redirect: "manual",
         signal: controller.signal,
         headers: {
@@ -85,6 +94,7 @@ export async function safeFetch(input: string, init: RequestInit & { timeoutMs?:
       if (!location) throw new Error("不正なリダイレクトです。");
       const next = new URL(location, current);
       if (!["http:", "https:"].includes(next.protocol)) throw new Error("安全でないリダイレクトです。");
+      if (!isSameOrigin(next.toString(), origin)) throw new Error("許可されたドメイン以外へのリダイレクトです。");
       current = next;
       continue;
     }
@@ -93,8 +103,8 @@ export async function safeFetch(input: string, init: RequestInit & { timeoutMs?:
   throw new Error("リダイレクトが多すぎます。");
 }
 
-export async function safeFetchText(input: string, maxBytes = 1_500_000) {
-  const response = await safeFetch(input);
+export async function safeFetchText(input: string, maxBytes = 1_500_000, allowedOrigin?: string) {
+  const response = await safeFetch(input, allowedOrigin ? { allowedOrigin } : undefined);
   if (!response.ok) throw new Error(`公開ページを取得できませんでした (${response.status})`);
   const type = response.headers.get("content-type") || "";
   if (!/(text|html|xml|json)/i.test(type)) throw new Error("対応していないページ形式です。");

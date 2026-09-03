@@ -76,7 +76,7 @@ Primary search documentation reviewed:
 
 Product implication:
 
-AIX Next does not sell `llms.txt`, Schema, a public AIX listing, or crawler access as a guaranteed rank increase. Technical accessibility is one diagnostic class. Owned evidence, third-party evidence, reputation, product fit and freshness are separate classes.
+AIX Next does not sell `llms.txt`, Schema, a public AIX listing, or crawler access as a guaranteed rank increase. AIX now exposes its own public service description through JSON-LD, a small machine-readable index and `llms.txt`, and can create the same kind of public-information draft for a measured company inside a human-reviewed Change Pack. These are accessibility aids, not ranking controls. Owned evidence, third-party evidence, reputation, product fit and freshness are separate classes.
 
 AIX Next also avoids:
 
@@ -158,3 +158,13 @@ Do not build as the launch wedge:
 - generic AI article factory;
 - unsupported causal uplift forecast;
 - all industries and all countries.
+
+## 9. AI visibility implementation review (2026-09-03)
+
+The broader review is recorded in [`docs/AI_VISIBILITY_RESEARCH_2026-09-03.md`](AI_VISIBILITY_RESEARCH_2026-09-03.md). The conclusion is narrower than the marketing promise often attached to “AEO/GEO”: there is no public switch that makes every AI recommend a company. The controllable work is to keep important pages crawlable and indexable, make buyer-relevant facts clear and useful, support claims with legitimate evidence, and measure citations and referral outcomes after publication.
+
+The business-outcome research is recorded in [`docs/REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md`](REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md). The current product decision is documented in [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md): AIX does not execute changes on customer sites. It sells an AISEO and sales-improvement advisory outcome, with an optional, owner-consented AIX public-profile experiment only if its effect is measured first.
+
+This review adds a non-scoring `visibilityAudit` to each live Scan and Watch result. It checks OAI-SearchBot, Googlebot, Bingbot, PerplexityBot and Claude-User access, noindex, sitemap, canonical signals, JSON-LD presence, page basics, buyer facts, public proof and measurement completeness. It does not treat `llms.txt`, structured data, a citation count or a before/after movement as a ranking guarantee. Google explicitly says that `llms.txt` is not used for its generative search, and OpenAI distinguishes OAI-SearchBot access from GPTBot training controls.
+
+Next integrations require verified domain ownership and explicit approval: Search Console URL inspection/sitemap API, Bing AI Performance/IndexNow, GA4 referral and conversion data, and review-first GitHub/CMS drafts. The current MVP keeps the generated AI-readable files as a human-reviewed download and never writes to a customer site.

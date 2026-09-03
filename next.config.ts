@@ -17,12 +17,25 @@ const privateHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  async rewrites() {
+    // Next route segments must be named `[slug]` to receive dynamic params;
+    // keep the public `.json`/`.md` URLs while dispatching to the valid nested
+    // route handlers.
+    return [
+      { source: "/ai/company/:slug.json", destination: "/ai/company/:slug/json" },
+      { source: "/ai/company/:slug.md", destination: "/ai/company/:slug/md" },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: publicHeaders },
       { source: "/result", headers: privateHeaders },
       { source: "/watch", headers: privateHeaders },
-      { source: "/api/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
+      { source: "/api/:path*", headers: [
+        { key: "Cache-Control", value: "no-store" },
+        { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        { key: "Referrer-Policy", value: "no-referrer" },
+      ] },
     ];
   },
 };

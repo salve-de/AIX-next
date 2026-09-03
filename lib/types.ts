@@ -2,6 +2,8 @@ export type ProviderName = "openai" | "gemini" | "perplexity";
 export type ScanStage = "created" | "validating" | "crawling" | "discovering" | "prompting" | "measuring" | "analyzing" | "complete" | "partial" | "failed";
 export type PromptPanelKind = "free" | "core" | "discovery";
 export type PromptCluster = "category" | "segment" | "use_case" | "feature" | "alternative" | "comparison" | "value" | "implementation" | "trust" | "support";
+export type BuyerPromptIntent = "discover" | "compare" | "evaluate" | "switch" | "implement";
+export type BuyerPromptStage = "認知" | "比較" | "検討" | "導入";
 
 export type Citation = {
   title: string;
@@ -15,6 +17,54 @@ export type CrawledPage = {
   description: string;
   headings: string[];
   text: string;
+  canonicalUrl?: string;
+  robotsDirectives?: string;
+  noindex?: boolean;
+  hasStructuredData?: boolean;
+  structuredDataTypes?: string[];
+  structuredDataMatchesVisible?: boolean;
+  h1Count?: number;
+  lang?: string;
+};
+
+export type AiCrawlerName = "OAI-SearchBot" | "PerplexityBot" | "ClaudeBot" | "Claude-User" | "Googlebot" | "Bingbot" | "GPTBot";
+
+export type CrawlAudit = {
+  robotsTxtFound: boolean;
+  sitemapFound: boolean;
+  sitemapUrl?: string;
+  attempted: number;
+  pagesCrawled: number;
+  pagesBlockedByRobots: number;
+  pagesNoindex: number;
+  pagesMissingCanonical: number;
+  pagesCanonicalMismatch: number;
+  pagesWithStructuredData: number;
+  pagesWithStructuredDataMismatch?: number;
+  pagesMissingTitle: number;
+  pagesMissingDescription: number;
+  pagesMissingH1: number;
+  aiSearchBotAllowed: boolean;
+  gptBotAllowed: boolean;
+  /** Per-crawler robots result. Optional so older persisted scans remain readable. */
+  crawlerAccess?: Partial<Record<AiCrawlerName, boolean>>;
+};
+
+export type AiVisibilityCheck = {
+  id: string;
+  group: "access" | "clarity" | "proof" | "measurement";
+  status: "ready" | "review" | "missing";
+  title: string;
+  detail: string;
+  action: string;
+};
+
+export type AiVisibilityAudit = {
+  generatedAt: string;
+  readiness: "ready" | "needs-review" | "blocked";
+  checks: AiVisibilityCheck[];
+  priorityCheckId: string;
+  crawl: CrawlAudit;
 };
 
 export type Competitor = {
@@ -42,6 +92,11 @@ export type BuyerPrompt = {
   text: string;
   cluster: PromptCluster;
   importance: number;
+  /** Derived from the question cluster; used to prioritize commercial intent without claiming revenue. */
+  intent?: BuyerPromptIntent;
+  stage?: BuyerPromptStage;
+  /** A relative 1–5 urgency used only for panel ordering and explanation. */
+  urgency?: number;
   panel: PromptPanelKind;
   version: number;
 };
@@ -109,6 +164,17 @@ export type ActionCard = {
   priority: "critical" | "high" | "medium";
   confidence: number;
   target: string;
+  /** Relative prioritization evidence; never presented as an ROI forecast. */
+  impactScore?: number;
+  effort?: "low" | "medium" | "high";
+  /** Optional marketing handoff fields. These describe a testable hypothesis, not a revenue forecast. */
+  audience?: string;
+  stage?: BuyerPromptStage;
+  customerConcern?: string;
+  placement?: string;
+  cta?: string;
+  successMetric?: string;
+  evidenceType?: "observed" | "hypothesis";
 };
 
 export type ChangePackFact = {
@@ -133,11 +199,51 @@ export type ChangePackItem = {
   publishChecks: string[];
 };
 
+export type AiReadableDraft = {
+  generatedAt: string;
+  sourceMeasurementId: string;
+  sourceUrl: string;
+  suggestedFileName: string;
+  llmsTxt: string;
+  jsonLd: string;
+  sourcePages: Array<{ url: string; title: string; description: string }>;
+  publishChecks: string[];
+};
+
+export type CompetitorWeakness = {
+  competitor: string;
+  weakness: string;
+  rationale: string;
+};
+
+export type ActionableMessage = {
+  channel: "sns" | "blog" | "flyer" | "profile";
+  channelLabel: string;
+  headline: string;
+  copy: string;
+  instruction: string;
+};
+
+export type PositioningAdvice = {
+  winningAngle: string;
+  summary: string;
+  competitorWeaknesses: CompetitorWeakness[];
+  actionableMessages: ActionableMessage[];
+};
+
 export type ChangePack = {
   generatedAt: string;
   sourceMeasurementId: string;
   model: string;
   items: ChangePackItem[];
+  positioning?: PositioningAdvice;
+  changeId?: string;
+  measurementPlan?: {
+    promptIds: string[];
+    successMetric: string;
+    nextCheck: string;
+  };
+  aiReadable?: AiReadableDraft;
 };
 
 export type MeasurementPanel = {
@@ -172,6 +278,12 @@ export type ScanResult = {
   lostPrompts: LostPrompt[];
   evidenceGaps: EvidenceGap[];
   actions: ActionCard[];
+  visibilityAudit?: AiVisibilityAudit;
+  positioning?: PositioningAdvice;
+  /** Optional, pure summaries derived from the same public scan inputs. */
+  marketMap?: MarketMap;
+  demandProxy?: DemandProxy;
+  contentQuality?: ContentQuality;
   totalCostUsd: number;
   warnings: string[];
 };
@@ -186,6 +298,75 @@ export type ScanRecord = {
   error: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+/**
+ * AIX's optional public company record. This is intentionally a small,
+ * public-information-only surface. It is not a copy of a ScanResult: prompt
+ * answers, provider details, competitors, raw crawl text, billing data, and
+ * company-entered evidence stay outside this type.
+ */
+export type PublicProfileStatus = "draft" | "published" | "revoked" | "expired";
+
+export type PublicProfileFact = {
+  label: string;
+  value: string;
+  sourceUrl: string;
+};
+
+export type PublicProfileSourcePage = {
+  url: string;
+  title: string;
+  description: string;
+};
+
+/** The safe shape returned by the preview, public API, and public web routes. */
+export type PublicProfile = {
+  id: string;
+  slug: string;
+  status: PublicProfileStatus;
+  title: string;
+  brandName: string;
+  targetUrl: string;
+  summary: string;
+  market: string;
+  targetCustomers: string[];
+  useCases: string[];
+  facts: PublicProfileFact[];
+  sourcePages: PublicProfileSourcePage[];
+  /** JSON-LD generated only from the safe fields above. */
+  structuredData: string;
+  /** Human- and model-readable Markdown generated only from public facts. */
+  markdown: string;
+  /** A JSON document of the same safe facts, kept as text for download/copy. */
+  json: string;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt: string;
+  publishedAt?: string;
+};
+
+/** The input used to create a preview before storage assigns identity/timing. */
+export type PublicProfileDraft = Pick<
+  PublicProfile,
+  | "title"
+  | "brandName"
+  | "targetUrl"
+  | "summary"
+  | "market"
+  | "targetCustomers"
+  | "useCases"
+  | "facts"
+  | "sourcePages"
+  | "structuredData"
+  | "markdown"
+  | "json"
+>;
+
+/** Internal storage record. `token` and `sourceScanId` never leave storage. */
+export type PublicProfileRecord = PublicProfile & {
+  token: string;
+  sourceScanId: string;
 };
 
 export type EvidenceAnswer = {
@@ -244,3 +425,110 @@ export type ScanProgressEvent = {
   message: string;
   detail?: string;
 };
+
+/**
+ * A comparison map derived only from the public discovery and measurement
+ * already present in a ScanResult. It is a directional map, not a market-size
+ * or revenue estimate. The first six fields form the result-screen contract;
+ * the optional metadata is available to callers that need provenance.
+ */
+export type MarketMapRelation = "subject" | "direct" | "alternative" | "adjacent";
+
+export type MarketMapNode = {
+  id: string;
+  name: string;
+  relation: MarketMapRelation;
+  domain?: string;
+  confidence: number;
+  evidenceType: "observed" | "inferred";
+  evidence: string[];
+  sourceUrls: string[];
+};
+
+export type MarketMap = {
+  direct: string[];
+  alternatives: string[];
+  adjacent: string[];
+  upstream: string[];
+  downstream: string[];
+  keywords: string[];
+  /** Optional provenance for an expanded view; not needed by the compact UI. */
+  generatedAt?: string;
+  subject?: { name: string; domain: string; market: string };
+  nodes?: MarketMapNode[];
+  limitations?: string[];
+};
+
+/**
+ * A prompt-level demand proxy. priorityScore is a relative prioritization
+ * signal for this measurement and must not be presented as search volume,
+ * probability of purchase, or a revenue forecast.
+ */
+export type DemandProxySignal = {
+  label: string;
+  value: string;
+  detail: string;
+  confidence: "observed" | "inferred";
+  /** Optional prompt-level provenance for drill-down. */
+  id?: string;
+  promptId?: string;
+  prompt?: string;
+  cluster?: PromptCluster;
+  stage?: BuyerPromptStage;
+  intent?: BuyerPromptIntent;
+  priorityScore?: number;
+  importance?: number;
+  urgency?: number;
+  successfulObservations?: number;
+  ownRecommendationRate?: number;
+  firstChoiceRate?: number;
+  lostPrompt?: boolean;
+  nextAction?: string;
+};
+
+export type DemandProxyPriorityPrompt = {
+  promptId: string;
+  label: string;
+  score: number;
+};
+
+export type DemandProxy = {
+  signals: DemandProxySignal[];
+  priorityPrompts: DemandProxyPriorityPrompt[];
+  generatedAt?: string;
+  measuredPromptCount?: number;
+  successfulPromptCount?: number;
+  lostPromptCount?: number;
+  limitations?: string[];
+};
+
+export type ContentQualityStatus = "ready" | "review" | "missing";
+
+export type ContentQualityCheck = {
+  label: string;
+  status: ContentQualityStatus;
+  detail: string;
+  /** Optional provenance/action fields for a detailed view. */
+  id?: string;
+  action?: string;
+  pageUrls?: string[];
+  evidenceType?: "observed" | "heuristic";
+  confidence?: number;
+};
+
+export type ContentQualityPage = {
+  url: string;
+  title: string;
+  score: number;
+  checks: ContentQualityCheck[];
+};
+
+export type ContentQuality = {
+  pages: ContentQualityPage[];
+  summary: { ready: number; review: number; missing: number };
+  generatedAt?: string;
+  targetUrl?: string;
+  limitations?: string[];
+};
+
+export type ContentQualityReport = ContentQuality;

@@ -31,7 +31,7 @@ export async function POST(request: Request) {
   if (cached?.stage === "complete" && cached.result) {
     return ndjsonResponse((emit, close) => {
       emit({ type: "accepted", scanId: cached.id, reused: true });
-      emit({ type: "progress", scanId: cached.id, stage: cached.stage, progress: 100, message: "直近の公開Web診断を再利用します。", detail: `測定 ${cached.result?.measuredAt}` });
+      emit({ type: "progress", scanId: cached.id, stage: cached.stage, progress: 100, message: "前回の確認結果を表示します。", detail: "結果を準備しました" });
       emit({ type: "complete", scanId: cached.id, reused: true });
       close();
     });
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         },
       });
       const stage = result.successfulObservations === result.scheduledObservations ? "complete" : "partial";
-      await updateScan(scan.id, { stage, progress: 100, message: "診断結果を作成しました。", result, error: null });
+      await updateScan(scan.id, { stage, progress: 100, message: "結果と、最初に直すことをまとめました。", result, error: null });
       emit({ type: "complete", scanId: scan.id });
     } catch (error) {
       const message = error instanceof Error ? error.message : "診断に失敗しました。";

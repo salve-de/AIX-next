@@ -108,6 +108,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     panelKind: run.panelKind,
     observations: run.observations,
     pages: crawl.pages,
+    crawlAudit: crawl.audit,
   });
   if (!result.successfulObservations) {
     await updateWatchRun(run.id, { status: "failed", error: "成功したAI観測が0件だったため公開しませんでした。" });

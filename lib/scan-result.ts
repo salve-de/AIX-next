@@ -1,7 +1,12 @@
 import "server-only";
+import { buildContentQuality } from "@/lib/content-quality";
+import { buildDemandProxy } from "@/lib/demand-proxy";
 import { analyzeEvidence } from "@/lib/discovery";
+import { buildMarketMap } from "@/lib/market-map";
 import { citationCoverage, competitorMetrics, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
-import type { BuyerPrompt, CompanyDiscovery, CrawledPage, Observation, PromptPanelKind, ScanResult } from "@/lib/types";
+import { buildAiVisibilityAudit } from "@/lib/visibility-audit";
+import { derivePositioningAdvice } from "@/lib/positioning";
+import type { BuyerPrompt, CompanyDiscovery, CrawlAudit, CrawledPage, Observation, PromptPanelKind, ScanResult } from "@/lib/types";
 
 export async function buildScanResult(input: {
   scanId: string;
@@ -12,6 +17,7 @@ export async function buildScanResult(input: {
   panelKind: PromptPanelKind;
   observations: Observation[];
   pages: CrawledPage[];
+  crawlAudit?: CrawlAudit;
   measuredAt?: string;
 }) {
   const eligible = successful(input.observations);
@@ -19,12 +25,12 @@ export async function buildScanResult(input: {
   const analysis = await analyzeEvidence({ discovery: input.discovery, pages: input.pages, lostPrompts: lost });
   const position = marketPosition(input.observations, input.discovery);
   const warnings: string[] = [];
-  if (input.discovery.confidence < .65) warnings.push("市場認識の信頼度が低いため、Watch開始前に市場と競合を確認してください。");
-  if (eligible.length < input.observations.length) warnings.push(`${input.observations.length - eligible.length}件のAI観測が失敗または未設定です。Recommendation指標の分母から除外しています。`);
-  if (!eligible.length) warnings.push("AI Providerの有効な回答がありません。API設定後に再測定してください。サンプル結果は /result?sample=1 で確認できます。");
-  if (!input.discovery.competitors.length) warnings.push("十分な競合候補を特定できませんでした。市場認識を確認してください。");
+  if (input.discovery.confidence < .65) warnings.push("会社や市場の情報が少ないため、競合との比較は参考値です。");
+  if (eligible.length < input.observations.length) warnings.push("一部のAI回答を取得できなかったため、取得できた回答だけで結果を表示しています。");
+  if (!eligible.length) warnings.push("AIの回答を取得できなかったため、今回の比較結果は表示できません。時間を置いてもう一度お試しください。");
+  if (!input.discovery.competitors.length) warnings.push("比較できる会社を十分に見つけられませんでした。市場を確認してからもう一度お試しください。");
 
-  return {
+  const result: ScanResult = {
     scanId: input.scanId,
     targetUrl: input.targetUrl,
     discovery: input.discovery,
@@ -49,5 +55,11 @@ export async function buildScanResult(input: {
     actions: analysis.actions,
     totalCostUsd: input.observations.reduce((sum, item) => sum + (item.costUsd || 0), 0),
     warnings,
-  } satisfies ScanResult;
+  };
+  result.visibilityAudit = buildAiVisibilityAudit({ result, pages: input.pages, crawl: input.crawlAudit, generatedAt: result.measuredAt });
+  result.marketMap = buildMarketMap({ result, generatedAt: result.measuredAt });
+  result.demandProxy = buildDemandProxy({ result, generatedAt: result.measuredAt });
+  result.contentQuality = buildContentQuality({ result, pages: input.pages, generatedAt: result.measuredAt });
+  result.positioning = derivePositioningAdvice(result);
+  return result;
 }

@@ -1,9 +1,14 @@
 import type { MetadataRoute } from "next";
+import { privateRoutes, siteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   return {
-    rules: [{ userAgent: "*", allow: ["/", "/pricing", "/methodology", "/privacy", "/terms"], disallow: ["/api/", "/scan", "/result", "/watch"] }],
-    sitemap: `${siteUrl.replace(/\/$/, "")}/sitemap.xml`,
+    rules: [
+      // Keep public pages crawlable for ChatGPT Search and other OpenAI crawlers.
+      { userAgent: ["OAI-SearchBot", "OAI-AdsBot"], allow: "/", disallow: [...privateRoutes] },
+      { userAgent: "GPTBot", allow: "/", disallow: [...privateRoutes] },
+      { userAgent: "*", allow: "/", disallow: [...privateRoutes] },
+    ],
+    sitemap: [`${siteUrl}/sitemap.xml`, `${siteUrl}/ai/sitemap.xml`],
   };
 }
