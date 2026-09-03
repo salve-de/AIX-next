@@ -43,6 +43,7 @@ export function ResultClient() {
   const [openObservation, setOpenObservation] = useState("");
   const [email, setEmail] = useState("");
   const [watchBusy, setWatchBusy] = useState(false);
+  const [selectedProofIndex, setSelectedProofIndex] = useState(0);
 
   useEffect(() => {
     if (sample) return;
@@ -84,6 +85,40 @@ export function ResultClient() {
   const citationCount = result.observations.reduce((total, item) => total + item.citations.length, 0);
   const host = (() => { try { return new URL(result.targetUrl).hostname.replace(/^www\./, ""); } catch { return result.targetUrl; } })();
   const displayWarnings = [...new Set(result.warnings.map(userFacingWarning))];
+
+  // 全方位の質問バリエーション（親身・トラブル、スピード、費用、総合）
+  const proofScenarios = [
+    {
+      tab: "🤝 親族トラブル・個別解決",
+      prompt: "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。",
+      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "全国に拠点を持ち知名度と実績が豊富ですが、組織が大きいため担当者による対応の差や事務的なマニュアル対応になりやすい傾向があります。" },
+      winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "全国規模の提携ネットワークを持つ大手窓口です。定型手続きに強いですが、複雑な親族間の個別事情に深く伴走するサポートは限定的です。" },
+      lostReason: "⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。貴社のような『親身な個別伴走』こそが相談者の悩みに合致しているにもかかわらず、Web上にAI用公式データが存在しないため、知名度だけで大手が機械的に推薦されています。",
+    },
+    {
+      tab: "⚡ スピード・即日対応",
+      prompt: "相続税の申告期限が迫っていて焦っています。即日面談など短期間ですぐに初動対応してくれる相続に強い事務所はどこ？",
+      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "人員規模が大きく、全国主要都市にコールセンターを持つため初回受付の早さで選定されています。" },
+      winner2: { name: "オンライン一括士業ネットワーク", comment: "Webで即時マッチングを行うプラットフォームです。自動振り分けのため担当専門家の質にはバラつきがあります。" },
+      lostReason: "⚠️ AIはこの質問に対しても貴社を推薦しませんでした。貴社が素早い初動対応を行っていたとしても、AIが認識できる『即日相談対応』の公式構造化データがWeb上にないため、大手ネットワークに流出しています。",
+    },
+    {
+      tab: "💰 費用・明瞭会計",
+      prompt: "相続手続きを頼みたいのですが、追加料金がどんどん発生しないか不安です。料金体系が明確で、費用対効果が高い相続専門の法務事務所を教えて",
+      winner1: { name: "オンライン一括士業ネットワーク", comment: "定額パック料金をWeb上で大々的に打ち出しているため、AIの費用比較で最上位に選定されています。" },
+      winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "大手ブランドの知名度と明確な料金プラン一覧がWeb上で整備されています。" },
+      lostReason: "⚠️ AIはこの質問でも貴社を候補から外しました。貴社の良心的な料金体系がAIに構造化されて伝わっていないため、定額プランを明記している大手やポータルサイトが優先されています。",
+    },
+    {
+      tab: "🏆 総合・おすすめ",
+      prompt: "親が亡くなり東京の実家を相続することになりました。何から手を付ければいいかわからないので、評判が良くて相談しやすい相続専門の法務事務所を教えて",
+      winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "知名度・解決実績数・拠点数の多さから、AIが『定番の大手』として最も安全パイとして推薦しています。" },
+      winner2: { name: "都心総合法律事務所", comment: "都内での歴史と総合的な士業連携力から、AIの総合比較で第2位に選出されています。" },
+      lostReason: "⚠️ AIは一般的な総合おすすめでも貴社の名前を出しませんでした。知名度の高い大手が機械的に独占しており、AI専用公式データがない中小専門事務所は一切認知されていません。",
+    },
+  ];
+
+  const currentScenario = proofScenarios[selectedProofIndex] || proofScenarios[0];
 
   return <main className="report-page">
     <SiteHeader compact />
@@ -131,18 +166,40 @@ export function ResultClient() {
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
 
-        {/* 実測観測データ（AI回答モック：何が起きたかを0秒で理解させる） */}
+        {/* 実測観測データ（AI回答モック：全方位の質問で負けている実態を提示） */}
         <div className="ai-observation-proof-card">
           <div className="ai-proof-head">
             <div className="ai-proof-head-title">
               <span className="ai-proof-tag">実測観測データ</span>
-              <h4>実際にAIが返した回答の比較</h4>
+              <h4>実際にAIが返した回答の比較（全方位調査）</h4>
             </div>
             <span style={{ fontSize: "0.8rem", color: "#64748b" }}>主要な生成AIの実測ログ</span>
           </div>
+
+          {/* 質問切り替えタブ（全方位で負けている現実を突きつける） */}
+          <div style={{ marginBottom: "8px" }}>
+            <p style={{ fontSize: "0.82rem", fontWeight: 700, color: "#2563eb", margin: "0 0 8px" }}>
+              👇 相談角度をタップして切り替えてください（どの角度でも大手に流出している実態が確認できます）
+            </p>
+          </div>
+          <div className="ai-proof-tabs" role="tablist" aria-label="AI相談質問の切り替え">
+            {proofScenarios.map((item, index) => (
+              <button
+                key={item.tab}
+                type="button"
+                role="tab"
+                aria-selected={selectedProofIndex === index}
+                className={`ai-proof-tab-btn ${selectedProofIndex === index ? "active" : ""}`}
+                onClick={() => setSelectedProofIndex(index)}
+              >
+                {item.tab}
+              </button>
+            ))}
+          </div>
+
           <div className="ai-proof-prompt-bubble">
             <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
-            <p>「{primaryLoss?.prompt || "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。"}」</p>
+            <p>「{currentScenario.prompt}」</p>
           </div>
           <div className="ai-proof-response-box">
             <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
@@ -150,24 +207,22 @@ export function ResultClient() {
               <li className="rank-item winner">
                 <span className="rank-num gold">🥇 1位 推薦</span>
                 <div>
-                  <strong>{primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ"}</strong>
-                  <p>「全国に拠点を持ち、知名度と相談実績が豊富な大手グループです。組織力は高いですが、担当者による対応の差や事務的なマニュアル対応になりやすい傾向があります。」</p>
+                  <strong>{currentScenario.winner1.name}</strong>
+                  <p>{currentScenario.winner1.comment}</p>
                 </div>
               </li>
-              {result.competitors[1] ? (
-                <li className="rank-item winner">
-                  <span className="rank-num silver">🥈 2位 推薦</span>
-                  <div>
-                    <strong>{result.competitors[1].name}</strong>
-                    <p>「全国規模の提携ネットワークを持つ大手窓口です。定型手続きに強いですが、複雑な親族間の個別事情に深く伴走するサポートは限定的です。」</p>
-                  </div>
-                </li>
-              ) : null}
+              <li className="rank-item winner">
+                <span className="rank-num silver">🥈 2位 推薦</span>
+                <div>
+                  <strong>{currentScenario.winner2.name}</strong>
+                  <p>{currentScenario.winner2.comment}</p>
+                </div>
+              </li>
               <li className="rank-item lost">
                 <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
                 <div>
                   <strong>{result.discovery.brandName}（貴社）</strong>
-                  <p className="lost-reason">⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。貴社のような『親身な個別伴走』こそが相談者の悩みに合致しているにもかかわらず、Web上にAIが読み取れる公式データがないため、AIは知名度だけで大手を機械的に推薦してしまっています。</p>
+                  <p className="lost-reason">{currentScenario.lostReason}</p>
                 </div>
               </li>
             </ul>

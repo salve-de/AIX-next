@@ -1736,6 +1736,39 @@ svg { width: 1.1em; height: 1.1em; }
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
 }
 
+.ai-proof-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.ai-proof-tab-btn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.ai-proof-tab-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.ai-proof-tab-btn.active {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+}
+
 .ai-proof-head {
   display: flex;
   align-items: center;
