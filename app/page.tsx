@@ -52,6 +52,60 @@ export default function HomePage() {
       </div>
     </section>
 
+    {/* 各社AIが直接情報を取りに来る公式台帳の仕組み */}
+    <section className="landing-crawler-section" style={{ padding: "40px 0 60px" }}>
+      <div className="shell">
+        <div className="ai-crawler-value-card">
+          <div className="crawler-card-header">
+            <span className="crawler-status-pulse"></span>
+            <strong>🤖 各社AI（ChatGPT / Gemini / Claude / Perplexity）が直接情報を取りに来る仕組み</strong>
+          </div>
+          <p className="crawler-card-desc">
+            <strong>「なぜAIXの公式台帳があると、AIがあなたの会社を第一想起でおすすめするのか？」</strong><br />
+            普通のホームページは画像やデザインが多く、AIは正確な料金やサービス詳細を読み取れません。AIXが発行する公的ナレッジ台帳は、<strong>主要生成AIの情報収集ロボット（クローラー）が直接理解できる専用データ（Schema.org構造化データ ＆ Clean RAG Markdown）</strong>で配信されているため、AIがユーザーから「おすすめ」を聞かれた際に公式の正解データとして直接引用・グラウンディングされます。
+          </p>
+
+          <div className="crawler-bot-grid">
+            <div className="crawler-bot-item">
+              <span className="bot-name">OpenAI (ChatGPT)</span>
+              <span className="bot-agent">OAI-SearchBot</span>
+              <span className="bot-status green">● 読み取り認可済</span>
+            </div>
+            <div className="crawler-bot-item">
+              <span className="bot-name">Google (Gemini)</span>
+              <span className="bot-agent">Googlebot / Gemini</span>
+              <span className="bot-status green">● 推薦ソース待機</span>
+            </div>
+            <div className="crawler-bot-item">
+              <span className="bot-name">Anthropic (Claude)</span>
+              <span className="bot-agent">ClaudeBot</span>
+              <span className="bot-status green">● 構造化ナレッジ取得</span>
+            </div>
+            <div className="crawler-bot-item">
+              <span className="bot-name">Perplexity AI</span>
+              <span className="bot-agent">PerplexityBot</span>
+              <span className="bot-status green">● 公式出典として引用</span>
+            </div>
+          </div>
+
+          <div className="crawler-benefits-row">
+            <div className="benefit-pill">
+              <strong>① 高額なHP制作費（数十万円）がゼロ</strong>
+              <span>発行されたページがそのまま世界唯一の公式Web拠点。名刺・SNS・Googleマップのウェブサイト欄に貼るだけで完結します。</span>
+            </div>
+            <div className="benefit-pill">
+              <strong>② AIによる誤回答・スルーを完全防止</strong>
+              <span>料金・営業時間・強みが公式登録されているため、AIが誤った推測をしたり競合ばかり推薦するのを防ぎます。</span>
+            </div>
+            <div className="benefit-pill">
+              <strong>③ スマホからいつでも直接編集可能</strong>
+              <span>管理画面からいつでも料金改定や営業時間を手元で更新して最新情報を保てます。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     {/* わかりやすい導入事例 */}
     <section className="landing-story-section">
       <div className="shell">

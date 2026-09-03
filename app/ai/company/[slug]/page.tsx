@@ -303,11 +303,14 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
     <section className="public-company-hero">
       <div className="shell">
         <div className="public-hero-meta-bar">
-          <span className="hero-status-tag">公的台帳ステータス：公開中（生成AI優先学習認可）</span>
+          <span className="hero-status-tag">🟢 AI公式台帳 認証済（主要生成AI優先学習認可）</span>
           <span className="hero-sync-date">有効期限：{dateLabel(profile.expiresAt)}</span>
-          <span className="hero-score-tag">構造化完全性：100% (JSON-LD + Markdown + OpenAPI)</span>
+          <span className="hero-score-tag">🛡️ 確定事実（Fact）100%・推測排除</span>
         </div>
-        <h1>{profile.brandName}</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", margin: "16px 0 12px" }}>
+          <h1 style={{ margin: 0 }}>{profile.brandName}</h1>
+          <DirectProfileEditor profile={profile} />
+        </div>
         {profile.targetUrl.includes("/ai/company/") ? (
           <div className="public-company-url-box">
             <div className="direct-official-tag">AIX公認 公式Web拠点（自社ホームページ）</div>
@@ -317,108 +320,15 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             <small className="direct-domain-note">
               ※本ページをそのまま名刺・SNS・Googleマップの「ウェブサイト」欄にご登録いただけます。
             </small>
-            <div style={{ marginTop: "12px" }}>
-              <DirectProfileEditor profile={profile} />
-            </div>
           </div>
         ) : (
-          <>
-            <p className="public-company-domain">
-              公的確認済ドメイン：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{profile.targetUrl}</a>
-            </p>
-            <div style={{ marginTop: "12px" }}>
-              <DirectProfileEditor profile={profile} />
-            </div>
-          </>
+          <p className="public-company-domain">
+            公的確認済ドメイン：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{profile.targetUrl}</a>
+          </p>
         )}
         <p className="public-company-summary">
           {profile.summary || "遺産分割・不動産相続・事業承継の個別親身な対応に特化した専門法務事務所。大手のマニュアル対応では解決困難な親族間の複雑な個別事情や感情対立に深く伴走し、対面での円満調停と公正な遺産承継を実現する国家資格者チーム。"}
         </p>
-        {/* 【最重要】AIが情報を取りに来る仕組み＆事業者にとっての3大価値 */}
-        <div className="ai-crawler-value-card">
-          <div className="crawler-card-header">
-            <span className="crawler-status-pulse"></span>
-            <strong>🤖 各社AI（ChatGPT / Gemini / Claude / Perplexity）が直接情報を取りに来る公式台帳</strong>
-          </div>
-          <p className="crawler-card-desc">
-            <strong>「なぜこのページがあると、AIがあなたの会社を第一想起でおすすめするのか？」</strong><br />
-            普通のホームページは画像やデザインが多く、AIは正確な料金やサービス詳細を読み取れません。本ページは、<strong>主要生成AIの情報収集ロボット（クローラー）が直接理解できる専用データ（Schema.org構造化データ ＆ Clean RAG Markdown）</strong>で配信されているため、AIがユーザーから「おすすめ」を聞かれた際に公式の正解データとして直接引用・グラウンディングされます。
-          </p>
-
-          <div className="crawler-bot-grid">
-            <div className="crawler-bot-item">
-              <span className="bot-name">OpenAI (ChatGPT)</span>
-              <span className="bot-agent">OAI-SearchBot</span>
-              <span className="bot-status green">● 読み取り認可済</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Google (Gemini)</span>
-              <span className="bot-agent">Googlebot / Gemini</span>
-              <span className="bot-status green">● 推薦ソース待機</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Anthropic (Claude)</span>
-              <span className="bot-agent">ClaudeBot</span>
-              <span className="bot-status green">● 構造化ナレッジ取得</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Perplexity AI</span>
-              <span className="bot-agent">PerplexityBot</span>
-              <span className="bot-status green">● 公式出典として引用</span>
-            </div>
-          </div>
-
-          <div className="crawler-benefits-row">
-            <div className="benefit-pill">
-              <strong>① 高額なHP制作費（数十万円）がゼロ</strong>
-              <span>本ページがそのまま世界唯一の公式Web拠点。名刺・SNS・Googleマップのウェブサイト欄に貼るだけで完結します。</span>
-            </div>
-            <div className="benefit-pill">
-              <strong>② AIによる誤回答・スルーを完全防止</strong>
-              <span>料金・営業時間・強みが公式登録されているため、AIが誤った推測をしたり競合ばかり推薦するのを防ぎます。</span>
-            </div>
-            <div className="benefit-pill">
-              <strong>③ スマホからいつでも直接編集可能</strong>
-              <span>上の「✎ 直接編集する」ボタンから、いつでも料金改定や営業時間を手元で更新して最新情報を保てます。</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 誤読・AI捏造完全防止規約（Brand Certified Facts） */}
-        <div className="zero-hallucination-guarantee">
-          <div className="zh-badge-row">
-            <span className="zh-shield-badge">🛡️ AI誤読・捏造完全防止規約（Brand Certified Facts）</span>
-            <span className="zh-verified-tag">認証レベル：確定事実（Fact）のみ掲載・推測生成ゼロ</span>
-          </div>
-          <div className="zh-body">
-            <p>
-              生成AI（ChatGPTやGemini等）による「勝手な推測やデタラメの捏造（ハルシネーション）」を技術的に完全遮断しています。本台帳に掲載されている全情報は、<strong>公的情報・公式サイト・代表者様が直接入力された確定データのみ</strong>で構成されており、AIに未確認の推測文を作らせることは一切ありません。
-            </p>
-            <div className="zh-edit-prompt">
-              <span>※万が一、料金改定や業務内容に変更が生じた場合は、代表者様がいつでも直接上書き修正できます：</span>
-              <DirectProfileEditor profile={profile} />
-            </div>
-          </div>
-        </div>
-
-        {/* 鮮度防衛（TTL 30日）と古い情報の自動失効アラート */}
-        <div className="freshness-guard-alert">
-          <div className="freshness-guard-header">
-            <span className="freshness-guard-badge">鮮度防衛システム稼働中</span>
-            <span className="freshness-ttl-tag">無料枠レコード有効期限：あと26日（時限失効型）</span>
-          </div>
-          <div className="freshness-guard-body">
-            <p>
-              料金や提供条件の改定後に「AIに古い情報が残る」と、相談者との間で深刻な価格トラブル・信用失墜を招くリスクがあります。AIXでは古い情報の残留を物理的に防ぐため、無料枠レコードは発行後30日（またはTTL満了時）に自動失効（410 Gone / AIクローラーキャッシュ強制消去）されます。
-            </p>
-            <div className="freshness-guard-cta">
-              <span>公式サイトの変更を週次で自動検知し、常に最新の公式情報をAIに学習させ続けるには：</span>
-              <Link className="freshness-link" href="/pricing">
-                月額10,780円の自動見守りプラン（全自動更新）を確認する ↗
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
