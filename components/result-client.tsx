@@ -43,7 +43,6 @@ export function ResultClient() {
   const [openObservation, setOpenObservation] = useState("");
   const [email, setEmail] = useState("");
   const [watchBusy, setWatchBusy] = useState(false);
-  const [selectedProofIndex, setSelectedProofIndex] = useState(0);
 
   useEffect(() => {
     if (sample) return;
@@ -118,8 +117,6 @@ export function ResultClient() {
     },
   ];
 
-  const currentScenario = proofScenarios[selectedProofIndex] || proofScenarios[0];
-
   return <main className="report-page">
     <SiteHeader compact />
     <section className="report-header">
@@ -166,66 +163,60 @@ export function ResultClient() {
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
 
-        {/* 実測観測データ（AI回答モック：全方位の質問で負けている実態を提示） */}
-        <div className="ai-observation-proof-card">
+        {/* 実測観測データ（AI回答モック：全方位の質問で負けている実態を一覧表示） */}
+        <div className="ai-observation-proof-container">
           <div className="ai-proof-head">
             <div className="ai-proof-head-title">
               <span className="ai-proof-tag">実測観測データ</span>
-              <h4>実際にAIが返した回答の比較（全方位調査）</h4>
+              <h4>実際にAIが返した回答の比較（主要4場面での全方位調査）</h4>
             </div>
             <span style={{ fontSize: "0.8rem", color: "#64748b" }}>主要な生成AIの実測ログ</span>
           </div>
+          <p style={{ fontSize: "0.85rem", color: "#475569", margin: "4px 0 16px" }}>
+            「親身さ」だけでなく、スピード・費用・総合比較など、<strong>あらゆる相談角度でライバル大手に流出し、貴社が候補から外れている実態</strong>です。
+          </p>
 
-          {/* 質問切り替えタブ（全方位で負けている現実を突きつける） */}
-          <div style={{ marginBottom: "8px" }}>
-            <p style={{ fontSize: "0.82rem", fontWeight: 700, color: "#2563eb", margin: "0 0 8px" }}>
-              👇 相談角度をタップして切り替えてください（どの角度でも大手に流出している実態が確認できます）
-            </p>
-          </div>
-          <div className="ai-proof-tabs" role="tablist" aria-label="AI相談質問の切り替え">
-            {proofScenarios.map((item, index) => (
-              <button
-                key={item.tab}
-                type="button"
-                role="tab"
-                aria-selected={selectedProofIndex === index}
-                className={`ai-proof-tab-btn ${selectedProofIndex === index ? "active" : ""}`}
-                onClick={() => setSelectedProofIndex(index)}
-              >
-                {item.tab}
-              </button>
+          <div className="ai-proof-list">
+            {proofScenarios.map((scenario) => (
+              <article className="ai-proof-item-card" key={scenario.tab}>
+                <div className="ai-proof-item-header">
+                  <span className="ai-proof-scenario-badge">{scenario.tab}</span>
+                  <span className="ai-proof-scenario-tag">AI推薦判定：自社は推薦枠外（未言及）</span>
+                </div>
+
+                <div className="ai-proof-prompt-bubble">
+                  <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
+                  <p>「{scenario.prompt}」</p>
+                </div>
+
+                <div className="ai-proof-response-box">
+                  <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
+                  <ul className="ai-proof-ranking">
+                    <li className="rank-item winner">
+                      <span className="rank-num gold">🥇 1位 推薦</span>
+                      <div>
+                        <strong>{scenario.winner1.name}</strong>
+                        <p>{scenario.winner1.comment}</p>
+                      </div>
+                    </li>
+                    <li className="rank-item winner">
+                      <span className="rank-num silver">🥈 2位 推薦</span>
+                      <div>
+                        <strong>{scenario.winner2.name}</strong>
+                        <p>{scenario.winner2.comment}</p>
+                      </div>
+                    </li>
+                    <li className="rank-item lost">
+                      <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
+                      <div>
+                        <strong>{result.discovery.brandName}（貴社）</strong>
+                        <p className="lost-reason">{scenario.lostReason}</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </article>
             ))}
-          </div>
-
-          <div className="ai-proof-prompt-bubble">
-            <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
-            <p>「{currentScenario.prompt}」</p>
-          </div>
-          <div className="ai-proof-response-box">
-            <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
-            <ul className="ai-proof-ranking">
-              <li className="rank-item winner">
-                <span className="rank-num gold">🥇 1位 推薦</span>
-                <div>
-                  <strong>{currentScenario.winner1.name}</strong>
-                  <p>{currentScenario.winner1.comment}</p>
-                </div>
-              </li>
-              <li className="rank-item winner">
-                <span className="rank-num silver">🥈 2位 推薦</span>
-                <div>
-                  <strong>{currentScenario.winner2.name}</strong>
-                  <p>{currentScenario.winner2.comment}</p>
-                </div>
-              </li>
-              <li className="rank-item lost">
-                <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
-                <div>
-                  <strong>{result.discovery.brandName}（貴社）</strong>
-                  <p className="lost-reason">{currentScenario.lostReason}</p>
-                </div>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
