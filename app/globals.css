@@ -3718,3 +3718,135 @@ svg { width: 1.1em; height: 1.1em; }
     grid-template-columns: 1fr;
   }
 }
+
+/* AI巡回＆事業者3大価値カード */
+.ai-crawler-value-card {
+  margin-top: 24px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 24px;
+  color: #f8fafc;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);
+}
+
+.crawler-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.crawler-status-pulse {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.crawler-card-header strong {
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.crawler-card-desc {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 18px;
+}
+
+.crawler-card-desc strong {
+  color: #38bdf8;
+}
+
+.crawler-bot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.crawler-bot-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crawler-bot-item .bot-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.crawler-bot-item .bot-agent {
+  font-size: 0.72rem;
+  font-family: monospace;
+  color: #94a3b8;
+}
+
+.crawler-bot-item .bot-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.crawler-bot-item .bot-status.green {
+  color: #4ade80;
+}
+
+.crawler-benefits-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 18px;
+}
+
+.benefit-pill {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.benefit-pill strong {
+  font-size: 0.84rem;
+  color: #facc15;
+}
+
+.benefit-pill span {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .crawler-bot-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .crawler-benefits-row {
+    grid-template-columns: 1fr;
+  }
+}
