@@ -12,14 +12,15 @@ export default function HomePage() {
       <div className="shell landing-hero-inner">
         <p className="overline">自社サイトの改修ゼロ・入力するだけで即時強化</p>
         <h1>ChatGPTは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
-        <p className="landing-hero-lead">名前を入力するだけで、ChatGPTやGeminiが最も正確に読み取る「AI専用データベース」を即座に発行。ライバルに奪われていた客を、自社の指名買いへと逆転させます。</p>
+        <p className="landing-hero-lead">自社サイトの改修は一切不要。会社名や商品名を入れるだけで、ChatGPTやGeminiが最も正確に読み取る「AI専用公式データベース」を即座に発行。ライバルに奪われていた客を、自社の指名買いへと逆転させます。</p>
         
-        {/* 0.5秒で直感理解できるChatGPT比較チャットモック */}
-        <ChatGptComparisonVisual />
-
-        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
+        <div style={{ maxWidth: "800px", margin: "24px auto 36px" }}>
           <ScanForm />
         </div>
+
+        {/* 入力欄の真下に、入力したくなる動機（0.5秒でわかるChatGPT対比ビジュアル） */}
+        <ChatGptComparisonVisual />
         
         {/* ホームに訪れた瞬間にわかる「3つの即時価値」 */}
         <div className="hero-instant-grid" aria-label="入力するだけで手に入る3大価値">
@@ -50,40 +51,40 @@ export default function HomePage() {
         <div className="section-intro">
           <p className="overline">使った後の具体的な変化</p>
           <h2>「AIに無視されていた」会社が、<br />指名買いされるようになるまで。</h2>
-          <p>ChatGPTなどのAIは、今や購入前の比較で最も頼られる相談役です。AIXを導入した会社がどう注文を獲得しているかの実例をご覧ください。</p>
+          <p>ChatGPTなどのAIは、今や購入前の比較で最も頼られる相談役です。AIXを導入した会社がどう高単価な注文を獲得しているかの実例をご覧ください。</p>
         </div>
 
         <div className="story-grid">
           <article className="story-card">
             <div className="story-card-header">
-              <span className="category">山梨県・果樹農園（特選ぶどう）</span>
-              <h3>「お中元ギフトの注文が前年比1.8倍に」</h3>
+              <span className="category">東京都・専門法律事務所（相続・事業承継）</span>
+              <h3>「ネット経由の顧問相談・指名受任が月4件純増」</h3>
             </div>
             <div className="story-timeline">
               <div className="story-before">
                 <strong>導入前の損失：</strong><br />
-                ChatGPTで「山梨 贈答用ぶどう おすすめ」と聞いても、大手百貨店や有名ポータルサイトばかりが紹介され、自社の農園は候補にすら入っていなかった。
+                ChatGPTで「相続・事業承継の相談」と聞いても、大手法人グループや比較ポータルばかりが紹介され、自社は候補にすら入っていなかった。
               </div>
               <div className="story-after">
                 <strong>AIX導入後の変化：</strong><br />
-                入力して発行されたAI専用DBを起点に、看板を「糖度18度・朝採り直送の駆け込み寺」に統一。AIが『産直・鮮度にこだわるならここ一択』と太鼓判を押すようになり、<strong>ネット直販のギフト注文が前年比1.8倍に急増</strong>。
+                入力して発行されたAI専用DBを起点に、看板を「複雑案件に特化した親身な駆け込み寺」に統一。AIが『個別対応の親身な相談ならここ一択』と太鼓判を押すようになり、<strong>相見積もりなしの指名相談が月4件純増</strong>。
               </div>
             </div>
           </article>
 
           <article className="story-card">
             <div className="story-card-header">
-              <span className="category">大阪府・金属加工所（試作特殊ネジ）</span>
-              <h3>「相見積もりの価格競争から完全脱出」</h3>
+              <span className="category">愛知県・精密機械加工所（試作・特殊部品）</span>
+              <h3>「相見積もりの価格競争から脱出し月120万円の特急受注」</h3>
             </div>
             <div className="story-timeline">
               <div className="story-before">
                 <strong>導入前の損失：</strong><br />
-                一般的な「金属加工・ネジ製作」では大手量産工場の情報量に太刀打ちできず、ネットからの引き合いは値下げを迫られる相見積もりばかりだった。
+                一般的な「精密金属加工」では大手量産工場の情報量に太刀打ちできず、ネットからの引き合いは値下げを迫られる相見積もりばかりだった。
               </div>
               <div className="story-after">
                 <strong>AIX導入後の変化：</strong><br />
-                ライバルの弱点である「大ロット・長納期」の隙間を突き、「1本からの特急試作駆け込み寺」として発信。ChatGPTで『小ロットで即日相談できる工場』として指名推薦されるようになり、<strong>月80万円の新規高単価案件を相見積もりなしで受注</strong>。
+                ライバルの弱点である「大ロット・長納期」の隙間を突き、「1点からの特急試作駆け込み寺」として発信。ChatGPTで『短納期で小ロット対応できる工場』として名指し推薦され、<strong>月120万円の高利益率な特急案件を安定受注</strong>。
               </div>
             </div>
           </article>

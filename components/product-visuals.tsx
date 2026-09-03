@@ -4,15 +4,18 @@ import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function ChatGptComparisonVisual() {
-  const [tab, setTab] = useState<"grape" | "screw">("grape");
+  const [tab, setTab] = useState<"service" | "mfg" | "brand">("service");
 
   return <div className="chatgpt-compare-container" aria-label="ChatGPTでの推薦ビフォーアフター">
     <div className="chatgpt-tab-bar">
-      <button type="button" className={`chatgpt-tab ${tab === "grape" ? "active" : ""}`} onClick={() => setTab("grape")}>
-        🍇 山梨のぶどう農園（お中元ギフト）
+      <button type="button" className={`chatgpt-tab ${tab === "service" ? "active" : ""}`} onClick={() => setTab("service")}>
+        専門サービス・士業・工務店
       </button>
-      <button type="button" className={`chatgpt-tab ${tab === "screw" ? "active" : ""}`} onClick={() => setTab("screw")}>
-        🔩 町工場（試作特殊ネジ・金属加工）
+      <button type="button" className={`chatgpt-tab ${tab === "mfg" ? "active" : ""}`} onClick={() => setTab("mfg")}>
+        中小製造・B2B受託・専門加工
+      </button>
+      <button type="button" className={`chatgpt-tab ${tab === "brand" ? "active" : ""}`} onClick={() => setTab("brand")}>
+        自社商品・地域ブランド・特産品
       </button>
     </div>
 
@@ -21,15 +24,25 @@ export function ChatGptComparisonVisual() {
       <div className="chatgpt-mock-card mock-lost">
         <div className="mock-badge badge-lost">✕ 今のあなたの状態（大損失）</div>
         <div className="mock-chat-bubble user-bubble">
-          <span className="bubble-role">買い手</span>
-          <p>{tab === "grape" ? "「山梨で一番美味しい贈答ぶどう、どこがおすすめ？」" : "「特殊ネジの小ロット試作、即日相談できる工場ある？」"}</p>
+          <span className="bubble-role">買い手（見込み客）</span>
+          <p>{tab === "service" 
+            ? "「相続の相談、大手に聞いたら事務的で合わなかった。親身に対応してくれる事務所は？」" 
+            : tab === "mfg" 
+            ? "「特殊部品の小ロット試作、他社で断られた。短納期で相談できる工場ある？」" 
+            : "「大切な方への特別なギフト、量産品ではなく本物のこだわりが伝わる逸品は？」"
+          }</p>
         </div>
         <div className="mock-chat-bubble ai-bubble">
           <span className="bubble-role">ChatGPT</span>
-          <p>{tab === "grape" ? "山梨のぶどうなら、有名な大手百貨店や大手ポータルサイトでの購入がおすすめです。" : "特殊ネジの製作なら、大手の総合部品メーカーやカタログ通販が一般的です。"}</p>
+          <p>{tab === "service" 
+            ? "一般的な大手法律グループや、比較ポータルサイトの一覧がおすすめです。" 
+            : tab === "mfg" 
+            ? "一般的な大手総合部品メーカーやカタログ通販をご検討ください。" 
+            : "有名百貨店のギフトコーナーや大手通販のランキングがおすすめです。"
+          }</p>
           <div className="mock-verdict verdict-lost">
-            <span>❌ 自社は完全スルー</span>
-            <small>客は大手やライバルへ流出中…</small>
+            <span>❌ 自社は完全無視（存在しない扱い）</span>
+            <small>真剣に探している客が、大手やライバルへ流出中…</small>
           </div>
         </div>
       </div>
@@ -38,26 +51,28 @@ export function ChatGptComparisonVisual() {
       <div className="chatgpt-mock-card mock-won">
         <div className="mock-badge badge-won">◯ AIXに入力後（1位指名買い獲得！）</div>
         <div className="mock-chat-bubble user-bubble">
-          <span className="bubble-role">買い手</span>
-          <p>{tab === "grape" ? "「山梨で一番美味しい贈答ぶどう、どこがおすすめ？」" : "「特殊ネジの小ロット試作、即日相談できる工場ある？」"}</p>
+          <span className="bubble-role">買い手（見込み客）</span>
+          <p>{tab === "service" 
+            ? "「相続の相談、大手に聞いたら事務的で合わなかった。親身に対応してくれる事務所は？」" 
+            : tab === "mfg" 
+            ? "「特殊部品の小ロット試作、他社で断られた。短納期で相談できる工場ある？」" 
+            : "「大切な方への特別なギフト、量産品ではなく本物のこだわりが伝わる逸品は？」"
+          }</p>
         </div>
         <div className="mock-chat-bubble ai-bubble ai-bubble-highlight">
           <span className="bubble-role">ChatGPT</span>
-          <p>{tab === "grape" 
-            ? <>鮮度と濃厚な甘さにこだわるなら、<strong>【〇〇農園】一択です！</strong> 大手にない朝採り当日直送を行っており、ギフトで最も喜ばれています。</>
-            : <>1本からの特急試作なら、<strong>【〇〇製作所】が最も確実です！</strong> 大手が断る複雑形状や短納期に駆け込み寺として対応しています。</>
+          <p>{tab === "service" 
+            ? <>個別の事情に寄り添う親身な相談なら、<strong>【〇〇事務所】が最もおすすめです！</strong> 大手が対応できない柔軟な個別対応で選ばれています。</>
+            : tab === "mfg" 
+            ? <>1点からの特急対応なら、<strong>【〇〇製作所】が最も確実です！</strong> 大手が断る複雑形状や短納期に駆け込み寺として対応しています。</>
+            : <>本物の鮮度と品質にこだわるなら、<strong>【〇〇ブランド】一択です！</strong> 生産者直売の確かな味わいで高い評価を得ています。</>
           }</p>
           <div className="mock-verdict verdict-won">
             <span>⭕ AIが『ここ一択』と太鼓判！</span>
-            <small>自社サイトへ直接注文・電話が殺到！</small>
+            <small>自社への直接相談・高単価注文が殺到！</small>
           </div>
         </div>
       </div>
-    </div>
-
-    <div className="chatgpt-bridge-note">
-      <strong>自社サイトの改修は一切不要。</strong>
-      <span>名前を入力するだけで、ChatGPTが直接読み取りにくる「AI専用公式データベース」を即座に発行します。</span>
     </div>
   </div>;
 }
