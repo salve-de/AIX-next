@@ -2473,3 +2473,330 @@ svg { width: 1.1em; height: 1.1em; }
     align-items: stretch;
   }
 }
+
+/* ==========================================================================
+   AI公式認定ナレッジベース (ギチギチ最強スタイル)
+   ========================================================================== */
+.ai-verified-pill {
+  background: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #38bdf8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+}
+
+.public-hero-meta-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.hero-status-tag {
+  background: #166534;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.hero-sync-date {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.hero-score-tag {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.knowledge-section {
+  padding-bottom: 36px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 36px;
+}
+
+.knowledge-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.knowledge-section h2 {
+  font-size: 1.45rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin: 6px 0 16px;
+  line-height: 1.35;
+}
+
+/* 大手との差別化対比グリッド */
+.diff-table-card {
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin-top: 16px;
+}
+
+.diff-table-card h4 {
+  margin: 0 0 14px;
+  font-size: 0.92rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.diff-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.diff-col {
+  padding: 16px;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.diff-col.competitor {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.diff-col.competitor strong {
+  color: #64748b;
+  font-size: 0.85rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.diff-col.competitor ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.diff-col.own {
+  border: 2px solid #0f172a;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+}
+
+.diff-col.own strong {
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.diff-col.own ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.84rem;
+  color: #0f172a;
+  line-height: 1.65;
+  font-weight: 600;
+}
+
+/* 網羅的4大サービスグリッド */
+.services-dense-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.service-dense-card {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 16px 18px;
+  background: #ffffff;
+}
+
+.service-dense-card h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.service-dense-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+/* 業務進行4ステップ */
+.flow-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.flow-step-card {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-step-tag {
+  display: inline-block;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+  width: fit-content;
+  margin-bottom: 6px;
+}
+
+.flow-step-card h4 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  color: #0f172a;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.flow-step-card p {
+  margin: 0;
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* 透明な料金体系 */
+.pricing-dense-card {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.pricing-item {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 18px;
+  background: #ffffff;
+}
+
+.pricing-title {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.pricing-price {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #166534;
+  margin-bottom: 8px;
+}
+
+.pricing-item p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* AI引用専用FAQ */
+.ai-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.ai-faq-item {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 16px 20px;
+  background: #ffffff;
+}
+
+.ai-faq-item dt {
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+
+.ai-faq-item dt strong {
+  color: #2563eb;
+  margin-right: 4px;
+}
+
+.ai-faq-item dd {
+  margin: 0;
+  color: #334155;
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.ai-faq-item dd strong {
+  color: #166534;
+  margin-right: 4px;
+}
+
+/* クローラーステータスリスト */
+.crawler-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.crawler-status-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+}
+
+.crawler-status-list > div span {
+  color: #475569;
+  font-weight: 600;
+}
+
+.crawler-status-list > div strong {
+  color: #166534;
+  font-weight: 800;
+}
+
+@media (max-width: 768px) {
+  .diff-grid {
+    grid-template-columns: 1fr;
+  }
+  .services-dense-grid {
+    grid-template-columns: 1fr;
+  }
+  .flow-steps-grid {
+    grid-template-columns: 1fr;
+  }
+  .pricing-dense-card {
+    grid-template-columns: 1fr;
+  }
+}
