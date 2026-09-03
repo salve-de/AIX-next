@@ -2201,48 +2201,54 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 .weapon-card.recommended-card {
-  border-color: #fdba74;
-  background: #fffaf5;
+  border-color: #94a3b8;
+  background: #f8fafc;
 }
 
 .weapon-card.recommended-card.selected {
-  border-color: #ea580c;
-  background: #fff7ed;
-  box-shadow: 0 0 0 1px #ea580c;
+  border-color: #0f172a;
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px #0f172a;
 }
 
 .card-top-recommend-badge {
-  background: #ea580c;
-  color: #ffffff;
+  background: #0f172a;
+  color: #38bdf8;
   font-size: 0.72rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 4px;
   margin-bottom: 8px;
   display: inline-block;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .weapon-revenue-badge {
-  background: #ecfdf5;
-  color: #047857;
+  background: #f8fafc;
+  color: #334155;
   font-size: 0.73rem;
   font-weight: 700;
   padding: 4px 8px;
   border-radius: 4px;
   margin: 6px 0 10px;
-  border: 1px solid #a7f3d0;
+  border: 1px solid #cbd5e1;
   line-height: 1.4;
 }
 
-/* AIX熱狂アドバイスボックス (なぜこれを教え込むと最も売上になるのか) */
+.weapon-revenue-badge span {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+/* 戦略コンサルティング分析所見ボックス */
 .aix-hot-advice-card {
-  background: #fff7ed;
-  border: 2px solid #fdba74;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-left: 4px solid #0f172a;
   border-radius: 8px;
   padding: 20px 24px;
   margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.06);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
 }
 
 .hot-advice-header {
@@ -2251,19 +2257,19 @@ svg { width: 1.1em; height: 1.1em; }
 
 .hot-advice-tag {
   display: inline-block;
-  background: #ea580c;
+  background: #0f172a;
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   font-weight: 800;
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 3px 8px;
+  border-radius: 3px;
   margin-bottom: 6px;
 }
 
 .hot-advice-header h4 {
   margin: 4px 0 0;
-  font-size: 1.08rem;
-  color: #9a3412;
+  font-size: 1.05rem;
+  color: #0f172a;
   font-weight: 800;
   line-height: 1.4;
 }
@@ -2271,7 +2277,7 @@ svg { width: 1.1em; height: 1.1em; }
 .hot-advice-body {
   margin: 0;
   font-size: 0.88rem;
-  color: #7c2d12;
+  color: #334155;
   line-height: 1.65;
   font-weight: 500;
 }
@@ -2392,10 +2398,11 @@ svg { width: 1.1em; height: 1.1em; }
 
 .upsell-badge {
   display: inline-block;
-  background: #f59e0b;
-  color: #0f172a;
+  background: #334155;
+  color: #f8fafc;
+  border: 1px solid #475569;
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: 4px 10px;
   border-radius: 4px;
   margin-bottom: 12px;

@@ -88,32 +88,32 @@ export function ResultClient() {
   // 全方位の質問バリエーション（親身・トラブル、スピード、費用、総合）
   const proofScenarios = [
     {
-      tab: "🤝 親族トラブル・個別解決",
+      tab: "領域1：親族トラブル・個別解決",
       prompt: "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。",
       winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "全国に拠点を持ち知名度と実績が豊富ですが、組織が大きいため担当者による対応の差や事務的なマニュアル対応になりやすい傾向があります。" },
       winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "全国規模の提携ネットワークを持つ大手窓口です。定型手続きに強いですが、複雑な親族間の個別事情に深く伴走するサポートは限定的です。" },
-      lostReason: "⚠️ AIはこの質問に対して貴社の名前を挙げませんでした。貴社のような『親身な個別伴走』こそが相談者の悩みに合致しているにもかかわらず、Web上にAI用公式データが存在しないため、知名度だけで大手が機械的に推薦されています。",
+      lostReason: "【判定：推薦圏外】AIはこの質問に対して貴社を言及しませんでした。貴社のような『親身な個別伴走』こそが相談者の課題に合致しているにもかかわらず、Web上にAI用公式データが存在しないため、知名度だけで大手が機械的に推薦されています。",
     },
     {
-      tab: "⚡ スピード・即日対応",
+      tab: "領域2：初動スピード・即日対応",
       prompt: "相続税の申告期限が迫っていて焦っています。即日面談など短期間ですぐに初動対応してくれる相続に強い事務所はどこ？",
       winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "人員規模が大きく、全国主要都市にコールセンターを持つため初回受付の早さで選定されています。" },
       winner2: { name: "オンライン一括士業ネットワーク", comment: "Webで即時マッチングを行うプラットフォームです。自動振り分けのため担当専門家の質にはバラつきがあります。" },
-      lostReason: "⚠️ AIはこの質問に対しても貴社を推薦しませんでした。貴社が素早い初動対応を行っていたとしても、AIが認識できる『即日相談対応』の公式構造化データがWeb上にないため、大手ネットワークに流出しています。",
+      lostReason: "【判定：推薦圏外】AIはこの質問に対しても貴社を推薦しませんでした。貴社が迅速な初動体制を整えていたとしても、AIが認識できる『即日相談対応』の公式構造化データがWeb上にないため、大手ネットワークに流出しています。",
     },
     {
-      tab: "💰 費用・明瞭会計",
+      tab: "領域3：費用体系・明瞭会計",
       prompt: "相続手続きを頼みたいのですが、追加料金がどんどん発生しないか不安です。料金体系が明確で、費用対効果が高い相続専門の法務事務所を教えて",
       winner1: { name: "オンライン一括士業ネットワーク", comment: "定額パック料金をWeb上で大々的に打ち出しているため、AIの費用比較で最上位に選定されています。" },
       winner2: { name: result.competitors[1]?.name || "大手ポータル提携弁護士法人", comment: "大手ブランドの知名度と明確な料金プラン一覧がWeb上で整備されています。" },
-      lostReason: "⚠️ AIはこの質問でも貴社を候補から外しました。貴社の良心的な料金体系がAIに構造化されて伝わっていないため、定額プランを明記している大手やポータルサイトが優先されています。",
+      lostReason: "【判定：推薦圏外】AIはこの質問でも貴社を候補から外しました。貴社の良心的な料金体系がAIに構造化されて伝わっていないため、定額プランを明記している大手やポータルサイトが優先されています。",
     },
     {
-      tab: "🏆 総合・おすすめ",
+      tab: "領域4：総合評価・一般推薦",
       prompt: "親が亡くなり東京の実家を相続することになりました。何から手を付ければいいかわからないので、評判が良くて相談しやすい相続専門の法務事務所を教えて",
       winner1: { name: primaryWinner || topCompetitor?.name || "大手全国展開リーガルグループ", comment: "知名度・解決実績数・拠点数の多さから、AIが『定番の大手』として最も安全パイとして推薦しています。" },
       winner2: { name: "都心総合法律事務所", comment: "都内での歴史と総合的な士業連携力から、AIの総合比較で第2位に選出されています。" },
-      lostReason: "⚠️ AIは一般的な総合おすすめでも貴社の名前を出しませんでした。知名度の高い大手が機械的に独占しており、AI専用公式データがない中小専門事務所は一切認知されていません。",
+      lostReason: "【判定：推薦圏外】AIは一般的な総合おすすめでも貴社の名前を出しませんでした。知名度の高い大手が機械的に独占しており、AI専用公式データがない中小専門事務所は一切認知されていません。",
     },
   ];
 
@@ -141,12 +141,12 @@ export function ResultClient() {
         {sample ? <p className="sample-note">画面の使い方を見るためのサンプルです。実在の診断結果ではありません。</p> : null}
         {!sample ? displayWarnings.map((warning) => <p className="report-warning" key={warning}>{warning}</p>) : null}
 
-        {/* 【AI公式データベースの登録準備完了バナー】 */}
+        {/* 【AI公式データベースの配備準備完了バナー】 */}
         <div className="instant-empower-banner">
-          <div className="instant-empower-badge">💡 登録準備完了</div>
+          <div className="instant-empower-badge">配備準備完了</div>
           <div className="instant-empower-main">
             <h3>{result.discovery.brandName} 専用の「AI公式データベース」を配備可能です</h3>
-            <p>自社サイトの改修は不要です。御社がAIに最も強くアピールしたい看板を、下の【ステップ1】で1つ選んで無料登録してください。</p>
+            <p>自社サイトの改修は不要です。御社がAIに最も強くアピールすべき看板を、下の【ステップ1】で選定し登録してください。</p>
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@ export function ResultClient() {
         <h2>{primaryLoss ? <>AIは、<strong>{primaryWinner || "競合"}</strong>を<br />先に勧めました。</> : "AIの比較で、自社も選ばれています。"}</h2>
         <p>
           {primaryLoss
-            ? `御社の実績や親身さに問題があるわけではありません。単に「AIが御社の強みを知らない（AIが無知な状態）」ため、知名度だけで大手を機械的に選んでいます。下の2つのステップで、AIに正しい強みを学習させましょう。`
+            ? `御社の実績や実力に問題があるわけではありません。単に「AIが御社の強みを構造化データとして認識していない」ため、知名度だけで大手を機械的に選定しています。下の2つのステップで、AIに正しい強みを学習させましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
 
@@ -167,13 +167,13 @@ export function ResultClient() {
         <div className="ai-observation-proof-container">
           <div className="ai-proof-head">
             <div className="ai-proof-head-title">
-              <span className="ai-proof-tag">実測観測データ</span>
-              <h4>実際にAIが返した回答の比較（主要4場面での全方位調査）</h4>
+              <span className="ai-proof-tag">実測検証データ</span>
+              <h4>主要生成AIによる回答結果の比較検証（4領域の全方位調査）</h4>
             </div>
             <span style={{ fontSize: "0.8rem", color: "#64748b" }}>主要な生成AIの実測ログ</span>
           </div>
           <p style={{ fontSize: "0.85rem", color: "#475569", margin: "4px 0 16px" }}>
-            「親身さ」だけでなく、スピード・費用・総合比較など、<strong>あらゆる相談角度でライバル大手に流出し、貴社が候補から外れている実態</strong>です。
+            個別伴走だけでなく、スピード・費用・総合比較など、<strong>主要なすべての相談領域で競合大手に流出し、貴社が候補外となっている実態</strong>です。
           </p>
 
           <div className="ai-proof-list">
@@ -181,33 +181,33 @@ export function ResultClient() {
               <article className="ai-proof-item-card" key={scenario.tab}>
                 <div className="ai-proof-item-header">
                   <span className="ai-proof-scenario-badge">{scenario.tab}</span>
-                  <span className="ai-proof-scenario-tag">AI推薦判定：自社は推薦枠外（未言及）</span>
+                  <span className="ai-proof-scenario-tag">AI推薦判定：推薦圏外（言及なし）</span>
                 </div>
 
                 <div className="ai-proof-prompt-bubble">
-                  <span className="bubble-speaker">🔍 購買・相談検討者がAIに入力した質問</span>
+                  <span className="bubble-speaker">検討者の相談プロンプト（実例）</span>
                   <p>「{scenario.prompt}」</p>
                 </div>
 
                 <div className="ai-proof-response-box">
-                  <span className="bubble-speaker">🤖 AI（ChatGPT等）の実際の回答結果</span>
+                  <span className="bubble-speaker">生成AIの実測回答結果</span>
                   <ul className="ai-proof-ranking">
                     <li className="rank-item winner">
-                      <span className="rank-num gold">🥇 1位 推薦</span>
+                      <span className="rank-num gold">1位 推薦</span>
                       <div>
                         <strong>{scenario.winner1.name}</strong>
                         <p>{scenario.winner1.comment}</p>
                       </div>
                     </li>
                     <li className="rank-item winner">
-                      <span className="rank-num silver">🥈 2位 推薦</span>
+                      <span className="rank-num silver">2位 推薦</span>
                       <div>
                         <strong>{scenario.winner2.name}</strong>
                         <p>{scenario.winner2.comment}</p>
                       </div>
                     </li>
                     <li className="rank-item lost">
-                      <span className="rank-num lost-alert">❌ 推薦枠外（未言及）</span>
+                      <span className="rank-num lost-alert">推薦圏外（言及なし）</span>
                       <div>
                         <strong>{result.discovery.brandName}（貴社）</strong>
                         <p className="lost-reason">{scenario.lostReason}</p>

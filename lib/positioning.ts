@@ -60,8 +60,8 @@ function deriveStrategies(result: ScanResult): StrategyOption[] {
       coreThesis: `「画一的な大手には相談しづらい」層を受け止める、親身な個別伴走の専門窓口`,
       strategicReason: `AI検索は現在、競合大手の『知名度・規模』を参照して機械的に推薦しています。貴社が持つ『${useCase1}への個別伴走実績』をAI専用データベースに構造化して認知させることで、『事務的ではない親身な専門家』を探す高確度な検討者を独占的に引き戻すことが可能です。`,
       isRecommended: true,
-      revenueImpact: "受任単価・利益率が最も高いドル箱領域（相見積もりなしの指名買い）",
-      passionateReason: `御社はここが圧倒的に強いのに、なんでAIに拾わせてないんですか！？ もったいなさすぎます！💢 大手はマニュアル対応しかできず、泥臭い個別事情の伴走を最も苦手としています。一方、御社はこの領域で圧倒的な解決力を持っています。しかもこの相談は最も客単価が高く売上に直結する本丸です。AIが無知なせいで大手に流出しているこのドル箱顧客を、御社一択でAIに推薦させるため、絶対にこれを選んでください！`,
+      revenueImpact: "受任単価・利益率が最も高い中核領域（相見積もりなしの指名獲得）",
+      passionateReason: "【分析所見】御社が最も差別化され、かつ受任単価・利益率が最大化する中核領域です。大手全国グループはマニュアル対応に依存しており、親族間の複雑な個別事情の調整力に構造的な弱点を抱えています。一方、御社はここに明確な優位性と解決実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は、重大な機会損失です。AI公式データベースへ本看板を最優先で登録することを強く推奨します。",
       competitorAnalysis: compAnalysis1,
       deliverables: {
         profile: {
@@ -86,8 +86,8 @@ function deriveStrategies(result: ScanResult): StrategyOption[] {
       coreThesis: `待たせない初動対応。「最短即日着手・迅速なレスポンス」の特急相談窓口`,
       strategicReason: `AI検索は大手チェーンを優先表示しますが、相談者の緊急度が極めて高い場合、AIは『初動スピードの確実性』を評価軸に切り替えます。貴社のフットワークと即応体制をAIにインデックスさせることで、即決性の高い緊急案件を確実に獲得できます。`,
       isRecommended: false,
-      revenueImpact: "即決・成約スピードが最速（問い合わせから契約までが短期）",
-      passionateReason: "緊急案件を即座に刈り取る強力な武器です。ただし無料枠（1枠）で最大の売上インパクトを出すなら、まずは戦略01をAIに叩き込むことを推奨します。",
+      revenueImpact: "即決・成約スピードが最速（問い合わせから受任までのリードタイム短縮）",
+      passionateReason: "【分析所見】初回面談までのリードタイムを重視する検討者を即座に獲得する実効性の高い戦略です。ただし無料枠（1枠）で最大の売上インパクトと競合差別化を狙う場合、まずは戦略01をAIへインデックスさせることを推奨します。",
       competitorAnalysis: compAnalysis2,
       deliverables: {
         profile: {
@@ -112,8 +112,8 @@ function deriveStrategies(result: ScanResult): StrategyOption[] {
       coreThesis: `${target2}の課題を防ぐ。${useCase2}に特化した、専門戦略参謀`,
       strategicReason: `AI検索は一般的な相談と高度な専門課題を混同しがちです。貴社が『${useCase2}』に特化した専門性を持つことをAI専用ページで明確に証明することで、高単価な案件の第一想起を獲得できます。`,
       isRecommended: false,
-      revenueImpact: "他社との価格競争を完全無効化する高付加価値特化",
-      passionateReason: "大手が手を出せない高難度案件を総取りする武器です。有料プランで戦略01と併用することで、競合を全方位から包囲できます。",
+      revenueImpact: "競合との価格競争を無効化する高付加価値特化",
+      passionateReason: "【分析所見】大手が対応できない高難度・専門領域に特化し、価格競争を無効化する高付加価値戦略です。戦略01の伴走支援と併用することで、市場シェアを強固に防衛できます。",
       competitorAnalysis: compAnalysis3,
       deliverables: {
         profile: {

@@ -112,35 +112,37 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             >
               {isRec ? (
                 <div className="card-top-recommend-badge">
-                  🔥 AIX分析推奨（売上インパクト最大）
+                  AIX分析推奨：最優先選定
                 </div>
               ) : null}
               <div className="weapon-card-header">
-                <span className="weapon-radio">{isSelected ? "🔘 選択中" : "⚪ 選択する"}</span>
+                <span className={`weapon-radio ${isSelected ? "is-selected" : ""}`}>
+                  {isSelected ? "選択中" : "選択する"}
+                </span>
                 <span className="weapon-tag">{strat.code}</span>
               </div>
               <h4>{strat.name}</h4>
               <p className="weapon-desc">{strat.coreThesis}</p>
               {strat.revenueImpact ? (
                 <div className="weapon-revenue-badge">
-                  💰 {strat.revenueImpact}
+                  <span>収益性評価：</span>{strat.revenueImpact}
                 </div>
               ) : null}
-              <small className="weapon-target">想定相談者：{strat.targetMarket}</small>
+              <small className="weapon-target">想定ターゲット：{strat.targetMarket}</small>
             </div>
           );
         })}
       </div>
 
-      {/* AIXからの熱い診断・推奨理由ボックス（なぜAIにこれを教え込むと最も売上につながるのか） */}
+      {/* AIXからの戦略コンサルティング分析所見 */}
       <div className="aix-hot-advice-card">
         <div className="hot-advice-header">
-          <span className="hot-advice-tag">🔥 AIX分析診断：なぜこの強み一択なのか？</span>
-          <h4>「御社はここが圧倒的に強いのに、なんでAIに拾わせてないんですか！？ もったいなさすぎます！💢」</h4>
+          <span className="hot-advice-tag">戦略分析所見：看板選定の論理的根拠</span>
+          <h4>大手が対応できない「個別事情の調整力」こそが、御社の収益性を最大化する決定打です</h4>
         </div>
         <p className="hot-advice-body">
           {strategies[selectedWeapon]?.passionateReason ||
-            `大手の全国チェーンはマニュアル対応しかできず、泥臭い個別事情の伴走を最も苦手としています。一方、御社はこの領域で圧倒的な解決力を持っています。しかもこの相談は最も客単価が高く売上に直結する本丸です。AIが無知なせいで大手に流出しているこのドル箱顧客を、御社一択でAIに推薦させるため、絶対にこの看板をAIに教え込んでください！`}
+            `大手全国グループはマニュアル対応に依存しており、親族間の複雑な個別事情の調整力に構造的な弱点を抱えています。一方、御社はここに明確な優位性と解決実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は、重大な機会損失です。AI公式データベースへ本看板を最優先で登録することを強く推奨します。`}
         </p>
       </div>
 
@@ -148,9 +150,9 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="weapon-action-box">
         <div className="weapon-action-status">
           <p>
-            現在選択中の強み：<strong>{strategies[selectedWeapon]?.name}</strong>
+            現在選択中の看板：<strong>{strategies[selectedWeapon]?.name}</strong>
           </p>
-          <small>自社サイトの改修は不要。主要AIが直接読み取る構造化データとして即時発行されます。</small>
+          <small>自社サイトの改修は不要。主要生成AIが直接巡回・学習する公式構造化データ（JSON-LD）として即時発行されます。</small>
         </div>
 
         <div className="weapon-action-buttons">
@@ -161,11 +163,11 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
               onClick={() => void preview()}
               disabled={busy !== ""}
             >
-              {busy === "preview" ? "書き込み中…" : "この強みをAI公式データベースに無料登録する"} <ArrowIcon />
+              {busy === "preview" ? "登録処理中…" : "この看板をAI公式データベースに無料登録する"} <ArrowIcon />
             </button>
           ) : (
             <div className="saved-success-box">
-              <span className="saved-badge">🟢 登録完了（AI向け公開中）</span>
+              <span className="saved-badge">公開中：AI公式データベースへ登録完了</span>
               <div className="saved-links">
                 <Link
                   className="button button-primary"
@@ -173,14 +175,14 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                   target="_blank"
                   rel="noreferrer"
                 >
-                  発行されたAI専用ページを確認する <ArrowIcon />
+                  発行されたAI公式ページを確認する <ArrowIcon />
                 </Link>
                 <button
                   type="button"
                   className="text-button"
                   onClick={() => setIsSaved(false)}
                 >
-                  登録する強みを変更する
+                  登録する看板を変更する
                 </button>
               </div>
             </div>
@@ -189,19 +191,19 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </div>
       </div>
 
-      {/* 有料アップセルの壁（全部やりたいなら有料） */}
+      {/* 有料アップセル（全方位展開のご案内） */}
       <div className="upsell-paywall-banner">
-        <div className="upsell-badge">🔒 残り2つの強みは現在ロックされています</div>
+        <div className="upsell-badge">全方位展開のご案内：他2領域の同時インデックス</div>
         <div className="upsell-content">
-          <h3>「3つの強みすべて」をAIに登録し、あらゆる相談者から第一想起を獲得しませんか？</h3>
+          <h3>「全3領域の看板」を一括登録し、あらゆる相談クエリから第一想起を獲得する</h3>
           <p>
-            AIで検索する相談者は、「親身さ」だけでなく「即日スピード」や「明瞭な費用」でも日々AIに質問しています。無料枠（1つのみ）では他の2つの相談者を競合に奪われてしまいます。<strong>3つの強みすべてをAI公式データベースに常時学習させ、毎週のAI推薦順位を追跡するには、自動見守りプランが必要です。</strong>
+            AIで検索する相談者のニーズは多角化しています。本無料枠で選定した【個別伴走】に加え、【初動即応】および【明瞭費用】の全3領域をAI公式データベースへ常時学習させ、毎週のAI推薦順位変動を追跡するには、自動見守りプラン（月額10,780円）をご活用ください。
           </p>
           <div className="upsell-action">
             <a className="button button-primary" href="#watch-plan">
-              3つの強みを全開放してAIに完全登録する（14日間無料トライアル） <ArrowIcon />
+              全3領域の看板を一括登録してAI推薦を監視する（14日間無料試用） <ArrowIcon />
             </a>
-            <small>月額 10,780円（税込） / いつでも解約可能 / クレジットカード不要で14日間お試し</small>
+            <small>月額 10,780円（税込） / いつでも解約可能 / クレジットカード登録不要で14日間お試し可能</small>
           </div>
         </div>
       </div>
