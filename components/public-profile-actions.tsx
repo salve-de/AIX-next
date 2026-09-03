@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowIcon, CheckIcon, LockIcon } from "@/components/icons";
+import { ArrowIcon } from "@/components/icons";
 import type { PublicProfile, ScanResult } from "@/lib/types";
 
 type ProfileShape = PublicProfile;
@@ -25,12 +25,38 @@ function profileFromPayload(payload: unknown) {
  */
 export function PublicProfileActions({ result, sample = false }: PublicProfileActionsProps) {
   const [profile, setProfile] = useState<ProfileShape | null>(null);
-  const [publishToken, setPublishToken] = useState("");
-  const [busy, setBusy] = useState<"preview" | "publish" | "revoke" | "">("");
+  const [busy, setBusy] = useState<"preview" | "">("");
   const [error, setError] = useState("");
+  const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
+  const [isSaved, setIsSaved] = useState<boolean>(sample);
+
+  // サイト解析から抽出された3つの強み候補
+  const strategies = result.positioning?.strategies || [
+    {
+      code: "戦略01",
+      name: "親族トラブル・個別伴走",
+      coreThesis: "親族トラブル・複雑な不動産相続の個別伴走",
+      targetMarket: "親族間トラブルや複雑な不動産相続に悩む個人・親族",
+    },
+    {
+      code: "戦略02",
+      name: "特急初動・即日面談",
+      coreThesis: "申告期限が迫る相続の特急初動・即日面談",
+      targetMarket: "申告期限が迫り、一刻も早く手続きを進めたい相談者",
+    },
+    {
+      code: "戦略03",
+      name: "明瞭会計・安心定額",
+      coreThesis: "追加料金ゼロ・完全明瞭な相続手続き",
+      targetMarket: "費用総額や追加料金の不安なく依頼したい相談者",
+    },
+  ];
 
   async function preview() {
-    if (sample) return;
+    if (sample) {
+      setIsSaved(true);
+      return;
+    }
     setBusy("preview");
     setError("");
     try {
@@ -44,7 +70,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       const next = profileFromPayload(payload);
       if (!next || !payload.token) throw new Error("公開ページの確認情報を取得できませんでした。");
       setProfile(next);
-      setPublishToken(payload.token);
+      setIsSaved(true);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "公開ページを作成できませんでした。");
     } finally {
@@ -52,70 +78,101 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
     }
   }
 
-  async function changeStatus(action: "publish" | "revoke") {
-    if (!profile || !publishToken) return;
-    setBusy(action);
-    setError("");
-    try {
-      const response = await fetch("/api/ai-profile", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ profileId: profile.id, token: publishToken, action }),
-      });
-      const payload = await response.json() as { error?: string; profile?: ProfileShape };
-      if (!response.ok) throw new Error(payload.error || "公開ページを更新できませんでした。");
-      const next = profileFromPayload(payload);
-      if (!next) throw new Error("公開ページの状態を確認できませんでした。");
-      setProfile(next);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "公開ページを更新できませんでした。");
-    } finally {
-      setBusy("");
-    }
-  }
-
-  if (sample) {
-    return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
-      <div className="public-profile-card-copy">
-        <p className="overline">【ステップ 1】AI専用公式データベースの公開（自社サイト改修ゼロ）</p>
-        <h2>主要な生成AIに対応した「AI公式データベース」を即座に発行しました。</h2>
-        <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
-        <ul>
-          <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
-          <li><CheckIcon />ChatGPTやGeminiが読み取りやすい構造化データ（JSON-LD）対応</li>
-          <li><CheckIcon />公開・停止はいつでも自由に切り替え可能</li>
-        </ul>
+  return (
+    <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
+      <div className="profile-interactive-header">
+        <span className="step-badge">【ステップ 1】AIに教え込む価値を自分で選ぶ</span>
+        <h2>AI公式データベースに書き込む「御社の最大の強み」を選択してください。</h2>
+        <p>
+          AIは勝手に推測してくれません。御社がAI（ChatGPT等）に最も強くアピールしたい「看板」を、下の3つから<strong>1つ選んで</strong>公式データベースへ書き込みます。
+        </p>
       </div>
-      <div className="public-profile-card-actions">
-        <div className="public-profile-sample-links">
-          <Link className="button button-primary" href="/ai/company/aoba-souzoku?sample=1" target="_blank" rel="noreferrer">発行されたAI専用ページを見る <ArrowIcon /></Link>
-          <Link className="text-button" href="/ai-info?sample=1">掲載内容の下書きを確認する <ArrowIcon /></Link>
+
+      {/* 3つの強み選択ラジオカード（無料プランは1枠のみ選択可能） */}
+      <div className="weapon-selector-grid">
+        {strategies.map((strat, index) => {
+          const isSelected = selectedWeapon === index;
+          return (
+            <div
+              key={strat.code}
+              className={`weapon-card ${isSelected ? "selected" : ""}`}
+              onClick={() => setSelectedWeapon(index)}
+              role="button"
+              tabIndex={0}
+            >
+              <div className="weapon-card-header">
+                <span className="weapon-radio">{isSelected ? "🔘 選択中" : "⚪ 選択する"}</span>
+                <span className="weapon-tag">{strat.code}</span>
+              </div>
+              <h4>{strat.name}</h4>
+              <p className="weapon-desc">{strat.coreThesis}</p>
+              <small className="weapon-target">想定相談者：{strat.targetMarket}</small>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* 書き込み実行アクション */}
+      <div className="weapon-action-box">
+        <div className="weapon-action-status">
+          <p>
+            現在選択中の強み：<strong>{strategies[selectedWeapon]?.name}</strong>
+          </p>
+          <small>自社サイトの改修は不要。主要AIが直接読み取る構造化データとして即時発行されます。</small>
         </div>
-        <small><LockIcon />自社サイトを書き換えたり、勝手に情報を改変することはありません。</small>
-      </div>
-    </section>;
-  }
 
-  return <section className="public-profile-card" aria-label="AI専用公式データベースの即時発行">
-    <div className="public-profile-card-copy">
-      <p className="overline">【ステップ 1】AI専用公式データベースの公開（自社サイト改修ゼロ）</p>
-      <h2>主要な生成AIに対応した「AI公式データベース」を即座に発行しました。</h2>
-      <p>自社のホームページをいじる必要はありません。AIの検索エンジン（GPTBot等）が直接巡回して学習・推薦に使う「公式構造化ページ」をあなたの会社専用に自動発行しました。AIに直接自社の強みを認知させられます。</p>
-      <ul>
-        <li><CheckIcon />自社サイトへの公式リンクを自動設置</li>
-        <li><CheckIcon />ChatGPTやGeminiが読み取りやすい構造化データ（JSON-LD）対応</li>
-        <li><CheckIcon />公開・停止はいつでも自由に切り替え可能</li>
-      </ul>
-    </div>
-    <div className="public-profile-card-actions">
-      {!profile ? <button className="button button-primary" type="button" onClick={() => void preview()} disabled={busy !== ""}>{busy === "preview" ? "専用ページを準備しています…" : "AI専用ページの掲載内容を確認する"}<ArrowIcon /></button> : <>
-        <div className={`public-profile-status public-profile-status-${profile.status}`}><span>{profile.status === "published" ? "AI向け公開中" : profile.status === "revoked" ? "公開停止中" : "下書き"}</span><strong>{profile.brandName}</strong><small>{profile.sourcePages.length}ページをもとに作成</small></div>
-        <div className="public-profile-preview" aria-label="公開内容のプレビュー"><div className="public-profile-preview-head"><span>AIに学習させる内容</span><strong>{profile.title}</strong></div>{profile.summary ? <p>{profile.summary}</p> : null}<div className="public-profile-preview-meta">{profile.market ? <span><small>分野</small><b>{profile.market}</b></span> : null}{profile.targetCustomers.length ? <span><small>対象</small><b>{profile.targetCustomers.slice(0, 2).join("・")}</b></span> : null}{profile.useCases.length ? <span><small>用途</small><b>{profile.useCases.slice(0, 2).join("・")}</b></span> : null}</div><div className="public-profile-preview-source"><small>公式ページの出典</small>{profile.sourcePages.slice(0, 3).map((page) => <a key={page.url} href={page.url} target="_blank" rel="noreferrer">{page.title}</a>)}{profile.sourcePages.length > 3 ? <span>ほか{profile.sourcePages.length - 3}ページ</span> : null}</div></div>
-        {profile.status !== "published" ? <button className="button button-primary" type="button" onClick={() => void changeStatus("publish")} disabled={busy !== ""}>{busy === "publish" ? "AI向けに公開しています…" : "この内容でAI向けに公開する"}<ArrowIcon /></button> : <Link className="button button-primary" href={`/ai/company/${encodeURIComponent(profile.slug)}`} target="_blank" rel="noreferrer">公開されたAI専用ページを見る <ArrowIcon /></Link>}
-        {profile.status === "published" ? <button className="text-button public-profile-revoke" type="button" onClick={() => void changeStatus("revoke")} disabled={busy !== ""}>{busy === "revoke" ? "停止しています…" : "公開を停止する"}</button> : null}
-      </>}
-      <small><LockIcon />自社サイトを書き換えたり、勝手に情報を改変することはありません。</small>
-      {error ? <p className="form-error" role="alert">{error}</p> : null}
-    </div>
-  </section>;
+        <div className="weapon-action-buttons">
+          {!isSaved ? (
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={() => void preview()}
+              disabled={busy !== ""}
+            >
+              {busy === "preview" ? "書き込み中…" : "この強みをAI公式データベースに無料登録する"} <ArrowIcon />
+            </button>
+          ) : (
+            <div className="saved-success-box">
+              <span className="saved-badge">🟢 登録完了（AI向け公開中）</span>
+              <div className="saved-links">
+                <Link
+                  className="button button-primary"
+                  href={sample ? "/ai/company/aoba-souzoku?sample=1" : (profile ? `/ai/company/${encodeURIComponent(profile.slug)}` : "#")}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  発行されたAI専用ページを確認する <ArrowIcon />
+                </Link>
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => setIsSaved(false)}
+                >
+                  登録する強みを変更する
+                </button>
+              </div>
+            </div>
+          )}
+          {error ? <p className="form-error" role="alert">{error}</p> : null}
+        </div>
+      </div>
+
+      {/* 有料アップセルの壁（全部やりたいなら有料） */}
+      <div className="upsell-paywall-banner">
+        <div className="upsell-badge">🔒 残り2つの強みは現在ロックされています</div>
+        <div className="upsell-content">
+          <h3>「3つの強みすべて」をAIに登録し、あらゆる相談者から第一想起を獲得しませんか？</h3>
+          <p>
+            AIで検索する相談者は、「親身さ」だけでなく「即日スピード」や「明瞭な費用」でも日々AIに質問しています。無料枠（1つのみ）では他の2つの相談者を競合に奪われてしまいます。<strong>3つの強みすべてをAI公式データベースに常時学習させ、毎週のAI推薦順位を追跡するには、自動見守りプランが必要です。</strong>
+          </p>
+          <div className="upsell-action">
+            <a className="button button-primary" href="#watch-plan">
+              3つの強みを全開放してAIに完全登録する（14日間無料トライアル） <ArrowIcon />
+            </a>
+            <small>月額 10,780円（税込） / いつでも解約可能 / クレジットカード不要で14日間お試し</small>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

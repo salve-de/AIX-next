@@ -2139,3 +2139,254 @@ svg { width: 1.1em; height: 1.1em; }
     padding: 10px 14px;
   }
 }
+
+/* ==========================================================================
+   AI公式DBインタラクティブ登録 ＆ アップセル境界線 (IKEA Effect & Paywall)
+   ========================================================================== */
+.public-profile-interactive-card {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 32px;
+  margin: 36px 0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.profile-interactive-header {
+  margin-bottom: 24px;
+}
+
+.step-badge {
+  display: inline-block;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.profile-interactive-header h2 {
+  font-size: 1.35rem;
+  color: #0f172a;
+  margin: 0 0 8px;
+  font-weight: 800;
+}
+
+.profile-interactive-header p {
+  font-size: 0.92rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.weapon-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.weapon-card {
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.weapon-card:hover {
+  border-color: #94a3b8;
+  background: #ffffff;
+}
+
+.weapon-card.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.weapon-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.weapon-radio {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.weapon-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: #cbd5e1;
+  color: #1e293b;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.weapon-card.selected .weapon-tag {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.weapon-card h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.weapon-desc {
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  color: #475569;
+  line-height: 1.45;
+  flex: 1;
+}
+
+.weapon-target {
+  font-size: 0.72rem;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 8px;
+}
+
+.weapon-action-box {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.weapon-action-status p {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.weapon-action-status small {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.saved-success-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.saved-badge {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #166534;
+  background: #dcfce7;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.saved-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 有料アップセルの壁 (Paywall Banner) */
+.upsell-paywall-banner {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 10px;
+  padding: 24px 28px;
+  color: #ffffff;
+}
+
+.upsell-badge {
+  display: inline-block;
+  background: #f59e0b;
+  color: #0f172a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  letter-spacing: 0.03em;
+}
+
+.upsell-content h3 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.upsell-content p {
+  margin: 0 0 18px;
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.upsell-content strong {
+  color: #38bdf8;
+}
+
+.upsell-action {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.upsell-action .button {
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 800;
+  padding: 12px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+}
+
+.upsell-action .button:hover {
+  background: #059669;
+}
+
+.upsell-action small {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+@media (max-width: 850px) {
+  .weapon-selector-grid {
+    grid-template-columns: 1fr;
+  }
+  .weapon-action-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .saved-success-box {
+    align-items: stretch;
+  }
+  .saved-links {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

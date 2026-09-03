@@ -141,12 +141,12 @@ export function ResultClient() {
         {sample ? <p className="sample-note">画面の使い方を見るためのサンプルです。実在の診断結果ではありません。</p> : null}
         {!sample ? displayWarnings.map((warning) => <p className="report-warning" key={warning}>{warning}</p>) : null}
 
-        {/* 【入力しただけで強くなった！】AI専用公式データベースの即時配備完了バナー */}
+        {/* 【AI公式データベースの登録準備完了バナー】 */}
         <div className="instant-empower-banner">
-          <div className="instant-empower-badge">🎉 即時強化完了</div>
+          <div className="instant-empower-badge">💡 登録準備完了</div>
           <div className="instant-empower-main">
-            <h3>{result.discovery.brandName} 専用の「AI公式データベース」を即座に構築しました</h3>
-            <p>自社サイトの改修は不要です。主要な生成AI（ChatGPTやGemini等）が直接参照して推薦に使う専用ページ（構造化データ付き）を自動生成しました。下の【ステップ1】で公開内容を確認できます。</p>
+            <h3>{result.discovery.brandName} 専用の「AI公式データベース」を配備可能です</h3>
+            <p>自社サイトの改修は不要です。御社がAIに最も強くアピールしたい看板を、下の【ステップ1】で1つ選んで無料登録してください。</p>
           </div>
         </div>
       </div>
