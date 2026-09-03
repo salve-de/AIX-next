@@ -12,8 +12,8 @@ test("derivePositioningAdvice: 競合の弱点、自社の看板、全方位発�
   assert.ok(positioning.competitorWeaknesses.length > 0, "競合の弱点が1件以上存在すること");
   for (const item of positioning.competitorWeaknesses) {
     assert.ok(item.competitor, "競合名が存在すること");
-    assert.ok(item.weakness, "弱点が存在すること");
-    assert.ok(item.rationale, "理由が存在すること");
+    assert.ok(item.weakness.length > 5, "弱点・隙間の説明が存在すること");
+    assert.ok(item.rationale.length > 10, "選ばれる理由が存在すること");
   }
 
   assert.equal(positioning.actionableMessages.length, 3, "発信文が3チャネル分存在すること");

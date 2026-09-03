@@ -98,11 +98,10 @@ export function ReportActions({ result, sample = false }: ReportActionsProps) {
   }
 
   return <div className="report-actions" aria-label="結果を保存する">
-    <span className="report-actions-label">結果を保存</span>
-    <button type="button" onClick={() => download(`${filename}.md`, markdownReport(result), "text/markdown;charset=utf-8")}>要約を取得</button>
-    <button type="button" onClick={() => download(`${filename}.csv`, lostPromptCsv(result), "text/csv;charset=utf-8")}>質問をCSVで取得</button>
-    <button type="button" onClick={() => download(`${filename}.json`, JSON.stringify(reportPayload(result), null, 2), "application/json;charset=utf-8")}>JSONを取得</button>
-    <button type="button" onClick={() => window.print()}>印刷 / PDF</button>
-    {!sample ? <button type="button" onClick={() => void copyLink()}>{copied ? "リンクをコピーしました" : "結果リンクをコピー"}</button> : null}
+    <span className="report-actions-label">カルテの保存</span>
+    <button type="button" onClick={() => window.print()}>印刷 / PDF保存</button>
+    <button type="button" onClick={() => download(`${filename}.csv`, lostPromptCsv(result), "text/csv;charset=utf-8")}>質問一覧（CSV）</button>
+    <button type="button" onClick={() => download(`${filename}.md`, markdownReport(result), "text/markdown;charset=utf-8")}>要約テキスト</button>
+    {!sample ? <button type="button" onClick={() => void copyLink()}>{copied ? "✓ リンクをコピーしました" : "結果リンクをコピー"}</button> : null}
   </div>;
 }

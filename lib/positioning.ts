@@ -6,69 +6,71 @@ export function derivePositioningAdvice(result: ScanResult): PositioningAdvice {
   const competitors = result.competitors.slice(0, 3);
   const primaryGap = result.evidenceGaps[0];
   const primaryLoss = result.lostPrompts[0];
+  const gapLabel = primaryGap?.label || "選ぶ理由";
+  const audience = result.discovery.targetCustomers[0] || "検討中の顧客";
 
-  // 競合ごとの典型的な弱点パターンの導出
+  // 競合各社が対応しきれていない「隙間・構造的な弱み」を整理
   const competitorWeaknesses: CompetitorWeakness[] = competitors.map((comp, idx) => {
     if (idx === 0) {
       return {
         competitor: comp.name,
-        weakness: "大手・汎用型ゆえに、個別ニーズへの柔軟な対応や即時小ロット対応が難しい",
-        rationale: `AIの回答では「知名度や実績」で選ばれていますが、「細かな要望への小回り」や「特定用途への特化度」では比較の隙が存在します。`,
+        weakness: "大手・知名度重視のため、細かな要望への柔軟な対応や特急・小ロット対応が難しい",
+        rationale: `AIは「知名度や一般的な実績」で${comp.name}を先に挙げやすい傾向がありますが、「細かな小回り」や「個別対応の早さ」を求める買い手の質問では、自社が選ばれる大きな隙間が存在します。`,
       };
     }
     if (idx === 1) {
       return {
         competitor: comp.name,
-        weakness: "機能やラインナップは広いが、導入・購入までの期間や手順が重い",
-        rationale: `比較質問において、手続きの煩雑さや初期ハードルに関する公開情報が不足しており、スピード感を求める顧客を取りこぼしています。`,
+        weakness: "品揃えや機能は広いが、相談から納品・利用開始までの手続きやハードルが重い",
+        rationale: `比較検討の段階で「いますぐ相談したい」「手軽に試したい」と考える顧客にとって、${comp.name}の手順の重さは離脱要因になりやすく、自社の身軽さが強みになります。`,
       };
     }
     return {
       competitor: comp.name,
-      weakness: "特定セグメントへの深掘りや、明確な差別化の根拠（こだわり・数値）が薄い",
-      rationale: `一般的なスペック表示に留まっており、買い手が「なぜここでなければならないのか」を判断するための決定打が示されていません。`,
+      weakness: "一般的なスペック表示にとどまり、「なぜここを選ぶべきか」という決定打のこだわりが薄い",
+      rationale: `ネット上の公開情報が画一的なため、強いこだわりや特定の用途を持つ買い手に対して、自社の専門特化の看板が明確な差別化として刺さります。`,
     };
   });
 
   if (!competitorWeaknesses.length) {
     competitorWeaknesses.push({
-      competitor: "大手既存ベンダー",
-      weakness: "大量生産・標準化ゆえの柔軟性・特急対応の不足",
-      rationale: "大手が対応しきれないニッチな要望やスピード対応が狙い目です。",
+      competitor: "大手・先行ライバル各社",
+      weakness: "画一的なサービス・商品展開ゆえの、柔軟性・個別対応力の不足",
+      rationale: "大手がカバーしきれない細かなニーズや、即座の相談対応にこそ、自社が選ばれる最大の商機があります。",
     });
   }
 
-  // 自社が勝てる看板（ポジショニング）
+  // 自社が選ばれる看板（独自の強み）
   const winningAngle = primaryGap?.label
-    ? `【${primaryGap.label}】に特化した、${brand}だけの直行便ポジション`
+    ? `「${primaryGap.label}」に妥協しない、${brand}だけの特化ポジション`
     : `大手・競合が対応できない「小回り・即応・高品質」の駆け込み寺`;
 
   const summary = primaryLoss?.winner
-    ? `AIは現在、知名度や一般情報で「${primaryLoss.winner}」を先に推薦しています。しかし、競合がカバーしきれない「${primaryGap?.label || "具体的対応力"}」を明確な看板として掲げることで、特定のこだわりを持つ買い手の質問で1位逆転を狙えます。`
-    : `${market}において、競合の隙間となる「特化型の強み」を前面に出すことで、AIが『この用途ならここ一択』と自信を持って推薦する状態を作れます。`;
+    ? `AIは現在、知名度や一般的な情報量で「${primaryLoss.winner}」を先に勧めています。しかし、競合が対応しきれない「小回りや独自のこだわり（${gapLabel}）」をネットやSNSで明確に宣言することで、真剣に比較している買い手の質問で1位推薦を狙えます。`
+    : `${market}において、ライバルの隙間となる「確かなこだわり」を前面に出すことで、AIが『このお悩みならここ一択』と迷わず推薦する状態をつくります。`;
 
-  // 全方位のアクション指示（SNS/ブログ/チラシ/プロフィール）
+  // そのまま使える紹介文（SNSプロフィール・ブログ・チラシ）
   const actionableMessages: ActionableMessage[] = [
     {
       channel: "profile",
       channelLabel: "公式SNS・Webプロフィール（X / Instagram / HP概要）",
-      headline: "1行目で「誰のどんな困りごとを解決するか」を宣言する",
-      copy: `【${brand}】${market}の専門。${primaryGap?.label ? `「${primaryGap.label}」に妥協したくない方へ。` : "大手にはない即応性と高品質。"}1個・少量からご相談可能。詳細・お問い合わせはこちら→`,
-      instruction: "アカウントのプロフィール冒頭にそのままコピペして設定してください。AIのクローラーが最優先で参照する要約情報になります。",
+      headline: "最初の1行で「誰のどんなお悩みを解決するか」を宣言する",
+      copy: `【${brand}】${market}の専門。${audience}向けに、他社で対応が難しかった方もご安心ください。${gapLabel}にこだわり、1点・少量から丁寧・迅速に対応いたします。実績やお問い合わせはこちら→`,
+      instruction: "X（旧Twitter）、Instagram、自社サイトの会社概要など、プロフィールの1行目にそのままコピペして設定してください。AIの読み取り優先度が最も高い情報です。",
     },
     {
       channel: "blog",
       channelLabel: "自社ブログ・note・お知らせ記事",
-      headline: "「競合で断られた顧客の事例」を具体的なストーリーで書く",
-      copy: `タイトル: 「他社で納期や条件が合わなかったお客様へ。${brand}が選ばれている3つの理由」\n\n本文骨子:\n1. 多くの会社が対応できない理由（業界の構造的課題）\n2. ${brand}がそれを実現できている仕組みと現場の工夫\n3. 実際にご利用いただいたお客様の声と具体的な対応実績（数値・期間）`,
-      instruction: "記事として公開後、URLをサイト内からリンクしてください。AIが『比較検討記事』として高確率で引用元（Citation）に採用します。",
+      headline: "「他社で断られたお客様の事例」をストーリーで届ける",
+      copy: `記事タイトル: 「他社で条件が合わなかったお客様へ。${brand}が選ばれ続けている3つの理由」\n\n構成案:\n1. 業界でよくあるお悩み（納期・ロット・価格・相談のしにくさ）\n2. ${brand}だからこそ柔軟に対応できる仕組みと、現場のこだわり\n3. 実際にご利用いただいたお客様の声と具体的な実績\n4. まずはお気軽にご相談ください（お問い合わせ窓口）`,
+      instruction: "この構成に沿って記事を作成し、自社サイトに投稿してください。AIが『比較検討の信頼できる根拠』として優先的に引用元（参考リンク）に採用します。",
     },
     {
       channel: "flyer",
-      channelLabel: "商品同梱状・展示会チラシ・名刺裏面",
-      headline: "オフラインの印刷物にもAI検索される「指名フレーズ」を刷り込む",
-      copy: `「${market}でお困りなら、まず${brand}へ」\n大手で断られた特注・こだわり品も迅速対応。\nネット検索・AIで『${brand} ${primaryGap?.label || "特徴"}』と検索してください。`,
-      instruction: "顧客やバイヤーが手元でスマホやChatGPTを開いた際に、迷わず自社の特徴をプロンプトに入力させることができます。",
+      channelLabel: "展示会チラシ・商品同梱状・名刺裏面",
+      headline: "手元に届いたお客様が、AIやネットで検索するキッカケをつくる",
+      copy: `「${market}でお困りなら、まず一度${brand}へご相談ください」\n大手にはできない小回りと、確かなこだわり品質。\nネット検索・AIで『${brand} ${gapLabel}』と検索していただければ、詳しい実績をご確認いただけます。`,
+      instruction: "チラシや名刺、商品に同封する手紙にそのまま印刷してください。手元でスマホやChatGPTを開いた顧客が、迷わず自社の名前で検索するようになります。",
     },
   ];
 
