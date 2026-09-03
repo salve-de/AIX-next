@@ -10,12 +10,19 @@ export default function HomePage() {
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
-        <p className="overline">自社サイトがなくてもOK・会社名を入れるだけで診断</p>
+        <p className="overline">自社サイトがなくてもOK・Instagramアカウントや会社名で即時診断</p>
         <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
-        <p className="landing-hero-lead">会社名や商品名を入れるだけで、AIが競合を先に勧めた理由と勝てる看板がわかります。自社サイトがない企業様も、会社名だけでAI専用の公式Web拠点を即時発行できます。</p>
+        <p className="landing-hero-lead">会社名や店舗名、Instagramアカウントを入れるだけで、AIが競合を先に勧めた理由と勝てる看板がわかります。自社サイトがない企業様も、制作費ゼロでAI専用の公式Web拠点を即時発行できます。</p>
         
+        {/* ホームページ未開設・Instagram運用中企業への救済バナー */}
+        <div className="landing-no-site-banner">
+          <span className="no-site-pill">自社サイト未開設・Instagram運用中の企業様へ</span>
+          <strong>数十万円のホームページ制作は不要です。</strong>
+          <span>会社名やInstagramアカウント（@username）から、AIが100%読み取る世界唯一の公式Web拠点を即座に無料発行できます。</span>
+        </div>
+
         {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
-        <div style={{ maxWidth: "800px", margin: "24px auto 36px" }}>
+        <div style={{ maxWidth: "800px", margin: "20px auto 36px" }}>
           <ScanForm />
         </div>
 

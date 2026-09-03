@@ -3542,3 +3542,42 @@ svg { width: 1.1em; height: 1.1em; }
   gap: 12px;
   margin-top: 10px;
 }
+
+/* トップページ救済バナー */
+.landing-no-site-banner {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin: 16px auto 20px;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+}
+
+.landing-no-site-banner .no-site-pill {
+  background: #16a34a;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  margin-bottom: 2px;
+}
+
+.landing-no-site-banner strong {
+  font-size: 0.95rem;
+  color: #14532d;
+  font-weight: 800;
+}
+
+.landing-no-site-banner span {
+  font-size: 0.82rem;
+  color: #166534;
+  line-height: 1.5;
+}

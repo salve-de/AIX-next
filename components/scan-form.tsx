@@ -18,8 +18,10 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
   }
 
   return <form className={`scan-form ${compact ? "scan-form-compact" : ""}`} id={compact ? undefined : "scan"} onSubmit={submit} noValidate>
-    <div className="scan-field"><input aria-label="会社名・商品名・店舗名・URL" autoCapitalize="none" autoCorrect="off" inputMode="text" placeholder="例: 会社名、店舗名、商品名、またはホームページURL" value={input} onChange={(event) => setInput(event.target.value)} /><button type="submit"><span>{compact ? "無料で診断" : "無料で理由を診断する"}</span><ArrowIcon /></button></div>
-    <p className="scan-form-note">会社名・店舗名・URLに対応。自社サイトがない企業様も、会社名だけでAI専用の公式Web拠点を即時発行できます。</p>
+    <div className="scan-field"><input aria-label="会社名・商品名・店舗名・Instagramアカウント・URL" autoCapitalize="none" autoCorrect="off" inputMode="text" placeholder="例: 会社名、店舗名、@instagram_id、またはHPのURL" value={input} onChange={(event) => setInput(event.target.value)} /><button type="submit"><span>{compact ? "無料で診断" : "無料で理由を診断する"}</span><ArrowIcon /></button></div>
+    <p className="scan-form-note">
+      【HPがなくてもOK】会社名・店舗名・<strong>Instagramアカウント（@アカウント名やURL）</strong>に対応。インスタをホームページ代わりにしている個人店・農家様も、AI専用の公式Web拠点を即時発行できます。
+    </p>
     {error ? <p className="form-error" role="alert">{error}</p> : null}
   </form>;
 }

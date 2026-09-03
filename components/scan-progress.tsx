@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { SiteHeader } from "@/components/site-header";
 import { ArrowIcon } from "@/components/icons";
 import { isUrlInput } from "@/lib/input-kind";
+import { parseSocialInput } from "@/lib/social-input";
 import type { InputResolutionCandidate } from "@/lib/input-resolution";
 import type { ScanProgressEvent, ScanStage } from "@/lib/types";
 
@@ -40,11 +41,12 @@ export function ScanProgress() {
   const router = useRouter();
   const params = useSearchParams();
   const rawInput = useMemo(() => (params.get("input") || params.get("url") || "").trim(), [params]);
+  const socialInfo = useMemo(() => parseSocialInput(rawInput), [rawInput]);
   const directUrl = useMemo(() => isUrlInput(rawInput) ? normalize(rawInput) : "", [rawInput]);
   const controller = useRef<AbortController | null>(null);
   const startedScan = useRef("");
   const resolvedInput = useRef("");
-  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site">("resolving");
+  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site">("resolving");
   const [candidates, setCandidates] = useState<InputResolutionCandidate[]>([]);
   const [selectedUrl, setSelectedUrl] = useState("");
   const [stage, setStage] = useState<ScanStage>("created");
@@ -52,7 +54,12 @@ export function ScanProgress() {
   const [message, setMessage] = useState("診断を準備しています。");
   const [detail, setDetail] = useState("診断先を確認しています");
   const [error, setError] = useState("");
-  const [directMarket, setDirectMarket] = useState("専門技術・加工・サービス");
+  const [directBrandName, setDirectBrandName] = useState(
+    socialInfo.username ? socialInfo.username : rawInput
+  );
+  const [directMarket, setDirectMarket] = useState(
+    socialInfo.isSocial ? "飲食・美容・小売・地域サービス" : "専門技術・加工・サービス"
+  );
   const [directLocation, setDirectLocation] = useState("全国対応 / 地域密着");
   const [directCreating, setDirectCreating] = useState(false);
 
@@ -60,15 +67,16 @@ export function ScanProgress() {
     setDirectCreating(true);
     setError("");
     try {
+      const finalBrand = (directBrandName || rawInput).trim();
       const response = await fetch("/api/ai-profile", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           action: "create_direct",
-          brandName: rawInput,
+          brandName: finalBrand,
           market: directMarket,
           location: directLocation,
-          summary: `${rawInput}の公式エンタープライズ・ナレッジ台帳。自社サイトを持たない企業様向けに直接発行された、主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`,
+          summary: `${finalBrand}の公式エンタープライズ・ナレッジ台帳。${socialInfo.isSocial ? `${socialInfo.displayLabel || "SNS"}公式アカウントと連携し、` : "自社サイトを持たない企業様向けに直接発行され、"}主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`,
         }),
       });
       const data = await response.json();
@@ -80,7 +88,7 @@ export function ScanProgress() {
       setError(caught instanceof Error ? caught.message : "公式Web拠点の発行に失敗しました。");
       setDirectCreating(false);
     }
-  }, [directLocation, directMarket, rawInput, router]);
+  }, [directBrandName, directLocation, directMarket, rawInput, router, socialInfo.displayLabel, socialInfo.isSocial]);
 
   const startScan = useCallback(async (inputUrl: string) => {
     const targetUrl = normalize(inputUrl);
@@ -147,6 +155,12 @@ export function ScanProgress() {
       setError("会社名・商品名・サービス名・URLがありません。");
       return () => undefined;
     }
+    if (socialInfo.isSocial) {
+      setPhase("social_site");
+      setMessage("Instagram等のSNS連携フロー");
+      setDetail("SNSアカウントからAI公式Web拠点を発行します");
+      return () => undefined;
+    }
     if (isUrlInput(rawInput)) {
       if (startedScan.current !== directUrl) void startScan(directUrl);
       return () => controller.current?.abort();
@@ -186,7 +200,7 @@ export function ScanProgress() {
     }
     void resolve();
     return () => abort.abort();
-  }, [candidates.length, directUrl, rawInput, startScan]);
+  }, [candidates.length, directUrl, rawInput, socialInfo.isSocial, startScan]);
 
   const targetHost = hostOf(selectedUrl || directUrl);
   const isDirectTarget = isUrlInput(rawInput);
@@ -281,6 +295,72 @@ export function ScanProgress() {
                 {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
                 <small className="no-site-small-note">
                   ※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。
+                </small>
+              </div>
+              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
+                ← 別の会社名やURLでやり直す
+              </button>
+            </div>
+          ) : null}
+          {phase === "social_site" ? (
+            <div className="scan-no-site-container">
+              <div className="no-site-card">
+                <span className="no-site-tag" style={{ background: "linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)", color: "#fff" }}>
+                  {socialInfo.displayLabel || "Instagram連携モード"}
+                </span>
+                <h3>Instagramをホームページ代わりにされている事業者様へ</h3>
+                <p>
+                  Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため<strong>生成AI（ChatGPTやGemini）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。</strong><br />
+                  AIXなら、SNSアカウントから<strong>AIが100%読み取れる公式Web拠点（公的ナレッジ台帳）</strong>を即座に無料発行できます。
+                </p>
+
+                <div className="no-site-form-grid">
+                  <div className="no-site-input-group">
+                    <label>店舗名・屋号・ブランド名</label>
+                    <input
+                      type="text"
+                      value={directBrandName}
+                      onChange={(e) => setDirectBrandName(e.target.value)}
+                      placeholder="例: サロン名、店舗名、農園名"
+                    />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>専門ジャンル・主な取扱メニュー</label>
+                    <input
+                      type="text"
+                      value={directMarket}
+                      onChange={(e) => setDirectMarket(e.target.value)}
+                      placeholder="例: オーガニックカフェ、プライベートサロン、産直野菜"
+                    />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>所在地・店舗エリア</label>
+                    <input
+                      type="text"
+                      value={directLocation}
+                      onChange={(e) => setDirectLocation(e.target.value)}
+                      placeholder="例: 東京都目黒区 / 自由が丘駅徒歩3分"
+                    />
+                  </div>
+                </div>
+
+                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
+                  <div className="no-site-target-brand">
+                    <span>連携SNSアカウント：</span>
+                    <strong>{socialInfo.displayLabel || rawInput}</strong>
+                  </div>
+                  <button
+                    className="button button-primary scan-resolve-start"
+                    type="button"
+                    disabled={directCreating}
+                    onClick={() => void createDirectProfile()}
+                  >
+                    {directCreating ? "公式拠点を即時発行中…" : "Instagram連携のAI公式Web拠点を無料発行する"} <ArrowIcon />
+                  </button>
+                </div>
+                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
+                <small className="no-site-small-note">
+                  ※発行されたURLは、Instagramのプロフィール欄（リンク）に貼ることで、フォロワーにもAIにも伝わる公式拠点として機能します。
                 </small>
               </div>
               <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
