@@ -3936,3 +3936,13 @@ svg { width: 1.1em; height: 1.1em; }
   font-size: 0.78rem;
   color: #475569;
 }
+
+/* ダイレクト発行・SNS連携専用ステージ（1カラム中央配置） */
+.direct-entry-stage {
+  max-width: 800px;
+  margin: 48px auto 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}

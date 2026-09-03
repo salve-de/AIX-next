@@ -286,8 +286,8 @@ export function ScanProgress() {
     return (
       <main className="scan-page">
         <SiteHeader compact />
-        <section className="scan-stage shell" style={{ maxWidth: "800px", margin: "40px auto 60px", width: "100%" }}>
-          <div className="no-site-card" style={{ padding: "32px", background: "#ffffff", borderRadius: "12px", border: "1.5px solid #cbd5e1", boxShadow: "0 10px 25px -5px rgba(15, 23, 42, 0.08)" }}>
+        <section className="direct-entry-stage shell">
+          <div className="no-site-card" style={{ padding: "36px", background: "#ffffff", borderRadius: "12px", border: "1.5px solid #cbd5e1", boxShadow: "0 10px 25px -5px rgba(15, 23, 42, 0.08)", width: "100%" }}>
             <div style={{ marginBottom: "14px" }}>
               <span
                 className="no-site-tag"
