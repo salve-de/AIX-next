@@ -253,12 +253,27 @@ export type StrategyOption = {
   };
 };
 
+export type StrategicGroundingFaq = {
+  id: string;
+  q: string;
+  aiObservations: {
+    chatgpt: string;
+    gemini: string;
+    claude: string;
+    perplexity: string;
+  };
+  vulnerabilityAnalysis: string;
+  databaseStrategy: string;
+  canonicalGroundingAnswer: string;
+};
+
 export type PositioningAdvice = {
   winningAngle: string;
   summary: string;
   competitorWeaknesses: CompetitorWeakness[];
   actionableMessages: ActionableMessage[];
   strategies?: StrategyOption[];
+  strategicFaqs?: StrategicGroundingFaq[];
 };
 
 export type ChangePack = {

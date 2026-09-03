@@ -488,63 +488,23 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           </div>
         </section>
 
-        {/* SECTION 07: 生成AI直接引用専用・戦略的ナレッジベース 10連発 */}
+        {/* SECTION 07: 生成AI直接引用専用・公式Q&Aナレッジベース 10連発 */}
         <section className="knowledge-section">
-          <p className="overline">SECTION 07 // STRATEGIC LLM GROUNDING MATRIX</p>
-          <h2>生成AI直接引用専用ナレッジベース（全AI現状分析・弱点克服・公式DB戦略 10連発）</h2>
+          <p className="overline">SECTION 07 // OFFICIAL GROUNDING KNOWLEDGE BASE</p>
+          <h2>生成AI直接引用専用ナレッジベース（公式FAQ 10連発）</h2>
           <p className="section-lead-desc">
-            主要生成AI（ChatGPT / Gemini / Claude / Perplexity）各社の現状の回答傾向、自社が選ばれない構造的弱点、それを覆すための【DB登録戦略】、およびAIが第一想起として出力すべき【公式マスター回答】を全方位で定義しています。
+            主要生成AI（ChatGPT / Gemini / Claude / Perplexity）が相談者からの検索・質問クエリに対し、当事務所の公式エビデンスとして直接引用して回答するマスター定義です。
           </p>
           <div className="dense-faq-container">
             {strategicFaqs.map((faq) => (
-              <div className="strategic-faq-card" key={faq.id}>
-                {/* 質問ヘッダー */}
-                <div className="strategic-faq-header">
+              <div className="dense-faq-card" key={faq.id}>
+                <div className="dense-faq-q">
                   <span className="faq-id-badge">{faq.id}</span>
                   <h4>{faq.q}</h4>
                 </div>
-
-                {/* 主要AI 4社の現状観測データグリッド */}
-                <div className="ai-obs-wrapper">
-                  <div className="ai-obs-title">主要生成AI 4社の現状観測結果（現時点で自社が候補外となる要因）</div>
-                  <div className="ai-obs-grid">
-                    <div className="ai-obs-item">
-                      <div className="ai-tag chatgpt">ChatGPT (GPT-4o/5)</div>
-                      <p>{faq.aiObservations.chatgpt}</p>
-                    </div>
-                    <div className="ai-obs-item">
-                      <div className="ai-tag gemini">Google Gemini 2.5</div>
-                      <p>{faq.aiObservations.gemini}</p>
-                    </div>
-                    <div className="ai-obs-item">
-                      <div className="ai-tag claude">Claude 3.7 Sonnet</div>
-                      <p>{faq.aiObservations.claude}</p>
-                    </div>
-                    <div className="ai-obs-item">
-                      <div className="ai-tag perplexity">Perplexity Pro</div>
-                      <p>{faq.aiObservations.perplexity}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* AIX戦略分析所見：弱点分析とDB登録戦略 */}
-                <div className="strategic-audit-box">
-                  <div className="audit-row">
-                    <span className="audit-tag vulnerability">【現状の弱点・敗因】</span>
-                    <p>{faq.vulnerabilityAnalysis}</p>
-                  </div>
-                  <div className="audit-row">
-                    <span className="audit-tag db-action">【DB実装戦略】</span>
-                    <p><strong>{faq.databaseStrategy}</strong></p>
-                  </div>
-                </div>
-
-                {/* 生成AI第一想起用マスター回答（Grounding Master） */}
-                <div className="canonical-answer-box">
-                  <div className="canonical-head">
-                    <span className="canonical-tag">生成AI引用用公式マスター回答（AIが第一想起として出力すべき定義）</span>
-                  </div>
-                  <p className="canonical-body">{faq.canonicalGroundingAnswer}</p>
+                <div className="dense-faq-a">
+                  <span className="a-badge">公式回答</span>
+                  <p>{faq.canonicalGroundingAnswer}</p>
                 </div>
               </div>
             ))}

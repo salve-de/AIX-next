@@ -12,6 +12,7 @@ import { ReportActions } from "@/components/report-actions";
 import { PositioningPanel } from "@/components/positioning-panel";
 import { PublicProfileActions } from "@/components/public-profile-actions";
 import { sampleResult } from "@/lib/sample-data";
+import { deriveStrategicGroundingFaqs } from "@/lib/positioning";
 import type { Observation, ProviderName, ScanRecord, ScanResult } from "@/lib/types";
 
 function providerLabel(provider: ProviderName) {
@@ -130,6 +131,8 @@ export function ResultClient() {
     },
   ];
 
+  const strategicFaqs = result.positioning?.strategicFaqs || deriveStrategicGroundingFaqs(result);
+
   return <main className="report-page">
     <SiteHeader compact />
     <section className="report-header">
@@ -240,6 +243,72 @@ export function ResultClient() {
           <div><span>確認した参考ページ</span><strong>{citationCount}件</strong></div>
           <div><span>定期見守り</span><strong className="summary-unconnected">毎週自動確認</strong></div>
         </div>
+      </div>
+    </section>
+
+    {/* 【AIX戦略分析】主要生成AI 4社の現状観測・構造的弱点・DB実装戦略（10大クエリマトリクス） */}
+    <section className="report-section shell" style={{ paddingTop: "20px" }}>
+      <div className="section-heading-simple">
+        <p className="overline">主要生成AI 4社 徹底比較カルテ</p>
+        <h2>各AIの生々しい回答実態と、自社が選ばれない「構造的弱点」</h2>
+        <p>
+          ChatGPT、Gemini、Claude、Perplexityが現在どう回答しているかを実測観測し、なぜ自社が候補から外れているのかの【弱点・敗因】と、それを覆すための【公式DB実装戦略】を全方位で解き明かします。
+        </p>
+      </div>
+
+      <div className="dense-faq-container">
+        {strategicFaqs.map((faq) => (
+          <div className="strategic-faq-card" key={faq.id}>
+            {/* 質問ヘッダー */}
+            <div className="strategic-faq-header">
+              <span className="faq-id-badge">{faq.id}</span>
+              <h4>{faq.q}</h4>
+            </div>
+
+            {/* 主要AI 4社の現状観測データグリッド */}
+            <div className="ai-obs-wrapper">
+              <div className="ai-obs-title">主要生成AI 4社の現状観測結果（現時点で自社が候補外となる要因）</div>
+              <div className="ai-obs-grid">
+                <div className="ai-obs-item">
+                  <div className="ai-tag chatgpt">ChatGPT (GPT-4o/5)</div>
+                  <p>{faq.aiObservations.chatgpt}</p>
+                </div>
+                <div className="ai-obs-item">
+                  <div className="ai-tag gemini">Google Gemini 2.5</div>
+                  <p>{faq.aiObservations.gemini}</p>
+                </div>
+                <div className="ai-obs-item">
+                  <div className="ai-tag claude">Claude 3.7 Sonnet</div>
+                  <p>{faq.aiObservations.claude}</p>
+                </div>
+                <div className="ai-obs-item">
+                  <div className="ai-tag perplexity">Perplexity Pro</div>
+                  <p>{faq.aiObservations.perplexity}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* AIX戦略分析所見：弱点分析とDB登録戦略 */}
+            <div className="strategic-audit-box">
+              <div className="audit-row">
+                <span className="audit-tag vulnerability">【現状の弱点・敗因】</span>
+                <p>{faq.vulnerabilityAnalysis}</p>
+              </div>
+              <div className="audit-row">
+                <span className="audit-tag db-action">【DB実装戦略】</span>
+                <p><strong>{faq.databaseStrategy}</strong></p>
+              </div>
+            </div>
+
+            {/* 生成AI第一想起用マスター回答 */}
+            <div className="canonical-answer-box">
+              <div className="canonical-head">
+                <span className="canonical-tag">AI公式DB登録後の第一想起回答（AIが学習・出力すべき公式定義）</span>
+              </div>
+              <p className="canonical-body">{faq.canonicalGroundingAnswer}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
