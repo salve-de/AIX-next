@@ -1626,43 +1626,58 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 /* ==========================================================================
-   Positioning 軍師カルテ & オートパイロット
+   Positioning 戦略提言 & 運用体制比較 (Executive Consulting Style)
    ========================================================================== */
-.loss-alert-box {
-  background: #fff1f2;
-  border: 2px solid #fda4af;
+.audit-executive-summary {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid var(--navy, #0f172a);
   border-radius: 8px;
-  padding: 20px 24px;
-  margin-bottom: 24px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
-.loss-alert-badge {
+.audit-summary-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.audit-label {
   display: inline-block;
-  background: #e11d48;
+  background: var(--navy, #0f172a);
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
   padding: 3px 8px;
   border-radius: 4px;
   letter-spacing: 0.05em;
-  align-self: flex-start;
+  text-transform: uppercase;
 }
 
-.loss-alert-main strong {
-  display: block;
-  font-size: 1.15rem;
-  color: #9f1239;
-  margin-bottom: 6px;
-}
-
-.loss-alert-main p {
+.audit-summary-header h3 {
   margin: 0;
-  font-size: 0.88rem;
-  color: #881337;
-  line-height: 1.5;
+  font-size: 1.15rem;
+  color: var(--navy, #0f172a);
+  font-weight: 800;
+}
+
+.audit-summary-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #334155;
+  line-height: 1.65;
+}
+
+.audit-summary-desc strong {
+  color: #0f172a;
+  background: #e2e8f0;
+  padding: 1px 4px;
+  border-radius: 2px;
 }
 
 .strategy-selector-tabs {

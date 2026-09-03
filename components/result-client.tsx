@@ -119,7 +119,7 @@ export function ResultClient() {
         {primaryLoss ? <p className="summary-question">「{primaryLoss.prompt}」</p> : null}
         <p>
           {primaryLoss
-            ? `御社の実力や親身な実績は本来ライバルに負けていません。しかし、ChatGPTがその価値を知らないため、知名度だけで${primaryWinner || "競合"}を優先してしまっています。下の作戦カルテから御社のこだわりを選び、AIに正しく教え込みましょう。`
+            ? `競合大手は全国的な認知量で先行していますが、貴社が長年培ってきた専門性や親身な対応自体に問題はありません。下の戦略提言から貴社の強みに合致するポジショニングを選択し、AI専用データベースに学習させましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
       </div>
@@ -177,21 +177,21 @@ export function ResultClient() {
       </div>
     </section>
 
-    {/* 5. 毎週の自動見守り（オートパイロット） */}
+    {/* 5. 毎週の自動見守り（継続モニタリング） */}
     <section className="report-watch" id="watch-plan">
       <div className="shell report-watch-inner">
         <div>
-          <p className="overline">【完全自動】AI推薦枠オートパイロット</p>
-          <h2>社長は本業・現場に集中してください。<br />AI推薦枠の死守は「完全自動」で代行します。</h2>
-          <p>毎週のライバル動向を24時間監視し、発行されたAI専用公式データベースを裏側で全自動メンテナンス。ChatGPTで御社が1位推薦され続けるよう最新状態を保ちます。あなたの作業は一生ゼロです。</p>
+          <p className="overline">継続的AI最適化プログラム</p>
+          <h2>AI検索市場の変動に合わせ、<br />貴社の推薦ポジションを継続管理します。</h2>
+          <p>毎週の競合動向を定点観測し、発行されたAI専用公式データベースの構造化データを最新状態へ自動更新。社内工数をかけることなく、AIからの第一想起ポジションを維持します。</p>
           <ul>
             <li>月額 10,780円（税込 / 税別 ¥9,800）</li>
-            <li>契約期間の縛りなし・いつでも1クリックで即時解約可能</li>
+            <li>契約期間の縛りなし・いつでも管理画面から即時停止可能</li>
             <li>最初14日間は全機能を無料でお試しいただけます</li>
           </ul>
         </div>
         <form onSubmit={startWatch}>
-          <label htmlFor="watch-email">ご連絡先メールアドレス（14日間無料体験）</label>
+          <label htmlFor="watch-email">ご連絡先メールアドレス（14日間無料トライアル）</label>
           <input id="watch-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.jp" />
           <button className="button button-primary" disabled={watchBusy}>{watchBusy ? "準備しています…" : "14日間無料で試してみる"}<ArrowIcon /></button>
           <small>見本画面では入力不要です。そのままお試しいただけます。</small>
