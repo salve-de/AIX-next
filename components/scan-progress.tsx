@@ -41,12 +41,13 @@ export function ScanProgress() {
   const router = useRouter();
   const params = useSearchParams();
   const rawInput = useMemo(() => (params.get("input") || params.get("url") || "").trim(), [params]);
+  const inputKind = params.get("kind");
   const socialInfo = useMemo(() => parseSocialInput(rawInput), [rawInput]);
   const directUrl = useMemo(() => isUrlInput(rawInput) ? normalize(rawInput) : "", [rawInput]);
   const controller = useRef<AbortController | null>(null);
   const startedScan = useRef("");
   const resolvedInput = useRef("");
-  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site">("resolving");
+  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site" | "product_site">("resolving");
   const [candidates, setCandidates] = useState<InputResolutionCandidate[]>([]);
   const [selectedUrl, setSelectedUrl] = useState("");
   const [stage, setStage] = useState<ScanStage>("created");
@@ -58,9 +59,15 @@ export function ScanProgress() {
     socialInfo.username ? socialInfo.username : rawInput
   );
   const [directMarket, setDirectMarket] = useState(
-    socialInfo.isSocial ? "飲食・美容・小売・地域サービス" : "専門技術・加工・サービス"
+    inputKind === "product"
+      ? "D2Cブランド・特産品・プロダクト"
+      : socialInfo.isSocial
+      ? "飲食・美容・小売・地域サービス"
+      : "専門技術・加工・サービス"
   );
-  const [directLocation, setDirectLocation] = useState("全国対応 / 地域密着");
+  const [directLocation, setDirectLocation] = useState(
+    inputKind === "product" ? "全国通販・オンライン直販 / 発送" : "全国対応 / 地域密着"
+  );
   const [directCreating, setDirectCreating] = useState(false);
 
   const createDirectProfile = useCallback(async () => {
@@ -161,6 +168,12 @@ export function ScanProgress() {
       setDetail("SNSアカウントからAI公式Web拠点を発行します");
       return () => undefined;
     }
+    if (inputKind === "product") {
+      setPhase("product_site");
+      setMessage("商品・サービス専用の公式台帳フロー");
+      setDetail("商品名から直接AI推薦用台帳を発行します");
+      return () => undefined;
+    }
     if (isUrlInput(rawInput)) {
       if (startedScan.current !== directUrl) void startScan(directUrl);
       return () => controller.current?.abort();
@@ -200,7 +213,7 @@ export function ScanProgress() {
     }
     void resolve();
     return () => abort.abort();
-  }, [candidates.length, directUrl, rawInput, socialInfo.isSocial, startScan]);
+  }, [candidates.length, directUrl, inputKind, rawInput, socialInfo.isSocial, startScan]);
 
   const targetHost = hostOf(selectedUrl || directUrl);
   const isDirectTarget = isUrlInput(rawInput);
@@ -361,6 +374,72 @@ export function ScanProgress() {
                 {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
                 <small className="no-site-small-note">
                   ※発行されたURLは、Instagramのプロフィール欄（リンク）に貼ることで、フォロワーにもAIにも伝わる公式拠点として機能します。
+                </small>
+              </div>
+              <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>
+                ← 別の会社名やURLでやり直す
+              </button>
+            </div>
+          ) : null}
+          {phase === "product_site" ? (
+            <div className="scan-no-site-container">
+              <div className="no-site-card">
+                <span className="no-site-tag" style={{ background: "#7c3aed", color: "#fff" }}>
+                  📦 商品・サービス専用台帳モード
+                </span>
+                <h3>「{displayInput(rawInput)}」のAI推薦用公式台帳を発行します</h3>
+                <p>
+                  生成AI（ChatGPTやGemini）は「おすすめの〇〇（商品ジャンル）」を聞かれた際、<strong>商品名と用途、独自の強みがWeb上で構造化されていないと他社製品を優先推薦してしまいます。</strong><br />
+                  AIXなら、商品名・サービス名単体からでも、AIが第一想起で推薦する公式商品台帳（Product Knowledge Master）を即座に無料発行できます。
+                </p>
+
+                <div className="no-site-form-grid">
+                  <div className="no-site-input-group">
+                    <label>商品名・サービス名（ブランド名）</label>
+                    <input
+                      type="text"
+                      value={directBrandName}
+                      onChange={(e) => setDirectBrandName(e.target.value)}
+                      placeholder="例: 熟成黒にんにく、Nexoraクラウド、匠の包丁"
+                    />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>カテゴリー・主な用途</label>
+                    <input
+                      type="text"
+                      value={directMarket}
+                      onChange={(e) => setDirectMarket(e.target.value)}
+                      placeholder="例: 健康食品・滋養強壮、業務効率化SaaS、特注調理器具"
+                    />
+                  </div>
+                  <div className="no-site-input-group">
+                    <label>提供形態・購入方法</label>
+                    <input
+                      type="text"
+                      value={directLocation}
+                      onChange={(e) => setDirectLocation(e.target.value)}
+                      placeholder="例: 公式通販・全国送料無料 / 初回お試し1,980円"
+                    />
+                  </div>
+                </div>
+
+                <div className="no-site-action-row" style={{ marginTop: "18px" }}>
+                  <div className="no-site-target-brand">
+                    <span>発行対象プロダクト：</span>
+                    <strong>{directBrandName || rawInput}</strong>
+                  </div>
+                  <button
+                    className="button button-primary scan-resolve-start"
+                    type="button"
+                    disabled={directCreating}
+                    onClick={() => void createDirectProfile()}
+                  >
+                    {directCreating ? "商品台帳を即時発行中…" : "この商品のAI公式台帳を無料発行する"} <ArrowIcon />
+                  </button>
+                </div>
+                {error ? <p className="form-error" style={{ marginTop: "10px" }}>{error}</p> : null}
+                <small className="no-site-small-note">
+                  ※発行された商品台帳は、ChatGPTやGeminiなどのAIクローラーが「商品仕様・おすすめ理由」として直接引用・グラウンディングされます。
                 </small>
               </div>
               <button className="button button-secondary" type="button" onClick={() => router.push("/")} style={{ marginTop: "16px" }}>

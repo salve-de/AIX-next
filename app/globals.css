@@ -3581,3 +3581,47 @@ svg { width: 1.1em; height: 1.1em; }
   color: #166534;
   line-height: 1.5;
 }
+
+/* ピル型入力切り替えタブ */
+.scan-form-outer {
+  width: 100%;
+}
+
+.scan-type-pills {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pills-title {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #475569;
+}
+
+.scan-type-pill {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.scan-type-pill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.scan-type-pill.active {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+}
