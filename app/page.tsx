@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
+import { ChatGptComparisonVisual, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
 
 export default function HomePage() {
   return <main className="landing-page">
@@ -11,21 +11,27 @@ export default function HomePage() {
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
         <p className="overline">自社サイトの改修ゼロ・入力するだけで即時強化</p>
-        <h1>入力するだけで、AIに推薦される<br /><em>「専用データベース」を即時発行。</em></h1>
-        <p className="landing-hero-lead">特選ぶどう、試作ネジ、地域の名店、各種サービスに対応。会社名や商品名を入れるだけで、ChatGPTやGeminiが最も正確に読み取れる「AI公式ページ」を自動生成。さらに競合が対応できない隙間を突き、AIから指名買いされる看板と紹介文をお届けします。</p>
-        <ScanForm />
+        <h1>ChatGPTは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
+        <p className="landing-hero-lead">名前を入力するだけで、ChatGPTやGeminiが最も正確に読み取る「AI専用データベース」を即座に発行。ライバルに奪われていた客を、自社の指名買いへと逆転させます。</p>
+        
+        {/* 0.5秒で直感理解できるChatGPT比較チャットモック */}
+        <ChatGptComparisonVisual />
+
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+          <ScanForm />
+        </div>
         
         {/* ホームに訪れた瞬間にわかる「3つの即時価値」 */}
         <div className="hero-instant-grid" aria-label="入力するだけで手に入る3大価値">
           <article className="hero-instant-card">
             <span className="hero-instant-badge highlight">① 自社サイトの改修不要</span>
             <h3>AI専用公式データベースを即時発行</h3>
-            <p>ホームページをいじる必要はありません。ChatGPTやGeminiの検索エンジンが直接読み取りに来る専用ページ（構造化データ付き）をその場で自動発行し、AIに自社の存在を正しく認知させます。</p>
+            <p>自社のホームページをいじる必要はありません。AIの検索エンジンが直接読み取りに来る専用ページ（構造化データ付き）をその場で自動発行し、AIに自社の存在を正しく認知させます。</p>
           </article>
           <article className="hero-instant-card">
             <span className="hero-instant-badge">② 競合3社の隙間を解明</span>
             <h3>自社が勝てる「独自の看板」</h3>
-            <p>AIがなぜライバルばかりおすすめするのか、理由を解明。大手の小回りの利かなさや手続きの重さなど、ライバルが対応しきれていない隙間を突いた、自社だけの選ばれる看板を特定します。</p>
+            <p>AIがなぜライバルばかりおすすめするのか理由を解明。大手の小回りの利かなさや手続きの重さなど、ライバルが対応しきれていない隙間を突いた、自社だけの選ばれる看板を特定します。</p>
           </article>
           <article className="hero-instant-card">
             <span className="hero-instant-badge">③ 考える手間ゼロ</span>

@@ -1434,3 +1434,193 @@ svg { width: 1.1em; height: 1.1em; }
     padding-top: 20px;
   }
 }
+
+/* ==========================================================================
+   ChatGPT Comparison Chat Mock (0.5-Second Intuitive Visual)
+   ========================================================================== */
+.chatgpt-compare-container {
+  max-width: 960px;
+  margin: 32px auto 40px;
+  text-align: left;
+}
+
+.chatgpt-tab-bar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.chatgpt-tab {
+  padding: 8px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--line-strong, #cbd5e1);
+  background: var(--white, #ffffff);
+  color: var(--ink-soft, #475569);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chatgpt-tab.active {
+  background: var(--navy, #0f172a);
+  color: var(--white, #ffffff);
+  border-color: var(--navy, #0f172a);
+}
+
+.chatgpt-mock-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.chatgpt-mock-card {
+  background: var(--white, #ffffff);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chatgpt-mock-card.mock-lost {
+  border: 2px solid #fda4af;
+  background: #fffafa;
+}
+
+.chatgpt-mock-card.mock-won {
+  border: 2px solid #34d399;
+  background: #fcfdfc;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.12);
+}
+
+.mock-badge {
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  align-self: flex-start;
+  letter-spacing: 0.02em;
+}
+
+.badge-lost {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.badge-won {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.mock-chat-bubble {
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bubble-role {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.user-bubble {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: var(--navy, #0f172a);
+}
+
+.user-bubble p {
+  margin: 0;
+  font-weight: 600;
+}
+
+.ai-bubble {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+}
+
+.ai-bubble-highlight {
+  border-color: #a7f3d0;
+  background: #f0fdf4;
+}
+
+.ai-bubble p {
+  margin: 0;
+}
+
+.ai-bubble strong {
+  color: #065f46;
+  background: #d1fae5;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.mock-verdict {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mock-verdict span {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.mock-verdict small {
+  font-size: 0.75rem;
+}
+
+.verdict-lost span {
+  color: #e11d48;
+}
+
+.verdict-lost small {
+  color: #9f1239;
+}
+
+.verdict-won span {
+  color: #059669;
+}
+
+.verdict-won small {
+  color: #065f46;
+}
+
+.chatgpt-bridge-note {
+  margin-top: 24px;
+  padding: 14px 20px;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--navy, #0f172a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.chatgpt-bridge-note strong {
+  color: #059669;
+}
+
+@media (max-width: 768px) {
+  .chatgpt-mock-grid {
+    grid-template-columns: 1fr;
+  }
+}

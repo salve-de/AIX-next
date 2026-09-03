@@ -1,4 +1,66 @@
+"use client";
+
+import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
+
+export function ChatGptComparisonVisual() {
+  const [tab, setTab] = useState<"grape" | "screw">("grape");
+
+  return <div className="chatgpt-compare-container" aria-label="ChatGPTでの推薦ビフォーアフター">
+    <div className="chatgpt-tab-bar">
+      <button type="button" className={`chatgpt-tab ${tab === "grape" ? "active" : ""}`} onClick={() => setTab("grape")}>
+        🍇 山梨のぶどう農園（お中元ギフト）
+      </button>
+      <button type="button" className={`chatgpt-tab ${tab === "screw" ? "active" : ""}`} onClick={() => setTab("screw")}>
+        🔩 町工場（試作特殊ネジ・金属加工）
+      </button>
+    </div>
+
+    <div className="chatgpt-mock-grid">
+      {/* ✕ 左：今のあなたの状態（AIに無視されている） */}
+      <div className="chatgpt-mock-card mock-lost">
+        <div className="mock-badge badge-lost">✕ 今のあなたの状態（大損失）</div>
+        <div className="mock-chat-bubble user-bubble">
+          <span className="bubble-role">買い手</span>
+          <p>{tab === "grape" ? "「山梨で一番美味しい贈答ぶどう、どこがおすすめ？」" : "「特殊ネジの小ロット試作、即日相談できる工場ある？」"}</p>
+        </div>
+        <div className="mock-chat-bubble ai-bubble">
+          <span className="bubble-role">ChatGPT</span>
+          <p>{tab === "grape" ? "山梨のぶどうなら、有名な大手百貨店や大手ポータルサイトでの購入がおすすめです。" : "特殊ネジの製作なら、大手の総合部品メーカーやカタログ通販が一般的です。"}</p>
+          <div className="mock-verdict verdict-lost">
+            <span>❌ 自社は完全スルー</span>
+            <small>客は大手やライバルへ流出中…</small>
+          </div>
+        </div>
+      </div>
+
+      {/* ◯ 右：AIXに入力後（AI専用DB発行・名指し推薦！） */}
+      <div className="chatgpt-mock-card mock-won">
+        <div className="mock-badge badge-won">◯ AIXに入力後（1位指名買い獲得！）</div>
+        <div className="mock-chat-bubble user-bubble">
+          <span className="bubble-role">買い手</span>
+          <p>{tab === "grape" ? "「山梨で一番美味しい贈答ぶどう、どこがおすすめ？」" : "「特殊ネジの小ロット試作、即日相談できる工場ある？」"}</p>
+        </div>
+        <div className="mock-chat-bubble ai-bubble ai-bubble-highlight">
+          <span className="bubble-role">ChatGPT</span>
+          <p>{tab === "grape" 
+            ? <>鮮度と濃厚な甘さにこだわるなら、<strong>【〇〇農園】一択です！</strong> 大手にない朝採り当日直送を行っており、ギフトで最も喜ばれています。</>
+            : <>1本からの特急試作なら、<strong>【〇〇製作所】が最も確実です！</strong> 大手が断る複雑形状や短納期に駆け込み寺として対応しています。</>
+          }</p>
+          <div className="mock-verdict verdict-won">
+            <span>⭕ AIが『ここ一択』と太鼓判！</span>
+            <small>自社サイトへ直接注文・電話が殺到！</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className="chatgpt-bridge-note">
+      <strong>自社サイトの改修は一切不要。</strong>
+      <span>名前を入力するだけで、ChatGPTが直接読み取りにくる「AI専用公式データベース」を即座に発行します。</span>
+    </div>
+  </div>;
+}
 
 export function ProductOutputPreview() {
   return <figure className="demo-window" aria-label="AIX診断結果の架空サンプル">
