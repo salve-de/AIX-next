@@ -237,21 +237,37 @@ export function ScanProgress() {
       <section className="scan-stage shell scan-resolve-stage">
         <div className="scan-stage-main scan-resolve-main">
           <p className="overline">
-            {phase === "resolving" ? "診断先を検索中" : phase === "no_site" ? "公式Web拠点ダイレクト発行" : "診断先を確認"}
+            {phase === "resolving"
+              ? "診断先を検索中"
+              : phase === "social_site"
+              ? "📸 Instagram連携・AI公式拠点発行"
+              : phase === "product_site"
+              ? "📦 商品専用AI公式台帳発行"
+              : phase === "no_site"
+              ? "🏢 公式Web拠点ダイレクト発行"
+              : "診断先の同定確認"}
           </p>
           <h1>
             {phase === "resolving"
               ? `「${displayInput(rawInput)}」の公開サイトを探しています。`
+              : phase === "social_site"
+              ? `Instagram「${displayInput(rawInput)}」からAI公式Web拠点を発行します`
+              : phase === "product_site"
+              ? `商品「${displayInput(rawInput)}」のAI推薦用台帳を発行します`
               : phase === "no_site"
               ? `「${displayInput(rawInput)}」のAI公式Web拠点を直接発行します`
-              : `「${displayInput(rawInput)}」の診断先を選んでください。`}
+              : `「${displayInput(rawInput)}」の公式サイトを確認してください`}
           </h1>
           <p className="scan-message">
             {phase === "resolving"
               ? "会社名・商品名から、診断できる公開サイトを調べています。"
+              : phase === "social_site"
+              ? "Instagramは画像が中心のため、ChatGPTやGemini等の生成AIは料金やサービス詳細を読み取れません。AIが直接引用できる公的台帳を発行し、おすすめの第一想起を獲得します。"
+              : phase === "product_site"
+              ? "商品名・サービス名から、AIが第一想起で推薦するための専用スペック台帳を即座に無料発行します。"
               : phase === "no_site"
               ? "自社サイトをお持ちでない企業様でも、会社名だけでAI専用の公式Web拠点を即座に発行できます。"
-              : "候補のドメインを確認して、診断するサイトを選びます。"}
+              : "AIが同名の別会社と誤認しないよう、ドメインを確認して公式サイトを確定します。"}
           </p>
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
           {phase === "choose" ? <>
@@ -469,7 +485,20 @@ export function ScanProgress() {
           ) : null}
           {phase === "failed" ? <div className="scan-error" role="alert"><strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button></div> : null}
         </div>
-        <aside className="scan-stage-list scan-resolve-aside"><div className="scan-stage-list-head"><strong>入力できるもの</strong><span>URL / 名前</span></div><ul className="scan-input-types"><li><strong>会社名</strong><span>例：株式会社○○</span></li><li><strong>サービス名・商品名</strong><span>例：Notion、○○クラウド</span></li><li><strong>公開サイトのURL</strong><span>例：https://yourcompany.jp</span></li></ul><p className="scan-stage-note">名前で探した場合も、公開サイトを選んでから診断します。</p></aside>
+        {phase === "choose" || phase === "resolving" ? (
+          <aside className="scan-stage-list scan-resolve-aside">
+            <div className="scan-stage-list-head">
+              <strong>入力できるもの</strong>
+              <span>URL / 名前</span>
+            </div>
+            <ul className="scan-input-types">
+              <li><strong>会社名</strong><span>例：株式会社○○</span></li>
+              <li><strong>サービス名・商品名</strong><span>例：Notion、○○クラウド</span></li>
+              <li><strong>公開サイトのURL</strong><span>例：https://yourcompany.jp</span></li>
+            </ul>
+            <p className="scan-stage-note">名前で探した場合も、公開サイトを選んでから診断します。</p>
+          </aside>
+        ) : null}
       </section>
     </main>;
   }
