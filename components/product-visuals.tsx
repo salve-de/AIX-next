@@ -5,58 +5,62 @@ import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
   return (
-    <div className="hero-chat-direct-card" aria-label="ChatGPTでの推薦比較とAI専用DBの仕組み">
-      {/* カードヘッダー：AIが推薦を決める基準 */}
+    <div className="hero-chat-direct-card" aria-label="AIによる推薦判定の比較">
+      {/* カードヘッダー */}
       <div className="direct-card-head">
-        <span className="direct-card-title">ChatGPTの実況比較</span>
-        <span className="direct-card-sub">AIは「公式DBの有無」で推薦を決めています</span>
+        <span className="direct-card-title">AIの選定プロセス</span>
+        <span className="direct-card-sub">ChatGPTなどの生成AIは「確定仕様の有無」で判定します</span>
       </div>
 
       <div className="direct-card-body">
         {/* 見込み客の質問 */}
         <div className="direct-query-box">
-          <span className="query-label">見込み客（発注者）のAI検索</span>
+          <span className="query-label">見込み客（発注者）のAI検索例</span>
           <p className="query-text">「東京都内で、短納期・小ロット対応の試作板金加工会社はどこ？」</p>
         </div>
 
-        {/* 2段比較：対策前（スルー） vs AI専用DB生成後（第1位推薦） */}
-        <div className="direct-compare-grid">
+        {/* 客観的な選定判定フロー */}
+        <div className="flow-compare-container">
           
-          {/* 上段：対策前（自社サイトのみ） */}
-          <div className="direct-box before-box">
-            <div className="box-top">
-              <span className="badge-status before-status">自社サイトのみの場合</span>
-              <span className="status-note before-text">AI判定：自社をスルー（競合2社を推薦）</span>
+          {/* 【台帳なし】仕様がAIに伝わらない状態 */}
+          <div className="flow-box status-excluded">
+            <div className="flow-box-top">
+              <span className="state-tag tag-excluded">AI台帳なし（自社サイトのみ）</span>
+              <span className="state-result result-excluded">判定：仕様不明のため推薦対象外</span>
             </div>
-            <div className="box-content">
-              <p className="ai-quote">ChatGPT「三和試作板金、大伸プレシジョンがおすすめです。」</p>
-              <p className="reason-text">※ 貴社サイトに納品仕様の確定データがなく、AIが比較候補から除外</p>
+            <p className="flow-quote">ChatGPT「競合A社、競合B社がおすすめです。」</p>
+            <p className="flow-subtext">※ サイトからロットや納期の確定仕様がAIに読み取れず、選定から外れます。</p>
+          </div>
+
+          {/* 変化の架け橋（矢印） */}
+          <div className="flow-arrow-bridge">
+            <div className="bridge-pill">
+              <span>会社名を入れるだけで「AI専用台帳」を自動生成</span>
+              <span className="bridge-arrow">↓</span>
             </div>
           </div>
 
-          {/* 下段：AI専用DBを自動生成した後 */}
-          <div className="direct-box after-box">
-            <div className="box-top">
-              <span className="badge-status after-status">AI専用DBを自動生成した後</span>
-              <span className="status-note after-text">AI判定：貴社を最優先（第1位）でおすすめ</span>
+          {/* 【台帳あり】公式仕様が認識された状態 */}
+          <div className="flow-box status-included">
+            <div className="flow-box-top">
+              <span className="state-tag tag-included">AI専用台帳を自動配備後</span>
+              <span className="state-result result-included">判定：公式根拠をもとに推薦候補へ採用</span>
             </div>
-            <div className="box-content">
-              <div className="quote-header">
-                <p className="ai-quote bold">ChatGPT「1. 貴社（大田区）が最も条件に合致します。」</p>
-                <span className="source-badge">公式AI台帳を参照</span>
-              </div>
-              <p className="reason-text success">【引用】単品1個即納・3D CAD入稿対応の確定仕様を確認</p>
+            <div className="flow-quote-row">
+              <p className="flow-quote">ChatGPT「貴社（大田区）がご希望の条件に合致します。」</p>
+              <span className="flow-source">公式台帳を引用</span>
             </div>
+            <p className="flow-subtext included-sub">【AIが認識した根拠】単品1個対応・短納期試作・3D CAD入稿可能</p>
           </div>
 
         </div>
       </div>
 
-      {/* 下部：全自動の仕組みバー */}
+      {/* 下部：客観的な技術解説 */}
       <div className="direct-card-foot">
-        <span className="foot-tag">全自動の仕組み</span>
+        <span className="foot-tag">仕組み</span>
         <p className="foot-desc">
-          自社サイト改修ゼロ。社名を入れるだけで「AI専用DB」を自動生成し、AIが回答の根拠として優先参照する状態を整えます。
+          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動生成し、AIが確実に引用できる状態をつくります。
         </p>
       </div>
     </div>
