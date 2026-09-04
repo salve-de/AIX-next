@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ChatGptComparisonVisual, HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
 import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
+import { GoogleDeclineProblemSection } from "@/components/google-decline-problem-section";
 
 export default function HomePage() {
   return <main className="landing-page">
@@ -75,6 +76,9 @@ export default function HomePage() {
         <ChatGptComparisonVisual />
       </div>
     </section>
+
+    {/* Google検索の衰退と中小企業が直面する3大危機（問題提起） */}
+    <GoogleDeclineProblemSection />
 
     {/* 全国の事業者による公式台帳 開設・運用実例ギャラリー */}
     <VerifiedCompaniesGallery />
