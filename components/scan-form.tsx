@@ -54,6 +54,9 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             <ArrowIcon />
           </button>
         </div>
+        <p className="scan-form-note">
+          ※ サイト改修や専門知識は不要です。営業電話や勝手な自動課金は一切ありません。
+        </p>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
 
         {!compact ? (

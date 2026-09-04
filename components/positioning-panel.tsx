@@ -46,9 +46,9 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
     <section className="positioning-section shell" aria-label="ポジショニング診断および戦略提言">
       {/* ポジショニング戦略の選定軸（ステップ1） */}
       <div className="section-heading-simple" style={{ textAlign: "left", margin: "16px 0 16px" }}>
-        <p className="overline">【ステップ 1】AIに教え込む「自社の強み」を選ぶ</p>
-        <h2>AIに認識させる独自の強みを、下の3つから1つ選択してください。</h2>
-        <p>AIはまだ自社の本当の強みを知りません。知名度だけで大手を機械的に勧めてしまっているAIに対し、自社の最も誇れる強みを学習させましょう。</p>
+        <p className="overline">【ステップ 1】AI営業マンに持たせる「自社の看板」を選ぶ</p>
+        <h2>大手ライバルの隙間を突き、AIが御社を優先推薦するための看板を1つ選択してください。</h2>
+        <p>AIは御社の真の強みをまだ知りません。知名度だけで大手を機械的に勧めるAIに対し、「この分野なら御社が一番」と判定させるための看板を確定させましょう。</p>
       </div>
 
       {/* 3つの戦略タブ（サイト解析から動的生成） */}

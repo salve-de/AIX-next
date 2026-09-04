@@ -5,10 +5,10 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "AIX — AIがあなたの会社を勧めない理由を見つける", template: "%s | AIX" },
-  description: "会社名・サービス名・商品名・URLから、AIが競合を先に勧めた質問と、その理由、まず直す1か所を確認します。",
+  title: { default: "AIX — ChatGPTは、あなたの会社をスルーしてライバルを「おすすめ」しています。", template: "%s | AIX" },
+  description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備。",
   applicationName: "AIX",
-  openGraph: { type: "website", locale: "ja_JP", title: "AIX — AIがあなたの会社を勧めない理由を見つける", description: "AIが競合を先に勧めた質問、選ばれた理由、まず直す1か所を会社名やURLから確認します。", url: "/" },
+  openGraph: { type: "website", locale: "ja_JP", title: "AIX — ChatGPTは、あなたの会社をスルーしてライバルを「おすすめ」しています。", description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備。", url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 

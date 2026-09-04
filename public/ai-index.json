@@ -1,6 +1,6 @@
 {
   "name": "AIX",
-  "description": "会社URLから、AIが競合を先に勧めた購入前の質問と、その理由、最初に直す情報を確認するサービス。",
+  "description": "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備するシステム。",
   "language": "ja-JP",
   "url": "/",
   "publicPages": [

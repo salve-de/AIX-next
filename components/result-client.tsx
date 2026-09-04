@@ -127,10 +127,10 @@ export function ResultClient() {
 
         {/* 【AI公式データベースの配備準備完了バナー】 */}
         <div className="instant-empower-banner">
-          <div className="instant-empower-badge">配備準備完了</div>
+          <div className="instant-empower-badge">24時間営業窓口</div>
           <div className="instant-empower-main">
             <h3>{result.discovery.brandName} 専用の「AI公式台帳」を配備可能です</h3>
-            <p>自社サイトの改修は不要です。下の【ステップ1】で自社の強みを選定し、AI公式台帳を開設してください。</p>
+            <p>自社サイトの改修ゼロ。新しい営業マンを雇うことなく、ChatGPTが御社を優先推薦するための専用台帳を開設できます。</p>
           </div>
         </div>
       </div>
@@ -143,7 +143,7 @@ export function ResultClient() {
         <h2>{primaryLoss ? <>AIは、<strong>{primaryWinner || "競合"}</strong>を<br />先に勧めました。</> : "AIの比較で、自社も選ばれています。"}</h2>
         <p>
           {primaryLoss
-            ? `自社の実績や実力に問題があるわけではありません。単に「AIが自社の強みを公式データとして認識していない」ため、知名度だけで大手を機械的に選定しています。下のステップで、AIに正しい強みを学習させましょう。`
+            ? `自社の実績や実力に問題があるわけではありません。単に「AIが自社の強みを公式データとして認識していない」ため、毎日見込み客をライバルに奪われています。自社サイト改修ゼロでAI公式台帳を開設し、AI新時代に取り残されるリスクをゼロにしましょう。`
             : "測定した質問では、自社もしっかりおすすめに入っています。"}
         </p>
 

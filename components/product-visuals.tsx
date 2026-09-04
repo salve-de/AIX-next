@@ -58,9 +58,9 @@ export function HeroChatDiagnosticCard() {
 
       {/* 下部：客観的な技術解説 */}
       <div className="direct-card-foot">
-        <span className="foot-tag">仕組み</span>
+        <span className="foot-tag">営業マン不要の理由</span>
         <p className="foot-desc">
-          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動生成し、AIが確実に引用できる状態をつくります。
+          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動配備し、24時間365日、AIが営業マンの代わりに御社をおすすめする体制を整えます。
         </p>
       </div>
     </div>
@@ -153,10 +153,10 @@ export function ProductOutputPreview() {
 
 export function ProductProcessVisual() {
   const steps = [
-    { label: "01", title: "社名を入力する", body: "会社名や店舗名を入れるだけで、AIが公開情報を自動整理" },
-    { label: "02", title: "AI推薦状況を確認", body: "ChatGPTがライバルを優先している質問と理由を特定" },
-    { label: "03", title: "AI専用台帳を自動生成", body: "自社の強みを選び、サイト改修ゼロで公式データを配備" },
-    { label: "04", title: "毎週自動で見守り", body: "AIの回答変化を追跡し、推薦枠の獲得を定期チェック" },
+    { label: "01", title: "社名を入力する", body: "自社サイトの改修ゼロ。会社名を入れるだけでAIが現状を分析" },
+    { label: "02", title: "AI推薦状況を確認", body: "なぜAIがライバルを優先しているのか、機会損失の理由を特定" },
+    { label: "03", title: "AI公式台帳を開設", body: "強みを選ぶだけで、24時間働くAI営業マン（台帳）を即日配備" },
+    { label: "04", title: "毎週の推薦を見守り", body: "ブログ更新ゼロ。AI回答の変化やライバルの動向を自動追跡" },
   ];
   return <ol className="process-visual">{steps.map((step) => <li key={step.label}><span>{step.label}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>;
 }

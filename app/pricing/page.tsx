@@ -2,17 +2,35 @@ import Link from "next/link";
 import { MarketingShell } from "@/components/marketing-shell";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 
-const free = ["商品名・会社名1件の調査", "買い手の質問12件での比較判定", "主要なAI（ChatGPTやGemini等）で確認", "競合各社の対応できない隙間を分析", "自社が選ばれる看板（独自の強み）", "AI専用公式台帳の自動発行（改修不要）"];
-const paid = ["毎週ライバルの動向を自動モニタリング", "ライバルの急浮上・新商品アラート", "季節の需要に合わせた毎月の改善アドバイス", "AI推薦結果の変動レポート", "公式台帳データの週次定期メンテナンス", "いつでも管理画面からワンクリック解約可能"];
+const free = [
+  "商品名・会社名1件のAI推薦調査",
+  "見込み客の相談質問12問での比較判定",
+  "なぜ大手ライバルが選ばれたかの理由特定",
+  "大手ライバルの対応できない隙間を分析",
+  "AI営業マンに持たせる「自社の看板」の選定",
+  "自社サイト改修ゼロでのAI公式台帳発行",
+];
+const paid = [
+  "毎週ライバルの動向とAI推薦を自動追跡",
+  "ライバルの急浮上・推薦枠の変動アラート",
+  "季節の需要や新検索に合わせた月次アドバイス",
+  "最新のAI推薦カルテ・変動レポート送付",
+  "公式台帳データの週次定期自動メンテナンス",
+  "いつでも管理画面からワンクリック解約可能",
+];
 
 export default function PricingPage() {
-  return <MarketingShell eyebrow="料金プラン" title="まずは無料診断で、自社が選ばれる理由を見つける。" lead="商品名や会社名を入れるだけで、AIがライバルをおすすめする理由と、自社の勝てる看板をその場で確認できます。">
+  return <MarketingShell
+    eyebrow="料金プラン"
+    title="営業マンを雇う前に。AI新時代に取り残されないための投資。"
+    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。自社サイト改修ゼロで、24時間AIから客を呼び込む専属営業窓口を即座に配備できます。"
+  >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
         <header>
           <p>無料診断</p>
           <strong>¥0</strong>
-          <span>いつでも手軽に試せます</span>
+          <span>まずは現状の推薦状況を確認</span>
         </header>
         <ul>{free.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul>
         <Link className="button button-secondary" href="/#scan">まずは無料で診断する <ArrowIcon /></Link>
@@ -21,7 +39,7 @@ export default function PricingPage() {
         <header>
           <p>AI推薦・自動見守りプラン</p>
           <strong>¥10,780 <small>/月・税込</small></strong>
-          <span>（税別 ¥9,800）継続的な集客改善に</span>
+          <span>（税別 ¥9,800）専属営業マン代わりとして</span>
         </header>
         <ul>{paid.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul>
         <Link className="button button-primary" href="/#scan">無料診断から始める <ArrowIcon /></Link>
@@ -29,16 +47,32 @@ export default function PricingPage() {
       </div>
     </div>
     <div className="pricing-value-strip" aria-label="使うと得られるもの">
-      <article><small>いま</small><strong>競合の隙間と自社の強みが分かる</strong><span>ライバルが対応しきれない部分を見つけ、自社だけの選ばれる看板を決めます。</span></article>
-      <article><small>次に</small><strong>AI専用の公式台帳を自動配備</strong><span>自社サイトの改修ゼロ。社名からAI専用ページを自動作成し、AIに推薦されやすい状態を作ります。</span></article>
-      <article><small>その後</small><strong>毎週AIの推薦状況を自動で見守る</strong><span>AI回答の更新やライバルの動きを毎週自動で確認し、自社が推薦され続けているかを追跡します。</span></article>
+      <article>
+        <small>いま</small>
+        <strong>AI新時代の機会損失と自社の強みが分かる</strong>
+        <span>ライバルが対応しきれない隙間を見つけ、AIが御社を推薦する決定的な看板を確定します。</span>
+      </article>
+      <article>
+        <small>次に</small>
+        <strong>改修ゼロでAI専属営業窓口を開設</strong>
+        <span>自社サイトの改修やブログ更新はゼロ。社名からAI専用公式台帳を自動配備し、AIに優先推薦させます。</span>
+      </article>
+      <article>
+        <small>その後</small>
+        <strong>毎週の自動見守りで推薦枠を死守</strong>
+        <span>AI回答の更新やライバルの動きを毎週自動で追跡し、自社がおすすめされ続けているかを監視します。</span>
+      </article>
     </div>
     <section className="pricing-explanation">
-      <h2>なぜ定期的に見守る必要があるのか</h2>
-      <p>AIの回答やライバルの動向は常に変化しています。競合が新商品を出したり、季節によって買い手の質問が変わると、以前はおすすめされていた自社が外れてしまうことがあります。毎週の自動モニタリングにより、順位変動時のアラートや、その時期に応じた改善アドバイスを自動でお届けします。</p>
+      <h2>なぜ営業マンを雇うより効果的なのか</h2>
+      <p>
+        顧客の購買行動は「Google検索で比べる」ことから「ChatGPT等のAIに直接相談する」ことへと急速に移行しています。<br />
+        営業マンが足で稼ぐよりも、顧客がAIに「おすすめの会社は？」と聞いた瞬間に御社が推薦される方が、圧倒的に成約率の高い問い合わせにつながります。<br />
+        月30万円以上の人件費をかけることなく、月額わずか9,800円（税別）で24時間働くAI営業窓口が手に入ります。
+      </p>
       <div className="pricing-steps">
         <div><strong>1</strong><span>無料診断</span><p>AI推薦の現状を知る</p></div>
-        <div><strong>2</strong><span>台帳開設</span><p>AI専用DBを自動配備</p></div>
+        <div><strong>2</strong><span>台帳開設</span><p>AI営業窓口を即日配備</p></div>
         <div><strong>3</strong><span>自動見守り</span><p>毎週の推薦状況を追跡</p></div>
       </div>
     </section>

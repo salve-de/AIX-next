@@ -64,10 +64,10 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   return (
     <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
       <div className="profile-interactive-header">
-        <span className="step-badge">【ステップ 2】AI専用公式台帳を開設する</span>
-        <h2>選定した強みを、自社専用のAI公式台帳として登録します</h2>
+        <span className="step-badge">【ステップ 2】自社サイト改修ゼロで、AI公式台帳を開設する</span>
+        <h2>選定した看板を、24時間働く「AI公式台帳」として登録します</h2>
         <p>
-          自社サイトの改修は一切不要です。選んだ強みをもとに、ChatGPTなどの主要AIが確実に読み取る公式台帳を発行します。
+          新しい営業マンを雇う必要も、サイトをリニューアルする必要もありません。選んだ看板をChatGPTなどの主要AIが確実に読み取る専用窓口を即座に配備します。
         </p>
       </div>
 
