@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Brand />
-          <p>AIが競合を先に勧めた質問と、その理由、まず直す1か所を確認する診断サービスです。</p>
+          <p>サイト改修ゼロでAI専用の公式台帳を自動作成し、生成AIからの優先推薦を支援するサービスです。</p>
         </div>
         <nav aria-label="製品">
           <strong>製品</strong>

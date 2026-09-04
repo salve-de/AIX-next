@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { PositioningAdvice, StrategyOption } from "@/lib/types";
-import { ArrowIcon } from "@/components/icons";
 
 export function PositioningPanel({ positioning }: { positioning?: PositioningAdvice }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -45,11 +44,11 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
 
   return (
     <section className="positioning-section shell" aria-label="ポジショニング診断および戦略提言">
-      {/* ポジショニング戦略の選定軸（ステップ2） */}
+      {/* ポジショニング戦略の選定軸（ステップ1） */}
       <div className="section-heading-simple" style={{ textAlign: "left", margin: "16px 0 16px" }}>
-        <p className="overline">【ステップ 2】AIに教え込む「御社の看板」を選ぶ</p>
+        <p className="overline">【ステップ 1】AIに教え込む「自社の強み」を選ぶ</p>
         <h2>AIに認識させる独自の強みを、下の3つから1つ選択してください。</h2>
-        <p>AIはまだ御社の本当の強みを知りません（AIの認識不足）。知名度だけで大手を機械的に勧めてしまっているAIに対し、御社の最も誇れる強みを学習させましょう。</p>
+        <p>AIはまだ自社の本当の強みを知りません。知名度だけで大手を機械的に勧めてしまっているAIに対し、自社の最も誇れる強みを学習させましょう。</p>
       </div>
 
       {/* 3つの戦略タブ（サイト解析から動的生成） */}
@@ -138,43 +137,6 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
         </div>
       </div>
 
-      {/* 【ステップ 3】運用体制の比較：手動運用 vs 自動継続モニタリング */}
-      <div className="autopilot-comparison-box">
-        <div className="autopilot-head">
-          <span className="autopilot-pill">【ステップ 3】継続的な改善</span>
-          <h3>看板を設定したあと、AIの推薦はどう変わるか？</h3>
-          <p>情報発信を行った後、実際にAIがライバルから御社へおすすめを切り替えたかを毎週定期的に観測します。</p>
-        </div>
-        <div className="autopilot-table">
-          <div className="autopilot-row head">
-            <div className="col-feature">管理項目</div>
-            <div className="col-free">無料診断（手動運用）</div>
-            <div className="col-paid">AI推薦枠・自動見守りプラン（月額 10,780円 税込）</div>
-          </div>
-          <div className="autopilot-row">
-            <div className="col-feature">AI専用公式DBの更新</div>
-            <div className="col-free">現時点の静的ページを1回発行のみ</div>
-            <div className="col-paid highlight"><strong>競合の動向・市場の変化に応じて毎週自動最適化</strong></div>
-          </div>
-          <div className="autopilot-row">
-            <div className="col-feature">競合動向の監視</div>
-            <div className="col-free">なし（自社での都度手動確認が必要）</div>
-            <div className="col-paid highlight"><strong>同一条件での週次定点観測 ＆ 変動アラート自動送信</strong></div>
-          </div>
-          <div className="autopilot-row">
-            <div className="col-feature">運用にかかる社内工数</div>
-            <div className="col-free">都度の調査・改修に月数時間の工数が発生</div>
-            <div className="col-paid highlight"><strong>完全バックグラウンド実行（実務作業工数ゼロ）</strong></div>
-          </div>
-        </div>
-
-        <div className="autopilot-cta-row">
-          <a href="#watch-plan" className="button button-primary">
-            14日間無料トライアルで効果を検証する <ArrowIcon />
-          </a>
-          <small>初期費用ゼロ・契約期間の縛りなし・いつでも管理画面から即時停止可能</small>
-        </div>
-      </div>
     </section>
   );
 }

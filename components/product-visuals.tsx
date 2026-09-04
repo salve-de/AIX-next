@@ -142,21 +142,21 @@ export function ChatGptComparisonVisual() {
 }
 
 export function ProductOutputPreview() {
-  return <figure className="demo-window" aria-label="AIX診断結果の架空サンプル">
-    <header className="demo-window-bar"><span className="window-dots"><i /><i /><i /></span><strong>集客機会レポート</strong><small>診断結果の例</small></header>
-    <div className="demo-window-toolbar"><div><small>対象サイト</small><strong>NEXORA Cloud</strong></div><span>購入前の比較質問を12件確認</span></div>
-    <div className="demo-outcome"><div><small>AIの候補に入った質問</small><strong>12問中 <b>2問</b></strong><span>競合に流れた質問を特定</span></div><p>AIはNEXORA Cloudより先にTrustOrbitを勧めました。どの顧客の比較で負けたか、理由と最初の改善機会を示します。</p></div>
-    <div className="demo-metrics"><div><small>自社が候補に入った質問</small><strong>2 / 12</strong></div><div><small>先に選ばれた競合</small><strong>TrustOrbit <em>7 / 12</em></strong></div><div className="demo-negative"><small>取り戻す余地</small><strong>10 / 12</strong></div></div>
-      <div className="demo-result-grid"><div className="demo-question"><small>顧客がAIに聞いた比較質問</small><h3>「従業員300名の企業に合う取引先審査ツールは？」</h3><div className="demo-winner-row"><span>先に選ばれた競合<strong>TrustOrbit</strong></span><span>自社<strong className="demo-lost">候補外</strong></span></div><p>TrustOrbitには同じ規模の導入事例がありました。NEXORA Cloudでは確認できませんでした。</p></div><div className="demo-next"><div><EvidenceIcon /><span><small>競合が選ばれた理由</small><strong>同規模企業の導入実績</strong></span></div><div><TrendIcon /><span><small>集客の改善機会</small><strong>導入事例を比べられる形にする</strong></span><ArrowIcon /></div></div></div>
+  return <figure className="demo-window" aria-label="AIX診断結果のサンプル">
+    <header className="demo-window-bar"><span className="window-dots"><i /><i /><i /></span><strong>AI推薦・診断カルテ</strong><small>診断結果の例</small></header>
+    <div className="demo-window-toolbar"><div><small>対象</small><strong>あおば相続法務事務所</strong></div><span>買い手の比較質問を12件確認</span></div>
+    <div className="demo-outcome"><div><small>AIの候補に入った質問</small><strong>12問中 <b>2問</b></strong><span>ライバルが優先された質問を特定</span></div><p>AIは「あおば相続法務事務所」より先に「大手全国展開グループ」を勧めました。どの相談で選ばれなかったか、理由と改善方針を示します。</p></div>
+    <div className="demo-metrics"><div><small>自社が候補に入った質問</small><strong>2 / 12</strong></div><div><small>先に選ばれた競合</small><strong>大手グループ <em>8 / 12</em></strong></div><div className="demo-negative"><small>推薦を獲得できる余地</small><strong>10 / 12</strong></div></div>
+      <div className="demo-result-grid"><div className="demo-question"><small>見込み客がAIに聞いた相談質問</small><h3>「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」</h3><div className="demo-winner-row"><span>先に選ばれた競合<strong>大手全国展開グループ</strong></span><span>自社<strong className="demo-lost">候補外</strong></span></div><p>大手は知名度と広告量で先行。あおば相続法務事務所の個別伴走実績がAIに構造化されて伝わっていませんでした。</p></div><div className="demo-next"><div><EvidenceIcon /><span><small>競合が選ばれた理由</small><strong>知名度による機械的選定</strong></span></div><div><TrendIcon /><span><small>推薦枠獲得への改善策</small><strong>「親身な個別伴走」を公式DBに登録</strong></span><ArrowIcon /></div></div></div>
   </figure>;
 }
 
 export function ProductProcessVisual() {
   const steps = [
-    { label: "01", title: "対象を入力する", body: "会社名・商品名・URLから公開情報を整理" },
-    { label: "02", title: "負けている比較を特定", body: "AIが先に勧めた競合を確認" },
-    { label: "03", title: "選ばれた理由を比べる", body: "集客を逃している情報の差を確認" },
-    { label: "04", title: "次の施策を決める", body: "1か所を見直し、同じ質問で再確認" },
+    { label: "01", title: "社名を入力する", body: "会社名や店舗名を入れるだけで、AIが公開情報を自動整理" },
+    { label: "02", title: "AI推薦状況を確認", body: "ChatGPTがライバルを優先している質問と理由を特定" },
+    { label: "03", title: "AI専用台帳を自動生成", body: "自社の強みを選び、サイト改修ゼロで公式データを配備" },
+    { label: "04", title: "毎週自動で見守り", body: "AIの回答変化を追跡し、推薦枠の獲得を定期チェック" },
   ];
   return <ol className="process-visual">{steps.map((step) => <li key={step.label}><span>{step.label}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>;
 }

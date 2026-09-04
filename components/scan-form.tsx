@@ -96,7 +96,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
                     <label>主力商品・サービス名（任意）</label>
                     <input
                       type="text"
-                      placeholder="例: 熟成黒にんにく、Nexoraクラウド"
+                      placeholder="例: 熟成黒にんにく、試作板金加工"
                       value={extraProduct}
                       onChange={(e) => setExtraProduct(e.target.value)}
                     />

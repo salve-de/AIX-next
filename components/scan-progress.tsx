@@ -79,11 +79,11 @@ export function ScanProgress() {
     try {
       const finalBrand = (directBrandName || rawInput).trim();
       const summaryParts = [
-        `${finalBrand}の公式エンタープライズ・ナレッジ台帳。`,
+        `${finalBrand}の公式企業情報台帳。`,
         extraSocial ? `Instagram公式（${extraSocial}）と連携。` : socialInfo.isSocial ? `${socialInfo.displayLabel || "SNS"}公式と連携。` : "",
-        extraProduct ? `主力製品「${extraProduct}」の仕様・推薦データを包含。` : "",
-        extraUrl ? `自社公式サイト（${extraUrl}）と完全同期。` : "自社サイトを持たない企業様向けに直接発行され、",
-        `主要生成AI（ChatGPT/Gemini/Claude等）推薦用の公式マスターデータです。`
+        extraProduct ? `主力製品「${extraProduct}」の仕様・推薦データを掲載。` : "",
+        extraUrl ? `自社公式サイト（${extraUrl}）と同期。` : "自社サイトを持たない企業様向けに直接発行され、",
+        `主要生成AI（ChatGPT/Gemini等）推薦用の公式マスターデータです。`
       ].filter(Boolean).join(" ");
 
       const response = await fetch("/api/ai-profile", {

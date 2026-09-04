@@ -3,13 +3,11 @@ import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ChatGptComparisonVisual, HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
-import { LiveActivityTicker } from "@/components/live-activity-ticker";
 import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
 
 export default function HomePage() {
   return <main className="landing-page">
     <SiteHeader />
-    <LiveActivityTicker />
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">

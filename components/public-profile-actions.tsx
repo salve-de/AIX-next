@@ -64,10 +64,10 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   return (
     <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
       <div className="profile-interactive-header">
-        <span className="step-badge">【ステップ 1】AIに教え込む価値を自分で選ぶ</span>
-        <h2>AI公式データベースに書き込む「御社の最大の強み」を選択してください。</h2>
+        <span className="step-badge">【ステップ 2】AI専用公式台帳を開設する</span>
+        <h2>選定した強みを、自社専用のAI公式台帳として登録します</h2>
         <p>
-          AIは勝手に推測してくれません。御社がAI（ChatGPT等）に最も強くアピールしたい「看板」を、下の3つから<strong>1つ選んで</strong>公式データベースへ書き込みます。
+          自社サイトの改修は一切不要です。選んだ強みをもとに、ChatGPTなどの主要AIが確実に読み取る公式台帳を発行します。
         </p>
       </div>
 
@@ -149,9 +149,9 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                 <td className="col-highlight"><strong>主要FAQ（10問）を完全連携</strong></td>
               </tr>
               <tr>
-                <td><strong>有効期間（データの鮮度保証）</strong></td>
-                <td>30日間（古い情報の残留防止）</td>
-                <td className="col-highlight"><strong>無期限（常時同期・自動更新）</strong></td>
+                <td><strong>データの鮮度管理</strong></td>
+                <td>手動での情報更新</td>
+                <td className="col-highlight"><strong>週次自動同期・定期メンテナンス</strong></td>
               </tr>
               <tr>
                 <td><strong>競合の順位変動モニタリング</strong></td>
@@ -192,7 +192,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
           <p>
             現在選択中の看板：<strong>{strategies[selectedWeapon]?.name}</strong>
           </p>
-          <small>自社サイトの改修は不要。主要生成AIが直接巡回・学習する公式構造化データ（JSON-LD）として即時発行されます（有効期限30日）。</small>
+          <small>自社サイトの改修は不要。主要生成AIが直接巡回・引用できる標準形式で即時発行されます。</small>
         </div>
 
         <div className="weapon-action-buttons">
@@ -231,17 +231,17 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </div>
       </div>
 
-      {/* 有料アップセル（全方位展開のご案内） */}
+      {/* 定期見守りプランのご案内 */}
       <div className="upsell-paywall-banner">
-        <div className="upsell-badge">全方位展開のご案内：他2領域の同時インデックス</div>
+        <div className="upsell-badge">継続的なサポート</div>
         <div className="upsell-content">
-          <h3>「全3領域の看板」を一括登録し、あらゆる相談クエリから第一想起を獲得する</h3>
+          <h3>AI回答の更新に合わせて、公式データを定期管理する</h3>
           <p>
-            AIで検索する相談者のニーズは多角化しています。本無料枠で選定した【個別伴走】に加え、【初動即応】および【明瞭費用】の全3領域をAI公式データベースへ常時学習させ、毎週のAI推薦順位変動を追跡するには、自動見守りプラン（月額10,780円）をご活用ください。
+            ChatGPTなどのAIは日々回答を更新します。定期見守りプラン（月額10,780円税込）をご利用いただくと、複数の強みを網羅的に登録し、自社がおすすめされ続けているかを毎週自動で追跡できます。
           </p>
           <div className="upsell-action">
             <a className="button button-primary" href="#watch-plan">
-              全3領域の看板を一括登録してAI推薦を監視する（14日間無料試用） <ArrowIcon />
+              定期見守りプランを詳しく見る（14日間無料試用） <ArrowIcon />
             </a>
             <small>月額 10,780円（税込） / いつでも解約可能 / クレジットカード登録不要で14日間お試し可能</small>
           </div>

@@ -92,11 +92,11 @@ function buildObservations(ownRecommendedIndexes: Set<number>, measuredAt: strin
     const recommendedEntities = [...competitors, ...(ownRecommended ? [discovery.brandName] : [])];
     const ownPosition = ownRecommended ? recommendedEntities.indexOf(discovery.brandName) + 1 : null;
     const competitorText = firstCandidate
-      ? `${firstCandidate}を第一候補として挙げます。${firstCandidate}は企業規模別の導入事例、標準導入期間、審査対象、監査証跡、導入支援を比較可能な形で公開しています。`
+      ? `${firstCandidate}を第一候補として挙げます。${firstCandidate}は知名度と全国拠点数、豊富な相談窓口体制を公開しています。`
       : "公開情報から比較可能な候補を十分に確認できませんでした。";
     const ownText = ownRecommended
-      ? `${discovery.brandName}も購入候補ですが、同規模の導入実績と標準導入期間の比較材料は限定的です。`
-      : `${discovery.brandName}は購入候補には入りません。公開情報から同規模の導入実績と標準導入期間を十分に確認できません。`;
+      ? `${discovery.brandName}も相談候補ですが、個別伴走体制や解決実績の公式データは限定的です。`
+      : `${discovery.brandName}はおすすめ候補には入りません。公開情報から親身な個別伴走の確定仕様を十分に確認できません。`;
     return {
       id: `obs_${index + 1}`,
       promptId: prompt.id,
@@ -244,7 +244,7 @@ export function sampleWatch(): WatchRecord {
   return {
     id: "watch_sample",
     token: "sample",
-    email: "sample@nexora.example",
+    email: "sample@aoba-souzoku.example.jp",
     scanId: sampleResult.scanId,
     status: "trial",
     paid: false,
