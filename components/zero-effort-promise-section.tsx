@@ -15,7 +15,7 @@ export function ZeroEffortPromiseSection() {
           background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
           borderRadius: "16px",
           color: "#ffffff",
-          padding: "36px 32px 38px",
+          padding: "clamp(24px, 4vw, 36px) clamp(16px, 3.5vw, 32px) clamp(28px, 4vw, 38px)",
           boxShadow: "0 16px 36px rgba(15, 23, 42, 0.12)",
           border: "1px solid #334155",
         }}
@@ -30,7 +30,7 @@ export function ZeroEffortPromiseSection() {
           </div>
           <h2
             style={{
-              fontSize: "clamp(1.4rem, 2.5vw, 1.95rem)",
+              fontSize: "clamp(1.35rem, 2.5vw, 1.95rem)",
               fontWeight: 800,
               lineHeight: 1.3,
               margin: "0 0 12px",
@@ -50,7 +50,7 @@ export function ZeroEffortPromiseSection() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(270px, 100%), 1fr))",
             gap: "18px",
             marginBottom: "28px",
           }}
@@ -131,7 +131,7 @@ export function ZeroEffortPromiseSection() {
             </div>
             <p style={{ fontSize: "0.84rem", color: "#cbd5e1", lineHeight: 1.6, margin: 0 }}>
               自社サイトを改修したり制作会社に依頼する必要はありません。<br />
-              ChatGPTやPerplexity等の探索ロボット（GPTBot等）が巡回して1秒で読める<strong>「国際規格の公式確定仕様台帳（JSON-LD常駐）」をAIX側が即日自動開設</strong>します。自社の既存サイトは1文字も触りません。
+              ChatGPTやPerplexity等のAI探索ロボットが巡回して1秒で読める<strong>「国際規格の公式電子台帳」をAIX側が即日自動開設</strong>します。自社の既存サイトは1文字も触りません。
             </p>
           </div>
 
