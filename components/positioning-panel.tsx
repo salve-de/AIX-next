@@ -47,8 +47,8 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
       {/* ポジショニング戦略の選定軸（ステップ1） */}
       <div className="section-heading-simple" style={{ textAlign: "left", margin: "16px 0 16px" }}>
         <p className="overline">【ステップ 1】AI営業マンに持たせる「自社の看板」を選ぶ</p>
-        <h2>大手ライバルの隙間を突き、AIが御社を優先推薦するための看板を1つ選択してください。</h2>
-        <p>AIは御社の真の強みをまだ知りません。知名度だけで大手を機械的に勧めるAIに対し、「この分野なら御社が一番」と判定させるための看板を確定させましょう。</p>
+        <h2>大手ライバルの隙間を突き、AIが御社を推薦しやすくするための看板を1つ選択してください。</h2>
+        <p>AIは御社の真の強みをまだ知りません。知名度だけで大手を機械的に勧めるAIに対し、「この分野なら御社が適している」と判定されやすくするための看板を確定させましょう。</p>
       </div>
 
       {/* 3つの戦略タブ（サイト解析から動的生成） */}

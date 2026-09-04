@@ -6,9 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "AIX — ChatGPTは、あなたの会社をスルーしてライバルを「おすすめ」しています。", template: "%s | AIX" },
-  description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備。",
+  description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦されやすい環境を整える公式台帳を自動配備。",
   applicationName: "AIX",
-  openGraph: { type: "website", locale: "ja_JP", title: "AIX — ChatGPTは、あなたの会社をスルーしてライバルを「おすすめ」しています。", description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備。", url: "/" },
+  openGraph: { type: "website", locale: "ja_JP", title: "AIX — ChatGPTは、あなたの会社をスルーしてライバルを「おすすめ」しています。", description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロ。社名を入れるだけでChatGPTなどの生成AIから優先推薦されやすい環境を整える公式台帳を自動配備。", url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 

@@ -125,7 +125,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         <div className="plan-comparison-header">
           <span className="spec-table-tag">運用仕様・スペック比較</span>
           <h4>無料お試し枠 と フル常時見守りプラン の提供差</h4>
-          <p>古い情報の残留トラブルを防ぐ安全設計と、全方位でAIの指名推薦を獲得するためのスペック比較です。</p>
+          <p>古い情報の残留トラブルを防ぐ安全設計と、AIから優先推薦されやすい環境を維持するためのスペック比較です。</p>
         </div>
 
         <div className="table-responsive">

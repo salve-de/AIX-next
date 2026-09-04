@@ -23,7 +23,7 @@ export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
     title="営業マンを雇う前に。AI新時代に取り残されないための投資。"
-    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。自社サイト改修ゼロで、24時間AIから客を呼び込む専属営業窓口を即座に配備できます。"
+    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。自社サイト改修ゼロで、AIから推薦されやすい専属窓口を即座に配備できます。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
@@ -50,24 +50,24 @@ export default function PricingPage() {
       <article>
         <small>いま</small>
         <strong>AI新時代の機会損失と自社の強みが分かる</strong>
-        <span>ライバルが対応しきれない隙間を見つけ、AIが御社を推薦する決定的な看板を確定します。</span>
+        <span>ライバルが対応しきれない隙間を見つけ、AIが御社を推薦しやすくなる看板を確定します。</span>
       </article>
       <article>
         <small>次に</small>
         <strong>改修ゼロでAI専属営業窓口を開設</strong>
-        <span>自社サイトの改修やブログ更新はゼロ。社名からAI専用公式台帳を自動配備し、AIに優先推薦させます。</span>
+        <span>自社サイトの改修やブログ更新はゼロ。社名からAI専用公式台帳を自動配備し、AIに優先推薦されやすい環境を整えます。</span>
       </article>
       <article>
         <small>その後</small>
-        <strong>毎週の自動見守りで推薦枠を死守</strong>
-        <span>AI回答の更新やライバルの動きを毎週自動で追跡し、自社がおすすめされ続けているかを監視します。</span>
+        <strong>毎週の自動見守りで推薦状況を追跡</strong>
+        <span>AI回答の更新やライバルの動きを毎週自動で追跡し、自社がおすすめ候補に入り続けているかを監視します。</span>
       </article>
     </div>
     <section className="pricing-explanation">
       <h2>なぜ営業マンを雇うより効果的なのか</h2>
       <p>
         顧客の購買行動は「Google検索で比べる」ことから「ChatGPT等のAIに直接相談する」ことへと急速に移行しています。<br />
-        営業マンが足で稼ぐよりも、顧客がAIに「おすすめの会社は？」と聞いた瞬間に御社が推薦される方が、圧倒的に成約率の高い問い合わせにつながります。<br />
+        営業マンが足で稼ぐよりも、顧客がAIに「おすすめの会社は？」と聞いた瞬間に御社が推薦候補に入る方が、確度の高い相談につながりやすくなります。<br />
         月30万円以上の人件費をかけることなく、月額わずか9,800円（税別）で24時間働くAI営業窓口が手に入ります。
       </p>
       <div className="pricing-steps">

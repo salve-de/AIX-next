@@ -60,7 +60,7 @@ export function HeroChatDiagnosticCard() {
       <div className="direct-card-foot">
         <span className="foot-tag">営業マン不要の理由</span>
         <p className="foot-desc">
-          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動配備し、24時間365日、AIが営業マンの代わりに御社をおすすめする体制を整えます。
+          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動配備し、24時間365日、AIが営業マンの代わりに御社を推薦しやすい体制を整えます。
         </p>
       </div>
     </div>
@@ -132,8 +132,8 @@ export function ChatGptComparisonVisual() {
             : <>本物の鮮度と品質にこだわるなら、<strong>【〇〇ブランド】が適しています。</strong> 生産者直売の確かな仕様が確認できます。</>
           }</p>
           <div className="mock-verdict verdict-won">
-            <span>自社の強みに合致した質問で的確に推薦</span>
-            <small>公式スペックに基づき、比較検討時に自社が候補に入ります</small>
+            <span>自社の強みに合致した質問で推薦候補に入りやすくなる</span>
+            <small>公式スペックに基づき、比較検討時に自社が候補に入りやすくなります</small>
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@ export function ProductProcessVisual() {
   const steps = [
     { label: "01", title: "社名を入力する", body: "自社サイトの改修ゼロ。会社名を入れるだけでAIが現状を分析" },
     { label: "02", title: "AI推薦状況を確認", body: "なぜAIがライバルを優先しているのか、機会損失の理由を特定" },
-    { label: "03", title: "AI公式台帳を開設", body: "強みを選ぶだけで、24時間働くAI営業マン（台帳）を即日配備" },
+    { label: "03", title: "AI公式台帳を開設", body: "強みを選ぶだけで、AIに正しく伝える公式台帳を即日配備" },
     { label: "04", title: "毎週の推薦を見守り", body: "ブログ更新ゼロ。AI回答の変化やライバルの動向を自動追跡" },
   ];
   return <ol className="process-visual">{steps.map((step) => <li key={step.label}><span>{step.label}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>;

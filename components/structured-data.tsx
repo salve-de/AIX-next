@@ -17,7 +17,7 @@ const structuredData = {
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
       name: "AIX",
-      description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロでChatGPTなどの生成AIから優先推薦される公式台帳を自動配備するシステム。",
+      description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロでChatGPTなどの生成AIから優先推薦されやすい環境を整えるシステム。",
       inLanguage: "ja-JP",
       publisher: { "@id": organizationId },
     },
