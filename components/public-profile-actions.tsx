@@ -274,6 +274,82 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </div>
       </div>
 
+      {/* SNS成果報告シェア割 ＆ 経営者仲間への招待ループ */}
+      <div className="viral-share-container" style={{ margin: "32px 0 16px", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", borderRadius: "12px", padding: "28px 24px", color: "#ffffff", border: "1px solid #334155" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+          <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#f59e0b", color: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+            広まるための特別優待
+          </span>
+          <strong style={{ fontSize: "1.05rem", color: "#ffffff" }}>
+            「3万円は高い」と感じた方へ。成果報告や仲間紹介で大幅割引
+          </strong>
+        </div>
+        <p style={{ margin: "0 0 20px", fontSize: "0.82rem", color: "#94a3b8", lineHeight: 1.6 }}>
+          AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下のいずれかの方法で、定期見守りプランをお得に開始・継続いただけます。
+        </p>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          {/* 特典1: Xで成果報告シェア（初月半額） */}
+          <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "18px 20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
+                <strong style={{ fontSize: "0.95rem", color: "#38bdf8" }}>① X（旧Twitter）成果報告シェア割</strong>
+                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
+              </div>
+              <p style={{ fontSize: "0.78rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 14px" }}>
+                「AI公式推薦パス」の認定状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
+              </p>
+            </div>
+            <button
+              type="button"
+              className="button button-primary"
+              style={{ width: "100%", justifyContent: "center", background: "#0284c7" }}
+              onClick={() => {
+                const tweetText = encodeURIComponent(`【AI推薦の公認データを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が優先推薦されるための公式データを配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「AIX」で診断できます。\n#AIX #生成AI #中小企業DX\n`);
+                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}/result?sample=1`);
+                if (typeof window !== "undefined") {
+                  window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
+                  alert("Xでの成果報告ウィンドウを開きました！\n投稿完了後、定期見守りプランのお申し込み時に初月50%割引が自動適用されます。");
+                }
+              }}
+            >
+              成果をXで報告して半額適用 <ArrowIcon />
+            </button>
+          </div>
+
+          {/* 特典2: 経営者仲間へのご紹介（双方ずっと割引） */}
+          <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "18px 20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
+                <strong style={{ fontSize: "0.95rem", color: "#fbbf24" }}>② 経営者仲間・同業への紹介割</strong>
+                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#facc15", background: "rgba(250,204,21,0.15)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
+              </div>
+              <p style={{ fontSize: "0.78rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 14px" }}>
+                知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
+              </p>
+            </div>
+            <button
+              type="button"
+              className="button button-secondary"
+              style={{ width: "100%", justifyContent: "center", borderColor: "#64748b", color: "#ffffff" }}
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  const inviteUrl = `${window.location.origin}/?ref=${encodeURIComponent(result.discovery.brandName || "partner")}`;
+                  void navigator.clipboard.writeText(inviteUrl);
+                  alert(`仲間招待用のURLをコピーしました：\n${inviteUrl}\n\nこのリンクから知人経営者様が診断・ご利用されると、双方に永年紹介割引が自動適用されます。`);
+                }
+              }}
+            >
+              仲間招待リンクをコピー
+            </button>
+          </div>
+        </div>
+
+        <small style={{ display: "block", marginTop: "14px", fontSize: "0.72rem", color: "#94a3b8", textAlign: "center" }}>
+          ※不正利用（自己紹介・架空アカウント・クーポンの無断転載等）はStripeカード指紋照合およびシステム監査により自動検知・除外されます。
+        </small>
+      </div>
+
       {/* 定期見守りプランのご案内 */}
       <div className="upsell-paywall-banner">
         <div className="upsell-badge">継続的なサポート</div>

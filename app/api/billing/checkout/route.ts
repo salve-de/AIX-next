@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json() as { token?: string };
+    const body = await request.json() as { token?: string; withShareDiscount?: boolean };
     if (!body.token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
     const watch = await getWatch(body.token);
     if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
@@ -25,6 +25,15 @@ export async function POST(request: Request) {
     form.set("client_reference_id", watch.id);
     form.set("metadata[watch_token]", watch.token);
     form.set("subscription_data[metadata][watch_token]", watch.token);
+
+    // SNSシェア完了特典：初月割引クーポンの安全適用（手動コード入力不要・流出なし）
+    if (body.withShareDiscount && env.stripeShareCouponId) {
+      form.set("discounts[0][coupon]", env.stripeShareCouponId);
+      form.set("metadata[share_discount_applied]", "true");
+    } else {
+      // ユーザー自身のプロモーションコード入力も許可
+      form.set("allow_promotion_codes", "true");
+    }
 
     const response = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",

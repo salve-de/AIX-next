@@ -124,12 +124,12 @@ export function WatchClient() {
     finally { setSaving(""); }
   }
 
-  async function manageBilling() {
+  async function manageBilling(withShareDiscount = false) {
     if (sample) return;
     setCheckoutBusy(true); setError("");
     try {
       const endpoint = watch?.paid ? "/api/billing/portal" : "/api/billing/checkout";
-      const response = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
+      const response = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token, withShareDiscount }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || (watch?.paid ? "契約管理を開けませんでした。" : "契約画面を開けませんでした。"));
       window.location.assign(data.url);
@@ -202,7 +202,7 @@ export function WatchClient() {
                   毎週、変化を見る <ArrowIcon />
                 </Link>
               ) : (
-                <button className="button button-primary" type="button" onClick={manageBilling} disabled={checkoutBusy}>
+                <button className="button button-primary" type="button" onClick={() => void manageBilling()} disabled={checkoutBusy}>
                   {checkoutBusy ? "準備中…" : watch.paid ? "契約を管理" : "毎週、変化を見る"}
                   <ArrowIcon />
                 </button>
