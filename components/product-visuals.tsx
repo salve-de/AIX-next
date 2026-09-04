@@ -37,6 +37,7 @@ export function HeroChatDiagnosticCard() {
 
   return (
     <div className="hero-chat-card" aria-label="ChatGPTでの競合推薦とAIX診断プレビュー">
+      {/* 上部タブバー */}
       <div className="hero-chat-card-topbar">
         <div className="card-topbar-tabs">
           <button
@@ -51,59 +52,60 @@ export function HeroChatDiagnosticCard() {
             className={`topbar-tab ${industry === "service" ? "active" : ""}`}
             onClick={() => setIndustry("service")}
           >
-            士業・相談
+            専門サービス・士業
           </button>
           <button
             type="button"
             className={`topbar-tab ${industry === "local" ? "active" : ""}`}
             onClick={() => setIndustry("local")}
           >
-            店舗・医療
+            店舗・地域
           </button>
         </div>
-        <span className="card-topbar-label">AI回答シミュレーション</span>
+        <span className="card-topbar-label">ChatGPT回答例</span>
       </div>
 
+      {/* チャット対話エリア */}
       <div className="hero-chat-card-body">
-        {/* ユーザーの質問 */}
+        {/* 発注者の質問 */}
         <div className="hero-chat-msg user-msg">
-          <span className="msg-speaker">発注者・見込み客</span>
+          <span className="msg-author">発注者（見込み客）</span>
           <p>{current.query}</p>
         </div>
 
         {/* ChatGPTの回答 */}
         <div className="hero-chat-msg ai-msg">
           <div className="ai-msg-header">
-            <span className="msg-speaker ai-speaker">ChatGPT</span>
-            <span className="ai-status-tag">回答で競合を推薦</span>
+            <span className="msg-author ai-author">ChatGPT</span>
+            <span className="ai-status-tag">競合を推薦中</span>
           </div>
-          <p className="ai-text-lead">以下の会社が条件に合致し、実績豊富でおすすめです：</p>
-          <ul className="ai-rec-list">
-            <li><strong>1. {current.competitor1}</strong></li>
-            <li><strong>2. {current.competitor2}</strong></li>
-          </ul>
-          <div className="ai-omitted-banner">
-            <span className="omitted-badge">あなたの会社</span>
-            <span className="omitted-text">言及されず、候補から外れています</span>
+          <p className="ai-intro">条件に合う実績豊富な2社をご紹介します：</p>
+          <div className="ai-rec-box">
+            <div>1. <strong>{current.competitor1}</strong></div>
+            <div>2. <strong>{current.competitor2}</strong></div>
+          </div>
+          <div className="ai-omitted-row">
+            <span className="omitted-tag">あなたの会社</span>
+            <span className="omitted-reason">言及されず、候補から外れています</span>
           </div>
         </div>
       </div>
 
-      {/* AIXの診断レポート */}
+      {/* AIXの診断レポートバー */}
       <div className="hero-chat-card-report">
-        <div className="report-row-status">
-          <div className="report-stat-col">
-            <small>現在のAI推薦順位</small>
-            <strong className="stat-rank lost">{current.rank}</strong>
+        <div className="report-status-header">
+          <div className="status-rank-block">
+            <span className="status-label">現在のAI推薦順位</span>
+            <strong className="status-rank-val">{current.rank}</strong>
           </div>
-          <div className="report-stat-col">
-            <small>AIがライバルを選んだ決定打</small>
-            <span className="stat-cause">{current.cause}</span>
+          <div className="status-cause-block">
+            <span className="status-label">競合が勝った理由</span>
+            <span className="status-cause-val">{current.cause}</span>
           </div>
         </div>
-        <div className="report-action-pill">
-          <span className="pill-lead">AIXの改善策</span>
-          <span className="pill-body">{current.action}</span>
+        <div className="report-action-row">
+          <span className="action-tag">AIXの改善策</span>
+          <span className="action-desc">{current.action}</span>
         </div>
       </div>
     </div>

@@ -24,7 +24,8 @@ export default function HomePage() {
                 <em>ライバルを「おすすめ」しています。</em>
               </h1>
               <p className="landing-hero-lead">
-                会社名やサイトURLを入れるだけで、AIが競合を先に勧めた理由と、自社が選ばれるための改善策を即座に無料診断します。
+                会社名やサイトURLを入れるだけで、AIが競合を先に勧めた理由と、<br />
+                自社が選ばれるための改善策を即座に無料診断します。
               </p>
             </div>
 
@@ -33,30 +34,21 @@ export default function HomePage() {
               <ScanForm />
             </div>
 
-            {/* 得られる3大結果 */}
-            <div className="hero-instant-strip" aria-label="得られる3大メリット">
-              <div className="instant-strip-item">
-                <span className="strip-num">1</span>
-                <div>
-                  <strong>競合に負けた質問を特定</strong>
-                  <small>顧客がAIに何と聞いて他社に流れているかを解明</small>
-                </div>
-              </div>
-              <div className="instant-strip-item">
-                <span className="strip-num">2</span>
-                <div>
-                  <strong>AIが競合を選んだ決定打</strong>
-                  <small>価格・納期・実績など不足している確定情報を特定</small>
-                </div>
-              </div>
-              <div className="instant-strip-item">
-                <span className="strip-num">3</span>
-                <div>
-                  <strong>自社が選ばれる改善策</strong>
-                  <small>サイト改修不要。AIが引用する「公式台帳」を即開設可能</small>
-                </div>
-              </div>
-            </div>
+            {/* 得られる3大結果（枠線を廃止し、すっきりと読みやすいチェックリストに刷新） */}
+            <ul className="hero-feature-checks" aria-label="診断でわかる3つのこと">
+              <li>
+                <span className="check-mark">✔</span>
+                <span><strong>競合に負けている質問</strong>を特定</span>
+              </li>
+              <li>
+                <span className="check-mark">✔</span>
+                <span>AIが<strong>ライバルを選んだ決定打</strong>を解明</span>
+              </li>
+              <li>
+                <span className="check-mark">✔</span>
+                <span>サイト改修不要で<strong>AIに選ばれる改善策</strong>を出力</span>
+              </li>
+            </ul>
 
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
