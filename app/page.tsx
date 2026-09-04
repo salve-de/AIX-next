@@ -24,8 +24,8 @@ export default function HomePage() {
                 <em>ライバルを「おすすめ」しています。</em>
               </h1>
               <p className="landing-hero-lead">
-                会社名やサイトURLを入れるだけで、AIが競合を先に勧めた理由と、<br />
-                自社が選ばれるための改善策を即座に無料診断します。
+                自社サイトの改修は一切不要。会社名を入れるだけで「AI専用データベース」を自動生成。<br />
+                あなたが何もしなくても、ChatGPTなどのAIが自社を優先推薦する環境を勝手に整えます。
               </p>
             </div>
 
@@ -34,25 +34,25 @@ export default function HomePage() {
               <ScanForm />
             </div>
 
-            {/* 得られる3大結果（枠線を廃止し、すっきりと読みやすいチェックリストに刷新） */}
-            <ul className="hero-feature-checks" aria-label="診断でわかる3つのこと">
+            {/* 得られる3大価値：何もしなくても勝手にDB作ってAIに出やすくする */}
+            <ul className="hero-feature-checks" aria-label="選ばれる3つの理由">
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>競合に負けている質問</strong>を特定</span>
+                <span><strong>何もしなくてOK</strong>：サイト改修やプログラミング作業は一切不要</span>
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span>AIが<strong>ライバルを選んだ決定打</strong>を解明</span>
+                <span><strong>AI専用DBを自動生成</strong>：入力するだけで、AIが読む公式データを勝手に配備</span>
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span>サイト改修不要で<strong>AIに選ばれる改善策</strong>を出力</span>
+                <span><strong>勝手にAIに出やすく</strong>：ChatGPTやPerplexityが自社の強みを優先推薦</span>
               </li>
             </ul>
 
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
-              <Link className="hero-sample-link" href="/result?sample=1">実際の診断結果サンプルを見る <span aria-hidden="true">→</span></Link>
+              <Link className="hero-sample-link" href="/result?sample=1">実際の診断・自動生成サンプルを見る <span aria-hidden="true">→</span></Link>
             </div>
           </div>
 
