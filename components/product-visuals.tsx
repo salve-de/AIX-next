@@ -3,6 +3,113 @@
 import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
+export function HeroChatDiagnosticCard() {
+  const [industry, setIndustry] = useState<"mfg" | "service" | "local">("mfg");
+
+  const data = {
+    mfg: {
+      query: "「短納期・小ロットの試作板金加工を相談できる、信頼できる工場はある？」",
+      competitor1: "株式会社〇〇工業（24時間見積・最短翌日出荷）",
+      competitor2: "△△製作所（1個からの特注・単品試作に対応）",
+      rank: "8社中 5位（選定落ち）",
+      cause: "「短納期・1個から対応」の確定実績データがネット上に不足",
+      action: "AI公式データ登録で、自社の強みを主要AI（ChatGPT等）へ即座に反映",
+    },
+    service: {
+      query: "「相続や事業承継の相談、大手より親身に個別対応してくれる事務所は？」",
+      competitor1: "大手総合税理士法人グループ（全国対応）",
+      competitor2: "士業ポータルサイト（一括資料請求ナビ）",
+      rank: "12社中 7位（推薦圏外）",
+      cause: "「親身な個別伴走・初回直接面談」の実績がAIに届いていない",
+      action: "公式ナレッジ台帳を開設し、AIが引用する一次情報源として登録",
+    },
+    local: {
+      query: "「近隣で休日の急患や専門治療に対応している評判の医院・施設は？」",
+      competitor1: "地域総合医療センター（紹介状必須）",
+      competitor2: "大手医療ポータル予約サイト",
+      rank: "6件中 4位（推薦漏れ）",
+      cause: "休日診療や特定分野の専門実績がAIロボットに正しく伝達されていない",
+      action: "Schema構造化データで正確な診療仕様を公式公開し、AI推薦を獲得",
+    },
+  };
+
+  const current = data[industry];
+
+  return (
+    <div className="hero-chat-card" aria-label="ChatGPTでの競合推薦とAIX診断プレビュー">
+      <div className="hero-chat-card-topbar">
+        <div className="card-topbar-tabs">
+          <button
+            type="button"
+            className={`topbar-tab ${industry === "mfg" ? "active" : ""}`}
+            onClick={() => setIndustry("mfg")}
+          >
+            製造・加工
+          </button>
+          <button
+            type="button"
+            className={`topbar-tab ${industry === "service" ? "active" : ""}`}
+            onClick={() => setIndustry("service")}
+          >
+            士業・相談
+          </button>
+          <button
+            type="button"
+            className={`topbar-tab ${industry === "local" ? "active" : ""}`}
+            onClick={() => setIndustry("local")}
+          >
+            店舗・医療
+          </button>
+        </div>
+        <span className="card-topbar-label">AI回答シミュレーション</span>
+      </div>
+
+      <div className="hero-chat-card-body">
+        {/* ユーザーの質問 */}
+        <div className="hero-chat-msg user-msg">
+          <span className="msg-speaker">発注者・見込み客</span>
+          <p>{current.query}</p>
+        </div>
+
+        {/* ChatGPTの回答 */}
+        <div className="hero-chat-msg ai-msg">
+          <div className="ai-msg-header">
+            <span className="msg-speaker ai-speaker">ChatGPT</span>
+            <span className="ai-status-tag">回答で競合を推薦</span>
+          </div>
+          <p className="ai-text-lead">以下の会社が条件に合致し、実績豊富でおすすめです：</p>
+          <ul className="ai-rec-list">
+            <li><strong>1. {current.competitor1}</strong></li>
+            <li><strong>2. {current.competitor2}</strong></li>
+          </ul>
+          <div className="ai-omitted-banner">
+            <span className="omitted-badge">あなたの会社</span>
+            <span className="omitted-text">言及されず、候補から外れています</span>
+          </div>
+        </div>
+      </div>
+
+      {/* AIXの診断レポート */}
+      <div className="hero-chat-card-report">
+        <div className="report-row-status">
+          <div className="report-stat-col">
+            <small>現在のAI推薦順位</small>
+            <strong className="stat-rank lost">{current.rank}</strong>
+          </div>
+          <div className="report-stat-col">
+            <small>AIがライバルを選んだ決定打</small>
+            <span className="stat-cause">{current.cause}</span>
+          </div>
+        </div>
+        <div className="report-action-pill">
+          <span className="pill-lead">AIXの改善策</span>
+          <span className="pill-body">{current.action}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ChatGptComparisonVisual() {
   const [tab, setTab] = useState<"service" | "mfg" | "brand">("service");
 

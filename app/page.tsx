@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { ChatGptComparisonVisual, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
+import { ChatGptComparisonVisual, HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
 import { LiveActivityTicker } from "@/components/live-activity-ticker";
 import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
 
@@ -13,51 +13,63 @@ export default function HomePage() {
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
-        
-        {/* メイン見出し＆一瞬でわかる価値訴求 */}
-        <div className="landing-hero-head-block">
-          <p className="overline">ホームページ不要・Instagramや会社名だけでOK</p>
-          <h1>ChatGPTやGeminiに聞かれたとき、<br /><em>自社が「第一候補」でおすすめされる公式Web拠点</em></h1>
-          <p className="landing-hero-lead">
-            制作費数十万円のホームページは作らなくて構いません。会社名を入れるだけで、AIが顧客に推薦する「公式Webページ」を無料発行。競合他社に奪われていたAI経由の問い合わせを取り戻せます。
-          </p>
-        </div>
+        <div className="landing-hero-grid">
+          
+          {/* 左カラム：問題提起・入力フォーム・得られるメリット */}
+          <div className="landing-hero-col-left">
+            <div className="landing-hero-head-block">
+              <p className="overline">生成AI 競合推薦・選定落ち診断</p>
+              <h1>
+                ChatGPTは、あなたの会社をスルーして<br />
+                <em>ライバルを「おすすめ」しています。</em>
+              </h1>
+              <p className="landing-hero-lead">
+                会社名やサイトURLを入れるだけで、AIが競合を先に勧めた理由と、自社が選ばれるための改善策を即座に無料診断します。
+              </p>
+            </div>
 
-        {/* ファーストビュー直撃：入力フォーム（スクロール一切不要） */}
-        <div className="landing-hero-form-box">
-          <ScanForm />
-        </div>
+            {/* 入力フォーム */}
+            <div className="landing-hero-form-box">
+              <ScanForm />
+            </div>
 
-        {/* 一瞬で価値が伝わる「3大保証バッジ」（スクロール不要の一等地） */}
-        <div className="hero-instant-strip" aria-label="得られる3大メリット">
-          <div className="instant-strip-item">
-            <span className="strip-num">1</span>
-            <div>
-              <strong>HP制作費30万円がゼロに</strong>
-              <small>自社サイト不要。発行URLを名刺やSNSに貼るだけで完結</small>
+            {/* 得られる3大結果 */}
+            <div className="hero-instant-strip" aria-label="得られる3大メリット">
+              <div className="instant-strip-item">
+                <span className="strip-num">1</span>
+                <div>
+                  <strong>競合に負けた質問を特定</strong>
+                  <small>顧客がAIに何と聞いて他社に流れているかを解明</small>
+                </div>
+              </div>
+              <div className="instant-strip-item">
+                <span className="strip-num">2</span>
+                <div>
+                  <strong>AIが競合を選んだ決定打</strong>
+                  <small>価格・納期・実績など不足している確定情報を特定</small>
+                </div>
+              </div>
+              <div className="instant-strip-item">
+                <span className="strip-num">3</span>
+                <div>
+                  <strong>自社が選ばれる改善策</strong>
+                  <small>サイト改修不要。AIが引用する「公式台帳」を即開設可能</small>
+                </div>
+              </div>
+            </div>
+
+            {/* 診断見本リンク */}
+            <div className="hero-sample-link-wrapper">
+              <Link className="hero-sample-link" href="/result?sample=1">実際の診断結果サンプルを見る <span aria-hidden="true">→</span></Link>
             </div>
           </div>
-          <div className="instant-strip-item">
-            <span className="strip-num">2</span>
-            <div>
-              <strong>AIからの来店・問い合わせ獲得</strong>
-              <small>ChatGPTやPerplexityが料金や自社の強みを正確に紹介</small>
-            </div>
-          </div>
-          <div className="instant-strip-item">
-            <span className="strip-num">3</span>
-            <div>
-              <strong>スマホから3分でいつでも更新</strong>
-              <small>営業時間の変更や新メニューも手元から即座に反映可能</small>
-            </div>
-          </div>
-        </div>
 
-        {/* 診断見本リンク */}
-        <div className="hero-sample-link-wrapper">
-          <Link className="hero-sample-link" href="/result?sample=1">実際の診断・発行結果サンプルを見る <span aria-hidden="true">→</span></Link>
-        </div>
+          {/* 右カラム：0.1秒で伝わるChatGPTリアル比較＆診断プレビュー */}
+          <div className="landing-hero-col-right">
+            <HeroChatDiagnosticCard />
+          </div>
 
+        </div>
       </div>
     </section>
 
