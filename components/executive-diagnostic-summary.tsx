@@ -171,46 +171,55 @@ export function ExecutiveDiagnosticSummary({
           </div>
         </div>
 
-        {/* 具体的にどう解決したか（施工アクション） */}
+        {/* 具体的にどう解決したか（施工アクション：完全放置で全自動） */}
         <div
           style={{
-            background: "linear-gradient(90deg, rgba(2, 132, 199, 0.2) 0%, rgba(14, 165, 233, 0.1) 100%)",
+            background: "linear-gradient(90deg, rgba(2, 132, 199, 0.25) 0%, rgba(14, 165, 233, 0.12) 100%)",
             border: "1px solid #0284c7",
             borderRadius: "12px",
-            padding: "20px 24px",
+            padding: "22px 24px",
             marginBottom: "28px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <span
-              style={{
-                background: "#0284c7",
-                color: "#ffffff",
-                fontSize: "0.72rem",
-                fontWeight: 800,
-                padding: "2px 8px",
-                borderRadius: "4px",
-              }}
-            >
-              システムの施工内容
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span
+                style={{
+                  background: "#0284c7",
+                  color: "#ffffff",
+                  fontSize: "0.72rem",
+                  fontWeight: 800,
+                  padding: "2px 8px",
+                  borderRadius: "4px",
+                }}
+              >
+                システムの施工内容
+              </span>
+              <strong style={{ fontSize: "1.08rem", color: "#38bdf8" }}>
+                社長の作業は「社名を入力しただけ」。あとは完全放置でAI専属窓口が自動稼働
+              </strong>
+            </div>
+            <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 8px", borderRadius: "4px" }}>
+              自社サイト改修・作業工数：完全ゼロ
             </span>
-            <strong style={{ fontSize: "1.05rem", color: "#38bdf8" }}>
-              自社サイト改修ゼロで、AI専用の「公式確定仕様台帳」をネット上に即時配備
-            </strong>
           </div>
-          <p style={{ fontSize: "0.86rem", color: "#e2e8f0", lineHeight: 1.65, margin: "0 0 12px" }}>
-            本システムは、自社ホームページに一切手を加えることなく、AI探索ロボット（ChatGPT・Perplexity・Claude等）が巡回して1秒で取り込める<strong>「AI公式推薦パス（国際規格JSON-LD・出展証跡完備）」</strong>を開設・常駐配備しました。<br />
-            これにより、AIに対して<strong>「大手が断るような古家・空き家の売却条件」や「個別伴走の実績エビデンス」を確定事実として直接インストール</strong>しました。
+          <p style={{ fontSize: "0.88rem", color: "#e2e8f0", lineHeight: 1.65, margin: "0 0 14px" }}>
+            ITの難しい知識も、ホームページの改修工事も、ファイルのアップロードも一切不要です。<br />
+            AIXが自社サイトの公開情報と公的データベースを瞬時に解析し、ChatGPTやPerplexity等のAI探索ロボットが1秒で読める<strong>「AI公式確定仕様台帳（国際規格JSON-LD・出展証跡完備）」を自社サイトの外側に全自動配備</strong>しました。<br />
+            <strong>「大手が断るような空き家・古家の売却条件」や「即日個別対応の強み」が、AIの頭の中に自動でインストールされています。</strong>
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "0.78rem" }}>
             <span style={{ background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: "6px", color: "#bae6fd" }}>
-              ✓ 国際標準構造化データ（Schema.org）完全準拠
+              ✓ ユーザー作業：URL・社名を入力するだけ（あとは完全放置）
             </span>
             <span style={{ background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: "6px", color: "#bae6fd" }}>
-              ✓ 宅建業法・公的免許番号の全データ出展証跡
+              ✓ 国際標準構造化データ（Schema.org）自動生成・常駐
             </span>
             <span style={{ background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: "6px", color: "#bae6fd" }}>
-              ✓ 大手チェーンの弱点（定型対応）を補う看板の確立
+              ✓ 宅建業法・公的免許番号の全データ出展証跡を自動付与
+            </span>
+            <span style={{ background: "rgba(255,255,255,0.1)", padding: "4px 10px", borderRadius: "6px", color: "#bae6fd" }}>
+              ✓ 面倒な保守・毎週のAI回答変動監視も全自動
             </span>
           </div>
         </div>
@@ -248,6 +257,7 @@ export function ExecutiveDiagnosticSummary({
               <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "0.82rem", color: "#cbd5e1", lineHeight: 1.6 }}>
                 <li>AIは「本棚にデータがない会社」と判定し、知名度だけで大手を推奨</li>
                 <li>「確定条件」が分からないため、AIがハルシネーション（誤案内）を恐れて自社を除外</li>
+                <li>AI対策の方法が分からず、ブログ更新やサイト改修に手を取られる（または放置）</li>
                 <li><strong>結果：地域で家や土地を売りたいお客様が、AI経由で大手に丸ごと流出していた</strong></li>
               </ul>
             </div>
@@ -268,6 +278,7 @@ export function ExecutiveDiagnosticSummary({
               <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "0.82rem", color: "#e2e8f0", lineHeight: 1.6 }}>
                 <li>AI探索ロボットが「大手が対応しにくい個別案件（古家・即日）の第一候補」として認識</li>
                 <li>出展つきの確定台帳により、AIが自信を持って御社の電話番号や相談窓口を提示</li>
+                <li><strong>社長は完全放置でOK</strong>：自社サイトの改修も更新もゼロ。本業に100%集中できる</li>
                 <li><strong>結果：「大手に断られた」「すぐに売りたい」質の高い見込み客が直接御社へ流入</strong></li>
               </ul>
             </div>

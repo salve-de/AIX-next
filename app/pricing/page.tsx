@@ -11,11 +11,11 @@ const free = [
   "自社サイト改修ゼロでのAI公式台帳発行",
 ];
 const paid = [
-  "自社専用の「AI公式台帳Webページ」を常時公開・ホスティング維持",
-  "毎週ライバルの動向とAI推薦枠の獲得状況を自動追跡",
+  "ユーザー作業は完全ゼロ：URLを入れるだけで、あとは完全放置で自動運用",
+  "自社専用の「AI公式台帳Webページ」を常時公開・ホスティング維持（改修工事不要）",
+  "毎週ライバルの動向とAI推薦枠の獲得状況を自動追跡・通知",
   "ライバルの急浮上・推薦枠の変動アラート通知",
   "公式台帳（FAQ・強み仕様）の週次定期自動メンテナンス",
-  "季節の需要や新検索に合わせた月次アドバイス",
   "いつでも管理画面からワンクリック解約可能",
 ];
 
@@ -23,7 +23,7 @@ export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
     title="営業マンを雇う前に。AI新時代に取り残されないための投資。"
-    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。自社サイト改修ゼロで、AIから推薦されやすい専属窓口を即座に配備できます。"
+    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。URLや社名を入れるだけで、あとは完全放置。自社サイト改修ゼロで、AIから推薦されやすい専属窓口を即座に自動配備・自動運用します。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
@@ -110,9 +110,9 @@ export default function PricingPage() {
         月30万円以上の人件費をかけることなく、月額わずか9,800円（税別）で24時間働くAI営業窓口が手に入ります。
       </p>
       <div className="pricing-steps">
-        <div><strong>1</strong><span>無料診断</span><p>AI推薦の現状を知る</p></div>
-        <div><strong>2</strong><span>台帳開設</span><p>AI営業窓口を即日配備</p></div>
-        <div><strong>3</strong><span>自動見守り</span><p>毎週の推薦状況を追跡</p></div>
+        <div><strong>1</strong><span>URL・社名を入力</span><p>手入力はこれだけ。即時AI診断</p></div>
+        <div><strong>2</strong><span>台帳自動開設</span><p>完全放置でAI専属窓口を配備</p></div>
+        <div><strong>3</strong><span>全自動見守り</span><p>気に入ったら継続。毎週自動追跡</p></div>
       </div>
     </section>
     <section className="pricing-note">
