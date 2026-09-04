@@ -248,7 +248,7 @@ export function ScanProgress() {
       : `「${displayInput(rawInput)}」のAI公式Web拠点を無料発行`;
 
     const descText = isSocial
-      ? "Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため生成AI（ChatGPTやGemini等）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。AIXなら、SNSアカウントからAIが100%読み取れる公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。"
+      ? "Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため生成AI（ChatGPTやGemini等）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。AIXなら、SNSアカウントから主要AIが正確に認識できる公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。"
       : isProduct
       ? "生成AIは「おすすめの〇〇（商品ジャンル）」を聞かれた際、商品名と用途、独自の強みがWeb上で構造化されていないと他社製品を優先推薦してしまいます。商品名・サービス名単体から、AIが第一想起で推薦する公式台帳を即座に無料発行します。"
       : "自社サイトをお持ちでない場合でも、AIXでは会社名（屋号）をもとに、AI専用の公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。高額なホームページ制作費用は不要です。";
@@ -412,7 +412,7 @@ export function ScanProgress() {
               <button className="button button-primary scan-resolve-start" type="button" disabled={!selectedUrl} onClick={() => void startScan(selectedUrl)}>このサイトを確定して診断する <span aria-hidden="true">→</span></button>
               <button className="button button-secondary" type="button" onClick={() => setPhase("no_site")} style={{ marginLeft: "12px" }}>自社サイトがない・候補にない（直接発行する）</button>
             </div>
-            <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を100%防ぎます。</p>
+            <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を確実に防止します。</p>
           </> : null}
           {phase === "failed" ? <div className="scan-error" role="alert"><strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button></div> : null}
         </div>

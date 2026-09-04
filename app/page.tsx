@@ -21,7 +21,7 @@ export default function HomePage() {
         <div className="landing-no-site-banner">
           <span className="no-site-pill">自社サイト未開設・Instagram運用中の企業様へ</span>
           <strong>数十万円のホームページ制作は不要です。</strong>
-          <span>会社名やInstagramアカウント（@username）から、AIが100%読み取る世界唯一の公式Web拠点を即座に無料発行できます。</span>
+          <span>会社名やInstagramアカウント（@username）から、主要AIが正しく解釈できる公式Web拠点を即座に無料発行できます。</span>
         </div>
 
         {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
@@ -58,54 +58,54 @@ export default function HomePage() {
     {/* 全国の事業者による公式台帳 開設・運用実例ギャラリー */}
     <VerifiedCompaniesGallery />
 
-    {/* 各社AIが直接情報を取りに来る公式台帳の仕組み */}
-    <section className="landing-crawler-section" style={{ padding: "40px 0 60px" }}>
-      <div className="shell">
-        <div className="ai-crawler-value-card">
+    {/* AIクローラー巡回と推薦の仕組み（中学生・農家・町工場の社長でも即座にわかる解説） */}
+    <section className="crawler-proof-section">
+      <div className="section-inner">
+        <div className="crawler-card">
           <div className="crawler-card-header">
             <span className="crawler-status-pulse"></span>
-            <strong>主要AI（ChatGPT / Gemini / Claude / Perplexity）が直接参照する仕組み</strong>
+            <strong>主要AI（ChatGPT / Gemini / Claude / Perplexity）が正しく参照する仕組み</strong>
           </div>
           <p className="crawler-card-desc">
-            <strong>「なぜAIXの公式台帳があると、AIがあなたの会社を第一想起でおすすめするのか？」</strong><br />
-            普通のホームページは画像やデザインが多く、AIは正確な料金やサービス詳細を読み取れません。AIXが発行する公的ナレッジ台帳は、<strong>主要生成AIの情報収集ロボット（クローラー）が直接理解できる専用データ（Schema.org構造化データ ＆ Clean RAG Markdown）</strong>で配信されているため、AIがユーザーから「おすすめ」を聞かれた際に公式の正解データとして直接引用・グラウンディングされます。
+            <strong>「なぜAI公式Web拠点があると、AIが自社を正しく認識・推薦するのか？」</strong><br />
+            一般的なホームページはデザインや写真が多く、AIが料金や具体的なサービス内容を誤読したり見落とすケースが少なくありません。AIXが発行する公的ナレッジ台帳は、<strong>AIロボットが正確に理解できる標準構造化データ（Schema.org形式）</strong>で常時提供されるため、AIがユーザーへの回答を生成する際、信頼できる確定ソースとして引用されます。
           </p>
 
           <div className="crawler-bot-grid">
             <div className="crawler-bot-item">
               <span className="bot-name">OpenAI (ChatGPT)</span>
               <span className="bot-agent">OAI-SearchBot</span>
-              <span className="bot-status green">● 読み取り認可済</span>
+              <span className="bot-status green">● 巡回・参照対応</span>
             </div>
             <div className="crawler-bot-item">
               <span className="bot-name">Google (Gemini)</span>
               <span className="bot-agent">Googlebot / Gemini</span>
-              <span className="bot-status green">● 推薦ソース待機</span>
+              <span className="bot-status green">● 構造化データ対応</span>
             </div>
             <div className="crawler-bot-item">
               <span className="bot-name">Anthropic (Claude)</span>
               <span className="bot-agent">ClaudeBot</span>
-              <span className="bot-status green">● 構造化ナレッジ取得</span>
+              <span className="bot-status green">● 確定ナレッジ取得</span>
             </div>
             <div className="crawler-bot-item">
               <span className="bot-name">Perplexity AI</span>
               <span className="bot-agent">PerplexityBot</span>
-              <span className="bot-status green">● 公式出典として引用</span>
+              <span className="bot-status green">● 出典元として引用</span>
             </div>
           </div>
 
           <div className="crawler-benefits-row">
             <div className="benefit-pill">
-              <strong>① 高額なHP制作費（数十万円）がゼロ</strong>
-              <span>発行されたページがそのまま世界唯一の公式Web拠点。名刺・SNS・Googleマップのウェブサイト欄に貼るだけで完結します。</span>
+              <strong>1. ホームページ制作・維持費を圧縮</strong>
+              <span>発行されたページがそのまま公式Web拠点として機能。名刺・SNS・Googleマップのウェブサイト欄に登録するだけで完結します。</span>
             </div>
             <div className="benefit-pill">
-              <strong>② AIによる誤回答・スルーを完全防止</strong>
-              <span>料金・営業時間・強みが公式登録されているため、AIが誤った推測をしたり競合ばかり推薦するのを防ぎます。</span>
+              <strong>2. AIによる誤案内や見落としを防止</strong>
+              <span>料金・営業時間・強みが公式登録されているため、AIが事実無根の回答をしたり競合他社ばかり推薦するのを防ぎます。</span>
             </div>
             <div className="benefit-pill">
-              <strong>③ スマホからいつでも直接編集可能</strong>
-              <span>管理画面からいつでも料金改定や営業時間を手元で更新して最新情報を保てます。</span>
+              <strong>3. スマホからいつでも直接更新可能</strong>
+              <span>管理画面からいつでも料金改定や営業時間を手元で更新し、常に最新情報をAIに提供できます。</span>
             </div>
           </div>
         </div>

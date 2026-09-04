@@ -140,48 +140,48 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             <tbody>
               <tr>
                 <td><strong>AIに学習させる看板・強み</strong></td>
-                <td>選択した1看板のみ（単科）</td>
-                <td className="col-highlight"><strong>全10業務・全方位完全網羅</strong></td>
+                <td>選択した1項目のみ</td>
+                <td className="col-highlight"><strong>全業務・全方位を網羅登録</strong></td>
               </tr>
               <tr>
                 <td><strong>生成AI引用用公式FAQ</strong></td>
                 <td>抜粋2問のみ</td>
-                <td className="col-highlight"><strong>厳選10連発すべて直接注入</strong></td>
+                <td className="col-highlight"><strong>主要FAQ（10問）を完全連携</strong></td>
               </tr>
               <tr>
                 <td><strong>有効期間（データの鮮度保証）</strong></td>
                 <td>30日間（古い情報の残留防止）</td>
-                <td className="col-highlight"><strong>無期限（365日常時直結・自動延長）</strong></td>
+                <td className="col-highlight"><strong>無期限（常時同期・自動更新）</strong></td>
               </tr>
               <tr>
-                <td><strong>ライバルの順位逆転監視</strong></td>
+                <td><strong>競合の順位変動モニタリング</strong></td>
                 <td>なし（手動でも不可）</td>
-                <td className="col-highlight"><strong>毎週自動計測・緊急警報アラート</strong></td>
+                <td className="col-highlight"><strong>週次自動計測・変動アラート通知</strong></td>
               </tr>
               <tr>
-                <td><strong>サイトがある企業様</strong></td>
+                <td><strong>Webサイトをお持ちの企業様</strong></td>
                 <td>手動更新のみ</td>
-                <td className="col-highlight"><strong>公式サイトから週次全自動同期</strong></td>
+                <td className="col-highlight"><strong>公式サイトから週次自動同期</strong></td>
               </tr>
               <tr>
-                <td><strong>サイトがない企業様（町工場・農家等）</strong></td>
+                <td><strong>Webサイトをお持ちでない企業様</strong></td>
                 <td>公式Web拠点として公開</td>
-                <td className="col-highlight"><strong>公式Web拠点 ＋ スマホから直接編集</strong></td>
+                <td className="col-highlight"><strong>公式Web拠点 ＋ スマートフォン直接更新</strong></td>
               </tr>
               <tr>
-                <td><strong>AIクローラー認証ランク</strong></td>
-                <td>TRIAL（一般認可）</td>
-                <td className="col-highlight"><strong>ENTERPRISE GOLD（最優先巡回）</strong></td>
+                <td><strong>AIクローラー巡回頻度</strong></td>
+                <td>通常巡回（月次確認）</td>
+                <td className="col-highlight"><strong>常時優先巡回（週次クロール）</strong></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* 自社サイトがない企業様への救済案内 */}
+        {/* 自社サイトがない企業様への案内 */}
         <div className="no-website-benefit-note">
           <span className="benefit-badge">自社サイトをお持ちでない企業様へ</span>
           <p>
-            数十万円かかるホームページ制作は不要です。発行される公式ページ（<code>https://aix.jp/ai/company/...</code>）をGoogleマップや名刺・SNSに貼るだけで、<strong>人間にもAIにも100%伝わる「世界唯一の公式Webサイト兼AI推薦データベース」</strong>としてそのままご活用いただけます。
+            初期制作費用をかけずに、発行された公式ページ（<code>https://aix.jp/ai/company/...</code>）をGoogleマップや名刺・SNSに記載するだけで、<strong>主要AIとユーザーの双方が正確に確認できる「公式Web拠点」</strong>としてそのままご活用いただけます。
           </p>
         </div>
       </div>

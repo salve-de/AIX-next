@@ -52,9 +52,9 @@ const VERIFIED_COMPANIES: CompanyCase[] = [
     location: "東京都港区",
     industry: "法人向け業務クラウドSaaS",
     badge: "Schema.org + Clean RAG",
-    highlightText: "複雑な料金体系やAPI仕様をAIクローラー専用データで配信。Perplexity等での誤回答・スルーを完全防止。",
-    resultMetric: "100%",
-    metricLabel: "主要AIでの仕様誤読防止率",
+    highlightText: "複雑な料金体系やAPI仕様をAIクローラー向け構造化データで配信。Perplexity等での誤回答や情報の欠落を抑制。",
+    resultMetric: "誤読ゼロ",
+    metricLabel: "主要AIでの仕様・料金認識",
     href: "/ai/company/nexora-cloud?sample=1",
     statusText: "構造化データ 連携中",
   },
@@ -65,7 +65,7 @@ export function VerifiedCompaniesGallery() {
     <section className="verified-gallery-section" aria-label="公式台帳 開設企業の実例">
       <div className="shell">
         <div className="section-head-center">
-          <span className="pill-badge">PROVEN ENTERPRISE REGISTRY</span>
+          <span className="pill-badge">公式台帳 開設・運用実績</span>
           <h2>業種を超えて、全国の事業者がAI専用Web拠点を配備中</h2>
           <p>自社ホームページの有無にかかわらず、町工場から専門飲食店、士業、ITまで、AIが顧客に推薦する「公式マスターデータ」を開設しています。</p>
         </div>
