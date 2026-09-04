@@ -50,7 +50,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             onChange={(event) => setInput(event.target.value)}
           />
           <button type="submit">
-            <span>{compact ? "無料診断" : "AIの推薦結果を無料で調べる"}</span>
+            <span>{compact ? "無料診断" : "無料でAI推薦を調べる"}</span>
             <ArrowIcon />
           </button>
         </div>

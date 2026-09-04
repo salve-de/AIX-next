@@ -18,14 +18,14 @@ export default function HomePage() {
           {/* 左カラム：問題提起・入力フォーム・得られるメリット */}
           <div className="landing-hero-col-left">
             <div className="landing-hero-head-block">
-              <p className="overline">ChatGPT・生成AI 競合推薦診断</p>
+              <p className="overline">自社サイト改修ゼロ・全自動AI推薦エンジン</p>
               <h1>
-                ChatGPTは、あなたの会社をスルーして<br />
-                <em>ライバルを「おすすめ」しています。</em>
+                何もしなくていい。<br />
+                <em>社名を入れるだけで、AIが勝手に自社を推薦。</em>
               </h1>
               <p className="landing-hero-lead">
-                自社サイトの改修は一切不要。会社名を入れるだけで「AI専用データベース」を自動生成。<br />
-                あなたが何もしなくても、ChatGPTなどのAIが自社を優先推薦する環境を勝手に整えます。
+                サイト改修は一切不要。会社名を入れるだけで「AI専用DB」を自動作成。<br />
+                ChatGPTなどの生成AIが、ライバルではなく自社を優先推薦します。
               </p>
             </div>
 
@@ -34,19 +34,19 @@ export default function HomePage() {
               <ScanForm />
             </div>
 
-            {/* 得られる3大価値：何もしなくても勝手にDB作ってAIに出やすくする */}
+            {/* 一瞬で刺さる3大価値 */}
             <ul className="hero-feature-checks" aria-label="選ばれる3つの理由">
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>何もしなくてOK</strong>：サイト改修やプログラミング作業は一切不要</span>
+                <span><strong>作業ゼロ</strong>：サイト改修や専門知識は一切不要</span>
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>AI専用DBを自動生成</strong>：入力するだけで、AIが読む公式データを勝手に配備</span>
+                <span><strong>自動DB生成</strong>：AI専用の公式台帳を勝手に配備</span>
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>勝手にAIに出やすく</strong>：ChatGPTやPerplexityが自社の強みを優先推薦</span>
+                <span><strong>勝手にAI推薦</strong>：ChatGPTが自社を優先してお勧め</span>
               </li>
             </ul>
 
