@@ -2,7 +2,7 @@ import { MarketingShell } from "@/components/marketing-shell";
 import { seller, sellerReady } from "@/lib/legal";
 
 const rows = [
-  ["販売事業者", seller.legalName],
+  ["販売事業者", seller.legalName || "販売開始前に設定"],
   ["運営責任者", seller.representative || "販売開始前に設定"],
   ["所在地", seller.address || "販売開始前に設定"],
   ["電話番号", seller.phone || "請求により遅滞なく開示"],

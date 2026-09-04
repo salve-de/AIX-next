@@ -26,7 +26,6 @@ export function SiteFooter() {
         </nav>
         <div className="footer-meta">
           <span>© 2026 AIX</span>
-          <span>株式会社ジュジュベコンサルティング</span>
         </div>
       </div>
       <div className="shell" style={{ borderTop: "1px solid var(--line, #e2e8f0)", paddingTop: "16px", marginTop: "24px" }}>

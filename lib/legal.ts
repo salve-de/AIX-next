@@ -5,7 +5,7 @@ function value(name: string, fallback = "") {
 }
 
 export const seller = {
-  legalName: value("SELLER_LEGAL_NAME", "株式会社ジュジュベコンサルティング"),
+  legalName: value("SELLER_LEGAL_NAME"),
   representative: value("SELLER_REPRESENTATIVE"),
   address: value("SELLER_ADDRESS"),
   phone: value("SELLER_PHONE"),
