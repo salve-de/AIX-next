@@ -193,10 +193,11 @@ export function GoogleDeclineProblemSection() {
         {/* 解決策への直通アクションバー */}
         <div
           style={{
-            background: "#0f172a",
+            background: "#f8fafc",
             borderRadius: "6px",
+            border: "1px solid #e2e8f0",
             padding: "24px 28px",
-            color: "#ffffff",
+            color: "#0f172a",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -210,7 +211,7 @@ export function GoogleDeclineProblemSection() {
                 fontFamily: "var(--font-mono, monospace)",
                 fontSize: "0.72rem",
                 fontWeight: 700,
-                color: "#94a3b8",
+                color: "#64748b",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 display: "block",
@@ -219,18 +220,19 @@ export function GoogleDeclineProblemSection() {
             >
               The Solution / AIXの解決策
             </span>
-            <strong style={{ fontSize: "1.05rem", color: "#f8fafc", display: "block", marginBottom: "6px", letterSpacing: "-0.01em" }}>
+            <strong style={{ fontSize: "1.05rem", color: "#0f172a", display: "block", marginBottom: "6px", letterSpacing: "-0.01em" }}>
               社名を入力するだけ。AIが1秒で読める「公式確定仕様台帳」を即日配備
             </strong>
-            <p style={{ fontSize: "0.84rem", color: "#94a3b8", margin: 0, lineHeight: 1.6 }}>
+            <p style={{ fontSize: "0.84rem", color: "#475569", margin: 0, lineHeight: 1.6 }}>
               高額なSEO業者を雇う必要も、自社サイトを改修する必要もありません。AIが御社を推薦候補として認識できる最新規格を、自走システムで即座に整えます。
             </p>
           </div>
           <Link
             href="#scan"
             style={{
-              background: "#ffffff",
-              color: "#0f172a",
+              background: "#0f172a",
+              color: "#ffffff",
+              border: "1px solid #0f172a",
               padding: "10px 20px",
               borderRadius: "4px",
               fontSize: "0.86rem",

@@ -173,17 +173,17 @@ export function WatchClient() {
       <SiteHeader compact />
       
       {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
-      <div className="system-status-ribbon" style={{ background: "linear-gradient(90deg, #0f172a 0%, #1e293b 100%)", color: "#ffffff", padding: "10px 0", borderBottom: "1px solid #334155" }}>
+      <div className="system-status-ribbon" style={{ background: "#f8fafc", color: "#0f172a", padding: "10px 0", borderBottom: "1px solid #e2e8f0" }}>
         <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#16a34a", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
               画面種別：週次見守り 管理画面
             </span>
-            <strong style={{ fontSize: "0.85rem", color: "#e2e8f0" }}>
+            <strong style={{ fontSize: "0.85rem", color: "#0f172a" }}>
               {watch.latest.discovery.brandName} の推薦獲得推移 ＆ 競合モニタリング
             </strong>
           </div>
-          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+          <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
             {sample ? "※ リアルモック画面（推移データを体験できます）" : watch.paid ? "有料契約中" : "14日間無料トライアル中"}
           </span>
         </div>

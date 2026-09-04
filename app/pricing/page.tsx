@@ -64,40 +64,40 @@ export default function PricingPage() {
       </article>
     </div>
     {/* 公式特別優待制度（費用を抑えたい方へ） */}
-    <div className="pricing-special-offers" style={{ margin: "40px 0 20px", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", borderRadius: "12px", padding: "32px 28px", color: "#ffffff", border: "1px solid #334155" }}>
+    <div className="pricing-special-offers" style={{ margin: "40px 0 20px", background: "#ffffff", borderRadius: "8px", padding: "32px 28px", color: "#0f172a", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-        <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#f59e0b", color: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+        <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
           公式特別優待制度
         </span>
-        <h3 style={{ fontSize: "1.2rem", margin: 0, color: "#ffffff" }}>
+        <h3 style={{ fontSize: "1.2rem", margin: 0, color: "#0f172a" }}>
           月額費用を抑えたい方へ。成果報告や仲間紹介で大幅割引
         </h3>
       </div>
-      <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.6 }}>
+      <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: "#475569", lineHeight: 1.6 }}>
         AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下の優待をご利用いただくことで、定期見守りプランをお得に開始・継続いただけます。
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-        <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-            <strong style={{ fontSize: "1rem", color: "#38bdf8" }}>① X（旧Twitter）成果報告シェア割</strong>
-            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
+        <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+            <strong style={{ fontSize: "0.95rem", color: "#0f172a" }}>① X（旧Twitter）成果報告シェア割</strong>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "3px" }}>初月 50% OFF</span>
           </div>
-          <p style={{ fontSize: "0.8rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 12px" }}>
+          <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 12px" }}>
             「AI公式推薦パス」の配備状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
           </p>
-          <small style={{ color: "#94a3b8", fontSize: "0.72rem" }}>※無料診断の結果画面からワンクリックで適用可能です。</small>
+          <small style={{ color: "#64748b", fontSize: "0.72rem" }}>※無料診断の結果画面からワンクリックで適用可能です。</small>
         </div>
 
-        <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-            <strong style={{ fontSize: "1rem", color: "#fbbf24" }}>② 経営者仲間・同業への紹介割</strong>
-            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#facc15", background: "rgba(250,204,21,0.15)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
+        <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+            <strong style={{ fontSize: "0.95rem", color: "#0f172a" }}>② 経営者仲間・同業への紹介割</strong>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "2px 6px", borderRadius: "3px" }}>双方 ずっと割引</span>
           </div>
-          <p style={{ fontSize: "0.8rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 12px" }}>
+          <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 12px" }}>
             お知り合いの経営者様や士業・店舗仲間に専用リンクを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
           </p>
-          <small style={{ color: "#94a3b8", fontSize: "0.72rem" }}>※診断結果画面および管理画面から専用リンクを発行できます。</small>
+          <small style={{ color: "#64748b", fontSize: "0.72rem" }}>※診断結果画面および管理画面から専用リンクを発行できます。</small>
         </div>
       </div>
     </div>

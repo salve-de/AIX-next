@@ -443,17 +443,17 @@ svg { width: 1.1em; height: 1.1em; }
 .trust-list strong, .trust-list span { display: block; }
 .trust-list strong { color: var(--navy); font-size: .85rem; }
 .trust-list span { margin-top: 3px; color: var(--ink-soft); font-size: .73rem; }
-.landing-final-cta { padding: 105px 0 112px; background: var(--navy); color: var(--white); text-align: center; }
-.landing-final-cta .overline { color: var(--green-bright); }
-.landing-final-cta h2 { margin: 13px auto 0; color: var(--white); font-size: clamp(2.3rem, 5vw, 4.3rem); line-height: 1.08; letter-spacing: -.06em; }
+.landing-final-cta { padding: 80px 0 90px; background: #f8fafc; color: var(--navy); text-align: center; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.landing-final-cta .overline { color: #64748b; }
+.landing-final-cta h2 { margin: 13px auto 0; color: var(--navy); font-size: clamp(2.3rem, 5vw, 4.3rem); line-height: 1.08; letter-spacing: -.06em; }
 .landing-final-cta .scan-form { margin-top: 30px; }
-.landing-final-cta .scan-field { border-color: #60798b; }
-.landing-final-cta .scan-field input { color: var(--white); }
-.landing-final-cta .scan-field input::placeholder { color: #9db0bd; }
-.landing-final-cta .scan-field button { background: var(--green-bright); color: var(--navy); }
-.landing-final-cta .scan-field button:hover { background: #66dca9; }
-.landing-final-cta .scan-form-note { color: #a4b5bf; }
-.final-secondary-link { display: inline-flex; margin-top: 20px; color: #c5d3da; font-size: .76rem; font-weight: 700; }
+.landing-final-cta .scan-field { border-color: var(--line-strong); background: var(--white); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04); }
+.landing-final-cta .scan-field input { color: var(--ink); }
+.landing-final-cta .scan-field input::placeholder { color: #94a3b8; }
+.landing-final-cta .scan-field button { background: var(--navy); color: var(--white); }
+.landing-final-cta .scan-field button:hover { background: #1e293b; }
+.landing-final-cta .scan-form-note { color: #64748b; }
+.final-secondary-link { display: inline-flex; margin-top: 20px; color: var(--navy); font-size: .76rem; font-weight: 700; text-decoration: underline; }
 
 /* Scan progress */
 .scan-page { min-height: 100vh; background: var(--paper); }
@@ -1019,16 +1019,16 @@ svg { width: 1.1em; height: 1.1em; }
 .readiness-list span.missing { color: var(--orange); }
 
 /* Footer and utility/error states */
-.site-footer { padding: 58px 0 25px; background: var(--navy); color: var(--white); }
+.site-footer { padding: 58px 0 32px; background: var(--white); color: var(--ink-soft); border-top: 1px solid var(--line); }
 .footer-grid { display: grid; grid-template-columns: 1.4fr .65fr .65fr; gap: 55px; }
-.footer-brand p { max-width: 330px; margin: 16px 0 0; color: #a8bbc6; font-size: .72rem; line-height: 1.75; }
-.site-footer .brand { color: var(--white); }
-.site-footer .brand small { color: #8da3b0; }
+.footer-brand p { max-width: 330px; margin: 16px 0 0; color: #64748b; font-size: .72rem; line-height: 1.75; }
+.site-footer .brand { color: var(--navy); }
+.site-footer .brand small { color: #64748b; }
 .site-footer nav { display: grid; align-content: start; gap: 9px; }
-.site-footer nav strong { margin-bottom: 4px; color: #d5e0e5; font-size: .67rem; }
-.site-footer nav a { color: #9eb2be; font-size: .68rem; }
-.site-footer nav a:hover { color: var(--white); }
-.footer-meta { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; padding-top: 22px; border-top: 1px solid #2d4b60; color: #849ba8; font-size: .61rem; }
+.site-footer nav strong { margin-bottom: 4px; color: var(--navy); font-size: .67rem; font-weight: 700; }
+.site-footer nav a { color: #64748b; font-size: .68rem; text-decoration: none; }
+.site-footer nav a:hover { color: var(--navy); }
+.footer-meta { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 20px; padding-top: 22px; border-top: 1px solid var(--line); color: #94a3b8; font-size: .61rem; }
 .full-loading { min-height: 100vh; display: grid; place-items: center; background: var(--paper); color: var(--ink-soft); font-size: .86rem; }
 .empty-page { min-height: 100vh; background: var(--paper); }
 .empty-content { padding: 100px 0; }
@@ -2912,17 +2912,19 @@ svg { width: 1.1em; height: 1.1em; }
 
 /* 有料アップセルの壁 (Paywall Banner) */
 .upsell-paywall-banner {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   padding: 24px 28px;
-  color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .upsell-badge {
   display: inline-block;
-  background: #334155;
-  color: #f8fafc;
-  border: 1px solid #475569;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #e2e8f0;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 4px 10px;
@@ -2934,19 +2936,19 @@ svg { width: 1.1em; height: 1.1em; }
 .upsell-content h3 {
   margin: 0 0 8px;
   font-size: 1.15rem;
-  color: #ffffff;
+  color: #0f172a;
   font-weight: 800;
 }
 
 .upsell-content p {
   margin: 0 0 18px;
   font-size: 0.88rem;
-  color: #cbd5e1;
+  color: #475569;
   line-height: 1.6;
 }
 
 .upsell-content strong {
-  color: #38bdf8;
+  color: #0f172a;
 }
 
 .upsell-action {
@@ -2957,17 +2959,17 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 .upsell-action .button {
-  background: #10b981;
+  background: #0f172a;
   color: #ffffff;
+  border: 1px solid #0f172a;
   font-size: 0.92rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 4px;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: none;
 }
 
 .upsell-action .button:hover {
@@ -4244,12 +4246,12 @@ svg { width: 1.1em; height: 1.1em; }
 /* AI巡回＆事業者3大価値カード */
 .ai-crawler-value-card {
   margin-top: 24px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border: 1px solid #334155;
-  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   padding: 24px;
-  color: #f8fafc;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3);
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .crawler-card-header {
@@ -4282,18 +4284,18 @@ svg { width: 1.1em; height: 1.1em; }
 
 .crawler-card-header strong {
   font-size: 1.05rem;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .crawler-card-desc {
   font-size: 0.88rem;
   line-height: 1.6;
-  color: #cbd5e1;
+  color: #475569;
   margin-bottom: 18px;
 }
 
 .crawler-card-desc strong {
-  color: #38bdf8;
+  color: #0f172a;
 }
 
 .crawler-bot-grid {
@@ -4304,9 +4306,9 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 .crawler-bot-item {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -4316,13 +4318,13 @@ svg { width: 1.1em; height: 1.1em; }
 .crawler-bot-item .bot-name {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #ffffff;
+  color: #0f172a;
 }
 
 .crawler-bot-item .bot-agent {
   font-size: 0.72rem;
   font-family: monospace;
-  color: #94a3b8;
+  color: #64748b;
 }
 
 .crawler-bot-item .bot-status {
@@ -4332,21 +4334,21 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 .crawler-bot-item .bot-status.green {
-  color: #4ade80;
+  color: #16a34a;
 }
 
 .crawler-benefits-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid #e2e8f0;
   padding-top: 18px;
 }
 
 .benefit-pill {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
@@ -4355,12 +4357,12 @@ svg { width: 1.1em; height: 1.1em; }
 
 .benefit-pill strong {
   font-size: 0.84rem;
-  color: #facc15;
+  color: #0f172a;
 }
 
 .benefit-pill span {
   font-size: 0.76rem;
-  color: #94a3b8;
+  color: #64748b;
   line-height: 1.45;
 }
 

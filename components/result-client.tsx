@@ -103,17 +103,17 @@ export function ResultClient() {
     <SiteHeader compact />
 
     {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
-    <div className="system-status-ribbon" style={{ background: "linear-gradient(90deg, #0f172a 0%, #1e293b 100%)", color: "#ffffff", padding: "10px 0", borderBottom: "1px solid #334155" }}>
+    <div className="system-status-ribbon" style={{ background: "#f8fafc", color: "#0f172a", padding: "10px 0", borderBottom: "1px solid #e2e8f0" }}>
       <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
+          <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
             画面種別：AI診断カルテ
           </span>
-          <strong style={{ fontSize: "0.85rem", color: "#e2e8f0" }}>
+          <strong style={{ fontSize: "0.85rem", color: "#0f172a" }}>
             {result.discovery.brandName} の推薦状況 ＆ 公式推薦パス配備
           </strong>
         </div>
-        <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
           {sample ? "※ リアルモック画面（全ステップをお試しいただけます）" : "診断完了済"}
         </span>
       </div>
@@ -399,35 +399,34 @@ export function ResultClient() {
 
       {/* ★ここに配置！価格提示の直後だからこそ自然に刺さる「特別優待（費用を抑えたい方へ）」 */}
       <section className="shell" style={{ margin: "32px auto" }}>
-        <div className="viral-share-container" style={{ background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", borderRadius: "12px", padding: "28px 24px", color: "#ffffff", border: "1px solid #334155" }}>
+        <div className="viral-share-container" style={{ background: "#ffffff", borderRadius: "8px", padding: "28px 24px", color: "#0f172a", border: "1px solid #e2e8f0", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#f59e0b", color: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
               公式特別優待制度
             </span>
-            <strong style={{ fontSize: "1.05rem", color: "#ffffff" }}>
+            <strong style={{ fontSize: "1.05rem", color: "#0f172a" }}>
               月額費用を抑えたい方へ。成果報告や仲間紹介で大幅割引
             </strong>
           </div>
-          <p style={{ margin: "0 0 20px", fontSize: "0.82rem", color: "#94a3b8", lineHeight: 1.6 }}>
+          <p style={{ margin: "0 0 20px", fontSize: "0.85rem", color: "#475569", lineHeight: 1.6 }}>
             AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下のいずれかの方法で、定期見守りプランをお得に開始・継続いただけます。
           </p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             {/* 特典1: Xで成果報告シェア（初月半額） */}
-            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "18px 20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-                  <strong style={{ fontSize: "0.95rem", color: "#38bdf8" }}>① X（旧Twitter）成果報告シェア割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                  <strong style={{ fontSize: "0.95rem", color: "#0f172a" }}>① X（旧Twitter）成果報告シェア割</strong>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "3px" }}>初月 50% OFF</span>
                 </div>
-                <p style={{ fontSize: "0.78rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 14px" }}>
+                <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 16px" }}>
                   「AI公式推薦パス」の認定状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
                 </p>
               </div>
               <button
                 type="button"
-                className="button button-primary"
-                style={{ width: "100%", justifyContent: "center", background: "#0284c7" }}
+                style={{ width: "100%", justifyContent: "center", background: "#0f172a", color: "#ffffff", border: "1px solid #0f172a", padding: "9px 16px", borderRadius: "4px", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
                   const tweetText = encodeURIComponent(`【AI推薦の公認データを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が優先推薦されるための公式データを配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「AIX」で診断できます。\n#AIX #生成AI #中小企業DX\n`);
                   const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}/result?sample=1`);
@@ -442,20 +441,19 @@ export function ResultClient() {
             </div>
 
             {/* 特典2: 経営者仲間へのご紹介（双方ずっと割引） */}
-            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "18px 20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
-                  <strong style={{ fontSize: "0.95rem", color: "#fbbf24" }}>② 経営者仲間・同業への紹介割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#facc15", background: "rgba(250,204,21,0.15)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
+                  <strong style={{ fontSize: "0.95rem", color: "#0f172a" }}>② 経営者仲間・同業への紹介割</strong>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "2px 6px", borderRadius: "3px" }}>双方 ずっと割引</span>
                 </div>
-                <p style={{ fontSize: "0.78rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 14px" }}>
+                <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 16px" }}>
                   知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
                 </p>
               </div>
               <button
                 type="button"
-                className="button button-secondary"
-                style={{ width: "100%", justifyContent: "center", borderColor: "#64748b", color: "#ffffff" }}
+                style={{ width: "100%", justifyContent: "center", background: "#ffffff", borderColor: "#cbd5e1", color: "#0f172a", border: "1px solid #cbd5e1", padding: "9px 16px", borderRadius: "4px", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
                   if (typeof window !== "undefined") {
                     const inviteUrl = `${window.location.origin}/?ref=${encodeURIComponent(result.discovery.brandName || "partner")}`;
@@ -469,7 +467,7 @@ export function ResultClient() {
             </div>
           </div>
 
-          <small style={{ display: "block", marginTop: "14px", fontSize: "0.72rem", color: "#94a3b8", textAlign: "center" }}>
+          <small style={{ display: "block", marginTop: "14px", fontSize: "0.72rem", color: "#64748b", textAlign: "center" }}>
             ※不正利用（自己紹介・架空アカウント・クーポンの無断転載等）はStripeカード指紋照合およびシステム監査により自動検知・除外されます。
           </small>
         </div>
