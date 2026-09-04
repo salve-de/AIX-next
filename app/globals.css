@@ -1525,54 +1525,315 @@ svg { width: 1.1em; height: 1.1em; }
 .story-card {
   background: var(--white, #ffffff);
   border: 1px solid var(--line-strong, #cbd5e1);
-  padding: 32px;
+  border-radius: 10px;
+  padding: 28px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
 }
 
 .story-card-header {
   border-bottom: 1px solid var(--line, #e2e8f0);
-  padding-bottom: 16px;
-  margin-bottom: 20px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .story-card-header .category {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 800;
   color: var(--green, #147a52);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .story-card-header h3 {
-  font-size: 1.25rem;
-  margin: 4px 0 0;
+  font-size: 1.15rem;
+  line-height: 1.4;
+  margin: 6px 0 0;
   color: var(--navy, #0f172a);
+}
+
+.story-query-snippet {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+}
+
+.query-snippet-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #64748b;
+  margin-bottom: 3px;
+}
+
+.story-query-snippet p {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.4;
 }
 
 .story-timeline {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .story-before {
   background: #fff1f2;
   border-left: 3px solid #e11d48;
-  padding: 14px 16px;
-  font-size: 0.88rem;
-  line-height: 1.6;
+  border-radius: 0 6px 6px 0;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  line-height: 1.55;
   color: #881337;
 }
 
 .story-after {
   background: #f0fdf4;
   border-left: 3px solid #16a34a;
-  padding: 14px 16px;
-  font-size: 0.88rem;
-  line-height: 1.6;
+  border-radius: 0 6px 6px 0;
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  line-height: 1.55;
   color: #14532d;
 }
 
 .story-after strong {
   color: #166534;
+}
+
+/* 成果物バー（診断カルテ見本セクション） */
+.proof-deliverables-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto 36px;
+}
+
+.deliverable-item {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 14px 18px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.deliverable-item .deliv-num {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--green, #16a34a);
+  letter-spacing: 0.05em;
+}
+
+.deliverable-item strong {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.deliverable-item small {
+  font-size: 0.72rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* 運用の手間ゼロ：高密度対比プロセス */
+.process-visual-enhanced {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.process-visual-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.process-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.process-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.process-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.process-step-num {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--green, #16a34a);
+  letter-spacing: -0.02em;
+}
+
+.process-user-time {
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.process-card-title {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 14px;
+  line-height: 1.35;
+  min-height: 2.7em;
+}
+
+.process-block-user {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.process-block-system {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  flex: 1;
+}
+
+.process-block-tag {
+  display: inline-block;
+  font-size: 0.63rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.user-tag {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+.system-tag {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.process-block-text {
+  margin: 0;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.process-block-user .process-block-text {
+  font-weight: 700;
+  color: #166534;
+}
+
+/* 専属AI見守り体制リスト */
+.watch-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.watch-feature-list li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.watch-feature-list li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 900;
+  color: var(--green, #16a34a);
+}
+
+.watch-feature-list strong {
+  color: #0f172a;
+}
+
+/* 最終CTA信頼バッジ */
+.cta-trust-badges {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 24px auto 0;
+}
+
+.cta-trust-badges span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  color: #e2e8f0;
+}
+
+.cta-trust-badges strong {
+  color: #ffffff;
+}
+
+.pill-badge-dark {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #34d399 !important;
+  border-color: rgba(52, 211, 153, 0.3) !important;
+}
+
+@media (max-width: 1024px) {
+  .process-visual-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .proof-deliverables-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .process-visual-grid {
+    grid-template-columns: 1fr;
+  }
+  .cta-trust-badges {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
 }
 
 /* AI Official Database Boost Card */

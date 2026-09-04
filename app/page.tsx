@@ -82,10 +82,10 @@ export default function HomePage() {
     {/* わかりやすい導入事例 */}
     <section className="landing-story-section">
       <div className="shell">
-        <div className="section-intro">
-          <p className="overline">営業マン不要の導入事例</p>
+        <div className="section-head-center">
+          <span className="pill-badge">実業の変革事例</span>
           <h2>「AIにスルーされていた」実業が、<br />AIからの推薦候補に選ばれやすくなるまで。</h2>
-          <p>自社サイトの改修ゼロでAI専用台帳を開設し、推薦されやすい環境を整えた事例です。</p>
+          <p>ホームページ改修ゼロで公式台帳を開設し、専任営業マンを雇わずに推薦枠を獲得しやすくなった実例です。</p>
         </div>
 
         <div className="story-grid">
@@ -93,6 +93,10 @@ export default function HomePage() {
             <div className="story-card-header">
               <span className="category">専門士業法人（相続・事業承継）</span>
               <h3>「広告費ゼロで、AIの推薦候補入りを実現」</h3>
+            </div>
+            <div className="story-query-snippet">
+              <span className="query-snippet-label">相談者のAI検索：</span>
+              <p>「大手の事務的な対応ではなく、親身に相談に乗ってくれる相続の窓口は？」</p>
             </div>
             <div className="story-timeline">
               <div className="story-before">
@@ -111,6 +115,10 @@ export default function HomePage() {
               <span className="category">精密板金加工所（試作・小ロット）</span>
               <h3>「価格競争から脱出。自社の仕様がAIに正確に伝わる状態へ」</h3>
             </div>
+            <div className="story-query-snippet">
+              <span className="query-snippet-label">発注者のAI検索：</span>
+              <p>「特殊形状の単品試作。短納期で相談できる板金加工会社は？」</p>
+            </div>
             <div className="story-timeline">
               <div className="story-before">
                 <strong>導入前の状況：</strong><br />
@@ -126,23 +134,46 @@ export default function HomePage() {
       </div>
     </section>
 
+    {/* 診断レポートのイメージ */}
     <section className="landing-proof" id="example">
       <div className="shell">
-        <div className="section-intro">
-          <p className="overline">診断レポートのイメージ</p>
+        <div className="section-head-center">
+          <span className="pill-badge">無料診断カルテの見本</span>
           <h2>なぜAIは御社をスルーしているのか？<br />どうすれば推薦されやすくなるのかを完全可視化。</h2>
           <p>見込み客がAIに相談する質問ごとに、なぜ大手ライバルが先に出たのか、御社の何をAIに教えれば推薦候補に入りやすくなるのかを明確に提示します。</p>
         </div>
+
+        {/* 診断で手に入る3大成果物バッジ */}
+        <div className="proof-deliverables-bar">
+          <div className="deliverable-item">
+            <span className="deliv-num">成果物 1</span>
+            <strong>大手ライバル優先の判定理由</strong>
+            <small>AIが競合を選定した根拠を特定</small>
+          </div>
+          <div className="deliverable-item">
+            <span className="deliv-num">成果物 2</span>
+            <strong>大手を出し抜く「自社の看板」</strong>
+            <small>隙間を突く独自の強みを導出</small>
+          </div>
+          <div className="deliverable-item">
+            <span className="deliv-num">成果物 3</span>
+            <strong>そのまま使える公式紹介文</strong>
+            <small>サイトやSNSに即時活用可能</small>
+          </div>
+        </div>
+
         <ProductOutputPreview />
         <div className="center-link"><Link className="text-button" href="/result?sample=1">診断結果の見本を見る <span aria-hidden="true">→</span></Link></div>
       </div>
     </section>
 
+    {/* 運用の手間はゼロ（プロセス対比） */}
     <section className="landing-how" id="how">
       <div className="shell">
-        <div className="section-intro section-intro-wide">
-          <p className="overline">運用の手間はゼロ</p>
-          <h2>ブログ更新も、HTML改修も不要。<br />社長は本業に集中するだけです。</h2>
+        <div className="section-head-center">
+          <span className="pill-badge">全自動の運用フロー</span>
+          <h2>ブログ更新も、HTML改修も一切不要。<br />社長の作業は10秒、あとは裏側で全自動処理。</h2>
+          <p>面倒な記事執筆やエンジニアへの依頼は一切いりません。社名を入れて強みを選ぶだけで、AIが読む専用の公式台帳が自動配備されます。</p>
         </div>
         <ProductProcessVisual />
       </div>
@@ -153,18 +184,29 @@ export default function HomePage() {
       <div className="shell landing-watch-grid">
         <WatchTrendVisual />
         <div className="section-intro">
-          <p className="overline">定期モニタリング機能</p>
+          <span className="pill-badge">専属のAI見守り体制</span>
           <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
           <p>ChatGPTなどのAI回答は日々更新されます。自社が推薦候補に入り続けているか、ライバルの回答状況に変化がないかを毎週自動で追跡調査します。</p>
+          <ul className="watch-feature-list">
+            <li><strong>毎週月曜に自動巡回</strong>：主要AIの回答変動を定期チェック</li>
+            <li><strong>ライバル変動アラート</strong>：競合の急浮上や推薦順位の変化を検知</li>
+            <li><strong>安心の完全自動</strong>：社長の手間ゼロで台帳を常に最新維持</li>
+          </ul>
           <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
         </div>
       </div>
     </section>
 
+    {/* 最終CTAエリア */}
     <section className="landing-final-cta">
       <div className="shell">
-        <p className="overline">AI新時代に取り残されないために</p>
+        <span className="pill-badge pill-badge-dark">AI新時代に取り残されないために</span>
         <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
+        <div className="cta-trust-badges">
+          <span>⏱ <strong>所要時間 約15秒</strong></span>
+          <span>🔒 <strong>サイト改修・コード埋め込み 一切不要</strong></span>
+          <span>🛡 <strong>営業電話・勝手な自動課金 ゼロ</strong></span>
+        </div>
         <ScanForm compact />
         <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>
       </div>

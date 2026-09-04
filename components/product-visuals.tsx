@@ -153,12 +153,69 @@ export function ProductOutputPreview() {
 
 export function ProductProcessVisual() {
   const steps = [
-    { label: "01", title: "社名を入力する", body: "自社サイトの改修ゼロ。会社名を入れるだけでAIが現状を分析" },
-    { label: "02", title: "AI推薦状況を確認", body: "なぜAIがライバルを優先しているのか、機会損失の理由を特定" },
-    { label: "03", title: "AI公式台帳を開設", body: "強みを選ぶだけで、AIに正しく伝える公式台帳を即日配備" },
-    { label: "04", title: "毎週の推薦を見守り", body: "ブログ更新ゼロ。AI回答の変化やライバルの動向を自動追跡" },
+    {
+      label: "01",
+      userTime: "所要 10秒",
+      userAction: "会社名・URLを入力",
+      title: "社名を入れるだけ",
+      systemAction: "AIが公開サイト・SNS・実績を瞬時に読み込み、自社の確定スペックを自動整理します。",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
+    },
+    {
+      label: "02",
+      userTime: "所要 0秒",
+      userAction: "診断カルテを確認",
+      title: "AI推薦の現状を可視化",
+      systemAction: "ChatGPT等の主要AIで「買い手の相談12問」を検証し、ライバルが選ばれている理由を特定。",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
+    },
+    {
+      label: "03",
+      userTime: "所要 1クリック",
+      userAction: "自社の強みを選択",
+      title: "AI公式台帳を即日配備",
+      systemAction: "自社サイト改修ゼロ。選んだ看板をもとに、AI専用の公式台帳（JSON/MD）を自動生成。",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
+    },
+    {
+      label: "04",
+      userTime: "作業ゼロ（完全放置）",
+      userAction: "本業に専念するだけ",
+      title: "毎週の推薦を自動見守り",
+      systemAction: "AI回答の更新やライバルの動向を毎週自動追跡。推薦状況の変化を自動で監視します。",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
+    },
   ];
-  return <ol className="process-visual">{steps.map((step) => <li key={step.label}><span>{step.label}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol>;
+
+  return (
+    <div className="process-visual-enhanced">
+      <div className="process-visual-grid">
+        {steps.map((step) => (
+          <div key={step.label} className="process-card">
+            <div className="process-card-header">
+              <span className="process-step-num">{step.label}</span>
+              <span className="process-user-time">{step.userTime}</span>
+            </div>
+            <h3 className="process-card-title">{step.title}</h3>
+            
+            <div className="process-block-user">
+              <span className="process-block-tag user-tag">{step.tag}</span>
+              <p className="process-block-text">{step.userAction}</p>
+            </div>
+
+            <div className="process-block-system">
+              <span className="process-block-tag system-tag">{step.tagSystem}</span>
+              <p className="process-block-text">{step.systemAction}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function WatchTrendVisual() {
