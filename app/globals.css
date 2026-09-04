@@ -275,28 +275,38 @@ svg { width: 1.1em; height: 1.1em; }
 .ai-rec-box div strong {
   color: #0f172a;
 }
-.ai-omitted-row {
+.ai-rec-box div span {
+  color: #64748b;
+  font-size: 0.76rem;
+}
+.ai-status-tag {
+  font-size: 0.66rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+.ai-fact-note {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  background: #fef2f2;
-  border: 1px solid #fee2e2;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
 }
-.omitted-tag {
-  background: #dc2626;
-  color: #ffffff;
+.ai-fact-note .fact-dot {
+  color: #64748b;
   font-size: 0.65rem;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 3px;
-  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
 }
-.omitted-reason {
+.ai-fact-note p {
+  margin: 0;
   font-size: 0.78rem;
-  color: #991b1b;
-  font-weight: 700;
+  color: #475569;
+  line-height: 1.45;
 }
 .hero-chat-card-report {
   background: #f8fafc;
@@ -318,14 +328,17 @@ svg { width: 1.1em; height: 1.1em; }
 }
 .status-rank-val {
   display: block;
-  font-size: 0.98rem;
-  font-weight: 800;
-  color: #dc2626;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.status-rank-val.neutral {
+  color: #0f172a;
 }
 .status-cause-val {
   display: block;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #334155;
   line-height: 1.35;
 }
@@ -333,23 +346,23 @@ svg { width: 1.1em; height: 1.1em; }
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #ecfdf5;
-  border: 1px solid #d1fae5;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
   border-radius: 6px;
   padding: 8px 12px;
 }
 .action-tag {
   font-size: 0.68rem;
   font-weight: 800;
-  color: #065f46;
-  background: #d1fae5;
+  color: #0369a1;
+  background: #e0f2fe;
   padding: 2px 7px;
   border-radius: 3px;
   white-space: nowrap;
 }
 .action-desc {
   font-size: 0.78rem;
-  color: #047857;
+  color: #0284c7;
   font-weight: 700;
   line-height: 1.3;
 }

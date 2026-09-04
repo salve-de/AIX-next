@@ -18,7 +18,7 @@ export default function HomePage() {
           {/* 左カラム：問題提起・入力フォーム・得られるメリット */}
           <div className="landing-hero-col-left">
             <div className="landing-hero-head-block">
-              <p className="overline">生成AI 競合推薦・選定落ち診断</p>
+              <p className="overline">ChatGPT・生成AI 競合推薦診断</p>
               <h1>
                 ChatGPTは、あなたの会社をスルーして<br />
                 <em>ライバルを「おすすめ」しています。</em>

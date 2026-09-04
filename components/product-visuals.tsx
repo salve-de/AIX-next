@@ -8,35 +8,47 @@ export function HeroChatDiagnosticCard() {
 
   const data = {
     mfg: {
-      query: "「短納期・小ロットの試作板金加工を相談できる、信頼できる工場はある？」",
-      competitor1: "株式会社〇〇工業（24時間見積・最短翌日出荷）",
-      competitor2: "△△製作所（1個からの特注・単品試作に対応）",
-      rank: "8社中 5位（選定落ち）",
-      cause: "「短納期・1個から対応」の確定実績データがネット上に不足",
-      action: "AI公式データ登録で、自社の強みを主要AI（ChatGPT等）へ即座に反映",
+      query: "「東京都内で、短納期・小ロット対応の試作板金加工会社はどこ？」",
+      aiAnswerLead: "東京都内で小ロット・試作板金に対応している実績豊富な企業として、以下の2社がよく挙げられます：",
+      competitor1: "三和試作板金（大田区）",
+      competitor1Desc: "単品1個からの精密加工に対応。即日見積もり体制。",
+      competitor2: "大伸プレシジョン（品川区）",
+      competitor2Desc: "短納期試作に特化。3D CADデータから直接加工対応。",
+      aiNote: "※ 貴社サイトには対応最小ロットや納期の明確な公開仕様が確認できず、回答に含まれていません。",
+      statusVal: "自社の言及なし（競合2社を推薦）",
+      evidenceDesc: "競合サイト上の「1個から対応」「即日見積」の確定情報",
+      actionDesc: "保有設備と最小ロット仕様を構造化データとして公開",
     },
     service: {
-      query: "「相続や事業承継の相談、大手より親身に個別対応してくれる事務所は？」",
-      competitor1: "大手総合税理士法人グループ（全国対応）",
-      competitor2: "士業ポータルサイト（一括資料請求ナビ）",
-      rank: "12社中 7位（推薦圏外）",
-      cause: "「親身な個別伴走・初回直接面談」の実績がAIに届いていない",
-      action: "公式ナレッジ台帳を開設し、AIが引用する一次情報源として登録",
+      query: "「親身に個別相談に乗ってくれる、相続専門の信頼できる税理士事務所は？」",
+      aiAnswerLead: "相続や事業承継で、親身な個別伴走や直接面談に定評のある事務所として以下が候補に挙がります：",
+      competitor1: "あおば相続税理士法人（千代田区）",
+      competitor1Desc: "担当税理士が初回から直接面談。個別伴走プランを明示。",
+      competitor2: "日本相続承継パートナーズ（中央区）",
+      competitor2Desc: "中小企業オーナー向け事業承継の実績多数。",
+      aiNote: "※ 貴社サイトは個別対応の実績や料金体系がAIに読み取れず、比較候補から外れています。",
+      statusVal: "自社の言及なし（他社を優先推薦）",
+      evidenceDesc: "公式料金プランと「初回直接面談」の確定情報",
+      actionDesc: "個別伴走の強みと対応仕様を公式台帳としてAIへ提供",
     },
     local: {
-      query: "「近隣で休日の急患や専門治療に対応している評判の医院・施設は？」",
-      competitor1: "地域総合医療センター（紹介状必須）",
-      competitor2: "大手医療ポータル予約サイト",
-      rank: "6件中 4位（推薦漏れ）",
-      cause: "休日診療や特定分野の専門実績がAIロボットに正しく伝達されていない",
-      action: "Schema構造化データで正確な診療仕様を公式公開し、AI推薦を獲得",
+      query: "「近隣で休日の急患や夜間診療に対応しているクリニックはある？」",
+      aiAnswerLead: "休日や夜間の診療体制が確認できる医療機関として、以下が案内されます：",
+      competitor1: "桜通り夜間救急クリニック",
+      competitor1Desc: "土日祝・夜間22時まで診療。WEB問診・即時受付対応。",
+      competitor2: "駅前セントラル総合診療所",
+      competitor2Desc: "休日当番医として年中無休体制を公式公表。",
+      aiNote: "※ 貴院の診療時間や受付仕様のデータがAIクローラーに正しく伝達されていません。",
+      statusVal: "自社の言及なし（大手ポータルが優先）",
+      evidenceDesc: "Schema構造化された診療カレンダーと受付時間",
+      actionDesc: "正確な診療仕様をAIクローラー向け標準形式で公開",
     },
   };
 
   const current = data[industry];
 
   return (
-    <div className="hero-chat-card" aria-label="ChatGPTでの競合推薦とAIX診断プレビュー">
+    <div className="hero-chat-card" aria-label="ChatGPTでの競合推薦と観測結果プレビュー">
       {/* 上部タブバー */}
       <div className="hero-chat-card-topbar">
         <div className="card-topbar-tabs">
@@ -62,50 +74,56 @@ export function HeroChatDiagnosticCard() {
             店舗・地域
           </button>
         </div>
-        <span className="card-topbar-label">ChatGPT回答例</span>
+        <span className="card-topbar-label">AI回答の観測例</span>
       </div>
 
       {/* チャット対話エリア */}
       <div className="hero-chat-card-body">
         {/* 発注者の質問 */}
         <div className="hero-chat-msg user-msg">
-          <span className="msg-author">発注者（見込み客）</span>
+          <span className="msg-author">発注者（見込み客）のプロンプト</span>
           <p>{current.query}</p>
         </div>
 
         {/* ChatGPTの回答 */}
         <div className="hero-chat-msg ai-msg">
           <div className="ai-msg-header">
-            <span className="msg-author ai-author">ChatGPT</span>
-            <span className="ai-status-tag">競合を推薦中</span>
+            <span className="msg-author ai-author">ChatGPT (GPT-4o)</span>
+            <span className="ai-status-tag">競合2社を推奨</span>
           </div>
-          <p className="ai-intro">条件に合う実績豊富な2社をご紹介します：</p>
+          <p className="ai-intro">{current.aiAnswerLead}</p>
           <div className="ai-rec-box">
-            <div>1. <strong>{current.competitor1}</strong></div>
-            <div>2. <strong>{current.competitor2}</strong></div>
+            <div>
+              <strong>1. {current.competitor1}</strong>
+              <span> — {current.competitor1Desc}</span>
+            </div>
+            <div>
+              <strong>2. {current.competitor2}</strong>
+              <span> — {current.competitor2Desc}</span>
+            </div>
           </div>
-          <div className="ai-omitted-row">
-            <span className="omitted-tag">あなたの会社</span>
-            <span className="omitted-reason">言及されず、候補から外れています</span>
+          <div className="ai-fact-note">
+            <span className="fact-dot">●</span>
+            <p>{current.aiNote}</p>
           </div>
         </div>
       </div>
 
-      {/* AIXの診断レポートバー */}
+      {/* AIXの観測・分析レポートバー */}
       <div className="hero-chat-card-report">
         <div className="report-status-header">
           <div className="status-rank-block">
-            <span className="status-label">現在のAI推薦順位</span>
-            <strong className="status-rank-val">{current.rank}</strong>
+            <span className="status-label">観測ステータス</span>
+            <strong className="status-rank-val neutral">{current.statusVal}</strong>
           </div>
           <div className="status-cause-block">
-            <span className="status-label">競合が勝った理由</span>
-            <span className="status-cause-val">{current.cause}</span>
+            <span className="status-label">AIが引用した根拠</span>
+            <span className="status-cause-val">{current.evidenceDesc}</span>
           </div>
         </div>
         <div className="report-action-row">
-          <span className="action-tag">AIXの改善策</span>
-          <span className="action-desc">{current.action}</span>
+          <span className="action-tag">改善の起点</span>
+          <span className="action-desc">{current.actionDesc}</span>
         </div>
       </div>
     </div>
