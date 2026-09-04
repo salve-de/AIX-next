@@ -64,10 +64,10 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   return (
     <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
       <div className="profile-interactive-header">
-        <span className="step-badge">【ステップ 2】自社サイト改修ゼロで、AI公式台帳を開設する</span>
-        <h2>選定した看板を、24時間働く「AI公式台帳」として登録します</h2>
+        <span className="step-badge">【ステップ 2】自社サイト改修ゼロで、AI公式推薦パスを配備する</span>
+        <h2>選定した看板を、AIが迷わず推薦するための「公認データ」としてネット上に常駐させます</h2>
         <p>
-          新しい営業マンを雇う必要も、サイトをリニューアルする必要もありません。選んだ看板をChatGPTなどの主要AIが確実に読み取る専用窓口を即座に配備します。
+          新しい営業マンを雇う必要も、自社のホームページを改修する必要もありません。ChatGPTやGemini・Perplexityなどの主要AIが「この会社を推薦して間違いがない」と1秒で判断できる確定仕様を、AI公式推薦パスとして即座にネット上に配備します。
         </p>
       </div>
 
@@ -190,9 +190,9 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="weapon-action-box">
         <div className="weapon-action-status">
           <p>
-            現在選択中の看板：<strong>{strategies[selectedWeapon]?.name}</strong>
+            現在配備する看板：<strong>{strategies[selectedWeapon]?.name}</strong>
           </p>
-          <small>自社サイトの改修は不要。主要生成AIが直接巡回・引用できる標準形式で即時発行されます。</small>
+          <small>自社サイトの改修ゼロ。主要生成AIが直接巡回・引用できる「公認データ規格」で即日ネット上に常駐します。</small>
         </div>
 
         <div className="weapon-action-buttons">
@@ -203,11 +203,11 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
               onClick={() => void preview()}
               disabled={busy !== ""}
             >
-              {busy === "preview" ? "登録処理中…" : "この看板をAI公式データベースに無料登録する"} <ArrowIcon />
+              {busy === "preview" ? "配備処理中…" : "この看板をAI公式推薦パスとして配備する"} <ArrowIcon />
             </button>
           ) : (
             <div className="saved-success-box">
-              <span className="saved-badge">公開中：AI公式データベースへ登録完了</span>
+              <span className="saved-badge">常駐完了：AI公式推薦パスがネット上に配備されました</span>
               <div className="saved-links">
                 <Link
                   className="button button-primary"
@@ -215,7 +215,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                   target="_blank"
                   rel="noreferrer"
                 >
-                  発行されたAI公式ページを確認する <ArrowIcon />
+                  配備された「AI公式推薦パス」の内容を確認する <ArrowIcon />
                 </Link>
                 <button
                   type="button"
@@ -225,28 +225,47 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     if (targetPath && typeof window !== "undefined") {
                       const fullUrl = `${window.location.origin}${targetPath}`;
                       void navigator.clipboard.writeText(fullUrl);
-                      alert("公開ページのURLをコピーしました。\n自社ホームページ、名刺、SNS、GoogleマップのWEB欄等にそのまま掲載いただけます。");
+                      alert("AI公式推薦パスのURLをコピーしました。\n自社ホームページのリンク集や、名刺・SNS、GoogleビジネスプロフィールのWEB欄に記載することで、AIからの信頼性がさらに盤石になります。");
                     }
                   }}
                 >
-                  専用URLをコピー
+                  推薦パスのURLをコピー
                 </button>
                 <button
                   type="button"
                   className="text-button"
                   onClick={() => setIsSaved(false)}
                 >
-                  登録する看板を変更する
+                  配備する看板を変更する
                 </button>
               </div>
 
-              <div style={{ marginTop: "16px", padding: "14px 18px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "8px", textAlign: "left" }}>
-                <strong style={{ display: "block", fontSize: "0.84rem", color: "#0f172a", marginBottom: "4px" }}>
-                  💡 発行されたURL（AI公式窓口）の活用方法
-                </strong>
-                <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
-                  このURLには、ChatGPT・Gemini・Perplexityが最も好む「Schema.org 構造化データ」が組み込まれています。<br />
-                  自社ホームページのフッターやリンク集に貼るか、名刺・SNS・Googleビジネスプロフィール（MEO）に「AI公式窓口」として記載するだけで、AIクローラーが優先的に読み込み、推薦の根拠として利用するようになります。
+              {/* なぜAIが推薦できるようになるのか（図解・メカニズム解説） */}
+              <div style={{ marginTop: "20px", padding: "18px 22px", background: "#f8fafc", border: "1.5px solid #cbd5e1", borderRadius: "10px", textAlign: "left" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+                  <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#16a34a", color: "#ffffff", padding: "3px 8px", borderTopLeftRadius: "4px", borderBottomRightRadius: "4px" }}>
+                    御社の実働作業：完全ゼロ
+                  </span>
+                  <strong style={{ fontSize: "0.9rem", color: "#0f172a" }}>
+                    この「AI公式推薦パス」によって、なぜAIが御社をおすすめし始めるのか？
+                  </strong>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginTop: "12px" }}>
+                  <div style={{ background: "#ffffff", padding: "12px 14px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#dc2626", display: "block", marginBottom: "4px" }}>✕ これまでの自社サイト</span>
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
+                      デザインや装飾が中心のため、AIが「この会社が何の専門で、他社と何が違うのか」を読み取れず、無難な大手チェーンばかりを推薦していました。
+                    </p>
+                  </div>
+                  <div style={{ background: "#f0fdf4", padding: "12px 14px", borderRadius: "8px", border: "1px solid #bbf7d0" }}>
+                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", display: "block", marginBottom: "4px" }}>◯ AI公式推薦パス（本機能）</span>
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "#14532d", lineHeight: 1.55 }}>
+                      ChatGPTやPerplexityが好む「公認規格（Schema.org構造化データ）」で記述。AIクローラーが直接参照し、「親身な個別対応ならこの会社が適合」と確信を持って回答に引用します。
+                    </p>
+                  </div>
+                </div>
+                <p style={{ margin: "14px 0 0", fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
+                  ※AIXが主要生成AIクローラーへ直接インデックスを促すため、お客様側で特別な設定やサーバー操作を行う必要は一切ありません。
                 </p>
               </div>
             </div>

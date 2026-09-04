@@ -54,8 +54,8 @@ export default function PricingPage() {
       </article>
       <article>
         <small>次に</small>
-        <strong>改修ゼロでAI専属営業窓口を開設</strong>
-        <span>自社サイトの改修やブログ更新はゼロ。社名からAI専用公式台帳を自動配備し、AIに優先推薦されやすい環境を整えます。</span>
+        <strong>改修ゼロで「AI公式推薦パス」をネット配備</strong>
+        <span>自社サイトの改修やブログ更新はゼロ。AIクローラーが直接読み込む公認確定データを配備し、ChatGPTやPerplexityが迷わず御社をおすすめする環境を整えます。</span>
       </article>
       <article>
         <small>その後</small>

@@ -190,7 +190,7 @@ export function WatchClient() {
                 target="_blank"
                 rel="noreferrer"
               >
-                AI公式台帳（公開中）を確認 ↗
+                配備中の「AI公式推薦パス」を確認 ↗
               </Link>
               {stopped ? (
                 <span className="watch-status stopped"><i />停止中</span>
@@ -309,7 +309,7 @@ export function WatchClient() {
 
             <div className="watch-trend-card">
               <div className="trend-card-head">
-                <span className="trend-tag">公式台帳の参照データ</span>
+                <span className="trend-tag">AI公式推薦パスの引用（推論根拠）</span>
                 <span className="trend-diff text-blue">+3件 増加</span>
               </div>
               <div className="trend-card-body">
@@ -318,7 +318,7 @@ export function WatchClient() {
                   <span className="trend-arrow">→</span>
                   <span className="trend-num-latest text-blue">3件</span>
                 </div>
-                <p className="trend-desc">自社の「個別伴走」「即日対応」の確定仕様がAIの推論根拠として引用されました。</p>
+                <p className="trend-desc">ChatGPTやPerplexityが推薦パスの公認データを直接読み込み、自社をおすすめする根拠として採用しました。</p>
                 <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                   <Link
                     href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
@@ -326,7 +326,7 @@ export function WatchClient() {
                     rel="noreferrer"
                     style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
                   >
-                    公開中のAI公式台帳を確認 ↗
+                    常駐中のAI公式推薦パス（公認データ）を確認 ↗
                   </Link>
                 </div>
               </div>

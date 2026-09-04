@@ -138,9 +138,9 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <h1 style={{ margin: 0 }}>{profile.brandName}</h1>
           <DirectProfileEditor profile={profile} />
         </div>
-        <div className="public-company-url-box" style={{ marginTop: "12px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "14px 16px" }}>
+        <div className="public-company-url-box" style={{ marginTop: "12px", background: "#f8fafc", border: "1.5px solid #0284c7", borderRadius: "8px", padding: "14px 18px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>AI公式窓口 URL</span>
+            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>生成AI公認・公式推薦パス</span>
             {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
               <span style={{ fontSize: "0.75rem", color: "#64748b" }}>公式サイト：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{decodeURIComponent(profile.targetUrl)}</a></span>
             ) : null}
@@ -148,8 +148,8 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <p className="public-company-domain" style={{ margin: "0 0 6px", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>
             <code>{`${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
           </p>
-          <small className="direct-domain-note" style={{ fontSize: "0.78rem", color: "#475569", display: "block" }}>
-            ※本ページはChatGPT・Gemini・Perplexity等のAIクローラーが直接解析する構造化データ（Schema.org）を完備しています。自社HPのリンク集や名刺、SNS、GoogleマップのWEB欄に本URLを掲載することで、AIによる優先推薦の根拠データとして機能します。
+          <small className="direct-domain-note" style={{ fontSize: "0.78rem", color: "#334155", display: "block", lineHeight: 1.55 }}>
+            【AI推薦の仕組み】本ページはChatGPT・Gemini・Perplexityなどの主要生成AIが直接巡回し、回答の推論根拠として引用するための「公認確定データ（Schema.org構造化仕様）」です。人間向けの一般的なホームページと異なり、AIが1秒で誤解なく「この会社を推薦すべき理由」を理解できる形式で24時間常駐しています。
           </small>
         </div>
         <p className="public-company-summary" style={{ marginTop: "16px" }}>
