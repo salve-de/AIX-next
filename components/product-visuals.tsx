@@ -20,9 +20,9 @@ export function ChatGptComparisonVisual() {
     </div>
 
     <div className="chatgpt-mock-grid">
-      {/* ✕ 左：今のあなたの状態（AIに無視されている） */}
+      {/* 左：情報未整備の場合（AIに推薦されない） */}
       <div className="chatgpt-mock-card mock-lost">
-        <div className="mock-badge badge-lost">✕ 今のあなたの状態（大損失）</div>
+        <div className="mock-badge badge-lost">情報未登録の場合（競合が優先推薦）</div>
         <div className="mock-chat-bubble user-bubble">
           <span className="bubble-role">買い手（見込み客）</span>
           <p>{tab === "service" 
@@ -41,15 +41,15 @@ export function ChatGptComparisonVisual() {
             : "有名百貨店のギフトコーナーや大手通販のランキングがおすすめです。"
           }</p>
           <div className="mock-verdict verdict-lost">
-            <span>❌ 自社は完全無視（存在しない扱い）</span>
-            <small>真剣に探している客が、大手やライバルへ流出中…</small>
+            <span>自社の情報がAIに伝わっていない状態</span>
+            <small>大手チェーンやポータル掲載企業が優先して回答されます</small>
           </div>
         </div>
       </div>
 
-      {/* ◯ 右：AIXに入力後（AI専用DB発行・名指し推薦！） */}
+      {/* 右：公式情報台帳を開設した場合（強みに合致して推薦） */}
       <div className="chatgpt-mock-card mock-won">
-        <div className="mock-badge badge-won">◯ AIXに入力後（1位指名買い獲得！）</div>
+        <div className="mock-badge badge-won">公式情報台帳を開設した場合（強みで推薦）</div>
         <div className="mock-chat-bubble user-bubble">
           <span className="bubble-role">買い手（見込み客）</span>
           <p>{tab === "service" 
@@ -62,14 +62,14 @@ export function ChatGptComparisonVisual() {
         <div className="mock-chat-bubble ai-bubble ai-bubble-highlight">
           <span className="bubble-role">ChatGPT</span>
           <p>{tab === "service" 
-            ? <>個別の事情に寄り添う親身な相談なら、<strong>【〇〇事務所】が最もおすすめです！</strong> 大手が対応できない柔軟な個別対応で選ばれています。</>
+            ? <>個別の事情に寄り添う親身な相談なら、<strong>【〇〇事務所】が適しています。</strong> 大手が対応しづらい柔軟な個別対応を公式に掲げています。</>
             : tab === "mfg" 
-            ? <>1点からの特急対応なら、<strong>【〇〇製作所】が最も確実です！</strong> 大手が断る複雑形状や短納期に駆け込み寺として対応しています。</>
-            : <>本物の鮮度と品質にこだわるなら、<strong>【〇〇ブランド】一択です！</strong> 生産者直売の確かな味わいで高い評価を得ています。</>
+            ? <>1点からの特急対応なら、<strong>【〇〇製作所】が候補に挙がります。</strong> 大手が断る複雑形状や短納期に対応する体制を整えています。</>
+            : <>本物の鮮度と品質にこだわるなら、<strong>【〇〇ブランド】が適しています。</strong> 生産者直売の確かな仕様が確認できます。</>
           }</p>
           <div className="mock-verdict verdict-won">
-            <span>⭕ AIが『ここ一択』と太鼓判！</span>
-            <small>自社への直接相談・高単価注文が殺到！</small>
+            <span>自社の強みに合致した質問で的確に推薦</span>
+            <small>公式スペックに基づき、比較検討時に自社が候補に入ります</small>
           </div>
         </div>
       </div>

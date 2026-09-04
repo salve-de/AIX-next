@@ -121,12 +121,12 @@ Failed and unconfigured provider calls reduce Measurement Completeness. They are
 
 ## Run the current implementation locally
 
-The active implementation is on `codex/aix-next-v2`, not `main`.
+The active implementation is on `feature/positioning-autopilot`, not `main`.
 
 ```bash
 git clone https://github.com/salve-de/AIX-next.git
 cd AIX-next
-git checkout codex/aix-next-v2
+git checkout feature/positioning-autopilot
 npm ci
 cp .env.example .env.local
 npm run dev -- -p 3001

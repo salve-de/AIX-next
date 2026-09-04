@@ -61,7 +61,7 @@ export function DirectProfileEditor({ profile }: { profile: PublicProfile }) {
         type="button"
         onClick={() => setIsOpen(true)}
       >
-        ✎ この公式台帳の内容を直接編集する（スマホ・PC対応）
+        この公式台帳の内容を編集する
       </button>
 
       {isOpen ? (

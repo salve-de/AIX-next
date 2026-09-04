@@ -3,10 +3,13 @@ import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ChatGptComparisonVisual, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
+import { LiveActivityTicker } from "@/components/live-activity-ticker";
+import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
 
 export default function HomePage() {
   return <main className="landing-page">
     <SiteHeader />
+    <LiveActivityTicker />
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
@@ -52,13 +55,16 @@ export default function HomePage() {
       </div>
     </section>
 
+    {/* 全国の事業者による公式台帳 開設・運用実例ギャラリー */}
+    <VerifiedCompaniesGallery />
+
     {/* 各社AIが直接情報を取りに来る公式台帳の仕組み */}
     <section className="landing-crawler-section" style={{ padding: "40px 0 60px" }}>
       <div className="shell">
         <div className="ai-crawler-value-card">
           <div className="crawler-card-header">
             <span className="crawler-status-pulse"></span>
-            <strong>🤖 各社AI（ChatGPT / Gemini / Claude / Perplexity）が直接情報を取りに来る仕組み</strong>
+            <strong>主要AI（ChatGPT / Gemini / Claude / Perplexity）が直接参照する仕組み</strong>
           </div>
           <p className="crawler-card-desc">
             <strong>「なぜAIXの公式台帳があると、AIがあなたの会社を第一想起でおすすめするのか？」</strong><br />

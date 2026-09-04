@@ -78,7 +78,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
                 </p>
                 <div className="extra-info-grid">
                   <div className="extra-info-col">
-                    <label>🌐 自社ホームページURL（任意）</label>
+                    <label>自社ホームページURL（任意）</label>
                     <input
                       type="text"
                       placeholder="例: https://yourcompany.jp"
@@ -87,7 +87,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
                     />
                   </div>
                   <div className="extra-info-col">
-                    <label>📸 Instagramアカウント（任意）</label>
+                    <label>Instagramアカウント（任意）</label>
                     <input
                       type="text"
                       placeholder="例: @your_shop_name"
@@ -96,7 +96,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
                     />
                   </div>
                   <div className="extra-info-col">
-                    <label>📦 主力商品・サービス名（任意）</label>
+                    <label>主力商品・サービス名（任意）</label>
                     <input
                       type="text"
                       placeholder="例: 熟成黒にんにく、Nexoraクラウド"

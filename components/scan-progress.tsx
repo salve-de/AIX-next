@@ -236,10 +236,10 @@ export function ScanProgress() {
     const isProduct = phase === "product_site";
 
     const badgeText = isSocial
-      ? (socialInfo.displayLabel || "Instagram連携モード")
+      ? (socialInfo.displayLabel || "Instagram連携")
       : isProduct
-      ? "📦 商品・サービス専用台帳モード"
-      : "🏢 ホームページ未開設・直接発行モード";
+      ? "商品・サービス専用台帳"
+      : "自社サイト未開設・直接登録";
 
     const titleText = isSocial
       ? `Instagram「${displayInput(rawInput)}」からAI公式Web拠点を発行`
@@ -393,7 +393,7 @@ export function ScanProgress() {
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
           {phase === "choose" ? <>
             <div className="disambiguation-guide-box">
-              <span className="disambiguation-tag">🛡️ 同名他社・人違い防止確認</span>
+              <span className="disambiguation-tag">同名他社・人違い防止確認</span>
               <p>
                 「{displayInput(rawInput)}」に該当する公開候補が見つかりました。AIが別の会社と誤認しないよう、<strong>ご自身の会社・店舗・サービスのサイト</strong>を選択してください。
               </p>

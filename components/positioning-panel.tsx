@@ -55,7 +55,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
       {/* 3つの戦略タブ（サイト解析から動的生成） */}
       <div style={{ marginBottom: "8px" }}>
         <p style={{ fontSize: "0.85rem", fontWeight: 700, color: "#2563eb", margin: "0 0 8px" }}>
-          👇 タブをクリックして、御社が最も誇れる強みを1つ選んでください（表示内容が切り替わります）
+          タブを選択すると、強み別の発信内容に切り替わります：
         </p>
       </div>
       <div className="strategy-selector-tabs" role="tablist" aria-label="戦略方針の選択">
@@ -126,7 +126,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
                     onClick={() => copyToClipboard(item.text, key)}
                     aria-label={`${item.label}をコピー`}
                   >
-                    {copiedKey === key ? "✅ コピー完了！" : "📋 文章をコピーする"}
+                    {copiedKey === key ? "コピー完了" : "文章をコピーする"}
                   </button>
                 </div>
                 <div className="actionable-copy-box">
