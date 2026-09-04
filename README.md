@@ -1,5 +1,16 @@
 # AIX Next
 
+> **生成AI時代の推薦獲得・競合分析システム（ChatGPT / Perplexity / Gemini 対策）**
+
+---
+
+### 📖 プロジェクト公式設計白書 ＆ コンプライアンス憲法
+本リポジトリの全戦略、意思決定の歴史、法的防衛方針は以下のドキュメントに完全記録されています：
+- **[プロジェクト全戦略・意思決定マスター白書](docs/PROJECT_MASTER_HISTORY_AND_STRATEGY.md)**: なぜ93位だったのかの解明（本棚の占有率の差・確定仕様台帳の欠如）、完全放置（Zero Effort）のコア哲学、全決定年表。
+- **[コンプライアンス ＆ ポジショニング設計憲法](docs/COMPLIANCE_AND_POSITIONING_POLICY.md)**: 競合他社名表示の法的境界線（公開ページ実名排除×カルテ実名開示）、全データ一次情報出展（No-Mock原則）。
+
+---
+
 AIX Next is an AI buyer-consideration improvement product for Japanese B2B companies.
 
 It starts with a company, service, product name, or URL and answers the commercial question that matters before a buyer contacts sales:
