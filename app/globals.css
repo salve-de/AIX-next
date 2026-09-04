@@ -42,7 +42,7 @@ svg { width: 1.1em; height: 1.1em; }
 /* Shared navigation */
 .site-header { position: relative; z-index: 20; background: rgba(255,255,255,.96); border-bottom: 1px solid var(--line); }
 .site-header-compact { background: var(--white); }
-.header-inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.header-inner { min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--navy); }
 .brand-mark { position: relative; width: 30px; height: 30px; flex: 0 0 auto; border-radius: 8px; background: var(--green-bright); overflow: hidden; }
 .brand-mark i { position: absolute; display: block; width: 15px; height: 2.5px; border-radius: 3px; background: var(--navy); }
@@ -82,17 +82,74 @@ svg { width: 1.1em; height: 1.1em; }
 
 /* Landing */
 .landing-hero { border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #fff 0%, #f4f8f8 100%); }
-.landing-hero-inner { min-height: 620px; padding: 106px 0 84px; text-align: center; }
-.landing-hero h1 { max-width: 900px; margin: 16px auto 21px; color: var(--navy); font-size: clamp(2.7rem, 6.2vw, 5.4rem); line-height: 1.06; letter-spacing: -.07em; }
+.landing-hero-inner { min-height: auto; padding: 28px 0 24px; text-align: center; }
+.landing-hero-head-block { max-width: 900px; margin: 0 auto; }
+.landing-hero-head-block .overline { margin-bottom: 6px; font-size: 0.78rem; font-weight: 800; color: var(--green, #16a34a); letter-spacing: 0.05em; }
+.landing-hero h1 { max-width: 860px; margin: 0 auto 10px; color: var(--navy); font-size: clamp(1.9rem, 3.8vw, 2.9rem); line-height: 1.15; letter-spacing: -.05em; }
 .landing-hero h1 em { color: var(--green); font-style: normal; }
-.landing-hero-lead { max-width: 660px; margin: 0 auto; color: var(--ink-soft); font-size: 1rem; line-height: 1.85; }
-.landing-hero .scan-form { margin-top: 36px; }
+.landing-hero-lead { max-width: 720px; margin: 0 auto; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.6; }
+.landing-hero-lead strong { color: var(--navy); }
+.landing-hero-form-box { max-width: 780px; margin: 18px auto 0; }
+.landing-hero .scan-form { margin-top: 0; width: 100%; }
 .landing-hero-note { display: flex; justify-content: center; flex-wrap: wrap; gap: 0; margin: 14px 0 0; color: var(--muted); font-size: .7rem; }
 .landing-hero-note span { display: inline-flex; align-items: center; }
 .landing-hero-note span + span::before { content: "·"; margin: 0 12px; color: var(--line-strong); }
-.hero-sample-link { display: inline-flex; margin-top: 22px; color: var(--blue); font-size: .78rem; font-weight: 800; }
+.hero-sample-link-wrapper { margin-top: 14px; }
+.hero-sample-link { display: inline-flex; color: var(--blue); font-size: .78rem; font-weight: 800; }
 .hero-sample-link span, .final-secondary-link span { margin-left: 7px; transition: transform .15s ease; }
 .hero-sample-link:hover span, .final-secondary-link:hover span { transform: translateX(3px); }
+
+/* ファーストビュー直結の3大特長ストリップ */
+.hero-instant-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 780px;
+  margin: 16px auto 0;
+  text-align: left;
+}
+.instant-strip-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.03);
+}
+.instant-strip-item .strip-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--navy, #0f172a);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.instant-strip-item strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--navy, #0f172a);
+  line-height: 1.25;
+}
+.instant-strip-item small {
+  display: block;
+  font-size: 0.68rem;
+  color: #64748b;
+  line-height: 1.25;
+  margin-top: 2px;
+}
+@media (max-width: 768px) {
+  .hero-instant-strip {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
 .landing-proof { padding: 104px 0 110px; background: var(--white); }
 .landing-proof .section-intro { margin-bottom: 42px; }
 .demo-window { margin: 0; border: 1px solid #bdcbd1; border-radius: 9px; background: var(--white); box-shadow: var(--shadow); overflow: hidden; }
@@ -3953,8 +4010,8 @@ svg { width: 1.1em; height: 1.1em; }
 .live-activity-bar {
   background: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
-  padding: 8px 0;
-  font-size: 0.8rem;
+  padding: 4px 0;
+  font-size: 0.75rem;
   color: #475569;
 }
 

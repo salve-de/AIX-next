@@ -13,45 +13,63 @@ export default function HomePage() {
 
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
-        <p className="overline">自社サイトがなくてもOK・Instagramアカウントや会社名で即時診断</p>
-        <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
-        <p className="landing-hero-lead">会社名や店舗名、Instagramアカウントを入れるだけで、AIが競合を先に勧めた理由と勝てる看板がわかります。自社サイトがない企業様も、制作費ゼロでAI専用の公式Web拠点を即時発行できます。</p>
         
-        {/* ホームページ未開設・Instagram運用中企業への救済バナー */}
-        <div className="landing-no-site-banner">
-          <span className="no-site-pill">自社サイト未開設・Instagram運用中の企業様へ</span>
-          <strong>数十万円のホームページ制作は不要です。</strong>
-          <span>会社名やInstagramアカウント（@username）から、主要AIが正しく解釈できる公式Web拠点を即座に無料発行できます。</span>
+        {/* メイン見出し＆サブヘッドライン */}
+        <div className="landing-hero-head-block">
+          <p className="overline">自社ホームページがなくてもOK・Instagramや会社名で無料発行</p>
+          <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
+          <p className="landing-hero-lead">
+            数十万円かかるホームページ制作は不要です。会社名やInstagramアカウントを入れるだけで、AIが正しく認識・推薦する<strong>「公式Web拠点（公的ナレッジ台帳）」</strong>を即座に無料発行できます。
+          </p>
         </div>
 
-        {/* 【最重要】ファーストビューのド真ん中に入力フォームを配置 */}
-        <div style={{ maxWidth: "800px", margin: "20px auto 36px" }}>
+        {/* ファーストビュー直撃：入力フォーム（スクロール一切不要） */}
+        <div className="landing-hero-form-box">
           <ScanForm />
         </div>
 
-        {/* 入力欄の真下に、0.5秒でわかるAI比較観測ビジュアル */}
-        <ChatGptComparisonVisual />
-        
-        {/* ホームに訪れた瞬間にわかる「3つの即時価値」 */}
-        <div className="hero-instant-grid" aria-label="入力するだけでわかる3大価値">
-          <article className="hero-instant-card">
-            <span className="hero-instant-badge highlight">① 自社サイト改修ゼロ</span>
-            <h3>AI専用の公式ページを発行</h3>
-            <p>ホームページを書き換える必要はありません。AIが直接読み取っておすすめに使う専用ページを、その場で自動発行します。</p>
-          </article>
-          <article className="hero-instant-card">
-            <span className="hero-instant-badge">② ライバルの隙間を解明</span>
-            <h3>自社が勝てる「独自の看板」</h3>
-            <p>なぜAIがライバルばかり勧めるのか理由を解明。大手の画一的な対応に対し、自社が選ばれる決定的な強みを特定します。</p>
-          </article>
-          <article className="hero-instant-card">
-            <span className="hero-instant-badge">③ 考える手間ゼロ</span>
-            <h3>コピペで使える「紹介文」を出力</h3>
-            <p>公式SNSプロフィール、自社サイト記事、チラシや資料など、すぐに使える文章をワンクリックコピーで手元にお届けします。</p>
-          </article>
+        {/* 一瞬で価値が伝わる「3大保証バッジ」（スクロール不要の一等地） */}
+        <div className="hero-instant-strip" aria-label="サービスの3大特長">
+          <div className="instant-strip-item">
+            <span className="strip-num">1</span>
+            <div>
+              <strong>HP制作・維持費ゼロ</strong>
+              <small>自社サイト不要。発行ページがそのまま公式Web拠点に</small>
+            </div>
+          </div>
+          <div className="instant-strip-item">
+            <span className="strip-num">2</span>
+            <div>
+              <strong>主要AIの誤案内を防止</strong>
+              <small>ChatGPTやGeminiが料金・強みを正確に引用</small>
+            </div>
+          </div>
+          <div className="instant-strip-item">
+            <span className="strip-num">3</span>
+            <div>
+              <strong>スマホから手軽に更新</strong>
+              <small>営業時間やメニューの改定も管理画面から即時反映</small>
+            </div>
+          </div>
         </div>
 
-        <Link className="hero-sample-link" href="/result?sample=1">診断結果の見本を見る <span aria-hidden="true">→</span></Link>
+        {/* 診断見本リンク */}
+        <div className="hero-sample-link-wrapper">
+          <Link className="hero-sample-link" href="/result?sample=1">実際の診断・発行結果サンプルを見る <span aria-hidden="true">→</span></Link>
+        </div>
+
+      </div>
+    </section>
+
+    {/* 入力欄の真下に、0.5秒で納得できるChatGPT比較観測ビジュアル */}
+    <section className="landing-visual-section">
+      <div className="shell">
+        <div className="section-head-center" style={{ marginBottom: "20px" }}>
+          <span className="pill-badge">推薦結果の違い</span>
+          <h2>AIに情報が届いている会社と、届いていない会社の違い</h2>
+          <p>AIはネット上の断片情報ではなく、公式に整備された構造化データを優先して顧客に回答します。</p>
+        </div>
+        <ChatGptComparisonVisual />
       </div>
     </section>
 
