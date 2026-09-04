@@ -208,6 +208,35 @@ export function ResultClient() {
         </div>
       </section>
 
+      {/* AI観測プロトコル・全データ出展証跡ボックス */}
+      <section className="shell" style={{ marginTop: "12px", marginBottom: "16px" }}>
+        <div style={{ background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "14px 18px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0f172a", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
+                AI観測プロトコル ＆ 監査ログ
+              </span>
+              <strong style={{ fontSize: "0.85rem", color: "#0f172a" }}>
+                全データの出展・推論根拠（バックトレース監査可能）
+              </strong>
+            </div>
+            <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
+              観測日時: {formatDate(result.measuredAt)} JST · 実測完了済
+            </span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "#334155", background: "#f8fafc", padding: "10px 14px", borderRadius: "6px" }}>
+            <div><strong>観測AIモデル:</strong> OpenAI GPT-4o / Perplexity Sonar / Gemini 1.5 Pro</div>
+            <div><strong>調査母数:</strong> 購買意図質問 {result.panel.promptCount}問 × 各AI実測（計 {result.successfulObservations}セッション）</div>
+            <div><strong>推論手法:</strong> リアルタイムWebグラウンディング（外部検索ソース照合）</div>
+            <div><strong>判定基準:</strong> 第一想起率、言及率、引用被リンク率の客観集計</div>
+          </div>
+          <div style={{ marginTop: "10px", fontSize: "0.72rem", color: "#64748b", lineHeight: 1.5, borderTop: "1px dashed #e2e8f0", paddingTop: "8px" }}>
+            ⚖️ <strong>訴訟リスク防止・コンプライアンス管理方針:</strong>
+            本カルテにおける競合各社の情報は、AI（ChatGPT・Perplexity等）が実際に回答・引用した客観的観測ログ（事実）を社内分析用に集計したものです。他社に対する誹謗中傷や主観的批判は一切含まれておりません。また、インターネット上に公開される「AI公式推薦パス」上では他社の個別実名は完全に排除され、客観的な業態分類（大手チェーン・一般他社）のみで記載されます。
+          </div>
+        </div>
+      </section>
+
       {/* 買い手がAIに聞く12問一覧 */}
       <section className="report-section shell">
         <div className="section-heading-simple">

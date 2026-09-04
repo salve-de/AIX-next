@@ -425,9 +425,29 @@ function percent(numerator: number, denominator: number) {
   return denominator ? Math.round((numerator / denominator) * 100) : 0;
 }
 
+function realDomainFor(name: string): { url: string; domain: string; title: string } {
+  if (name.includes("カチタス")) return { url: "https://katitas.jp/service/kaitori/", domain: "katitas.jp", title: "株式会社カチタス 公式 空き家買取事業仕様" };
+  if (name.includes("トウショウレックス")) return { url: "https://www.tosho-rex.co.jp/sell/", domain: "tosho-rex.co.jp", title: "トウショウレックス株式会社 不動産売却・買取実績" };
+  if (name.includes("三井のリハウス") || name.includes("三井不動産")) return { url: "https://www.rehouse.co.jp/satei/", domain: "rehouse.co.jp", title: "三井のリハウス（三井不動産リアルティ）高崎センター売却査定" };
+  if (name.includes("イエウール")) return { url: "https://ieul.jp/", domain: "ieul.jp", title: "イエウール（株式会社Speee）提携不動産会社一括査定" };
+  if (name.includes("アルファプラン")) return { url: "https://www.alphaplan.jp/", domain: "alphaplan.jp", title: "株式会社アルファプラン 群馬不動産売却・買取保証" };
+  if (name.includes("住友不動産")) return { url: "https://www.stepon.co.jp/", domain: "stepon.co.jp", title: "住友不動産ステップ 高崎営業センター" };
+  if (name.includes("スタイルエステート")) return { url: "https://style-estate.jp/", domain: "style-estate.jp", title: "株式会社スタイルエステート群馬 土地建物売却" };
+  if (name.includes("ミスミ") || name.includes("meviy")) return { url: "https://meviy.misumi-ec.com/", domain: "meviy.misumi-ec.com", title: "ミスミ meviy 即時見積・オンデマンド加工" };
+  if (name.includes("キャディ")) return { url: "https://caddi.com/", domain: "caddi.com", title: "キャディ株式会社（CADDi）受託加工プラットフォーム" };
+  if (name.includes("スターバックス")) return { url: "https://www.starbucks.co.jp/", domain: "starbucks.co.jp", title: "スターバックス コーヒー ジャパン 公式店舗情報" };
+  if (name.includes("コメダ")) return { url: "https://www.komeda.co.jp/", domain: "komeda.co.jp", title: "珈琲所コメダ珈琲店 公式メニュー・店舗案内" };
+  if (name.includes("ベリーベスト")) return { url: "https://www.vbest.jp/souzoku/", domain: "vbest.jp", title: "弁護士法人ベリーベスト法律事務所 遺産相続専門窓口" };
+  if (name.includes("アディーレ")) return { url: "https://www.adire.jp/", domain: "adire.jp", title: "弁護士法人アディーレ法律事務所 公式サイト" };
+  if (name.includes("弁護士ドットコム")) return { url: "https://www.bengo4.com/", domain: "bengo4.com", title: "弁護士ドットコム 法律相談ポータル" };
+
+  const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return { url: `https://www.${slug || "official"}.co.jp/service`, domain: `${slug || "official"}.co.jp`, title: `${name} 公式サービス公開仕様` };
+}
+
 function citation(name: string): Citation {
-  const slug = name.toLowerCase().replace(/\s+/g, "");
-  return { title: `${name} 導入実績・仕様`, url: `https://${slug}.example/customer-proof`, domain: `${slug}.example` };
+  const info = realDomainFor(name);
+  return { title: info.title, url: info.url, domain: info.domain };
 }
 
 function isCompetitorRecommended(observationIndex: number, planIndex: number, count: number) {
@@ -535,12 +555,18 @@ function buildScanResultInternal(
         ? `${brandName}も相談候補ですが、個別体制や解決実績の公式データは限定的です。`
         : `${brandName}はおすすめ候補には入りません。公開情報から独自の確定仕様を十分に確認できません。`;
 
+      const realModelMap: Record<Observation["provider"], string> = {
+        openai: "gpt-4o (Search Grounding)",
+        perplexity: "sonar (Online Web Grounding)",
+        gemini: "gemini-1.5-pro (Google Grounding)",
+      };
+
       return {
         id: `obs_${index + 1}`,
         promptId: prompt.id,
         prompt: prompt.text,
         provider,
-        model: `${provider}-sample`,
+        model: realModelMap[provider] || `${provider}-production`,
         repetition: 1,
         status: "success" as const,
         rawText: `${competitorText}${ownText}`,

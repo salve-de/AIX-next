@@ -83,19 +83,24 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
         <h3>{current.coreThesis}</h3>
       </div>
 
-      {/* 大手の弱点 vs 御社の強み（コンパクト対比） */}
+      {/* 大手の特性 vs 御社の強み（客観的ポジショニングの棲み分け） */}
       <div className="competitor-weakness-block">
-        <h3 style={{ fontSize: "1.05rem", marginBottom: "8px" }}>ライバル大手の隙間と御社の強み</h3>
-        <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "0 0 12px" }}>AIが「なぜ競合ではなく御社を選ぶべきか」を判定する決定的な理由です。</p>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "8px" }}>
+          <h3 style={{ fontSize: "1.05rem", margin: 0 }}>ライバル大手の提供領域 vs 御社の強み（ポジショニングの棲み分け）</h3>
+          <span style={{ fontSize: "0.72rem", color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: "4px" }}>
+            ※社内戦略検討用（客観的市場ポジショニング分析）
+          </span>
+        </div>
+        <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "0 0 12px" }}>AIが「なぜ大手ではなく御社を推薦すべきか」を判断するための客観的な差別化軸です。</p>
         <div className="weakness-grid">
           {current.competitorAnalysis.map((item) => (
             <article className="weakness-card" key={item.name}>
               <div className="weakness-card-head">
                 <span className="competitor-tag">{item.name}</span>
-                <strong className="competitor-gap">大手の課題: {item.gap}</strong>
+                <strong className="competitor-gap">大手の対象領域・特性: {item.gap}</strong>
               </div>
               <div className="our-advantage-box">
-                <span className="advantage-label">御社の強み：</span>
+                <span className="advantage-label">御社が選ばれる領域：</span>
                 <p>{item.differentiation}</p>
               </div>
             </article>

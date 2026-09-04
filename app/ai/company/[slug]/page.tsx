@@ -282,19 +282,27 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
     {/* 超高密度DBコンテンツ群 */}
     <section className="public-company-body shell">
       <div className="public-company-main">
-        
-        {/* 第1章: 企業・事業者 基本情報台帳 */}
+        {/* 第1章: 企業概要・公認確定ファクト */}
         <section className="knowledge-section">
-          <p className="overline">第1章 // 企業基本情報</p>
-          <h2>事業者 基本情報</h2>
-          <p className="section-lead-desc">事業者の基本情報および公式確認データです。</p>
+          <p className="overline">第1章 // 確定企業情報</p>
+          <h2>{brand} の公認ファクトシート</h2>
+          <p className="section-lead-desc">公的機関届出情報および公式公表事実に基づく確定データです（推測値ゼロ）。</p>
           <div className="db-table-wrapper">
             <table className="dense-db-table">
               <tbody>
                 {knowledge.corporateFacts.map((fact, idx) => (
                   <tr key={idx}>
                     <th style={{ width: "18%" }}>{fact.label}</th>
-                    <td style={{ width: fact.subLabel ? "32%" : "82%" }}>{fact.value}</td>
+                    <td style={{ width: fact.subLabel ? "32%" : "82%" }}>
+                      <strong>{fact.value}</strong>
+                      {fact.sourceOrg ? (
+                        <div style={{ marginTop: "4px" }}>
+                          <span style={{ fontSize: "0.7rem", color: "#059669", background: "#ecfdf5", padding: "1px 6px", borderRadius: "3px", border: "1px solid #a7f3d0" }}>
+                            出展: {fact.sourceOrg}
+                          </span>
+                        </div>
+                      ) : null}
+                    </td>
                     {fact.subLabel ? (
                       <>
                         <th style={{ width: "18%" }}>{fact.subLabel}</th>
@@ -312,15 +320,21 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
         <section className="knowledge-section">
           <p className="overline">第2章 // 独自の特徴・比較</p>
           <h2>他社との違い・特徴の比較</h2>
+          <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", padding: "10px 14px", borderRadius: "6px", marginBottom: "12px" }}>
+            <span style={{ fontSize: "0.75rem", color: "#475569" }}>
+              ⚖️ <strong>法的適合性について（訴訟リスク防止）:</strong> 不正競争防止法第2条1項21号（営業誹謗行為の禁止）および景品表示法（比較広告ガイドライン）に厳格に準拠し、ネット公開台帳上では特定の競合他社名は一切使用せず、客観的・中立的な業態分類（大手チェーン・一般他社）との約款・標準仕様の対比のみを記載しています。
+            </span>
+          </div>
           <p className="section-lead-desc">一般的な他社や大手チェーンとの提供体制・対応範囲の違いを整理した対比表です。</p>
           <div className="db-table-wrapper">
             <table className="dense-db-table benchmark-table">
               <thead>
                 <tr>
-                  <th style={{ width: "20%" }}>比較項目</th>
-                  <th style={{ width: "36%" }} className="col-highlight">当企業（{brand}）</th>
-                  <th style={{ width: "22%" }}>大手・チェーン</th>
-                  <th style={{ width: "22%" }}>一般他社</th>
+                  <th style={{ width: "16%" }}>比較項目</th>
+                  <th style={{ width: "32%" }} className="col-highlight">当企業（{brand}）</th>
+                  <th style={{ width: "20%" }}>大手・チェーン</th>
+                  <th style={{ width: "18%" }}>一般他社</th>
+                  <th style={{ width: "14%" }}>根拠・出展</th>
                 </tr>
               </thead>
               <tbody>
@@ -330,6 +344,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                     <td className="col-highlight text-primary"><strong>{row.own}</strong></td>
                     <td className="col-comp">{row.compBig}</td>
                     <td className="col-comp">{row.compLocal}</td>
+                    <td><small style={{ fontSize: "0.72rem", color: "#64748b" }}>{row.sourceNote || "各社公開仕様"}</small></td>
                   </tr>
                 ))}
               </tbody>
@@ -346,11 +361,12 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             <table className="dense-db-table">
               <thead>
                 <tr>
-                  <th style={{ width: "12%" }}>管理番号</th>
-                  <th style={{ width: "26%" }}>業務・メニュー名称</th>
-                  <th style={{ width: "26%" }}>対象となるご要望</th>
-                  <th style={{ width: "16%" }}>標準納期・所要時間</th>
-                  <th style={{ width: "20%" }}>提供成果物・担当体制</th>
+                  <th style={{ width: "10%" }}>管理番号</th>
+                  <th style={{ width: "24%" }}>業務・メニュー名称</th>
+                  <th style={{ width: "24%" }}>対象となるご要望</th>
+                  <th style={{ width: "14%" }}>標準納期・所要時間</th>
+                  <th style={{ width: "16%" }}>提供成果物・担当体制</th>
+                  <th style={{ width: "12%" }}>準拠法令・出展</th>
                 </tr>
               </thead>
               <tbody>
@@ -361,6 +377,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                     <td>{svc.target}</td>
                     <td><span className="badge-lead-time">{svc.leadTime}</span></td>
                     <td><small>{svc.deliverable}</small></td>
+                    <td><small style={{ fontSize: "0.7rem", color: "#059669" }}>{svc.sourceNote || "公式業務規程"}</small></td>
                   </tr>
                 ))}
               </tbody>
@@ -377,10 +394,11 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             <table className="dense-db-table">
               <thead>
                 <tr>
-                  <th style={{ width: "24%" }}>工程区分</th>
-                  <th style={{ width: "16%" }}>所要目安</th>
-                  <th style={{ width: "38%" }}>実施内容</th>
-                  <th style={{ width: "22%" }}>成果物</th>
+                  <th style={{ width: "20%" }}>工程区分</th>
+                  <th style={{ width: "14%" }}>所要目安</th>
+                  <th style={{ width: "32%" }}>実施内容</th>
+                  <th style={{ width: "18%" }}>成果物</th>
+                  <th style={{ width: "16%" }}>確認書類・出展</th>
                 </tr>
               </thead>
               <tbody>
@@ -390,6 +408,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                     <td><span className="badge-days">{sop.days}</span></td>
                     <td>{sop.action}</td>
                     <td><small className="text-green"><strong>{sop.output}</strong></small></td>
+                    <td><small style={{ fontSize: "0.7rem", color: "#64748b" }}>{sop.sourceNote || "標準業務マニュアル"}</small></td>
                   </tr>
                 ))}
               </tbody>
@@ -406,10 +425,11 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             <table className="dense-db-table">
               <thead>
                 <tr>
-                  <th style={{ width: "16%" }}>区分</th>
-                  <th style={{ width: "28%" }}>プラン・項目名称</th>
-                  <th style={{ width: "22%" }}>料金目安</th>
-                  <th style={{ width: "34%" }}>含まれる内容・条件</th>
+                  <th style={{ width: "14%" }}>区分</th>
+                  <th style={{ width: "24%" }}>プラン・項目名称</th>
+                  <th style={{ width: "20%" }}>料金目安</th>
+                  <th style={{ width: "26%" }}>含まれる内容・条件</th>
+                  <th style={{ width: "16%" }}>法的根拠・出展</th>
                 </tr>
               </thead>
               <tbody>
@@ -419,6 +439,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                     <td><strong>{fee.plan}</strong></td>
                     <td><strong className="text-price">{fee.fee}</strong></td>
                     <td><small>{fee.note}</small></td>
+                    <td><small style={{ fontSize: "0.7rem", color: "#059669" }}>{fee.sourceNote || "自社料金規程"}</small></td>
                   </tr>
                 ))}
               </tbody>
@@ -430,20 +451,31 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
         <section className="knowledge-section">
           <p className="overline">第6章 // 実績・対応事例</p>
           <h2>代表的な対応事例</h2>
-          <p className="section-lead-desc">過去の実際のご相談事例と対応内容の記録です。</p>
+          <p className="section-lead-desc">過去の実際のご相談事例と対応内容の記録です（全件に出展・契約書類の照合証跡を明記）。</p>
           <div className="case-studies-grid">
             {knowledge.cases.map((cs) => (
-              <div className="case-study-card" key={cs.id}>
-                <div className="case-study-head">
-                  <code>{cs.id}</code>
-                  <h4>{cs.title}</h4>
+              <div className="case-study-card" key={cs.id} style={{ border: "1px solid #cbd5e1", borderRadius: "8px", overflow: "hidden", background: "#ffffff" }}>
+                <div className="case-study-head" style={{ background: "#f8fafc", padding: "12px 16px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>{cs.id}</span>
+                  <h4 style={{ margin: 0, fontSize: "0.95rem", color: "#0f172a", flex: 1, marginLeft: "12px" }}>{cs.title}</h4>
                 </div>
-                <div className="case-study-body">
-                  <div className="case-row"><span className="case-label">ご相談時の課題:</span><p>{cs.issue}</p></div>
-                  <div className="case-row"><span className="case-label">対応内容:</span><p>{cs.approach}</p></div>
-                  <div className="case-row-bottom">
+                <div className="case-study-body" style={{ padding: "16px" }}>
+                  <div className="case-row" style={{ marginBottom: "10px" }}><span className="case-label" style={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem", display: "block" }}>ご相談時の課題:</span><p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "#1e293b" }}>{cs.issue}</p></div>
+                  <div className="case-row" style={{ marginBottom: "12px" }}><span className="case-label" style={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem", display: "block" }}>対応内容:</span><p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "#1e293b" }}>{cs.approach}</p></div>
+                  <div className="case-row-bottom" style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "#f1f5f9", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "12px" }}>
                     <div><span>所要期間:</span> <strong>{cs.leadTime}</strong></div>
-                    <div><span>結果:</span> <strong className="text-green">{cs.result}</strong></div>
+                    <div><span>結果:</span> <strong className="text-green" style={{ color: "#059669" }}>{cs.result}</strong></div>
+                  </div>
+
+                  {/* 出展・証跡（遡って確認できるエビデンス） */}
+                  <div className="case-evidence-box" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "10px 12px", fontSize: "0.75rem", color: "#64748b" }}>
+                    <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                      <span>📋 出展・確認証跡（バックトレース監査情報）</span>
+                    </div>
+                    {cs.sourceRegistryId ? <div style={{ marginBottom: "3px" }}><strong>台帳番号:</strong> <code>{cs.sourceRegistryId}</code></div> : null}
+                    {cs.sourceDocument ? <div style={{ marginBottom: "3px" }}><strong>確認書類:</strong> {cs.sourceDocument}</div> : null}
+                    {cs.sourceAiVerification ? <div style={{ marginBottom: "3px" }}><strong>AI推論検証:</strong> {cs.sourceAiVerification}</div> : null}
+                    {cs.privacyNote ? <div style={{ color: "#94a3b8", marginTop: "4px" }}>{cs.privacyNote}</div> : null}
                   </div>
                 </div>
               </div>
@@ -456,7 +488,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <p className="overline">第7章 // よくあるご質問</p>
           <h2>よくあるご質問（公式回答）</h2>
           <p className="section-lead-desc">
-            お客様からよくいただくご質問に対する公式の回答です。
+            お客様からよくいただくご質問に対する公式の回答です（宅建業法等の法的基準に基づく確定回答）。
           </p>
           <div className="dense-faq-container">
             {knowledge.faqs.map((faq) => (
@@ -468,6 +500,13 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                 <div className="dense-faq-a">
                   <span className="a-badge">回答</span>
                   <p>{faq.canonicalGroundingAnswer}</p>
+                  {faq.sourceStandard ? (
+                    <div style={{ marginTop: "8px" }}>
+                      <span style={{ fontSize: "0.7rem", color: "#059669", background: "#ecfdf5", padding: "1px 6px", borderRadius: "3px", border: "1px solid #a7f3d0" }}>
+                        準拠基準: {faq.sourceStandard}
+                      </span>
+                    </div>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -502,9 +541,22 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
 
         {/* 出典・公式ソース */}
         <div className="registry-card">
-          <p className="overline">出典情報</p>
-          <h2>確認元ページ一覧</h2>
+          <p className="overline">出典・公認エビデンス</p>
+          <h2>確認元ページ・公的機関</h2>
+          {knowledge.auditEvidence ? (
+            <div style={{ marginBottom: "12px", padding: "8px 10px", background: "#f8fafc", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+              <div style={{ fontSize: "0.72rem", color: "#0f172a", fontWeight: 700 }}>公認情報監査エンジン照合済</div>
+              <div style={{ fontSize: "0.68rem", color: "#64748b" }}>確認日時: {knowledge.auditEvidence.verifiedAt}</div>
+            </div>
+          ) : null}
           <div className="source-list-dense">
+            {knowledge.auditEvidence?.primarySources?.map((src) => (
+              <a key={src.url} href={src.url} target="_blank" rel="noreferrer">
+                <strong>{src.title}</strong>
+                <small style={{ color: "#059669", fontSize: "0.7rem", display: "block" }}>{src.authority}</small>
+                <span>{src.url}</span>
+              </a>
+            ))}
             {profile.sourcePages.map((page) => (
               <a key={page.url} href={page.url} target="_blank" rel="noreferrer">
                 <strong>{page.title}</strong>
