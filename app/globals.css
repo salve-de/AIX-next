@@ -4733,3 +4733,416 @@ svg { width: 1.1em; height: 1.1em; }
   margin: 0;
 }
 
+/* ==========================================================================
+   Watch Screen Premium Enhancements (/watch)
+   ========================================================================== */
+
+.watch-badge-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.pill-badge-outline {
+  background: transparent !important;
+  border: 1px solid #94a3b8 !important;
+  color: #475569 !important;
+}
+
+/* 3分割 週次推移メトリクスカード */
+.watch-trend-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.watch-trend-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.trend-card-primary {
+  border-color: #86efac;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.trend-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.trend-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #64748b;
+}
+
+.trend-diff {
+  font-size: 0.75rem;
+  font-weight: 900;
+  background: #dcfce7;
+  color: #166534;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.trend-diff.text-blue {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.trend-diff.text-green {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.trend-num-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.trend-num-base {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.trend-arrow {
+  font-size: 1.1rem;
+  color: #64748b;
+}
+
+.trend-num-latest {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+}
+
+.trend-num-latest.text-green {
+  color: #16a34a;
+}
+
+.trend-num-latest.text-blue {
+  color: #0284c7;
+}
+
+.trend-desc {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+/* 推薦枠の獲得成果（生ログコンテナ） */
+.watch-won-prompts-container {
+  background: #ffffff;
+  border: 1.5px solid #86efac;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.06);
+  margin-bottom: 24px;
+}
+
+.won-prompts-header {
+  background: #f0fdf4;
+  border-bottom: 1px solid #bbf7d0;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.won-icon {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  background: #16a34a;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.won-prompts-header strong {
+  font-size: 0.92rem;
+  color: #14532d;
+}
+
+.won-prompts-list {
+  padding: 8px 20px;
+}
+
+.won-prompt-item {
+  padding: 18px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.won-prompt-item:last-child {
+  border-bottom: none;
+}
+
+.won-item-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.won-item-num {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.won-tag-status {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0369a1;
+  background: #e0f2fe;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.won-prompt-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+
+.won-item-foot {
+  background: #f8fafc;
+  border-left: 3px solid #0284c7;
+  padding: 10px 14px;
+  border-radius: 0 6px 6px 0;
+}
+
+.foot-reason-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #0369a1;
+  margin-bottom: 2px;
+}
+
+.foot-reason-text {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* 競合モニタリングテーブル */
+.watch-competitor-monitor {
+  padding-top: 0 !important;
+}
+
+.watch-comp-table-wrapper {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.watch-comp-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.watch-comp-table th {
+  background: #f8fafc;
+  padding: 12px 18px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #64748b;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.watch-comp-table td {
+  padding: 16px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.row-own-company {
+  background: #f0fdf4 !important;
+}
+
+.row-own-company td {
+  border-bottom: 1.5px solid #86efac;
+}
+
+.row-own-company strong {
+  color: #15803d;
+  font-size: 0.95rem;
+  display: block;
+}
+
+.row-own-company small {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #166534;
+  background: #bbf7d0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 4px;
+}
+
+.badge-gain {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-loss {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0369a1;
+  background: #e0f2fe;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-warning {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #c2410c;
+  background: #ffedd5;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-neutral {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* 補強入力カードグリッド */
+.watch-input-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.watch-input-card {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.input-card-head {
+  flex: 1;
+}
+
+.gap-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #c2410c;
+  background: #ffedd5;
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.input-card-head h4 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.input-card-head p {
+  margin: 0 0 16px;
+  font-size: 0.75rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.gap-input-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gap-input-form input {
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  outline: none;
+}
+
+.gap-input-form input:focus {
+  border-color: #2563eb;
+}
+
+.gap-input-form .button {
+  min-height: 36px;
+  font-size: 0.75rem;
+}
+
+.saved-answer-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.saved-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #166534;
+  background: #dcfce7;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.saved-answer-box p {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: #334155;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+  .watch-trend-cards-grid,
+  .watch-input-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+

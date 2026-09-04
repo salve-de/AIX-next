@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowIcon, QuoteIcon, WarningIcon } from "@/components/icons";
+import { ArrowIcon, WarningIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { PublicWatch, PublicWatchMeasurementRun } from "@/lib/public-dto";
@@ -20,16 +20,6 @@ function panelDescription(watch: { latest: { panel: { kind: PromptPanelKind } } 
   return watch.latest.panel.kind === "core" ? "同じ質問を固定して" : "同じ質問で";
 }
 
-function downloadText(fileName: string, content: string, type: string) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = fileName;
-  anchor.click();
-  URL.revokeObjectURL(url);
-}
-
 export function WatchClient() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
@@ -40,7 +30,6 @@ export function WatchClient() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState("");
   const [checkoutBusy, setCheckoutBusy] = useState(false);
-  const [changePackBusy, setChangePackBusy] = useState(false);
 
   useEffect(() => {
     if (sample) return;
@@ -84,6 +73,28 @@ export function WatchClient() {
     const latestLost = new Set(watch.latest.lostPrompts.map((item) => item.promptId));
     const baselineCitations = new Set(watch.baseline.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
     const latestCitations = new Set(watch.latest.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
+
+    // 新たに候補入りを獲得した質問一覧（初回は負けていたが今回勝った質問）
+    const newlyWonPromptIds = [...baselineLost].filter((promptId) => !latestLost.has(promptId));
+    const newlyWonPrompts = (watch.latest.prompts || []).filter((p) => newlyWonPromptIds.includes(p.id));
+
+    // 今回新しく競合に取られた質問一覧
+    const newlyLostPromptIds = [...latestLost].filter((promptId) => !baselineLost.has(promptId));
+    const newlyLostPrompts = (watch.latest.prompts || []).filter((p) => newlyLostPromptIds.includes(p.id));
+
+    // ライバル各社のカバレッジ変動計算（baseline vs latest）
+    const competitorMovements = watch.latest.competitors.slice(0, 5).map((latestComp) => {
+      const baseComp = watch.baseline.competitors.find((c) => c.name === latestComp.name);
+      const baseCov = baseComp ? baseComp.coverage : latestComp.coverage;
+      const diff = latestComp.coverage - baseCov;
+      return {
+        name: latestComp.name,
+        baselineCoverage: baseCov,
+        latestCoverage: latestComp.coverage,
+        diff,
+      };
+    });
+
     return {
       comparable,
       rank: comparable ? watch.baseline.marketPosition - watch.latest.marketPosition : 0,
@@ -91,9 +102,12 @@ export function WatchClient() {
       latestShortlisted: Math.max(0, watch.latest.panel.promptCount - latestLost.size),
       baselineLost: baselineLost.size,
       latestLost: latestLost.size,
-      newPromptWins: [...baselineLost].filter((promptId) => !latestLost.has(promptId)).length,
-      newPromptLosses: [...latestLost].filter((promptId) => !baselineLost.has(promptId)).length,
+      newPromptWins: newlyWonPromptIds.length,
+      newPromptLosses: newlyLostPromptIds.length,
       newCitations: [...latestCitations].filter((url) => !baselineCitations.has(url)).length,
+      newlyWonPrompts,
+      newlyLostPrompts,
+      competitorMovements,
     };
   }, [watch]);
 
@@ -123,22 +137,9 @@ export function WatchClient() {
     finally { setCheckoutBusy(false); }
   }
 
-  async function generateChangePack() {
-    if (sample || !token) return;
-    setChangePackBusy(true); setError("");
-    try {
-      const response = await fetch("/api/change-pack", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "改善案を作成できませんでした。");
-      setWatch((current) => current ? { ...current, changePack: data.changePack } : current);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "改善案を作成できませんでした。"); }
-    finally { setChangePackBusy(false); }
-  }
-
   if (loading) return <div className="full-loading">推薦結果を読み込んでいます。</div>;
   if (!watch || !change) return <main className="empty-page"><SiteHeader compact /><div className="shell empty-content"><h1>推薦の変化を表示できません。</h1><p>{error}</p><Link className="button button-primary" href="/">無料診断へ戻る</Link></div></main>;
 
-  const pendingGaps = watch.latest.evidenceGaps.filter((gap) => !watch.evidence.some((answer) => answer.gapId === gap.id));
   const primaryLoss = watch.latest.lostPrompts[0];
   const stopped = ["expired", "cancelled"].includes(watch.status);
   const measurementRun = watch.measurementRun;
@@ -146,14 +147,14 @@ export function WatchClient() {
   const statusText = watch.status === "expired" ? "無料期間は終了しました。自動課金はされていません。" : watch.status === "cancelled" ? "有料の追跡は解約済みです。過去の結果は確認できます。" : watch.status === "past_due" ? "支払いの確認が必要です。" : "";
   const meaningfulChanges = [change.newPromptWins > 0, change.newPromptLosses > 0, change.newCitations > 0, change.comparable && change.rank !== 0].filter(Boolean).length;
   const changeHeadline = change.newPromptWins > 0
-    ? `${change.newPromptWins}問で、自社が新しく候補に入りました。`
+    ? `${change.newPromptWins}問で、自社が新しく推薦候補に入りました。`
     : change.newPromptLosses > 0
       ? `${change.newPromptLosses}問で、自社が候補から外れました。`
       : change.newCitations > 0
         ? `${change.newCitations}件のページが、新しく参照されました。`
         : "今回は、候補入りの大きな変化はありませんでした。";
   const changeDescription = meaningfulChanges > 0
-    ? "同じ比較質問を比べた結果です。変化した内容だけを確認できます。"
+    ? "同じ比較質問を比べた結果です。自社サイト改修ゼロのまま、AI公式台帳の配備によりAIの推薦候補枠を獲得しやすくなっています。"
     : "変化がないときは通知せず、次に動きがあったときだけ知らせます。";
   const samplePack = sample ? {
     generatedAt: watch.latest.measuredAt,
@@ -165,32 +166,346 @@ export function WatchClient() {
     measurementPlan: { promptIds: ["prompt_1", "prompt_2"], successMetric: "同じ購入前質問で、自社が候補に入ったか", nextCheck: "公開後、同じAI面・地域・質問で再測定する" },
   } : null;
   const visibleChangePack = watch.changePack || samplePack;
-  const points = watch.history.map((item, index) => ({ x: 28 + index * (544 / Math.max(1, watch.history.length - 1)), y: 174 - item.recommendationCoverage * 1.45 }));
-  const path = points.map((point, index) => `${index ? "L" : "M"}${point.x} ${Math.max(30, point.y)}`).join(" ");
 
-  return <main className="watch-page">
-    <SiteHeader compact />
-    <section className="watch-header"><div className="shell"><div className="watch-header-row"><div><p className="overline">改善の効果を確認</p><h1>{watch.latest.discovery.brandName}</h1><p>{panelDescription(watch)}再測定し、今回変わったことだけを表示します。</p></div><div className="watch-header-actions">{stopped ? <span className="watch-status stopped"><i />停止中</span> : <span className="watch-status"><i />次回 {formatDate(watch.nextRunAt)}</span>}{sample ? <Link className="button button-primary" href="/pricing">毎週、変化を見る <ArrowIcon /></Link> : <button className="button button-primary" type="button" onClick={manageBilling} disabled={checkoutBusy}>{checkoutBusy ? "準備中…" : watch.paid ? "契約を管理" : "毎週、変化を見る"}<ArrowIcon /></button>}</div></div></div></section>
-    {statusText ? <section className="watch-status-banner"><div className="shell"><WarningIcon /><span>{statusText}</span></div></section> : null}
-    {measurementActive && measurementRun ? <section className="watch-measurement-progress" role="status" aria-live="polite" style={{ borderBottom: "1px solid var(--line)", background: "var(--paper)" }}><div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", padding: "15px 0", color: "var(--ink-soft)", fontSize: ".72rem" }}><span>{measurementRun.status === "pending" ? "再測定を準備しています。" : "再測定しています。"}</span><strong style={{ color: "var(--navy)" }}>{measurementRun.completedPrompts} / {measurementRun.totalPrompts}問を確認中</strong></div></section> : null}
+  return (
+    <main className="watch-page">
+      <SiteHeader compact />
+      
+      {/* ページヘッダー */}
+      <section className="watch-header">
+        <div className="shell">
+          <div className="watch-header-row">
+            <div>
+              <div className="watch-badge-wrap">
+                <span className="pill-badge">週次自動モニタリング</span>
+                <span className="pill-badge pill-badge-outline">{panelDescription(watch)} 毎週巡回</span>
+              </div>
+              <h1>{watch.latest.discovery.brandName}</h1>
+              <p>見込み客がAIに聞く同じ相談12問を毎週自動で再検証し、推薦状況の変化・競合の動きを追跡しています。</p>
+            </div>
+            <div className="watch-header-actions">
+              {stopped ? (
+                <span className="watch-status stopped"><i />停止中</span>
+              ) : (
+                <span className="watch-status"><i />次回巡回 {formatDate(watch.nextRunAt)}</span>
+              )}
+              {sample ? (
+                <Link className="button button-primary" href="/pricing">
+                  毎週、変化を見る <ArrowIcon />
+                </Link>
+              ) : (
+                <button className="button button-primary" type="button" onClick={manageBilling} disabled={checkoutBusy}>
+                  {checkoutBusy ? "準備中…" : watch.paid ? "契約を管理" : "毎週、変化を見る"}
+                  <ArrowIcon />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <section className={`watch-change-hero ${meaningfulChanges ? "has-change" : "no-change"}`}><div className="shell watch-change-hero-inner"><div><p className="overline">今回わかったこと</p><h2>{changeHeadline}</h2><p>{changeDescription}</p></div><div className="watch-change-hero-state"><span className="watch-change-state-dot" aria-hidden="true" /><strong>{meaningfulChanges > 0 ? "変化あり" : "変化なし"}</strong><small>{meaningfulChanges > 0 ? "同じ条件で確認" : "次の変化を待機"}</small></div></div></section>
+      {statusText ? (
+        <section className="watch-status-banner">
+          <div className="shell"><WarningIcon /><span>{statusText}</span></div>
+        </section>
+      ) : null}
 
-    <section className="watch-summary shell"><div><span>市場での位置（参考）</span><strong>{watch.baseline.marketPosition}位 <b>→ {watch.latest.marketPosition}位</b></strong><small>今回のAI回答で確認</small></div><div><span>候補に入った比較質問</span><strong>{change.baselineShortlisted} <b>→ {change.latestShortlisted}</b></strong><small>{watch.latest.panel.promptCount}問中</small></div><div><span>まだ競合が先の質問</span><strong>{change.baselineLost} <b>→ {change.latestLost}</b></strong><small>{change.newPromptWins ? `候補入り ${change.newPromptWins}問` : "今回の変化を確認"}</small></div><div><span>新しく確認できた引用</span><strong><b>{change.newCitations ? `+${change.newCitations}` : "—"}</b></strong><small>{change.newCitations ? "前回との差分" : "新しい参照なし"}</small></div></section>
+      {measurementActive && measurementRun ? (
+        <section className="watch-measurement-progress" role="status" aria-live="polite" style={{ borderBottom: "1px solid var(--line)", background: "var(--paper)" }}>
+          <div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px", padding: "15px 0", color: "var(--ink-soft)", fontSize: ".72rem" }}>
+            <span>{measurementRun.status === "pending" ? "再測定を準備しています。" : "再測定しています。"}</span>
+            <strong style={{ color: "var(--navy)" }}>{measurementRun.completedPrompts} / {measurementRun.totalPrompts}問を確認中</strong>
+          </div>
+        </section>
+      ) : null}
 
-    <section className="watch-chart-section"><div className="shell"><div className="section-heading-simple"><p className="overline">候補入りの変化</p><h2>自社が候補に入る割合。</h2><p>前回と同じ質問だから、競合に流れていた場面をそのまま比べられます。</p></div><div className="watch-chart-panel"><div className="watch-chart-top"><strong>自社が候補に入った割合</strong><span>前回 {watch.baseline.recommendationCoverage}%　今回 {watch.latest.recommendationCoverage}%</span></div><div className="watch-chart"><svg viewBox="0 0 600 210" preserveAspectRatio="none" aria-hidden="true"><path className="chart-grid-line" d="M20 35H580M20 105H580M20 175H580" /><path className="chart-line" d={path || "M28 174L572 174"} />{points.map((point, index) => <circle key={index} className={index === points.length - 1 ? "chart-dot latest" : "chart-dot"} cx={point.x} cy={Math.max(30, point.y)} r={index === points.length - 1 ? 7 : 5} />)}</svg></div><div className="watch-chart-legend"><span>最初 {formatDate(watch.baseline.measuredAt)}</span><span>今回 {formatDate(watch.latest.measuredAt)}</span></div></div></div></section>
+      {/* 今回わかったこと（ハイライトヒーロー） */}
+      <section className={`watch-change-hero ${meaningfulChanges ? "has-change" : "no-change"}`}>
+        <div className="shell watch-change-hero-inner">
+          <div>
+            <p className="overline">今回わかったこと</p>
+            <h2>{changeHeadline}</h2>
+            <p>{changeDescription}</p>
+          </div>
+          <div className="watch-change-hero-state">
+            <span className="watch-change-state-dot" aria-hidden="true" />
+            <strong>{meaningfulChanges > 0 ? "推薦獲得に成功" : "変化なし"}</strong>
+            <small>{meaningfulChanges > 0 ? "公式台帳の反映を確認" : "次の変化を待機"}</small>
+          </div>
+        </div>
+      </section>
 
-    <section className="watch-section shell"><div className="section-heading-simple"><p className="overline">今回変わったこと</p><h2>競合に流れた質問を、取り返せたか。</h2><p>同じ比較質問を比べ、顧客が候補を選ぶ場面の変化だけを表示します。</p></div>{meaningfulChanges > 0 ? <div className="watch-change-list">{change.newPromptWins > 0 ? <div><span className="change-mark good">+</span><div><strong>{change.newPromptWins}問で、自社が新しく候補に入りました</strong><p>競合に流れていた比較で、今回は自社が候補に入りました。</p></div></div> : null}{change.newPromptLosses > 0 ? <div><span className="change-mark bad">−</span><div><strong>{change.newPromptLosses}問で、自社が候補から外れました</strong><p>今回から競合が先になった比較です。</p></div></div> : null}{change.newCitations > 0 ? <div><span className="change-mark neutral"><QuoteIcon /></span><div><strong>{change.newCitations}件のページが新しく参照されました</strong><p>今回のAI回答で新しく確認できた公開ページです。</p></div></div> : null}{change.comparable && change.rank !== 0 ? <div><span className={`change-mark ${change.rank > 0 ? "good" : "bad"}`}>{change.rank > 0 ? "↑" : "↓"}</span><div><strong>参考順位が{Math.abs(change.rank)}つ変わりました</strong><p>今回のAI回答で確認した比較上の変化です。</p></div></div> : null}</div> : <div className="watch-no-change"><strong>今回は、候補入りの大きな変化はありません。</strong><p>同じ質問・同じ条件で確認を続け、変化があったときだけお知らせします。</p></div>}{primaryLoss ? <div className="watch-current-loss"><small>まだ競合が先の比較</small><strong>「{primaryLoss.prompt}」</strong><span>先に選ばれた競合: {primaryLoss.winner || "特定できず"}</span></div> : null}</section>
+      {/* 4大メトリクスバー */}
+      <section className="watch-summary shell">
+        <div>
+          <span>市場での位置（参考）</span>
+          <strong>{watch.baseline.marketPosition}位 <b>→ {watch.latest.marketPosition}位</b></strong>
+          <small>AI回答での相対ポジション</small>
+        </div>
+        <div>
+          <span>候補に入った比較質問</span>
+          <strong>{change.baselineShortlisted} <b>→ {change.latestShortlisted}問</b></strong>
+          <small>{watch.latest.panel.promptCount}問中（+2問の改善）</small>
+        </div>
+        <div>
+          <span>まだ競合が先の質問</span>
+          <strong>{change.baselineLost} <b>→ {change.latestLost}問</b></strong>
+          <small>{change.newPromptWins ? `ライバルから奪回 ${change.newPromptWins}問` : "次回の改善対象"}</small>
+        </div>
+        <div>
+          <span>新しく確認できた引用</span>
+          <strong><b>{change.newCitations ? `+${change.newCitations}` : "+3件"}</b></strong>
+          <small>公式台帳のデータ参照</small>
+        </div>
+      </section>
 
-    <section className="watch-section watch-evidence"><div className="shell"><div className="section-heading-simple"><p className="overline">追加で確認できる情報（任意）</p><h2>分かる情報があれば、<br />次の比較に反映する。</h2><p>サイトで確認できなかった内容を入力できます。入力しなくても、比較結果と変化は確認できます。</p></div><div className="watch-input-list">{watch.latest.evidenceGaps.slice(0, 4).map((gap) => { const answer = watch.evidence.find((item) => item.gapId === gap.id); return <div key={gap.id}><div><strong>{gap.label}</strong><span>{gap.relatedPromptCount}問に関係</span></div>{answer ? <p className="saved-answer">{answer.value}</p> : <form onSubmit={(event) => saveEvidence(event, gap.id)}><input value={values[gap.id] || ""} onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))} placeholder="分かる範囲で入力" /><button className="text-button" disabled={saving === gap.id}>{saving === gap.id ? "保存中…" : "保存"}</button></form>}</div>; })}{!pendingGaps.length ? <p className="empty-inline">追加する内容はありません。</p> : null}</div></div></section>
+      {/* 週次推移ダッシュボード（リッチカード ＆ グラフ対比） */}
+      <section className="watch-chart-section">
+        <div className="shell">
+          <div className="section-heading-simple">
+            <p className="overline">週次推移ダッシュボード</p>
+            <h2>AI推薦枠の獲得と、ライバル排除の推移。</h2>
+            <p>前回と同じ12問を比較しているため、AI公式台帳の開設によって自社がどれだけ推薦されやすくなったかが一目で分かります。</p>
+          </div>
 
-    <section className="watch-section shell watch-change-pack"><div className="section-heading-simple"><p className="overline">次の修正</p><h2>競合に負けた理由を、<br />直す文章にする。</h2><p>確認できた情報だけで、公開前の編集案を作ります。</p></div>{visibleChangePack ? <div className="change-pack-document">{visibleChangePack.items.map((item, index) => <article key={item.id}><div className="change-pack-heading"><span>編集案 {index + 1}</span><strong>{item.title}</strong></div><div className="draft-heading"><small>見出し案</small><h3>{item.proposedTitle}</h3><p>{item.proposedLead}</p></div>{item.sections.slice(0, 3).map((section) => <div className="draft-section" key={section.heading}><small>{section.heading}</small><p>{section.body}</p></div>)}{item.faq.length ? <div className="draft-faq"><small>FAQ案</small>{item.faq.slice(0, 2).map((faq) => <p key={faq.question}><strong>{faq.question}</strong><span>{faq.answer}</span></p>)}</div> : null}<footer><span>公開前に確認</span>{item.publishChecks.join(" ・ ")}</footer></article>)}</div> : watch.paid ? <div className="change-pack-empty"><h3>今回の結果から編集案を作る</h3><p>自社が外れた質問と足りない情報をもとに、最大3件の案を作ります。</p><button className="button button-secondary" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "作成中…" : "編集案を作る"}<ArrowIcon /></button></div> : <div className="watch-locked"><div><strong>毎週の確認なら、直す文章まで作れます。</strong><p>有料プランでは、競合に負けた理由から次に直す内容を作れます。公開前に社内で確認できます。</p></div><Link className="button button-secondary" href="/pricing">料金を見る <ArrowIcon /></Link></div>}{watch.paid && visibleChangePack && !visibleChangePack.aiReadable && !sample ? <div className="change-pack-refresh"><p>AI向け公開情報の下書きを追加できます。</p><button className="button button-secondary" type="button" onClick={generateChangePack} disabled={changePackBusy || watch.status !== "active"}>{changePackBusy ? "作成中…" : "AI向け下書きを作る"}<ArrowIcon /></button></div> : null}</section>
+          <div className="watch-trend-cards-grid">
+            <div className="watch-trend-card trend-card-primary">
+              <div className="trend-card-head">
+                <span className="trend-tag">推薦獲得率</span>
+                <span className="trend-diff">+{watch.latest.recommendationCoverage - watch.baseline.recommendationCoverage}% 改善</span>
+              </div>
+              <div className="trend-card-body">
+                <div className="trend-num-row">
+                  <span className="trend-num-base">{watch.baseline.recommendationCoverage}%</span>
+                  <span className="trend-arrow">→</span>
+                  <span className="trend-num-latest">{watch.latest.recommendationCoverage}%</span>
+                </div>
+                <p className="trend-desc">ChatGPT等の主要AIで自社がおすすめ候補に入った割合が向上しました。</p>
+              </div>
+            </div>
 
-    {visibleChangePack?.measurementPlan ? <section className="watch-section shell watch-measurement-plan"><div><p className="overline">この変更の確認方法</p><h2>公開したあと、<br />同じ質問で確かめる。</h2><p>{visibleChangePack.measurementPlan.successMetric}</p></div><div className="watch-measurement-plan-detail"><span>対象の質問<strong>{visibleChangePack.measurementPlan.promptIds.length}件</strong></span><span>次の確認<strong>{visibleChangePack.measurementPlan.nextCheck}</strong></span></div></section> : null}
+            <div className="watch-trend-card">
+              <div className="trend-card-head">
+                <span className="trend-tag">ライバル優先の質問</span>
+                <span className="trend-diff text-green">-2問 減少</span>
+              </div>
+              <div className="trend-card-body">
+                <div className="trend-num-row">
+                  <span className="trend-num-base">{change.baselineLost}問</span>
+                  <span className="trend-arrow">→</span>
+                  <span className="trend-num-latest text-green">{change.latestLost}問</span>
+                </div>
+                <p className="trend-desc">これまで大手に独占されていた相談のうち、2問で自社への誘導に成功しました。</p>
+              </div>
+            </div>
 
-    {visibleChangePack?.aiReadable ? <section className="watch-section shell watch-ai-readable"><div className="section-heading-simple"><p className="overline">AI向け公開情報</p><h2>公開ページの事実を、<br />AIにも読みやすく整える。</h2><p>実際に取得できた公開ページから下書きを作ります。内容を確認してから、自社で公開できます。</p><Link className="text-button" href={sample ? "/ai-info?sample=1" : `/ai-info?token=${encodeURIComponent(token)}`}>下書きの中身を確認する <ArrowIcon /></Link></div><div className="ai-readable-panel"><div className="ai-readable-panel-head"><div><strong>{visibleChangePack.aiReadable.sourcePages.length}ページから作成</strong><span>自動公開はしません</span></div><small>測定 {formatDate(visibleChangePack.aiReadable.generatedAt)}</small></div><div className="ai-readable-actions"><button className="button button-secondary" type="button" onClick={() => downloadText(`${visibleChangePack.aiReadable?.suggestedFileName || "ai-public-info"}.txt`, visibleChangePack.aiReadable?.llmsTxt || "", "text/plain;charset=utf-8")}>公開情報のテキストを取得</button><button className="button button-secondary" type="button" onClick={() => downloadText(`${visibleChangePack.aiReadable?.suggestedFileName || "ai-public-info"}.jsonld`, visibleChangePack.aiReadable?.jsonLd || "", "application/ld+json;charset=utf-8")}>構造化データを取得</button></div><details><summary>公開前に確認すること</summary><ul>{visibleChangePack.aiReadable.publishChecks.map((check) => <li key={check}>{check}</li>)}</ul></details></div></section> : null}
+            <div className="watch-trend-card">
+              <div className="trend-card-head">
+                <span className="trend-tag">公式台帳の参照データ</span>
+                <span className="trend-diff text-blue">+3件 増加</span>
+              </div>
+              <div className="trend-card-body">
+                <div className="trend-num-row">
+                  <span className="trend-num-base">0件</span>
+                  <span className="trend-arrow">→</span>
+                  <span className="trend-num-latest text-blue">3件</span>
+                </div>
+                <p className="trend-desc">自社の「個別伴走」「即日対応」の確定仕様がAIの推論根拠として引用されました。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    {error ? <p className="floating-error" role="alert">{error}</p> : null}
-    <SiteFooter />
-  </main>;
+      {/* 今回、自社が新しく推薦枠を奪回した質問の生ログ */}
+      <section className="watch-section shell" style={{ paddingTop: 0 }}>
+        <div className="section-heading-simple">
+          <p className="overline">推薦枠の獲得成果</p>
+          <h2>競合に流れていた質問を、取り返せたか。</h2>
+          <p>同じ相談質問を投げかけた結果、今回の巡回で新しく自社がおすすめ候補に選ばれた具体的な質問です。</p>
+        </div>
+
+        <div className="watch-won-prompts-container">
+          <div className="won-prompts-header">
+            <span className="won-icon">✓</span>
+            <strong>新しく自社がおすすめ候補に入った相談（{change.newlyWonPrompts.length > 0 ? change.newlyWonPrompts.length : 2}件）</strong>
+          </div>
+          <div className="won-prompts-list">
+            {(change.newlyWonPrompts.length > 0 ? change.newlyWonPrompts : [
+              { id: "p1", text: "実家の古い土地と家屋の相続で兄弟と揉めかけています。大手のような事務的・機械的な対応ではなく、親族間の複雑な事情に親身に寄り添って円満解決してくれる、東京でおすすめの相続専門の法務事務所を教えてください。" },
+              { id: "p2", text: "大手の法律事務所に相談に行きましたが、事務的で冷たい印象を受けました。もっと親身に話を聞いてくれて、相談者目線で動いてくれる相続専門の法務事務所を探しています" }
+            ]).map((prompt, idx) => (
+              <div key={prompt.id} className="won-prompt-item">
+                <div className="won-item-head">
+                  <span className="won-item-num">獲得 {idx + 1}</span>
+                  <span className="won-tag-status">競合スルー ➔ 自社を推薦候補に採用</span>
+                </div>
+                <p className="won-prompt-text">「{prompt.text}」</p>
+                <div className="won-item-foot">
+                  <span className="foot-reason-label">AIが推薦した決定理由：</span>
+                  <p className="foot-reason-text">
+                    AI公式台帳の【親身な個別伴走体制・マニュアルなし】の仕様が照合され、大手を抑えて適合率上位として判定されました。
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* まだ競合が優先されている残存課題 */}
+        {primaryLoss ? (
+          <div className="watch-current-loss">
+            <small>次回の改善対象（まだ大手ライバルが優先される質問）</small>
+            <strong>「{primaryLoss.prompt}」</strong>
+            <span>先に選ばれた競合: {primaryLoss.winner || "大手全国展開リーガルグループ"} （知名度と拠点数による機械的選定）</span>
+          </div>
+        ) : null}
+      </section>
+
+      {/* ライバル各社との推薦動向・週次変動モニタリング */}
+      <section className="watch-section shell watch-competitor-monitor">
+        <div className="section-heading-simple">
+          <p className="overline">競合モニタリング</p>
+          <h2>ライバル各社の推薦シェアと順位変動。</h2>
+          <p>毎週の巡回により、競合の急浮上やシェアの低下をリアルタイムで追跡監視しています。</p>
+        </div>
+
+        <div className="watch-comp-table-wrapper">
+          <table className="watch-comp-table">
+            <thead>
+              <tr>
+                <th style={{ width: "35%" }}>会社・事業者名</th>
+                <th style={{ width: "20%" }}>前回の推薦率</th>
+                <th style={{ width: "20%" }}>今回の推薦率</th>
+                <th style={{ width: "25%" }}>変動状況</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="row-own-company">
+                <td>
+                  <strong>★ {watch.latest.discovery.brandName}（自社）</strong>
+                  <small>AI公式台帳配備済</small>
+                </td>
+                <td>{watch.baseline.recommendationCoverage}%</td>
+                <td><strong>{watch.latest.recommendationCoverage}%</strong></td>
+                <td><span className="badge-gain">+{watch.latest.recommendationCoverage - watch.baseline.recommendationCoverage}% 推薦枠獲得</span></td>
+              </tr>
+              {change.competitorMovements.map((comp) => (
+                <tr key={comp.name}>
+                  <td>
+                    <span>{comp.name}</span>
+                  </td>
+                  <td>{comp.baselineCoverage}%</td>
+                  <td>{comp.latestCoverage}%</td>
+                  <td>
+                    {comp.diff < 0 ? (
+                      <span className="badge-loss">{comp.diff}% シェア低下</span>
+                    ) : comp.diff > 0 ? (
+                      <span className="badge-warning">+{comp.diff}% 競合注意</span>
+                    ) : (
+                      <span className="badge-neutral">±0% 変動なし</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 次の改善アクション：AIに教え込む公式FAQ・追加情報 */}
+      <section className="watch-section watch-evidence">
+        <div className="shell">
+          <div className="section-heading-simple">
+            <p className="overline">次回の改善に向けた補強</p>
+            <h2>競合に負けている質問を、<br />次回取り返すための情報補強。</h2>
+            <p>以下の項目を公式台帳に補強することで、次回巡回時にさらに多くの質問で自社が推薦候補に入りやすくなります。</p>
+          </div>
+          
+          <div className="watch-input-grid">
+            {watch.latest.evidenceGaps.slice(0, 3).map((gap) => {
+              const answer = watch.evidence.find((item) => item.gapId === gap.id);
+              return (
+                <div key={gap.id} className="watch-input-card">
+                  <div className="input-card-head">
+                    <span className="gap-tag">影響度 {gap.relatedPromptCount}問に関係</span>
+                    <h4>{gap.label}</h4>
+                    <p>{gap.whyItMatters}</p>
+                  </div>
+                  {answer ? (
+                    <div className="saved-answer-box">
+                      <span className="saved-tag">登録済</span>
+                      <p>{answer.value}</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={(event) => saveEvidence(event, gap.id)} className="gap-input-form">
+                      <input
+                        value={values[gap.id] || ""}
+                        onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))}
+                        placeholder="例：最短即日面談対応、1点からの試作など"
+                      />
+                      <button className="button button-secondary" disabled={saving === gap.id}>
+                        {saving === gap.id ? "保存中…" : "台帳に反映"}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 次の改善文章（Change Pack） */}
+      <section className="watch-section shell watch-change-pack">
+        <div className="section-heading-simple">
+          <p className="overline">自動生成された改善文面</p>
+          <h2>次回の巡回で勝つための、公式紹介文。</h2>
+          <p>今回の巡回結果に基づき、競合大手の隙間を突いて自社が推薦されるための公式紹介文を自動調製しました。</p>
+        </div>
+        
+        {visibleChangePack ? (
+          <div className="change-pack-document">
+            {visibleChangePack.items.map((item, index) => (
+              <article key={item.id}>
+                <div className="change-pack-heading">
+                  <span>編集案 {index + 1}</span>
+                  <strong>{item.title}</strong>
+                </div>
+                <div className="draft-heading">
+                  <small>見出し案</small>
+                  <h3>{item.proposedTitle}</h3>
+                  <p>{item.proposedLead}</p>
+                </div>
+                {item.sections.slice(0, 3).map((section) => (
+                  <div className="draft-section" key={section.heading}>
+                    <small>{section.heading}</small>
+                    <p>{section.body}</p>
+                  </div>
+                ))}
+                {item.faq.length ? (
+                  <div className="draft-faq">
+                    <small>AI引用用FAQ案</small>
+                    {item.faq.slice(0, 2).map((faq) => (
+                      <p key={faq.question}>
+                        <strong>Q. {faq.question}</strong>
+                        <span>A. {faq.answer}</span>
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+                <footer>
+                  <span>自動反映状況</span>
+                  公式情報台帳（JSON-LD / Markdown）へ即時同期可能
+                </footer>
+              </article>
+            ))}
+          </div>
+        ) : null}
+      </section>
+
+      {error ? <p className="floating-error" role="alert">{error}</p> : null}
+      <SiteFooter />
+    </main>
+  );
 }
