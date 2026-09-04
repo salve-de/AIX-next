@@ -54,9 +54,6 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             <ArrowIcon />
           </button>
         </div>
-        <p className="scan-form-note">
-          【同名他社の人違いを防止】会社名・地域付き（例: 〇〇製作所 大田区）・インスタ・URLに対応。AIが勝手に決めつけず、ご自身の事業を目視確認してから公式台帳を発行します。
-        </p>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
 
         {!compact ? (

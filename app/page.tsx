@@ -14,12 +14,12 @@ export default function HomePage() {
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
         
-        {/* メイン見出し＆サブヘッドライン */}
+        {/* メイン見出し＆簡潔な価値訴求 */}
         <div className="landing-hero-head-block">
-          <p className="overline">自社ホームページがなくてもOK・Instagramや会社名で無料発行</p>
+          <p className="overline">自社HPがなくてもOK・Instagramや会社名で即時発行</p>
           <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
           <p className="landing-hero-lead">
-            数十万円かかるホームページ制作は不要です。会社名やInstagramアカウントを入れるだけで、AIが正しく認識・推薦する<strong>「公式Web拠点（公的ナレッジ台帳）」</strong>を即座に無料発行できます。
+            高額なホームページ制作は不要です。会社名やInstagramを入れるだけで、AIが正しく推薦する公式Web拠点を無料発行します。
           </p>
         </div>
 
