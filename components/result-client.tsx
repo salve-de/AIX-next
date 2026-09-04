@@ -241,7 +241,7 @@ export function ResultClient() {
             <div><strong>判定基準:</strong> 第一想起率、言及率、引用被リンク率の客観集計</div>
           </div>
           <div style={{ marginTop: "10px", fontSize: "0.72rem", color: "#64748b", lineHeight: 1.5, borderTop: "1px dashed #e2e8f0", paddingTop: "8px" }}>
-            ⚖️ <strong>訴訟リスク防止・コンプライアンス管理方針:</strong>
+            <strong>【コンプライアンスおよび法的適合性方針】</strong>
             本カルテにおける競合各社の情報は、AI（ChatGPT・Perplexity等）が実際に回答・引用した客観的観測ログ（事実）を社内分析用に集計したものです。他社に対する誹謗中傷や主観的批判は一切含まれておりません。また、インターネット上に公開される「AI公式推薦パス」上では他社の個別実名は完全に排除され、客観的な業態分類（大手チェーン・一般他社）のみで記載されます。
           </div>
         </div>

@@ -436,7 +436,7 @@ export function WatchClient() {
               <tr className="row-own-company">
                 <td>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-                    <strong>★ {watch.latest.discovery.brandName}（自社）</strong>
+                    <strong>【対象企業】 {watch.latest.discovery.brandName}（自社）</strong>
                     <Link
                       href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
                       target="_blank"

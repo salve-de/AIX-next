@@ -38,15 +38,27 @@ export default function HomePage() {
             {/* 一瞬で刺さる3大価値 */}
             <ul className="hero-feature-checks" aria-label="選ばれる3つの理由">
               <li>
-                <span className="check-mark">✔</span>
+                <span className="check-mark" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                </span>
                 <span><strong>営業マン不要</strong>：月30万円以上の採用費をかけず、AIが自社を認識しやすい状態へ</span>
               </li>
               <li>
-                <span className="check-mark">✔</span>
+                <span className="check-mark" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                </span>
                 <span><strong>作業・更新ゼロ</strong>：サイト改修もブログ執筆も一切不要。社名だけで台帳開設</span>
               </li>
               <li>
-                <span className="check-mark">✔</span>
+                <span className="check-mark" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                </span>
                 <span><strong>新時代の推薦枠</strong>：ChatGPT等の相談検索で、自社が推薦候補に入りやすくなる</span>
               </li>
             </ul>
@@ -211,9 +223,9 @@ export default function HomePage() {
         <span className="pill-badge pill-badge-dark">AI新時代に取り残されないために</span>
         <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
         <div className="cta-trust-badges">
-          <span>⏱ <strong>所要時間 約15秒</strong></span>
-          <span>🔒 <strong>サイト改修・コード埋め込み 一切不要</strong></span>
-          <span>🛡 <strong>営業電話・勝手な自動課金 ゼロ</strong></span>
+          <span><strong>所要時間 約15秒</strong></span>
+          <span><strong>サイト改修・コード埋め込み 一切不要</strong></span>
+          <span><strong>営業電話・勝手な自動課金 ゼロ</strong></span>
         </div>
         <ScanForm compact />
         <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>

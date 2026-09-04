@@ -124,10 +124,10 @@ export function QuestionList({ result }: { result: ScanResult }) {
                   aria-expanded={isExpanded}
                 >
                   <span>{isExpanded ? "▲" : "▼"}</span>
-                  <span>{isExpanded ? "AI推論根拠・出展ソースを閉じる" : "🔍 どのAIが何を持って出力したか検証する（出展ソース・証跡ログ）"}</span>
+                  <span>{isExpanded ? "AI推論根拠・出展ソースを閉じる" : "AI推論根拠・出展ソースを検証する（バックトレース証跡ログ）"}</span>
                 </button>
-                <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                  観測AI: {loss.observations.length}モデル実測
+                <span style={{ fontSize: "0.7rem", color: "#94a3b8", fontFamily: "var(--font-mono, monospace)" }}>
+                  AUDIT: {loss.observations.length} MODELS OBSERVED
                 </span>
               </div>
 
@@ -146,7 +146,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", borderBottom: "1px solid #e2e8f0", paddingBottom: "6px" }}>
                     <strong style={{ color: "#0f172a", fontSize: "0.82rem" }}>
-                      📋 AI観測ログ ＆ 一次情報出展リスト（バックトレース監査）
+                      AI観測生ログ ＆ 一次情報出展リスト（バックトレース監査）
                     </strong>
                     <span style={{ fontSize: "0.72rem", color: "#64748b" }}>
                       入力質問: 「{loss.prompt}」
@@ -196,7 +196,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                         {obs.citations && obs.citations.length > 0 ? (
                           <div>
                             <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#475569", display: "block", marginBottom: "4px" }}>
-                              🔗 AIが推論根拠として参照・引用した一次情報出展（Web Search Sources）:
+                              AIが推論根拠として参照・引用した一次情報出展（Web Search Sources）:
                             </span>
                             <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "0.75rem" }}>
                               {obs.citations.map((cite: Citation, cIdx: number) => (

@@ -322,7 +322,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <h2>他社との違い・特徴の比較</h2>
           <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", padding: "10px 14px", borderRadius: "6px", marginBottom: "12px" }}>
             <span style={{ fontSize: "0.75rem", color: "#475569" }}>
-              ⚖️ <strong>法的適合性について（訴訟リスク防止）:</strong> 不正競争防止法第2条1項21号（営業誹謗行為の禁止）および景品表示法（比較広告ガイドライン）に厳格に準拠し、ネット公開台帳上では特定の競合他社名は一切使用せず、客観的・中立的な業態分類（大手チェーン・一般他社）との約款・標準仕様の対比のみを記載しています。
+              <strong>【法的適合性について（訴訟リスク防止方針）】</strong> 不正競争防止法第2条1項21号（営業誹謗行為の禁止）および景品表示法（比較広告ガイドライン）に厳格に準拠し、ネット公開台帳上では特定の競合他社名は一切使用せず、客観的・中立的な業態分類（大手チェーン・一般他社）との約款・標準仕様の対比のみを記載しています。
             </span>
           </div>
           <p className="section-lead-desc">一般的な他社や大手チェーンとの提供体制・対応範囲の違いを整理した対比表です。</p>
@@ -470,7 +470,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
                   {/* 出展・証跡（遡って確認できるエビデンス） */}
                   <div className="case-evidence-box" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "10px 12px", fontSize: "0.75rem", color: "#64748b" }}>
                     <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <span>📋 出展・確認証跡（バックトレース監査情報）</span>
+                      <span>出展・確認証跡（バックトレース監査情報）</span>
                     </div>
                     {cs.sourceRegistryId ? <div style={{ marginBottom: "3px" }}><strong>台帳番号:</strong> <code>{cs.sourceRegistryId}</code></div> : null}
                     {cs.sourceDocument ? <div style={{ marginBottom: "3px" }}><strong>確認書類:</strong> {cs.sourceDocument}</div> : null}
