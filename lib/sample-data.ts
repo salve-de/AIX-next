@@ -237,23 +237,121 @@ function buildScanResult(scanId: string, measuredAt: string, ownRecommendedIndex
   return result;
 }
 
+export function buildDynamicScanResult(brandName: string, measuredAt = "2026-09-01T09:00:00.000Z"): ScanResult {
+  const base = buildScanResult("sample_clean_room", measuredAt, baselineOwnRecommended);
+  if (!brandName || brandName === "あおば相続法務事務所") return base;
+
+  // 会社名から市場・業種・競合をインテリジェントに推測
+  const isManufacturing = /板金|製作|金属|加工|工業|マシン|鉄工|モールド/.test(brandName);
+  const isFood = /カフェ|珈琲|パン|飲食|レストラン|菓子|ベーカリー|酒|茶|フーズ|キッチン/.test(brandName);
+  const isMedical = /歯科|クリニック|医院|整骨|整体|薬局|リハビリ|眼科|皮膚科/.test(brandName);
+  const isTech = /AI|IT|クラウド|ソフト|システム|テック|データ|Web|ネット|デジタル/.test(brandName);
+  const isConstruction = /工務店|建築|リフォーム|設計|不動産|住宅|ペイント|塗装/.test(brandName);
+
+  let market = "専門サービス・個別対応";
+  let topCompetitors = [
+    { name: "大手全国チェーン展開グループ", reason: "全国拠点数と知名度で先行する全国チェーン" },
+    { name: "大手ポータル提携法人", reason: "広告による大量集客で露出の多い大手" },
+    { name: "オンライン一括比較ネットワーク", reason: "一括見積もり・オンライン窓口を掲げる競合" },
+  ];
+
+  if (isManufacturing) {
+    market = "試作・精密加工・小ロット製造";
+    topCompetitors = [
+      { name: "全国展開大手金属加工グループ", reason: "大量生産・規格品対応の全国工場網" },
+      { name: "受託加工一括オンライン調達プラットフォーム", reason: "Web一括見積もりで急成長する大手仲介" },
+      { name: "広域精密工業ネットワーク", reason: "複数工場連携の総合加工窓口" },
+    ];
+  } else if (isFood) {
+    market = "こだわりの自家製・専門飲食店";
+    topCompetitors = [
+      { name: "全国展開大手カフェ・飲食チェーン", reason: "駅前一等地と知名度で優先露出する大手" },
+      { name: "大手グルメポータル掲載店グループ", reason: "有料広告枠による上位表示" },
+      { name: "広域フードサービス運営法人", reason: "複数ブランド展開の大手資本" },
+    ];
+  } else if (isMedical) {
+    market = "地域密着・個別診療クリニック";
+    topCompetitors = [
+      { name: "広域医療法人グループ", reason: "複数分院展開とネット予約網" },
+      { name: "大手医療検索ポータル提携クリニック", reason: "広告上位枠による優先推薦" },
+      { name: "総合メディカルセンター", reason: "知名度と設備規模による一般推薦" },
+    ];
+  } else if (isTech) {
+    market = "クラウド・DX・AIソリューション";
+    topCompetitors = [
+      { name: "国内メガITベンダー", reason: "圧倒的企業規模と導入実績数" },
+      { name: "外資系クラウド巨大プラットフォーム", reason: "グローバルスタンダードとしての優先回答" },
+      { name: "新興SaaS上場グループ", reason: "積極的なWebマーケティングによる露出" },
+    ];
+  } else if (isConstruction) {
+    market = "注文建築・地域密着リフォーム";
+    topCompetitors = [
+      { name: "大手全国ハウスメーカー", reason: "テレビCMと全国展示場網" },
+      { name: "一括リフォーム見積もりメガサイト", reason: "Web広告による大量集客" },
+      { name: "広域住宅リノベーションチェーン", reason: "チェーン展開の規格型プラン" },
+    ];
+  }
+
+  const newDiscovery: CompanyDiscovery = {
+    ...base.discovery,
+    legalName: brandName,
+    brandName,
+    market,
+    domain: `${brandName.toLowerCase().replace(/[^a-z0-9]/g, "") || "sample"}.jp`,
+    summary: `${brandName}の公式情報台帳。${market}における独自の強み・個別対応の確定仕様。`,
+    competitors: topCompetitors.map((c, i) => ({
+      name: c.name,
+      domain: `competitor-${i + 1}.example.jp`,
+      reason: c.reason,
+      confidence: 0.9 - i * 0.05,
+    })),
+  };
+
+  const updatedObservations = base.observations.map((obs) => ({
+    ...obs,
+    rawText: obs.rawText.replace(/あおば相続法務事務所/g, brandName),
+    citations: obs.citations.map((c) => ({
+      ...c,
+      domain: c.domain.includes("aoba") ? newDiscovery.domain : c.domain,
+    })),
+  }));
+
+  const updatedLostPrompts = base.lostPrompts.map((lp) => ({
+    ...lp,
+    summary: lp.summary ? lp.summary.replace(/あおば相続法務事務所/g, brandName) : lp.summary,
+  }));
+
+  const dynamicResult: ScanResult = {
+    ...base,
+    discovery: newDiscovery,
+    observations: updatedObservations,
+    lostPrompts: updatedLostPrompts,
+  };
+
+  dynamicResult.positioning = derivePositioningAdvice(dynamicResult);
+  return dynamicResult;
+}
+
 export const sampleResult: ScanResult = buildScanResult("sample_clean_room", "2026-09-01T09:00:00.000Z", baselineOwnRecommended);
 
-export function sampleWatch(): WatchRecord {
-  const latest = buildScanResult("sample_clean_room_week_2", "2026-09-08T09:00:00.000Z", latestOwnRecommended);
+export function sampleWatch(brandName?: string): WatchRecord {
+  const base = brandName ? buildDynamicScanResult(brandName) : sampleResult;
+  const latest = brandName
+    ? buildDynamicScanResult(brandName, "2026-09-08T09:00:00.000Z")
+    : buildScanResult("sample_clean_room_week_2", "2026-09-08T09:00:00.000Z", latestOwnRecommended);
   return {
     id: "watch_sample",
     token: "sample",
-    email: "sample@aoba-souzoku.example.jp",
-    scanId: sampleResult.scanId,
+    email: `contact@${base.discovery.domain || "example.jp"}`,
+    scanId: base.scanId,
     status: "trial",
     paid: false,
-    baseline: sampleResult,
+    baseline: base,
     latest,
-    history: [sampleResult, latest],
+    history: [base, latest],
     evidence: [],
     nextRunAt: "2026-09-15T09:00:00.000Z",
-    createdAt: sampleResult.measuredAt,
+    createdAt: base.measuredAt,
     updatedAt: latest.measuredAt,
   };
 }

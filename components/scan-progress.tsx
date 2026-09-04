@@ -414,7 +414,20 @@ export function ScanProgress() {
             </div>
             <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を確実に防止します。</p>
           </> : null}
-          {phase === "failed" ? <div className="scan-error" role="alert"><strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button></div> : null}
+          {phase === "failed" ? <div className="scan-error" role="alert">
+            <strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong>
+            <p>{error}</p>
+            <div style={{ display: "flex", gap: "12px", marginTop: "16px", flexWrap: "wrap" }}>
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput)}`)}
+              >
+                「{displayInput(rawInput)}」の動的モック診断を見る →
+              </button>
+              <button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button>
+            </div>
+          </div> : null}
         </div>
         {phase === "choose" || phase === "resolving" ? (
           <aside className="scan-stage-list scan-resolve-aside">
@@ -444,7 +457,20 @@ export function ScanProgress() {
         <div className="scan-progress-track" aria-label={`進捗 ${Math.round(progress)}%`}><span style={{ width: `${progress}%` }} /></div>
         <div className="scan-progress-summary"><strong>{Math.round(progress)}%</strong><span>{detail}</span></div>
         {!error ? <button className="scan-cancel" type="button" onClick={() => { controller.current?.abort(); router.push("/"); }}>診断をやめる</button> : null}
-        {error ? <div className="scan-error" role="alert"><strong>診断を完了できませんでした。</strong><p>{error}</p><button className="button button-secondary" type="button" onClick={() => window.location.reload()}>もう一度試す</button></div> : null}
+        {error ? <div className="scan-error" role="alert">
+          <strong>診断を完了できませんでした。</strong>
+          <p>{error}</p>
+          <div style={{ display: "flex", gap: "12px", marginTop: "16px", flexWrap: "wrap" }}>
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput || "自社")}`)}
+            >
+              「{displayInput(rawInput || "自社")}」の動的モック診断を見る →
+            </button>
+            <button className="button button-secondary" type="button" onClick={() => window.location.reload()}>もう一度試す</button>
+          </div>
+        </div> : null}
       </div>
       <div className="scan-stage-list" aria-label="診断の進み具合"><div className="scan-stage-list-head"><strong>今回確認すること</strong><span>{completedCount} / {steps.length}</span></div><ol>{steps.map((item, index) => {
         const state = stage === "failed" ? (index < activeIndex ? "done" : index === activeIndex ? "failed" : "pending") : index < activeIndex || stage === "complete" ? "done" : index === activeIndex ? "active" : "pending";

@@ -22,9 +22,10 @@ function panelDescription(watch: { latest: { panel: { kind: PromptPanelKind } } 
 
 export function WatchClient() {
   const params = useSearchParams();
-  const sample = params.get("sample") === "1";
+  const customBrand = params.get("customBrand");
+  const sample = params.get("sample") === "1" || Boolean(customBrand);
   const token = params.get("token") || "";
-  const [watch, setWatch] = useState<WatchView | null>(sample ? sampleWatch() : null);
+  const [watch, setWatch] = useState<WatchView | null>(sample ? sampleWatch(customBrand || undefined) : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
   const [values, setValues] = useState<Record<string, string>>({});
@@ -171,6 +172,23 @@ export function WatchClient() {
     <main className="watch-page">
       <SiteHeader compact />
       
+      {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
+      <div className="system-status-ribbon" style={{ background: "linear-gradient(90deg, #0f172a 0%, #1e293b 100%)", color: "#ffffff", padding: "10px 0", borderBottom: "1px solid #334155" }}>
+        <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#16a34a", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
+              画面種別：週次見守り 管理画面
+            </span>
+            <strong style={{ fontSize: "0.85rem", color: "#e2e8f0" }}>
+              {watch.latest.discovery.brandName} の推薦獲得推移 ＆ 競合モニタリング
+            </strong>
+          </div>
+          <span style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+            {sample ? "※ リアルモック画面（推移データを体験できます）" : watch.paid ? "有料契約中" : "14日間無料トライアル中"}
+          </span>
+        </div>
+      </div>
+
       {/* ページヘッダー */}
       <section className="watch-header">
         <div className="shell">
@@ -344,9 +362,25 @@ export function WatchClient() {
         </div>
 
         <div className="watch-won-prompts-container">
-          <div className="won-prompts-header">
-            <span className="won-icon">✓</span>
-            <strong>新しく自社がおすすめ候補に入った相談（{change.newlyWonPrompts.length > 0 ? change.newlyWonPrompts.length : 2}件）</strong>
+          <div className="won-prompts-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span className="won-icon">✓</span>
+              <strong>新しく自社がおすすめ候補に入った相談（{change.newlyWonPrompts.length > 0 ? change.newlyWonPrompts.length : 2}件）</strong>
+            </div>
+            <button
+              type="button"
+              className="button button-primary"
+              style={{ fontSize: "0.75rem", padding: "6px 12px", background: "#0284c7" }}
+              onClick={() => {
+                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI公式台帳で強みを確定仕様化する「AIX」を活用しています。\n#AIX #生成AI #中小企業DX\n`);
+                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}`);
+                if (typeof window !== "undefined") {
+                  window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
+                }
+              }}
+            >
+              この成果実績をXで共有する <ArrowIcon />
+            </button>
           </div>
           <div className="won-prompts-list">
             {(change.newlyWonPrompts.length > 0 ? change.newlyWonPrompts : [

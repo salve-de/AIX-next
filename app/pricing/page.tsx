@@ -63,6 +63,45 @@ export default function PricingPage() {
         <span>AI回答の更新やライバルの動きを毎週自動で追跡し、自社がおすすめ候補に入り続けているかを監視します。</span>
       </article>
     </div>
+    {/* 公式特別優待制度（費用を抑えたい方へ） */}
+    <div className="pricing-special-offers" style={{ margin: "40px 0 20px", background: "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)", borderRadius: "12px", padding: "32px 28px", color: "#ffffff", border: "1px solid #334155" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+        <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#f59e0b", color: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+          公式特別優待制度
+        </span>
+        <h3 style={{ fontSize: "1.2rem", margin: 0, color: "#ffffff" }}>
+          月額費用を抑えたい方へ。成果報告や仲間紹介で大幅割引
+        </h3>
+      </div>
+      <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.6 }}>
+        AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下の優待をご利用いただくことで、定期見守りプランをお得に開始・継続いただけます。
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+        <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
+            <strong style={{ fontSize: "1rem", color: "#38bdf8" }}>① X（旧Twitter）成果報告シェア割</strong>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#4ade80", background: "rgba(74,222,128,0.15)", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
+          </div>
+          <p style={{ fontSize: "0.8rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 12px" }}>
+            「AI公式推薦パス」の配備状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
+          </p>
+          <small style={{ color: "#94a3b8", fontSize: "0.72rem" }}>※無料診断の結果画面からワンクリックで適用可能です。</small>
+        </div>
+
+        <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: "10px", padding: "20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "6px" }}>
+            <strong style={{ fontSize: "1rem", color: "#fbbf24" }}>② 経営者仲間・同業への紹介割</strong>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#facc15", background: "rgba(250,204,21,0.15)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
+          </div>
+          <p style={{ fontSize: "0.8rem", color: "#cbd5e1", lineHeight: 1.55, margin: "0 0 12px" }}>
+            お知り合いの経営者様や士業・店舗仲間に専用リンクを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
+          </p>
+          <small style={{ color: "#94a3b8", fontSize: "0.72rem" }}>※診断結果画面および管理画面から専用リンクを発行できます。</small>
+        </div>
+      </div>
+    </div>
+
     <section className="pricing-explanation">
       <h2>なぜ営業マンを雇うより効果的なのか</h2>
       <p>
