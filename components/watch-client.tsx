@@ -184,6 +184,14 @@ export function WatchClient() {
               <p>見込み客がAIに聞く同じ相談12問を毎週自動で再検証し、推薦状況の変化・競合の動きを追跡しています。</p>
             </div>
             <div className="watch-header-actions">
+              <Link
+                className="button button-secondary"
+                href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                AI公式台帳（公開中）を確認 ↗
+              </Link>
               {stopped ? (
                 <span className="watch-status stopped"><i />停止中</span>
               ) : (
@@ -311,6 +319,16 @@ export function WatchClient() {
                   <span className="trend-num-latest text-blue">3件</span>
                 </div>
                 <p className="trend-desc">自社の「個別伴走」「即日対応」の確定仕様がAIの推論根拠として引用されました。</p>
+                <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
+                  <Link
+                    href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
+                  >
+                    公開中のAI公式台帳を確認 ↗
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
@@ -383,8 +401,18 @@ export function WatchClient() {
             <tbody>
               <tr className="row-own-company">
                 <td>
-                  <strong>★ {watch.latest.discovery.brandName}（自社）</strong>
-                  <small>AI公式台帳配備済</small>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                    <strong>★ {watch.latest.discovery.brandName}（自社）</strong>
+                    <Link
+                      href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ fontSize: "0.72rem", color: "#0284c7", fontWeight: 700, textDecoration: "none" }}
+                    >
+                      [AI公式台帳 ↗]
+                    </Link>
+                  </div>
+                  <small>AI公式台帳配備済（ChatGPT・Perplexity引用対応）</small>
                 </td>
                 <td>{watch.baseline.recommendationCoverage}%</td>
                 <td><strong>{watch.latest.recommendationCoverage}%</strong></td>

@@ -219,11 +219,35 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                 </Link>
                 <button
                   type="button"
+                  className="button button-secondary"
+                  onClick={() => {
+                    const targetPath = sample ? "/ai/company/aoba-souzoku?sample=1" : (profile ? `/ai/company/${encodeURIComponent(profile.slug)}` : "");
+                    if (targetPath && typeof window !== "undefined") {
+                      const fullUrl = `${window.location.origin}${targetPath}`;
+                      void navigator.clipboard.writeText(fullUrl);
+                      alert("公開ページのURLをコピーしました。\n自社ホームページ、名刺、SNS、GoogleマップのWEB欄等にそのまま掲載いただけます。");
+                    }
+                  }}
+                >
+                  専用URLをコピー
+                </button>
+                <button
+                  type="button"
                   className="text-button"
                   onClick={() => setIsSaved(false)}
                 >
                   登録する看板を変更する
                 </button>
+              </div>
+
+              <div style={{ marginTop: "16px", padding: "14px 18px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "8px", textAlign: "left" }}>
+                <strong style={{ display: "block", fontSize: "0.84rem", color: "#0f172a", marginBottom: "4px" }}>
+                  💡 発行されたURL（AI公式窓口）の活用方法
+                </strong>
+                <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
+                  このURLには、ChatGPT・Gemini・Perplexityが最も好む「Schema.org 構造化データ」が組み込まれています。<br />
+                  自社ホームページのフッターやリンク集に貼るか、名刺・SNS・Googleビジネスプロフィール（MEO）に「AI公式窓口」として記載するだけで、AIクローラーが優先的に読み込み、推薦の根拠として利用するようになります。
+                </p>
               </div>
             </div>
           )}

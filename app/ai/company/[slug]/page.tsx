@@ -138,22 +138,21 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <h1 style={{ margin: 0 }}>{profile.brandName}</h1>
           <DirectProfileEditor profile={profile} />
         </div>
-        {profile.targetUrl.includes("/ai/company/") ? (
-          <div className="public-company-url-box">
-            <div className="direct-official-tag">公式Web情報</div>
-            <p className="public-company-domain">
-              公式公開URL：<a href={profile.targetUrl}>{decodeURIComponent(profile.targetUrl)}</a>
-            </p>
-            <small className="direct-domain-note">
-              ※本ページをそのまま名刺・SNS・Googleマップ等のウェブサイト欄にご活用いただけます。
-            </small>
+        <div className="public-company-url-box" style={{ marginTop: "12px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "8px", padding: "14px 16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>AI公式窓口 URL</span>
+            {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
+              <span style={{ fontSize: "0.75rem", color: "#64748b" }}>公式サイト：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{decodeURIComponent(profile.targetUrl)}</a></span>
+            ) : null}
           </div>
-        ) : (
-          <p className="public-company-domain">
-            公式サイト：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{decodeURIComponent(profile.targetUrl)}</a>
+          <p className="public-company-domain" style={{ margin: "0 0 6px", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>
+            <code>{`${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
           </p>
-        )}
-        <p className="public-company-summary">
+          <small className="direct-domain-note" style={{ fontSize: "0.78rem", color: "#475569", display: "block" }}>
+            ※本ページはChatGPT・Gemini・Perplexity等のAIクローラーが直接解析する構造化データ（Schema.org）を完備しています。自社HPのリンク集や名刺、SNS、GoogleマップのWEB欄に本URLを掲載することで、AIによる優先推薦の根拠データとして機能します。
+          </small>
+        </div>
+        <p className="public-company-summary" style={{ marginTop: "16px" }}>
           {profile.summary || `${profile.brandName}の公式情報台帳です。客観的事実および公式提供条件を正確に整理・掲載しています。`}
         </p>
       </div>
