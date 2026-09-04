@@ -80,60 +80,6 @@ export default function HomePage() {
     {/* 全国の事業者による公式台帳 開設・運用実例ギャラリー */}
     <VerifiedCompaniesGallery />
 
-    {/* AIクローラー巡回と推薦の仕組み（中学生・農家・町工場の社長でも即座にわかる解説） */}
-    <section className="crawler-proof-section">
-      <div className="section-inner">
-        <div className="crawler-card">
-          <div className="crawler-card-header">
-            <span className="crawler-status-pulse"></span>
-            <strong>主要AI（ChatGPT / Gemini / Claude / Perplexity）が正しく参照する仕組み</strong>
-          </div>
-          <p className="crawler-card-desc">
-            <strong>「なぜAI公式Web拠点があると、AIが自社を正しく認識・推薦するのか？」</strong><br />
-            一般的なホームページはデザインや写真が多く、AIが料金や具体的なサービス内容を誤読したり見落とすケースが少なくありません。AIXが発行する公的ナレッジ台帳は、<strong>AIロボットが正確に理解できる標準構造化データ（Schema.org形式）</strong>で常時提供されるため、AIがユーザーへの回答を生成する際、信頼できる確定ソースとして引用されます。
-          </p>
-
-          <div className="crawler-bot-grid">
-            <div className="crawler-bot-item">
-              <span className="bot-name">OpenAI (ChatGPT)</span>
-              <span className="bot-agent">OAI-SearchBot</span>
-              <span className="bot-status green">● 巡回・参照対応</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Google (Gemini)</span>
-              <span className="bot-agent">Googlebot / Gemini</span>
-              <span className="bot-status green">● 構造化データ対応</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Anthropic (Claude)</span>
-              <span className="bot-agent">ClaudeBot</span>
-              <span className="bot-status green">● 確定ナレッジ取得</span>
-            </div>
-            <div className="crawler-bot-item">
-              <span className="bot-name">Perplexity AI</span>
-              <span className="bot-agent">PerplexityBot</span>
-              <span className="bot-status green">● 出典元として引用</span>
-            </div>
-          </div>
-
-          <div className="crawler-benefits-row">
-            <div className="benefit-pill">
-              <strong>1. ホームページ制作・維持費を圧縮</strong>
-              <span>発行されたページがそのまま公式Web拠点として機能。名刺・SNS・Googleマップのウェブサイト欄に登録するだけで完結します。</span>
-            </div>
-            <div className="benefit-pill">
-              <strong>2. AIによる誤案内や見落としを防止</strong>
-              <span>料金・営業時間・強みが公式登録されているため、AIが事実無根の回答をしたり競合他社ばかり推薦するのを防ぎます。</span>
-            </div>
-            <div className="benefit-pill">
-              <strong>3. スマホからいつでも直接更新可能</strong>
-              <span>管理画面からいつでも料金改定や営業時間を手元で更新し、常に最新情報をAIに提供できます。</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     {/* わかりやすい導入事例 */}
     <section className="landing-story-section">
       <div className="shell">
@@ -203,14 +149,15 @@ export default function HomePage() {
       </div>
     </section>
 
+    {/* 定期モニタリング（AI推薦の自動追跡） */}
     <section className="landing-watch">
       <div className="shell landing-watch-grid">
         <WatchTrendVisual />
         <div className="section-intro">
-          <p className="overline">自動見守りプラン（月額10,780円税込）</p>
-          <h2>発信したあと、<br />ライバルから取り返せたか。</h2>
-          <p>同じ比較質問を毎週自動で調べ、自社が新しくおすすめに入ったかを追跡します。ライバルの動きも見逃しません。</p>
-          <Link className="text-button" href="/watch?sample=1">変化の例を見る <span aria-hidden="true">→</span></Link>
+          <p className="overline">定期モニタリング機能</p>
+          <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
+          <p>ChatGPTなどのAI回答は日々更新されます。自社がちゃんとお勧めされ続けているか、ライバルが割り込んできていないかを毎週自動で追跡調査します。</p>
+          <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
         </div>
       </div>
     </section>
