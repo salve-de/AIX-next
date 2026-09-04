@@ -11,6 +11,7 @@ import { QuestionList } from "@/components/question-list";
 import { ReportActions } from "@/components/report-actions";
 import { PositioningPanel } from "@/components/positioning-panel";
 import { PublicProfileActions } from "@/components/public-profile-actions";
+import { ExecutiveDiagnosticSummary } from "@/components/executive-diagnostic-summary";
 import { buildDynamicScanResult, sampleResult } from "@/lib/sample-data";
 import type { Observation, ProviderName, ScanRecord, ScanResult } from "@/lib/types";
 
@@ -207,6 +208,15 @@ export function ResultClient() {
           </div>
         </div>
       </section>
+
+      {/* エグゼクティブ要約：なぜ93位だったのか？ × 具体的にどう解決したのか（施工価値） */}
+      <ExecutiveDiagnosticSummary
+        brandName={result.discovery.brandName}
+        rank={93}
+        topCompetitor={topCompetitor?.name || "全国展開の大手買取企業"}
+        lostCount={result.lostPrompts.length}
+        totalCount={result.panel.promptCount}
+      />
 
       {/* AI観測プロトコル・全データ出展証跡ボックス */}
       <section className="shell" style={{ marginTop: "12px", marginBottom: "16px" }}>
