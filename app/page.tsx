@@ -14,12 +14,12 @@ export default function HomePage() {
     <section className="landing-hero">
       <div className="shell landing-hero-inner">
         
-        {/* メイン見出し＆簡潔な価値訴求 */}
+        {/* メイン見出し＆一瞬でわかる価値訴求 */}
         <div className="landing-hero-head-block">
-          <p className="overline">自社HPがなくてもOK・Instagramや会社名で即時発行</p>
-          <h1>AIは、あなたの会社をスルーして<br /><em>ライバルばかり勧めています。</em></h1>
+          <p className="overline">ホームページ不要・Instagramや会社名だけでOK</p>
+          <h1>ChatGPTやGeminiに聞かれたとき、<br /><em>自社が「第一候補」でおすすめされる公式Web拠点</em></h1>
           <p className="landing-hero-lead">
-            高額なホームページ制作は不要です。会社名やInstagramを入れるだけで、AIが正しく推薦する公式Web拠点を無料発行します。
+            制作費数十万円のホームページは作らなくて構いません。会社名を入れるだけで、AIが顧客に推薦する「公式Webページ」を無料発行。競合他社に奪われていたAI経由の問い合わせを取り戻せます。
           </p>
         </div>
 
@@ -29,26 +29,26 @@ export default function HomePage() {
         </div>
 
         {/* 一瞬で価値が伝わる「3大保証バッジ」（スクロール不要の一等地） */}
-        <div className="hero-instant-strip" aria-label="サービスの3大特長">
+        <div className="hero-instant-strip" aria-label="得られる3大メリット">
           <div className="instant-strip-item">
             <span className="strip-num">1</span>
             <div>
-              <strong>HP制作・維持費ゼロ</strong>
-              <small>自社サイト不要。発行ページがそのまま公式Web拠点に</small>
+              <strong>HP制作費30万円がゼロに</strong>
+              <small>自社サイト不要。発行URLを名刺やSNSに貼るだけで完結</small>
             </div>
           </div>
           <div className="instant-strip-item">
             <span className="strip-num">2</span>
             <div>
-              <strong>主要AIの誤案内を防止</strong>
-              <small>ChatGPTやGeminiが料金・強みを正確に引用</small>
+              <strong>AIからの来店・問い合わせ獲得</strong>
+              <small>ChatGPTやPerplexityが料金や自社の強みを正確に紹介</small>
             </div>
           </div>
           <div className="instant-strip-item">
             <span className="strip-num">3</span>
             <div>
-              <strong>スマホから手軽に更新</strong>
-              <small>営業時間やメニューの改定も管理画面から即時反映</small>
+              <strong>スマホから3分でいつでも更新</strong>
+              <small>営業時間の変更や新メニューも手元から即座に反映可能</small>
             </div>
           </div>
         </div>

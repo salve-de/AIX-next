@@ -45,12 +45,12 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             autoCapitalize="none"
             autoCorrect="off"
             inputMode="text"
-            placeholder="会社名（例: 山田板金 大田区）・商品名・@インスタ・サイトURL"
+            placeholder="会社名・店舗名（例: 山田板金 大田区）またはInstagram"
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />
           <button type="submit">
-            <span>{compact ? "無料で診断" : "無料で理由を診断する"}</span>
+            <span>{compact ? "無料発行" : "AI推薦用の公式Webを無料発行する"}</span>
             <ArrowIcon />
           </button>
         </div>
