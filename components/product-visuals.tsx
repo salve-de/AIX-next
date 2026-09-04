@@ -4,224 +4,60 @@ import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
-  const [industry, setIndustry] = useState<"mfg" | "service" | "local">("mfg");
-  const [mode, setMode] = useState<"after" | "before">("after");
-
-  const data = {
-    mfg: {
-      query: "「東京都内で、短納期・小ロット対応の試作板金加工会社はどこ？」",
-      before: {
-        statusVal: "自社の言及なし（競合2社を推薦）",
-        evidenceDesc: "競合サイト上の「1個から対応」「即日見積」の確定情報",
-        aiAnswerLead: "東京都内で小ロット・試作板金に対応している実績豊富な企業として、以下の2社がよく挙げられます：",
-        competitor1: "三和試作板金（大田区）",
-        competitor1Desc: "単品1個からの精密加工に対応。即日見積もり体制。",
-        competitor2: "大伸プレシジョン（品川区）",
-        competitor2Desc: "短納期試作に特化。3D CADデータから直接加工対応。",
-        aiNote: "※ 貴社サイトには対応最小ロットや納期の明確な公開仕様が確認できず、回答に含まれていません。",
-        actionDesc: "自社サイト改修不要。社名入力だけでAI専用DBを自動作成し、ChatGPTへ強みを直接伝達",
-      },
-      after: {
-        statusVal: "自社がおすすめ第1位で推薦枠を獲得",
-        evidenceDesc: "AI専用DB（公式台帳）に配備された即納・単品対応仕様",
-        aiAnswerLead: "「公式AI台帳」の確定データに基づき、ご要望の短納期・小ロット試作に合致する企業をご案内します：",
-        topTitle: "1. 貴社（大田区）",
-        topBadge: "公式AI台帳を参照",
-        topDesc: "単品1個からの短納期試作に即応。3D CAD直接入稿・即時見積もり体制を公式公表。",
-        competitor1: "三和試作板金（大田区）",
-        competitor1Desc: "単品加工に対応。即日見積もり。",
-        aiNote: "★ 自社サイトの改修ゼロ。社名から自動生成されたAI専用DBをChatGPTが公式根拠として引用しました。",
-        actionDesc: "社名を入れるだけで「AI専用DB」を自動生成。ChatGPTが回答根拠として優先参照します",
-      },
-    },
-    service: {
-      query: "「親身に個別相談に乗ってくれる、相続専門の信頼できる税理士事務所は？」",
-      before: {
-        statusVal: "自社の言及なし（他社を優先推薦）",
-        evidenceDesc: "公式料金プランと「初回直接面談」の確定情報",
-        aiAnswerLead: "相続や事業承継で、親身な個別伴走や直接面談に定評のある事務所として以下が候補に挙がります：",
-        competitor1: "あおば相続税理士法人（千代田区）",
-        competitor1Desc: "担当税理士が初回から直接面談。個別伴走プランを明示。",
-        competitor2: "日本相続承継パートナーズ（中央区）",
-        competitor2Desc: "中小企業オーナー向け事業承継の実績多数。",
-        aiNote: "※ 貴社サイトは個別対応の実績や料金体系がAIに読み取れず、比較候補から外れています。",
-        actionDesc: "自社サイト改修不要。社名入力だけでAI専用DBを自動作成し、個別伴走の強みを直接伝達",
-      },
-      after: {
-        statusVal: "自社がおすすめ第1位で推薦枠を獲得",
-        evidenceDesc: "AI専用DB（公式台帳）に配備された初回面談・伴走仕様",
-        aiAnswerLead: "「公式AI台帳」の確定データに基づき、親身な個別相談に特化した事務所をご案内します：",
-        topTitle: "1. 貴社税理士事務所（千代田区）",
-        topBadge: "公式AI台帳を参照",
-        topDesc: "担当税理士が初回から直接面談。相続・事業承継の個別伴走プランと明確な費用体系を公表。",
-        competitor1: "あおば相続税理士法人（千代田区）",
-        competitor1Desc: "初回面談対応・伴走プランあり。",
-        aiNote: "★ 個別対応の実績と相談仕様がAI専用DBから直接読み取られ、ChatGPTの推薦根拠に採用されました。",
-        actionDesc: "社名を入れるだけで「AI専用DB」を自動生成。ChatGPTが回答根拠として優先参照します",
-      },
-    },
-    local: {
-      query: "「近隣で休日の急患や夜間診療に対応しているクリニックはある？」",
-      before: {
-        statusVal: "自社の言及なし（大手ポータルが優先）",
-        evidenceDesc: "Schema構造化された診療カレンダーと受付時間",
-        aiAnswerLead: "休日や夜間の診療体制が確認できる医療機関として、以下が案内されます：",
-        competitor1: "桜通り夜間救急クリニック",
-        competitor1Desc: "土日祝・夜間22時まで診療。WEB問診・即時受付対応。",
-        competitor2: "駅前セントラル総合診療所",
-        competitor2Desc: "休日当番医として年中無休体制を公式公表。",
-        aiNote: "※ 貴院の診療時間や受付仕様のデータがAIクローラーに正しく伝達されていません。",
-        actionDesc: "自社サイト改修不要。社名入力だけでAI専用DBを自動作成し、最新の診療仕様を直接伝達",
-      },
-      after: {
-        statusVal: "自院がおすすめ第1位で推薦枠を獲得",
-        evidenceDesc: "AI専用DB（公式台帳）に配備された休日夜間診療カレンダー",
-        aiAnswerLead: "「公式AI台帳」の最新診療データに基づき、即時対応可能なクリニックをご案内します：",
-        topTitle: "1. 貴院（クリニック）",
-        topBadge: "公式AI台帳を参照",
-        topDesc: "土日祝の急患対応・夜間診療体制。WEB即時受付および最新の診療スケジュールを公式公表。",
-        competitor1: "桜通り夜間救急クリニック",
-        competitor1Desc: "土日祝・夜間22時まで診療。",
-        aiNote: "★ 最新の診療スケジュールがAIクローラー向け台帳から読み取られ、ChatGPTで優先案内されました。",
-        actionDesc: "社名を入れるだけで「AI専用DB」を自動生成。ChatGPTが回答根拠として優先参照します",
-      },
-    },
-  };
-
-  const item = data[industry];
-  const isAfter = mode === "after";
-  const current = isAfter ? item.after : item.before;
-
   return (
-    <div className="hero-chat-card" aria-label="ChatGPTでの競合推薦と観測結果プレビュー">
-      {/* 最上部：Before / After モード切替スイッチ（理屈を1秒で腑に落とす） */}
-      <div className="hero-chat-mode-switcher">
-        <button
-          type="button"
-          className={`mode-switch-btn ${isAfter ? "active-after" : ""}`}
-          onClick={() => setMode("after")}
-          aria-label="AI専用DB配備後の推薦プレビューを表示"
-        >
-          <span className="mode-dot">●</span>
-          <span>AI専用DBを配備後（推薦枠を獲得）</span>
-        </button>
-        <button
-          type="button"
-          className={`mode-switch-btn ${!isAfter ? "active-before" : ""}`}
-          onClick={() => setMode("before")}
-          aria-label="対策前のスルーされた状態を表示"
-        >
-          <span className="mode-dot">×</span>
-          <span>対策前の現状（自社がスルーされる）</span>
-        </button>
+    <div className="hero-chat-direct-card" aria-label="ChatGPTでの推薦比較とAI専用DBの仕組み">
+      {/* カードヘッダー：AIが推薦を決める基準 */}
+      <div className="direct-card-head">
+        <span className="direct-card-title">ChatGPTの実況比較</span>
+        <span className="direct-card-sub">AIは「公式DBの有無」で推薦を決めています</span>
       </div>
 
-      {/* 業種タブバー */}
-      <div className="hero-chat-card-topbar">
-        <div className="card-topbar-tabs">
-          <button
-            type="button"
-            className={`topbar-tab ${industry === "mfg" ? "active" : ""}`}
-            onClick={() => setIndustry("mfg")}
-          >
-            製造・加工
-          </button>
-          <button
-            type="button"
-            className={`topbar-tab ${industry === "service" ? "active" : ""}`}
-            onClick={() => setIndustry("service")}
-          >
-            専門サービス・士業
-          </button>
-          <button
-            type="button"
-            className={`topbar-tab ${industry === "local" ? "active" : ""}`}
-            onClick={() => setIndustry("local")}
-          >
-            店舗・地域
-          </button>
-        </div>
-        <span className={`card-topbar-label ${isAfter ? "success-label" : ""}`}>
-          {isAfter ? "AI推薦の成功状態" : "自社スルーの未対策状態"}
-        </span>
-      </div>
-
-      {/* チャット対話エリア */}
-      <div className="hero-chat-card-body">
-        {/* 発注者の質問 */}
-        <div className="hero-chat-msg user-msg">
-          <span className="msg-author">発注者（見込み客）のプロンプト</span>
-          <p>{item.query}</p>
+      <div className="direct-card-body">
+        {/* 見込み客の質問 */}
+        <div className="direct-query-box">
+          <span className="query-label">見込み客（発注者）のAI検索</span>
+          <p className="query-text">「東京都内で、短納期・小ロット対応の試作板金加工会社はどこ？」</p>
         </div>
 
-        {/* ChatGPTの回答 */}
-        <div className="hero-chat-msg ai-msg">
-          <div className="ai-msg-header">
-            <span className="msg-author ai-author">ChatGPT (GPT-4o)</span>
-            <span className={`ai-status-tag ${isAfter ? "success" : ""}`}>
-              {isAfter ? "自社を最優先推薦" : "競合2社を推奨"}
-            </span>
-          </div>
-          <p className="ai-intro">{current.aiAnswerLead}</p>
-
-          <div className="ai-rec-box">
-            {isAfter ? (
-              <>
-                {/* 1位：自社（公式台帳を参照した確定推薦） */}
-                <div className="ai-rec-item highlighted">
-                  <div className="rec-item-header">
-                    <strong className="rec-name">{item.after.topTitle}</strong>
-                    <span className="rec-source-pill">{item.after.topBadge}</span>
-                  </div>
-                  <p className="rec-desc">{item.after.topDesc}</p>
-                </div>
-                {/* 2位：競合他社 */}
-                <div className="ai-rec-item sub">
-                  <strong>2. {item.after.competitor1}</strong>
-                  <span> — {item.after.competitor1Desc}</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div>
-                  <strong>1. {item.before.competitor1}</strong>
-                  <span> — {item.before.competitor1Desc}</span>
-                </div>
-                <div>
-                  <strong>2. {item.before.competitor2}</strong>
-                  <span> — {item.before.competitor2Desc}</span>
-                </div>
-              </>
-            )}
+        {/* 2段比較：対策前（スルー） vs AI専用DB生成後（第1位推薦） */}
+        <div className="direct-compare-grid">
+          
+          {/* 上段：対策前（自社サイトのみ） */}
+          <div className="direct-box before-box">
+            <div className="box-top">
+              <span className="badge-status before-status">自社サイトのみの場合</span>
+              <span className="status-note before-text">AI判定：自社をスルー（競合2社を推薦）</span>
+            </div>
+            <div className="box-content">
+              <p className="ai-quote">ChatGPT「三和試作板金、大伸プレシジョンがおすすめです。」</p>
+              <p className="reason-text">※ 貴社サイトに納品仕様の確定データがなく、AIが比較候補から除外</p>
+            </div>
           </div>
 
-          <div className={`ai-fact-note ${isAfter ? "success-note" : ""}`}>
-            <span className="fact-dot">{isAfter ? "✔" : "●"}</span>
-            <p>{current.aiNote}</p>
+          {/* 下段：AI専用DBを自動生成した後 */}
+          <div className="direct-box after-box">
+            <div className="box-top">
+              <span className="badge-status after-status">AI専用DBを自動生成した後</span>
+              <span className="status-note after-text">AI判定：貴社を最優先（第1位）でおすすめ</span>
+            </div>
+            <div className="box-content">
+              <div className="quote-header">
+                <p className="ai-quote bold">ChatGPT「1. 貴社（大田区）が最も条件に合致します。」</p>
+                <span className="source-badge">公式AI台帳を参照</span>
+              </div>
+              <p className="reason-text success">【引用】単品1個即納・3D CAD入稿対応の確定仕様を確認</p>
+            </div>
           </div>
+
         </div>
       </div>
 
-      {/* AIXの仕組み・観測レポートバー */}
-      <div className="hero-chat-card-report">
-        <div className="report-status-header">
-          <div className="status-rank-block">
-            <span className="status-label">AIの推薦判定</span>
-            <strong className={`status-rank-val ${isAfter ? "rank-success" : "neutral"}`}>
-              {current.statusVal}
-            </strong>
-          </div>
-          <div className="status-cause-block">
-            <span className="status-label">AIが引用した根拠</span>
-            <span className="status-cause-val">{current.evidenceDesc}</span>
-          </div>
-        </div>
-        <div className={`report-action-row ${isAfter ? "action-row-success" : ""}`}>
-          <span className={`action-tag ${isAfter ? "tag-success" : ""}`}>
-            {isAfter ? "自動配備の仕組み" : "改善の起点"}
-          </span>
-          <span className="action-desc">{current.actionDesc}</span>
-        </div>
+      {/* 下部：全自動の仕組みバー */}
+      <div className="direct-card-foot">
+        <span className="foot-tag">全自動の仕組み</span>
+        <p className="foot-desc">
+          自社サイト改修ゼロ。社名を入れるだけで「AI専用DB」を自動生成し、AIが回答の根拠として優先参照する状態を整えます。
+        </p>
       </div>
     </div>
   );
