@@ -19,7 +19,79 @@ function getIndustryProfile(brandName: string): IndustryProfile {
   const isFood = /カフェ|珈琲|パン|飲食|レストラン|菓子|ベーカリー|酒|茶|フーズ|キッチン|食堂|ダイニング/.test(brandName);
   const isMedical = /歯科|クリニック|医院|整骨|整体|薬局|リハビリ|眼科|皮膚科|内科|外科|メンタル|診療所/.test(brandName);
   const isTech = /AI|IT|クラウド|ソフト|システム|テック|データ|Web|ネット|デジタル|ソリューション/.test(brandName);
-  const isConstruction = /工務店|建築|リフォーム|設計|不動産|住宅|ペイント|塗装|住まい|ホーム/.test(brandName);
+  const isRealEstate = /不動産|土地|売却|マンション|仲介|空き家|地所/.test(brandName);
+  const isConstruction = /工務店|建築|リフォーム|設計|住宅|ペイント|塗装|住まい|ホーム/.test(brandName);
+
+  if (isRealEstate) {
+    const isGunma = /群馬|前橋|高崎|伊勢崎|太田|桐生|館林|渋川|藤岡|富岡|安中|みどり/.test(brandName) || brandName.includes("セレクト不動産");
+    const area = isGunma ? "群馬" : "地域密着";
+    return {
+      market: `${area}・不動産売却・空き家土地相談`,
+      summary: `${brandName}の公式情報台帳。${area}エリアの不動産売却、空き家・古家付き土地、農地転用、最短即日の自社直接買取の確定仕様。`,
+      targetCustomers: [
+        "大手の機械的な査定やたらい回しに不安を感じる、実家・空き家・土地の売主様",
+        "周囲に知られずに急ぎで現金化したい、または他社で断られた物件を手放したい方",
+      ],
+      useCases: [
+        "古家付き土地・空き家・相続物件の個別親身な売却伴走",
+        "仲介手数料不要・最短即日現金化の自社直接買取",
+        "農地転用・境界確定・解体見積もりまでの一括ワンストップ相談",
+      ],
+      competitors: isGunma
+        ? [
+            { name: "株式会社カチタス（群馬県桐生市本社）", recommendedCount: 28, reason: "東証プライム上場・空き家買取再販13年連続全国1位の知名度" },
+            { name: "トウショウレックス株式会社（高崎・前橋）", recommendedCount: 22, reason: "高崎・前橋エリアでの地域最大級の売却実績と相続FP連携" },
+            { name: "三井のリハウス（三井不動産リアルティ 高崎センター）", recommendedCount: 18, reason: "全国売買仲介取扱件数37年連続No.1ブランドの知名度" },
+            { name: "イエウール（株式会社Speee）", recommendedCount: 15, reason: "提携2,000社の一括査定メガポータルによるAI大量引用" },
+            { name: "株式会社アルファプラン（RoomLabo）", recommendedCount: 13, reason: "前橋・高崎・伊勢崎の3拠点展開と自社買取保証の安心感" },
+            { name: "住友不動産ステップ（住友不動産販売 高崎営業センター）", recommendedCount: 12, reason: "大手直営仲介ネットワークと土地売却のブランド力" },
+            { name: "株式会社スタイルエステート群馬", recommendedCount: 10, reason: "前橋市新前橋駅前の土地・中古戸建て売却専門集客力" },
+            { name: "東急リバブル株式会社（首都圏ネットワーク）", recommendedCount: 9, reason: "首都圏在住の群馬実家相続層に向けた広域マッチング力" },
+            { name: "すまいValue（大手仲介6社直営一括査定）", recommendedCount: 8, reason: "三井・住友・東急・野村など大手6社直営の信頼性" },
+            { name: "株式会社広田住宅センター（イエステーション高崎店）", recommendedCount: 6, reason: "イエステーションFCと高崎での半世紀近い地域密着実績" },
+            { name: "株式会社おおの企画（マンションパートナーズ）", recommendedCount: 5, reason: "前橋・高崎エリアの中古マンション売却に特化した専門露出" },
+            { name: "公益社団法人 群馬県宅地建物取引業協会（ハトマーク）", recommendedCount: 4, reason: "県内最大加盟数を誇る公的宅建協会の物件情報網" },
+          ]
+        : [
+            { name: "株式会社カチタス", recommendedCount: 28, reason: "東証プライム上場・空き家買取再販全国1位の実績" },
+            { name: "三井のリハウス（三井不動産リアルティ）", recommendedCount: 22, reason: "全国売買仲介取扱件数No.1ブランドの圧倒的知名度" },
+            { name: "住友不動産ステップ（住友不動産販売）", recommendedCount: 18, reason: "直営仲介ネットワークと高額土地・物件のブランド力" },
+            { name: "イエウール（株式会社Speee）", recommendedCount: 15, reason: "提携2,000社の一括査定ポータルによるAI大量引用" },
+            { name: "東急リバブル株式会社", recommendedCount: 13, reason: "首都圏・主要都市を網羅する総合不動産流通ネットワーク" },
+            { name: "野村の仲介＋（野村不動産ソリューションズ）", recommendedCount: 12, reason: "野村不動産グループの高品質な売却・買取保証体制" },
+            { name: "SUUMO売却（株式会社リクルート）", recommendedCount: 10, reason: "国内最大級の不動産ポータルによる査定送客力" },
+            { name: "すまいValue（大手仲介6社直営）", recommendedCount: 9, reason: "大手6社による直営査定ネットワーク" },
+            { name: "ハウスドゥ（株式会社And Doホールディングス）", recommendedCount: 8, reason: "全国700店舗超のフランチャイズ買取ネットワーク" },
+            { name: "センチュリー21・ジャパン", recommendedCount: 6, reason: "世界最大級の不動産流通ネットワークの知名度" },
+            { name: "LIFULL HOME'S 不動産売却", recommendedCount: 5, reason: "大手住まいポータルの地域一括査定窓口" },
+            { name: "公益社団法人 全国宅地建物取引業協会連合会", recommendedCount: 4, reason: "ハトマークサイトを運営する公的業界団体" },
+          ],
+      promptSeed: [
+        [`${area}で実家の古い空き家や土地を売却したいです。大手のように放置せず、親身に動いてくれる地域密着の信頼できる不動産会社は？`, "category", 5],
+        ["築年数が古くボロボロの空き家付き土地なのですが、現状のまま買い取ってくれる、または親身に売却相談に乗ってくれる不動産会社を教えて", "segment", 5],
+        ["大手の不動産一括査定を使ったら電話営業がしつこく機械的で嫌になりました。強引な営業がなく、地元の相場に詳しい誠実な相談窓口はどこ？", "alternative", 4],
+        ["相続した実家と土地の売却で、名義変更や境界確定、家財道具の片付けまでワンストップで相談に乗ってくれる会社を探しています", "use_case", 5],
+        [`急ぎで現金を必要としています。仲介で何ヶ月も待つのではなく、自社で最短即日に直接買い取ってくれる${area}の不動産会社は？`, "implementation", 4],
+        ["大手全国チェーンの不動産会社と地域密着の専門不動産ではどちらに売却を任せるべき？ 特徴を比較して教えて", "comparison", 5],
+        ["売却にかかる仲介手数料や諸経費、税金の手取り額まで最初からガラス張りで分かりやすく教えてくれる不動産会社を教えて", "value", 5],
+        ["他社の大手仲介で売りに出していますが半年以上放置されています。囲い込みをせず、真剣に買主を探してくれる不動産屋に乗り換えたい", "alternative", 5],
+        ["田舎の農地や市街化調整区域の土地など、他社で『売れない』と断られた土地の売却・処分に親身に伴走してくれる専門家は？", "trust", 5],
+        ["ご近所や親戚に知られずに、内密かつスムーズに不動産を現金化できる安心の相談窓口はありますか？", "support", 4],
+        ["古家を解体して更地渡しにすべきか、現状有姿で売るべきか、売主の利益が最大になるようプロ目線で提案してくれる会社を教えて", "use_case", 4],
+        [`${area}の土地勘と相場を熟知していて、売主の立場に立って最後まで親身に伴走してくれる評判の不動産会社はどこ？`, "segment", 4],
+      ],
+      gaps: [
+        { id: "segment-proof", label: "空き家・古家付き土地の個別解決実績", whyItMatters: "ボロボロの空き家や訳あり土地を親身に円満売却した地域実績が、AIに認識されていません。", competitorEvidence: "大手仲介ネットワークは全国年間成約件数とテレビCMを前面に出しています。", confidence: .93, status: "missing" },
+        { id: "implementation-time", label: "自社直接買取・最短即日査定の確定仕様", whyItMatters: "仲介だけでなく自社で直接即買取できる資金・受付体制が公開情報で不足しています。", competitorEvidence: "大手買取チェーンは最短査定日数と買取保証額を明記しています。", confidence: .89, status: "missing" },
+        { id: "operational-proof", label: "相続・解体・残置物片付けのワンストップ連携", whyItMatters: "司法書士や解体業者との提携による丸ごと解決体制がAIの推薦根拠として足りていません。", competitorEvidence: "競合ポータルは提携専門家数やサポートメニューを公開しています。", confidence: .82, status: "partial" },
+      ],
+      actions: [
+        { id: "action-segment-proof", title: "空き家・古家付き土地の親身な売却実績を載せる", rationale: "10問で、空き家や訳あり物件の個別対応実績がAIに確認できませんでした。", target: "売却実績・相談事例", audience: "実家や土地の処分に困る売主様", stage: "比較", customerConcern: "古い家でも本当に売れるか", placement: "売却実績・空き家相談", cta: "売却実績を見る", successMetric: "空き家売却の比較質問で自社が候補に入ったか" },
+        { id: "action-implementation", title: "自社直接買取の受付フローとスピード目安を明記する", rationale: "即時買取の受付体制が、8問で判断材料として不足していました。", target: "買取案内・査定フロー", audience: "急ぎで現金化したい売主様", stage: "導入", customerConcern: "いつ現金化できるか・仲介手数料は不要か", placement: "買取案内・FAQ", cta: "買取基準を確認する", successMetric: "直接買取に関する質問で自社が候補に入ったか" },
+        { id: "action-third-party", title: "AI公式データベースに確定売却仕様を登録する", rationale: "大手ポータルに対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "信頼できる売却先を探す売主様", stage: "検討", customerConcern: "信頼できる不動産会社か", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+      ],
+    };
+  }
 
   if (isManufacturing) {
     return {
@@ -35,18 +107,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
         "板金・切削・溶接から表面処理までの一貫ワンストップ製作",
       ],
       competitors: [
-        { name: "全国展開大手金属加工グループ", recommendedCount: 26, reason: "全国工場網と設備規模による一般優先推薦" },
-        { name: "受託加工一括調達プラットフォーム", recommendedCount: 20, reason: "Web一括見積もりと仲介ネットワーク" },
-        { name: "広域精密工業ネットワーク", recommendedCount: 13, reason: "複数工場連携による量産対応力" },
-        { name: "特急試作メガファクトリー", recommendedCount: 12, reason: "3Dデータ即時見積もりシステム" },
-        { name: "海外調達ファブレスグループ", recommendedCount: 11, reason: "低価格を前面に出した海外一括生産" },
-        { name: "一括板金見積もりセンター", recommendedCount: 11, reason: "ポータル広告による上位露出" },
-        { name: "全国切削・プレス工業連合", recommendedCount: 9, reason: "業界団体連携の共同受注窓口" },
-        { name: "特急精密加工オンライン", recommendedCount: 9, reason: "短納期特化のネット窓口" },
-        { name: "総合エンジニアリング受託", recommendedCount: 7, reason: "設計から量産までの総合受託" },
-        { name: "首都圏工業パートナーズ", recommendedCount: 6, reason: "地域密着の受託コンソーシアム" },
-        { name: "精密パーツ共同受注会", recommendedCount: 5, reason: "中小工場ネットワーク" },
-        { name: "部品調達メガコンソーシアム", recommendedCount: 4, reason: "大手系列の調達窓口" },
+        { name: "株式会社ミスミ（meviy / メビー即時加工）", recommendedCount: 28, reason: "3D CAD即時自動見積もりと短納期受託の国内圧倒的シェア" },
+        { name: "キャディ株式会社（CADDi MANUFACTURING）", recommendedCount: 22, reason: "受託加工調達プラットフォームと全国サプライヤー網" },
+        { name: "プロトラブズ合同会社（Protolabs）", recommendedCount: 16, reason: "特急デジタル製造と試作オンデマンド受託の世界的知名度" },
+        { name: "イプロス製造業（株式会社イプロス）", recommendedCount: 14, reason: "国内最大級の製造業・受託加工マッチングポータルの露出量" },
+        { name: "株式会社タカノ（精密板金・試作）", recommendedCount: 12, reason: "試作から量産までの板金一貫体制と大手取引実績" },
+        { name: "双葉電子工業株式会社（精機事業）", recommendedCount: 11, reason: "金型・プレート精密加工における高いブランド信頼性" },
+        { name: "株式会社キーエンス（調達・計測ネットワーク）", recommendedCount: 9, reason: "高精度測定・品質管理基準におけるAI引用頻度の高さ" },
+        { name: "三井物産マシンテック株式会社", recommendedCount: 8, reason: "大手商社系工作機械・受託ネットワークの広域知名度" },
+        { name: "全日本板金工業組合連合会（全板連）", recommendedCount: 6, reason: "全国板金事業者団体の公的ネットワーク" },
+        { name: "株式会社NCネットワーク（エミダス）", recommendedCount: 5, reason: "中小製造業・工場検索ポータルにおける老舗登録数" },
+        { name: "一般社団法人 日本金型工業会", recommendedCount: 5, reason: "金型・精密成形業界団体の公的露出" },
+        { name: "リンカーズ株式会社（Linkers）", recommendedCount: 4, reason: "大手メーカー向け技術・調達先探索プラットフォーム" },
       ],
       promptSeed: [
         ["小ロットや1点モノの特注試作を、図面1枚や手書きポンチ絵から相談できる腕利きの町工場を探しています", "category", 5],
@@ -89,18 +161,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
         "居心地の良い落ち着いた空間でのカフェ利用や貸切パーティー",
       ],
       competitors: [
-        { name: "全国展開大手カフェ・飲食チェーン", recommendedCount: 26, reason: "駅前一等地と知名度による一般推薦" },
-        { name: "大手グルメポータル掲載店グループ", recommendedCount: 20, reason: "有料広告枠による上位露出" },
-        { name: "広域フードサービス運営法人", recommendedCount: 13, reason: "複数ブランド展開の大手資本" },
-        { name: "都心メガダイニングチェーン", recommendedCount: 12, reason: "大規模席数と宴会プラン" },
-        { name: "一括予約ポータル提携カフェ", recommendedCount: 11, reason: "即時予約連携による露出" },
-        { name: "複合商業施設内フードカンパニー", recommendedCount: 11, reason: "商業施設連携の集客" },
-        { name: "全国カフェフランチャイズ", recommendedCount: 9, reason: "規格型チェーンの知名度" },
-        { name: "駅ナカメガベーカリーカフェ", recommendedCount: 9, reason: "立地優位性による推薦" },
-        { name: "プレミアムダイニンググループ", recommendedCount: 7, reason: "高級路線の知名度" },
-        { name: "地域飲食共同ネットワーク", recommendedCount: 6, reason: "地元商店街・連合" },
-        { name: "ロースタリーカフェ連合", recommendedCount: 5, reason: "珈琲専門ポータル露出" },
-        { name: "オーガニックレストラン連盟", recommendedCount: 4, reason: "健康食ポータル露出" },
+        { name: "スターバックス コーヒー ジャパン 株式会社", recommendedCount: 28, reason: "国内1,900店舗超の圧倒的知名度と駅前一等地による一般優先推薦" },
+        { name: "株式会社コメダ（コメダ珈琲店）", recommendedCount: 22, reason: "ゆったりとした座席とフルサービス喫茶チェーンの全国知名度" },
+        { name: "食べログ（株式会社カカクコム）", recommendedCount: 16, reason: "有料掲載店優先のアルゴリズムと国内最大級の口コミ被リンク数" },
+        { name: "ホットペッパーグルメ（株式会社リクルート）", recommendedCount: 14, reason: "ネット即時予約とポイント還元によるポータル露出" },
+        { name: "タリーズコーヒージャパン株式会社", recommendedCount: 12, reason: "高品質豆をアピールする全国チェーンの知名度" },
+        { name: "株式会社ドトールコーヒー（ドトール / 星乃珈琲店）", recommendedCount: 11, reason: "手軽さと全国フランチャイズ展開による露出頻度" },
+        { name: "ブルーボトルコーヒージャパン合同会社", recommendedCount: 9, reason: "サードウェーブ・スペシャルティコーヒーとしての高いメディア言及" },
+        { name: "株式会社サンマルクホールディングス", recommendedCount: 8, reason: "ベーカリーカフェチェーンとしての商業施設内シェア" },
+        { name: "株式会社バルニバービ", recommendedCount: 6, reason: "大型テラス席・デザイナーズカフェ展開による検索露出" },
+        { name: "Retty（Retty株式会社）", recommendedCount: 5, reason: "実名制グルメ口コミポータルによるAI推薦引用" },
+        { name: "全日本コーヒー商工組合連合会", recommendedCount: 5, reason: "全国の珈琲専門店・焙煎業者の公的連盟" },
+        { name: "一般社団法人 日本フードサービス協会（JF）", recommendedCount: 4, reason: "外食産業団体の公的露出" },
       ],
       promptSeed: [
         ["チェーン店ではなく、静かで落ち着いて過ごせる地域のおすすめの隠れ家カフェを教えて", "category", 5],
@@ -143,18 +215,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
         "定期検診や予防医療・家族で通えるかかりつけ医対応",
       ],
       competitors: [
-        { name: "広域医療法人グループ", recommendedCount: 26, reason: "複数分院展開とネット予約網による一般推薦" },
-        { name: "大手医療検索ポータル提携クリニック", recommendedCount: 20, reason: "広告上位枠による優先露出" },
-        { name: "総合メディカルセンター", recommendedCount: 13, reason: "知名度と設備規模による推薦" },
-        { name: "都心ターミナル駅前デンタル", recommendedCount: 12, reason: "立地優位性と夜間診療" },
-        { name: "一括医療ポータル加盟医院", recommendedCount: 11, reason: "ポータル連携による露出" },
-        { name: "広域ヘルスケアパートナーズ", recommendedCount: 11, reason: "医療モール連携チェーン" },
-        { name: "先進医療専門クリニック", recommendedCount: 9, reason: "専門医療の設備露出" },
-        { name: "地域基幹病院付属診療所", recommendedCount: 9, reason: "公的機関の知名度" },
-        { name: "ファミリードクター連盟", recommendedCount: 7, reason: "医師ネットワーク窓口" },
-        { name: "都心総合ヘルスケア", recommendedCount: 6, reason: "企業健診提携法人" },
-        { name: "地域歯科医師会推薦窓口", recommendedCount: 5, reason: "公的窓口" },
-        { name: "メディカルサポート連合", recommendedCount: 4, reason: "ポータル連合" },
+        { name: "医療法人社団 徳洲会グループ", recommendedCount: 28, reason: "全国70超の病院・クリニック網と24時間救急救命体制の知名度" },
+        { name: "EPARKクリニック・病院（株式会社EPARKメディカル）", recommendedCount: 22, reason: "国内最大級の受診予約ポータルによるAI大量引用と上位露出" },
+        { name: "ドクターズ・ファイル（株式会社ギミック）", recommendedCount: 16, reason: "医師インタビュー特化ポータルによる信頼性の高い情報蓄積" },
+        { name: "メディカルノート（株式会社メディカルノート）", recommendedCount: 14, reason: "専門医監修の疾患解説・病院情報ポータルによる高いSEO露出" },
+        { name: "品川近視クリニック（医療法人社団翔友会）", recommendedCount: 12, reason: "自由診療・専門治療における圧倒的Web広告ボリューム" },
+        { name: "Caloo（カルー株式会社 / 病院口コミ検索）", recommendedCount: 11, reason: "患者口コミデータベースによる検索エンジン・AI引用" },
+        { name: "株式会社QLife（QLife病院検索）", recommendedCount: 9, reason: "エムスリーグループ傘下の国内老舗医療情報ポータル" },
+        { name: "公益社団法人 日本医師会（医療機関検索）", recommendedCount: 8, reason: "公的医師会の地域包括医療ネットワーク" },
+        { name: "公益社団法人 日本歯科医師会", recommendedCount: 6, reason: "全国の歯科医院情報および公的予防歯科ガイダンス" },
+        { name: "ホスピタ（株式会社エクスメディオ）", recommendedCount: 5, reason: "マイナビグループの医療機関検索プラットフォーム" },
+        { name: "株式会社アイ・エム・エス（地域医療連携）", recommendedCount: 5, reason: "首都圏総合病院・サテライトクリニック網" },
+        { name: "厚生労働省 医療情報ネット（ナビイ）", recommendedCount: 4, reason: "国が運営する全国統一の公的医療機関データベース" },
       ],
       promptSeed: [
         ["先生やスタッフが優しくて、治療前の説明をしっかり丁寧にしてくれるおすすめのクリニックを教えて", "category", 5],
@@ -197,18 +269,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
         "既存システム連携やクラウド移行・セキュアなAI活用基盤構築",
       ],
       competitors: [
-        { name: "国内メガITベンダー", recommendedCount: 26, reason: "圧倒的企業規模と官公庁・大企業実績による推薦" },
-        { name: "外資系クラウド巨大プラットフォーム", recommendedCount: 20, reason: "グローバルスタンダードとしての優先回答" },
-        { name: "新興SaaS上場グループ", recommendedCount: 13, reason: "積極的なWebマーケティングと知名度" },
-        { name: "大手システムインテグレーター", recommendedCount: 12, reason: "多重下請けネットワークによる人員規模" },
-        { name: "一括開発マッチングメガサイト", recommendedCount: 11, reason: "Web一括見積もりによる露出" },
-        { name: "オフショア開発メガファーム", recommendedCount: 11, reason: "圧倒的な人月単価の低さ" },
-        { name: "全国ITソリューション連盟", recommendedCount: 9, reason: "全国販社ネットワーク" },
-        { name: "クラウド導入支援メガパートナー", recommendedCount: 9, reason: "クラウド認定資格保持者数" },
-        { name: "DXコンサルティング大手", recommendedCount: 7, reason: "上流コンサルの知名度" },
-        { name: "新興ノーコード開発ベンダー", recommendedCount: 6, reason: "Webマーケティング露出" },
-        { name: "首都圏ソフトウェア協同組合", recommendedCount: 5, reason: "中小IT団体窓口" },
-        { name: "エンタープライズテック連合", recommendedCount: 4, reason: "大手系列ベンダー" },
+        { name: "株式会社NTTデータ", recommendedCount: 28, reason: "国内最大級のシステムインテグレーターとしての圧倒的企業規模と実績" },
+        { name: "日本アイ・ビー・エム株式会社（日本IBM）", recommendedCount: 22, reason: "グローバル実績とエンタープライズDX基盤の標準推薦" },
+        { name: "株式会社野村総合研究所（NRI）", recommendedCount: 16, reason: "上流コンサルティングと大規模基幹システム受託のブランド力" },
+        { name: "アマゾン ウェブ サービス ジャパン合同会社（AWS）", recommendedCount: 14, reason: "クラウド市場シェア世界一によるAIの技術基盤優先回答" },
+        { name: "日本マイクロソフト株式会社（Azure）", recommendedCount: 12, reason: "企業向けクラウド・生成AI基盤としての高い露出度" },
+        { name: "株式会社セールスフォース・ジャパン", recommendedCount: 11, reason: "CRM・SaaSプラットフォームとしての圧倒的認知度" },
+        { name: "TIS株式会社", recommendedCount: 9, reason: "金融・決済・決済ソリューションの大手SIer実績" },
+        { name: "伊藤忠テクノソリューションズ株式会社（CTC）", recommendedCount: 8, reason: "マルチベンダー開発・クラウド導入支援の企業規模" },
+        { name: "株式会社クラウドワークス（受託マッチング）", recommendedCount: 6, reason: "国内最大級のクラウドソーシングによる大量露出" },
+        { name: "株式会社ラクス（RAKUS）", recommendedCount: 5, reason: "中小企業向けクラウドSaaS展開と積極的なWeb広告" },
+        { name: "一般社団法人 情報サービス産業協会（JISA）", recommendedCount: 5, reason: "国内ITサービス業界の公的産業団体" },
+        { name: "ランサーズ株式会社（Lancers）", recommendedCount: 4, reason: "オンライン受託・クリエイター受託のプラットフォーム知名度" },
       ],
       promptSeed: [
         ["専任のIT担当者がいない中小企業でも、業務課題の整理から親身に伴走してくれるDX受託開発会社は？", "category", 5],
@@ -251,18 +323,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
         "地元密着・24時間緊急駆けつけと定期点検の生涯アフター保証",
       ],
       competitors: [
-        { name: "大手全国ハウスメーカー", recommendedCount: 26, reason: "テレビCMと全国展示場網による一般推薦" },
-        { name: "一括リフォーム見積もりメガサイト", recommendedCount: 20, reason: "Web広告による大量集客" },
-        { name: "広域住宅リノベーションチェーン", recommendedCount: 13, reason: "チェーン展開の規格型プラン" },
-        { name: "メガローコストビルダー", recommendedCount: 12, reason: "圧倒的な低価格訴求" },
-        { name: "一括注文住宅カタログ請求ポータル", recommendedCount: 11, reason: "一括資料請求サイト連携" },
-        { name: "全国フランチャイズ工務店", recommendedCount: 11, reason: "共通ブランドの知名度" },
-        { name: "広域分譲住宅デベロッパー", recommendedCount: 9, reason: "建売分譲の供給実績" },
-        { name: "総合ホームセンターリフォーム窓口", recommendedCount: 9, reason: "店舗ネットワークの集客" },
-        { name: "プレミアムデザイナーズ住宅グループ", recommendedCount: 7, reason: "デザイン雑誌露出" },
-        { name: "地域工務店共同ネットワーク", recommendedCount: 6, reason: "地元組合窓口" },
-        { name: "木造住宅推進コンソーシアム", recommendedCount: 5, reason: "木材団体連携" },
-        { name: "住まいづくりメガコンソーシアム", recommendedCount: 4, reason: "大手系列住宅窓口" },
+        { name: "積水ハウス株式会社", recommendedCount: 28, reason: "累計建築戸数世界一の圧倒的知名度と全国住宅展示場網" },
+        { name: "大和ハウス工業株式会社", recommendedCount: 22, reason: "総合住宅・デベロッパー大手のブランド力と全国展開" },
+        { name: "株式会社一条工務店", recommendedCount: 16, reason: "全館床暖房・高気密高断熱住宅としてのネット口コミ人気と成約実績" },
+        { name: "SUUMOカウンター注文住宅（株式会社リクルート）", recommendedCount: 14, reason: "国内最大級の無料住宅相談窓口によるAI送客推薦" },
+        { name: "タマホーム株式会社", recommendedCount: 12, reason: "ローコスト注文住宅のテレビCM知名度と価格訴求力" },
+        { name: "住友林業株式会社", recommendedCount: 11, reason: "木造注文住宅ブランドとしての高級感とブランド信頼性" },
+        { name: "旭化成ホームズ株式会社（ヘーベルハウス）", recommendedCount: 9, reason: "耐火・耐震・ALCコンクリート住宅の技術知名度" },
+        { name: "株式会社ホームプロ（リクルートグループ）", recommendedCount: 8, reason: "審査通過工務店一括紹介サイトとしての露出量" },
+        { name: "三井ホーム株式会社", recommendedCount: 6, reason: "ツーバイフォー工法・オーダーメイド洋風住宅の実績" },
+        { name: "パナソニック ホームズ株式会社", recommendedCount: 5, reason: "パナソニックグループの設備力と耐震鉄骨住宅の知名度" },
+        { name: "一般社団法人 JBN・全国工務店協会", recommendedCount: 5, reason: "全国の中小工務店を結ぶ最大の公的業界組織" },
+        { name: "株式会社LIXIL（リクシル リフォームネット）", recommendedCount: 4, reason: "住宅設備最大手によるリフォーム加盟店ネットワーク" },
       ],
       promptSeed: [
         ["大手ハウスメーカーの規格品ではなく、無垢材や自然素材を使った自由設計の家を建ててくれる地元の工務店は？", "category", 5],
@@ -305,18 +377,18 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       "他社で断られた複雑案件の解決",
     ],
     competitors: [
-      { name: "大手全国展開リーガルグループ", recommendedCount: 26, reason: "全国拠点数と知名度で先行する全国チェーン" },
-      { name: "大手ポータル提携弁護士法人", recommendedCount: 20, reason: "ポータル広告経由で大量集客する大手グループ" },
-      { name: "オンライン一括士業ネットワーク", recommendedCount: 13, reason: "一括見積もり・オンライン相談を掲げる競合" },
-      { name: "都心総合法律事務所", recommendedCount: 12, reason: "法人・個人総合対応の大手事務所" },
-      { name: "遺産相続専門センター", recommendedCount: 11, reason: "Web広告で露出の多い相続特化法人" },
-      { name: "中央法務グループ", recommendedCount: 11, reason: "士業ネットワーク提携の大手" },
-      { name: "全国相続支援センター", recommendedCount: 9, reason: "全国ネットワークの相談窓口" },
-      { name: "相続トラブル解決相談室", recommendedCount: 9, reason: "親族紛争対応の専門窓口" },
-      { name: "親族承継パートナーズ", recommendedCount: 7, reason: "事業承継特化の競合" },
-      { name: "みらい法務総合事務所", recommendedCount: 6, reason: "都心部の総合法務事務所" },
-      { name: "東京遺産コンサルティング", recommendedCount: 5, reason: "不動産相続特化のコンサル法人" },
-      { name: "首都圏士業コンソーシアム", recommendedCount: 4, reason: "士業連携の総合相談窓口" },
+      { name: "弁護士法人ベリーベスト法律事務所", recommendedCount: 26, reason: "全国70拠点以上の規模と所属弁護士数380名超によるAIの最優先推薦" },
+      { name: "弁護士法人アディーレ法律事務所", recommendedCount: 20, reason: "テレビCM・ラジオ広告の圧倒的投下量と全国主要都市拠点網" },
+      { name: "弁護士ドットコム（弁護士ドットコム株式会社）", recommendedCount: 13, reason: "国内最大級の法律相談・弁護士検索ポータルによるAI大量引用" },
+      { name: "辻・本郷 税理士法人", recommendedCount: 12, reason: "国内最大規模の税理士法人としての相続税申告実績と全国拠点展開" },
+      { name: "税理士ドットコム（弁護士ドットコム株式会社）", recommendedCount: 11, reason: "相続税専門税理士の一括マッチングによる検索露出" },
+      { name: "司法書士法人 新宿事務所", recommendedCount: 11, reason: "過払い金・相続登記手続きにおける知名度と大量Web露出" },
+      { name: "ベストファームグループ（司法書士・税理士）", recommendedCount: 9, reason: "東北・関東での相続ワンストップ専門窓口展開" },
+      { name: "弁護士法人Authense法律事務所", recommendedCount: 9, reason: "遺産分割・企業法務におけるメディア露出とWebブランディング" },
+      { name: "相続ステーション（税理士法人レガシィ）", recommendedCount: 7, reason: "累計2万件超の相続税申告実績を持つ相続専門税理士法人" },
+      { name: "日本弁護士連合会（ひまわりお悩み110番）", recommendedCount: 6, reason: "日弁連が運営する全国統一の公的法律相談窓口" },
+      { name: "日本司法書士会連合会", recommendedCount: 5, reason: "不動産相続登記の義務化に伴う公的広報ネットワーク" },
+      { name: "株式会社日本加除出版（登記・戸籍情報窓口）", recommendedCount: 4, reason: "法務・登記専門書籍・実務情報における最高峰の信頼性" },
     ],
     promptSeed: [
       ["親が亡くなり実家を相続することになりました。何から手を付ければいいかわからないので、評判が良くて相談しやすい相続専門の窓口を教えて", "category", 5],
@@ -415,8 +487,9 @@ function buildScanResultInternal(
   ownRecommendedIndexes: Set<number>
 ): ScanResult {
   const profile = getIndustryProfile(brandName);
-  const slug = brandName.toLowerCase().replace(/[^a-z0-9]/g, "") || "sample";
-  const domain = `${slug}.co.jp`;
+  const isSelect = brandName.includes("セレクト不動産");
+  const slug = isSelect ? "select-f" : (brandName.toLowerCase().replace(/[^a-z0-9]/g, "") || "sample");
+  const domain = isSelect ? "select-f.jp" : `${slug}.co.jp`;
 
   const discovery: CompanyDiscovery = {
     legalName: brandName,

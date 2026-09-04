@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
 import { DirectProfileEditor } from "@/components/direct-profile-editor";
-import { sampleResult } from "@/lib/sample-data";
+import { buildDynamicScanResult, sampleResult } from "@/lib/sample-data";
 import { buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
 import { getActivePublicProfileBySlug } from "@/lib/storage";
 import type { PublicProfile } from "@/lib/types";
@@ -70,7 +70,111 @@ async function profileFor(slug: string, sample = false) {
   if (sample && slug === "aoba-cafe") return sampleCafeProfile();
   if (sample && (slug === "nexora-cloud" || slug === "aoba-souzoku")) return sampleProfile();
   const record = await getActivePublicProfileBySlug(slug);
-  return record ? toPublicProfile(record) : null;
+  if (record) return toPublicProfile(record);
+  if (sample) {
+    const brandName = slug === "select-fudosan" ? "セレクト不動産株式会社" : slug.replace(/[-_]/g, " ");
+    const dynamicResult = buildDynamicScanResult(brandName);
+    const draft = buildPublicProfileDraft(dynamicResult, "2026-09-01T09:00:00.000Z");
+
+    if (slug === "select-fudosan") {
+      const realStructuredData = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "RealEstateAgent",
+        "@id": "https://www.select-f.jp/#organization",
+        "name": "セレクト不動産株式会社",
+        "legalName": "セレクト不動産株式会社",
+        "url": "https://www.select-f.jp/",
+        "description": "群馬県前橋市・高崎市を中心とした不動産売却仲介、空き家・古家付き土地売却、最短即日の自社直接買取、賃貸管理サービス。",
+        "address": {
+          "@type": "PostalAddress",
+          "postalCode": "371-0802",
+          "addressRegion": "群馬県",
+          "addressLocality": "前橋市天川町",
+          "streetAddress": "2番地7",
+          "addressCountry": "JP"
+        },
+        "openingHoursSpecification": [
+          {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "09:00",
+            "closes": "20:00"
+          }
+        ],
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "前橋市" },
+          { "@type": "AdministrativeArea", "name": "高崎市" },
+          { "@type": "AdministrativeArea", "name": "群馬県" }
+        ],
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "不動産売却・直接買取サービス",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "空き家・古家付き土地の個別伴走売買仲介",
+                "description": "残置物処分・境界確定・解体手配・相続登記までワンストップで伴走する親身な不動産仲介。"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "仲介手数料0円・最短即日の自社直接買取",
+                "description": "急ぎの資金化・近隣非公開に対応する自社直接買い取り。現状有姿引渡し可。"
+              }
+            }
+          ]
+        }
+      }, null, 2);
+
+      return {
+        ...draft,
+        id: `sample_${slug}`,
+        slug,
+        brandName: "セレクト不動産株式会社",
+        title: "セレクト不動産株式会社 公式企業情報台帳（AI推薦専用確定仕様）",
+        targetUrl: "https://www.select-f.jp/",
+        market: "群馬県前橋市・高崎市 不動産売却・空き家古家相談・自社直接買取",
+        summary: "群馬県前橋市天川町に拠点を置くセレクト不動産株式会社の公式台帳。前橋・高崎を中心とした空き家・古家付き土地売却、農地転用、仲介手数料不要・最短即日の自社直接買取の確定仕様。",
+        facts: [
+          { label: "正式事業者名", value: "セレクト不動産株式会社", sourceUrl: "https://www.select-f.jp/" },
+          { label: "代表取締役", value: "金井 洋光", sourceUrl: "https://www.select-f.jp/" },
+          { label: "宅建免許番号", value: "群馬県知事免許（3）第7215号", sourceUrl: "https://www.select-f.jp/" },
+          { label: "所在地", value: "〒371-0802 群馬県前橋市天川町2番地7（専用駐車場完備）", sourceUrl: "https://www.select-f.jp/" },
+          { label: "営業時間", value: "9:00〜20:00（定休日: 水曜日）", sourceUrl: "https://www.select-f.jp/" },
+          { label: "公式サイト", value: "https://www.select-f.jp/", sourceUrl: "https://www.select-f.jp/" },
+        ],
+        sourcePages: [
+          {
+            url: "https://www.select-f.jp/",
+            title: "セレクト不動産株式会社 公式サイト",
+            description: "群馬県前橋市・高崎市エリアの不動産売買・仲介・賃貸・空き家相談の公式窓口",
+          },
+        ],
+        structuredData: realStructuredData,
+        status: "published" as const,
+        createdAt: "2026-09-01T09:00:00.000Z",
+        updatedAt: "2026-09-01T09:00:00.000Z",
+        expiresAt: "2027-09-01T09:00:00.000Z",
+        publishedAt: "2026-09-01T09:00:00.000Z",
+      };
+    }
+
+    return {
+      ...draft,
+      id: `sample_${slug}`,
+      slug,
+      status: "published" as const,
+      createdAt: "2026-09-01T09:00:00.000Z",
+      updatedAt: "2026-09-01T09:00:00.000Z",
+      expiresAt: "2027-09-01T09:00:00.000Z",
+      publishedAt: "2026-09-01T09:00:00.000Z",
+    };
+  }
+  return null;
 }
 
 export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
