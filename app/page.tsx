@@ -18,14 +18,14 @@ export default function HomePage() {
           {/* 左カラム：問題提起・入力フォーム・得られるメリット */}
           <div className="landing-hero-col-left">
             <div className="landing-hero-head-block">
-              <p className="overline">自社サイト改修ゼロ・全自動AI推薦エンジン</p>
+              <p className="overline">ChatGPT・生成AI 競合推薦診断</p>
               <h1>
-                何もしなくていい。<br />
-                <em>社名を入れるだけで、AIが勝手に自社を推薦。</em>
+                ChatGPTは、あなたの会社をスルーして<br />
+                <em>ライバルを「おすすめ」しています。</em>
               </h1>
               <p className="landing-hero-lead">
                 サイト改修は一切不要。会社名を入れるだけで「AI専用DB」を自動作成。<br />
-                ChatGPTなどの生成AIが、ライバルではなく自社を優先推薦します。
+                ChatGPTなどの生成AIから、自社が優先推薦されやすい環境を整えます。
               </p>
             </div>
 
@@ -42,11 +42,11 @@ export default function HomePage() {
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>自動DB生成</strong>：AI専用の公式台帳を勝手に配備</span>
+                <span><strong>自動DB生成</strong>：社名だけでAI専用の公式台帳を配備</span>
               </li>
               <li>
                 <span className="check-mark">✔</span>
-                <span><strong>勝手にAI推薦</strong>：ChatGPTが自社を優先してお勧め</span>
+                <span><strong>推薦枠の獲得</strong>：ChatGPTから自社が推薦されやすくなる</span>
               </li>
             </ul>
 

@@ -17,7 +17,7 @@ export function HeroChatDiagnosticCard() {
       aiNote: "※ 貴社サイトには対応最小ロットや納期の明確な公開仕様が確認できず、回答に含まれていません。",
       statusVal: "自社の言及なし（競合2社を推薦）",
       evidenceDesc: "競合サイト上の「1個から対応」「即日見積」の確定情報",
-      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、ChatGPTへ強みを勝手に学習",
+      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、ChatGPTへ強みを直接伝達",
     },
     service: {
       query: "「親身に個別相談に乗ってくれる、相続専門の信頼できる税理士事務所は？」",
@@ -29,7 +29,7 @@ export function HeroChatDiagnosticCard() {
       aiNote: "※ 貴社サイトは個別対応の実績や料金体系がAIに読み取れず、比較候補から外れています。",
       statusVal: "自社の言及なし（他社を優先推薦）",
       evidenceDesc: "公式料金プランと「初回直接面談」の確定情報",
-      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、個別伴走の強みを勝手に学習",
+      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、個別伴走の強みを直接伝達",
     },
     local: {
       query: "「近隣で休日の急患や夜間診療に対応しているクリニックはある？」",
@@ -41,7 +41,7 @@ export function HeroChatDiagnosticCard() {
       aiNote: "※ 貴院の診療時間や受付仕様のデータがAIクローラーに正しく伝達されていません。",
       statusVal: "自社の言及なし（大手ポータルが優先）",
       evidenceDesc: "Schema構造化された診療カレンダーと受付時間",
-      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、最新の診療仕様を勝手に公開",
+      actionDesc: "自社サイト改修不要。AI専用DBを自動生成し、最新の診療仕様を直接伝達",
     },
   };
 
