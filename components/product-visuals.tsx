@@ -4,14 +4,14 @@ import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
-  const [mode, setMode] = useState<"after" | "before">("after");
+  const [mode, setMode] = useState<"before" | "after">("before");
 
   return (
     <div className="hero-chat-direct-card" aria-label="ChatGPTによる推薦のビフォーアフター観測ログ">
       {/* カードヘッダー */}
       <div className="direct-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#f59e0b", display: "inline-block" }} />
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#ef4444", display: "inline-block" }} />
           <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>ChatGPT (GPT-4o)</strong>
         </div>
         <span style={{ fontSize: "0.72rem", color: "#475569", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 600 }}>
@@ -19,32 +19,8 @@ export function HeroChatDiagnosticCard() {
         </span>
       </div>
 
-      {/* ビフォーアフター切り替えタブ */}
+      {/* ビフォーアフター切り替えタブ（時系列：Before ➔ After） */}
       <div style={{ padding: "8px 16px", background: "#ffffff", borderBottom: "1px solid #f1f5f9", display: "flex", gap: "8px" }}>
-        <button
-          type="button"
-          onClick={() => setMode("after")}
-          style={{
-            flex: 1,
-            padding: "7px 10px",
-            fontSize: "0.76rem",
-            fontWeight: 700,
-            borderRadius: "6px",
-            border: mode === "after" ? "1.5px solid #0f172a" : "1px solid #e2e8f0",
-            background: mode === "after" ? "#0f172a" : "#f8fafc",
-            color: mode === "after" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
-          <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#94a3b8" }} />
-          <span>【アフター】公式台帳あり（御社を優先推薦）</span>
-        </button>
-
         <button
           type="button"
           onClick={() => setMode("before")}
@@ -67,6 +43,30 @@ export function HeroChatDiagnosticCard() {
         >
           <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: mode === "before" ? "#ef4444" : "#94a3b8" }} />
           <span>【ビフォー】対策前（スルー・競合へ流出）</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMode("after")}
+          style={{
+            flex: 1,
+            padding: "7px 10px",
+            fontSize: "0.76rem",
+            fontWeight: 700,
+            borderRadius: "6px",
+            border: mode === "after" ? "1.5px solid #0f172a" : "1px solid #e2e8f0",
+            background: mode === "after" ? "#0f172a" : "#f8fafc",
+            color: mode === "after" ? "#ffffff" : "#64748b",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
+          }}
+        >
+          <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#94a3b8" }} />
+          <span>【アフター】公式台帳あり（御社を優先推薦）</span>
         </button>
       </div>
 
