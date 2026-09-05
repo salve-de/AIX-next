@@ -26,33 +26,35 @@ export function GoogleDeclineProblemSection() {
           <span
             style={{
               display: "inline-block",
-              background: "#fef2f2",
-              border: "1px solid #fecaca",
-              color: "#991b1b",
+              background: "#f1f5f9",
+              border: "1px solid #e2e8f0",
+              color: "#475569",
               fontSize: "0.72rem",
               fontWeight: 700,
               padding: "4px 12px",
               borderRadius: "4px",
               letterSpacing: "0.04em",
               marginBottom: "14px",
+              fontFamily: "var(--font-mono, monospace)",
             }}
           >
-            知らずに顧客を奪われる構造
+            なぜ今、起きているのか？
           </span>
-          <h3
+          <h2
             style={{
-              fontSize: "clamp(1.25rem, 2.4vw, 1.75rem)",
+              fontSize: "clamp(1.3rem, 2.5vw, 1.85rem)",
               fontWeight: 800,
               color: "#0f172a",
               lineHeight: 1.35,
-              letterSpacing: "-0.02em",
-              margin: "0 0 12px",
+              letterSpacing: "-0.025em",
+              margin: "0 0 14px",
             }}
           >
-            従来のホームページやSEO対策を放置すると起きる、3つの静かな危機
-          </h3>
-          <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.7, margin: 0 }}>
-            「うちは昔作ったホームページがあるから大丈夫」という油断が、見えないところで大きな損失を生んでいます。
+            「Google検索」が終わり、顧客は「AIへの直接相談」へ移行しています
+          </h2>
+          <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.75, margin: 0 }}>
+            お客さんはもう広告だらけの検索結果を見比べません。ChatGPTなどのAIに「おすすめ」を直接聞く時代です。<br />
+            従来のホームページがあるのに客足が遠のく、3つの見えない理由をご確認ください。
           </p>
         </div>
 
@@ -65,7 +67,7 @@ export function GoogleDeclineProblemSection() {
             marginBottom: "32px",
           }}
         >
-          {/* 危機 01 */}
+          {/* 課題 01 */}
           <div
             style={{
               background: "#f8fafc",
@@ -83,29 +85,29 @@ export function GoogleDeclineProblemSection() {
                   fontFamily: "var(--font-mono, monospace)",
                   fontSize: "0.75rem",
                   fontWeight: 800,
-                  color: "#b91c1c",
-                  background: "#fee2e2",
+                  color: "#0f172a",
+                  background: "#e2e8f0",
                   padding: "2px 8px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                CRISIS 01
+                課題 01
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                Google検索の広告だらけに嫌気がさした顧客が、AIへ大移動
+                Google検索の広告増加と、顧客のAI直接相談への移行
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              いまのGoogle検索は、上から下まで広告とお金目当ての比較サイトばかりです。<br />
-              「どれが本当のおすすめかわからない」と疲れた買い手は、<strong>『忖度なしで一番いい会社』を一瞬で教えてくれるChatGPTなどのAIへ直接相談</strong>するようになっています。
+              従来のGoogle検索は、広告や比較サイトが多くを占めるようになりました。<br />
+              「どれが本当のおすすめかわからない」と感じた買い手は、<strong>公平で忖度のない答えを一瞬で出してくれるChatGPTなどのAIへ直接相談</strong>するようになっています。
             </p>
-            <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>身近な例え:</strong> チラシだらけの郵便受け（Google）を見なくなり、信頼できる知人（AI）に「どこが一番いい？」と直接聞いている状態です。
+            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
+              <strong>背景:</strong> 広告が並ぶ検索結果を見比べず、信頼できる相談窓口（AI）に「どこが一番いい？」と直接聞く購買行動への変化です。
             </div>
           </div>
 
-          {/* 危機 02 */}
+          {/* 課題 02 */}
           <div
             style={{
               background: "#f8fafc",
@@ -123,29 +125,29 @@ export function GoogleDeclineProblemSection() {
                   fontFamily: "var(--font-mono, monospace)",
                   fontSize: "0.75rem",
                   fontWeight: 800,
-                  color: "#b91c1c",
-                  background: "#fee2e2",
+                  color: "#0f172a",
+                  background: "#e2e8f0",
                   padding: "2px 8px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                CRISIS 02
+                課題 02
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                綺麗な写真のホームページも、AIには「白紙」に見えている
+                デザイン重視のWebサイトと、AIの読解の壁
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              AIロボットは文字データしか読めないため、デザイン重視のホームページや画像チラシの内容をほとんど理解できません。<br />
-              御社がどんなに良い腕や実績を持っていても、<strong>AIが読める専用データにして届けてあげないと、AIからは「存在しない会社」と同じ</strong>に見えてしまいます。
+              写真やデザイン中心のWebサイトは、人間には美しく見えても、テキストを解析するAI探索ロボットには正しく伝わらないことがあります。<br />
+              <strong>AIが理解できる公式データとして整備されていない場合、優れた実績や強みがあってもAIの推薦候補から漏れてしまいます。</strong>
             </p>
-            <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>身近な例え:</strong> 人間向けの綺麗なカラー写真パンフレットを、駅の自動改札機（AIロボット）にかざしても切符と認識されないのと同じです。
+            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
+              <strong>背景:</strong> 人間向けの綺麗なパンフレットを置くだけでは、機械の読み取り口（AIロボット）には認識されないのと同じ状態です。
             </div>
           </div>
 
-          {/* 危機 03 */}
+          {/* 課題 03 */}
           <div
             style={{
               background: "#f8fafc",
@@ -163,25 +165,25 @@ export function GoogleDeclineProblemSection() {
                   fontFamily: "var(--font-mono, monospace)",
                   fontSize: "0.75rem",
                   fontWeight: 800,
-                  color: "#b91c1c",
-                  background: "#fee2e2",
+                  color: "#0f172a",
+                  background: "#e2e8f0",
                   padding: "2px 8px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                CRISIS 03
+                課題 03
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                気付かないうちに、お客が全員「大手チェーン」へ奪われている
+                気付かないうちに、大手チェーンへ比較が集中
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              お客さんがAIに「近くでおすすめの会社は？」「親身に相談に乗ってくれるところは？」と聞いた瞬間、<strong>御社の名前すら出ずに、広告量の多い大手チェーンへ自動的にお客が誘導</strong>されています。<br />
-              自社のホームページを見てもらう前に客が奪われているため、減っていることにすら気付けません。
+              顧客がAIに「近くでおすすめの会社は？」「親身に相談できるところは？」と尋ねた際、AIはWeb上の露出量が多い大手チェーンを優先して提示します。<br />
+              <strong>自社のWebサイトを見てもらう前の段階で大手に誘導されてしまう</strong>ため、機会損失に気付くことができません。
             </p>
-            <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>身近な例え:</strong> 御社の店の前を通りすらせず、裏口から大手ライバル店行きの直行バスに顧客全員が乗せられているような状態です。
+            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
+              <strong>背景:</strong> 自社の店舗を見比べてもらう前に、大手チェーンの相談窓口へ顧客が直接案内されているような状態です。
             </div>
           </div>
         </div>

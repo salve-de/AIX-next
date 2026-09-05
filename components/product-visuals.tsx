@@ -41,35 +41,35 @@ export function HeroChatDiagnosticCard() {
           </div>
         </div>
 
-        {/* ❌ 対策前：大手に客を奪われる現実 */}
-        <div style={{ border: "1px solid #fecaca", borderRadius: "8px", padding: "12px 14px", background: "#fffbfb" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "2px 8px", borderRadius: "3px" }}>
-              ❌ いまの現実（対策前）
+        {/* 未対策時：大手優先の回答 */}
+        <div style={{ border: "1px solid #e2e8f0", borderRadius: "8px", padding: "14px 16px", background: "#f8fafc" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px" }}>
+              未対策時のAI回答（大手優先）
             </span>
-            <span style={{ fontSize: "0.68rem", color: "#b91c1c", fontWeight: 700 }}>自社は完全にスルー</span>
+            <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 600 }}>自社は選定外</span>
           </div>
           <p style={{ margin: "0 0 8px", fontSize: "0.82rem", color: "#475569", lineHeight: 1.55 }}>
-            ChatGPT「東京都内でしたら、大手量産メーカーの〇〇社や、ネット広告で有名な〇〇社が候補になります。」
+            ChatGPT「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
           </p>
-          <div style={{ fontSize: "0.72rem", color: "#991b1b", background: "#ffffff", border: "1px solid #fecaca", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
-            ⚠️ 御社の良さを知らないAIは、知名度や広告量の多い大手ばかり紹介します。
+          <div style={{ fontSize: "0.72rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+            ※ AI向けデータがない場合、AIは知名度や広告量の多い大手を機械的に提案します。
           </div>
         </div>
 
-        {/* ⭕️ 配備後：自社が名指しでおすすめされる未来 */}
-        <div style={{ border: "1.5px solid #0f172a", borderRadius: "8px", padding: "12px 14px", background: "#f8fafc", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.05)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 8px", borderRadius: "3px" }}>
-              ⭕️ 専用看板をネットに置いた後
+        {/* 推薦データ配備後：自社が指名推薦される回答 */}
+        <div style={{ border: "1.5px solid #0f172a", borderRadius: "8px", padding: "14px 16px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+              公式データ配備後のAI回答（自社を推薦）
             </span>
-            <span style={{ fontSize: "0.68rem", color: "#0f172a", fontWeight: 700 }}>自社を名指し推薦</span>
+            <span style={{ fontSize: "0.68rem", color: "#0f172a", fontWeight: 700 }}>強みに合致して選定</span>
           </div>
           <p style={{ margin: "0 0 8px", fontSize: "0.84rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
             ChatGPT「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
           </p>
-          <div style={{ fontSize: "0.72rem", color: "#0f172a", background: "#ffffff", border: "1px solid #cbd5e1", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
-            ✅ AIが御社の本当の強みを理解し、客にピンポイントで指名推薦します。
+          <div style={{ fontSize: "0.72rem", color: "#0f172a", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+            ※ AIが自社の公式強みデータを直接参照できるため、相談にぴったり合う推薦先として提示されます。
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export function HeroChatDiagnosticCard() {
 
       {/* カードフッター */}
       <div style={{ padding: "10px 18px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.74rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span>今のホームページはそのままでOK</span>
+        <span>自社サイトの改修：不要</span>
         <span style={{ fontWeight: 700, color: "#0f172a" }}>所要10秒で無料診断</span>
       </div>
     </div>
@@ -304,35 +304,35 @@ export function ProductOutputPreview() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>優先選定された相手</span>
-              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#0f172a", background: "#f1f5f9", padding: "1px 6px", borderRadius: "3px" }}>AI選定候補</span>
+              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>AI推薦候補</span>
+              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#0f172a", background: "#f1f5f9", padding: "1px 6px", borderRadius: "3px" }}>大手優先</span>
             </div>
             <strong style={{ fontSize: "0.94rem", color: "#0f172a", display: "block", marginBottom: "4px" }}>
               大手全国展開グループ
             </strong>
             <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-              選ばれた理由：一般的な知名度とネット広告量により、AIが機械的に選定。
+              選定要因：一般的な知名度やネット上の露出量により、AIが機械的に選定。
             </p>
           </div>
 
           {/* 自社 */}
           <div
             style={{
-              background: "#fffbfb",
-              border: "1px solid #fecaca",
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
               borderRadius: "6px",
               padding: "14px",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#991b1b", fontFamily: "var(--font-mono, monospace)" }}>自社の状況</span>
-              <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "1px 6px", borderRadius: "3px" }}>選定外（スルー）</span>
+              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>自社の現状</span>
+              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px" }}>選定外</span>
             </div>
             <strong style={{ fontSize: "0.94rem", color: "#475569", display: "block", marginBottom: "4px" }}>
               あおば相続法務事務所
             </strong>
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              スルーされた理由：親身な個別相談という「本当の強み」がAIに伝わっておらず除外。
+            <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
+              選定外の要因：親身な個別対応の実績や特徴が、AI向けデータとして未整備のため。
             </p>
           </div>
         </div>
@@ -353,10 +353,10 @@ export function ProductOutputPreview() {
         >
           <div>
             <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0f172a", fontFamily: "var(--font-mono, monospace)", display: "block", marginBottom: "2px" }}>
-              診断結果の改善策
+              改善方針
             </span>
             <strong style={{ fontSize: "0.85rem", color: "#0f172a", fontWeight: 600 }}>
-              「親身な個別相談」をAI専用看板としてネット上に配備することで、AIが自社を名指しでおすすめするようになります
+              「親身な個別相談」の強みをAI向け公式データとして登録することで、推薦枠への定着が見込めます
             </strong>
           </div>
           <Link
@@ -390,7 +390,7 @@ export function ProductProcessVisual() {
       userTime: "所要 10秒",
       userAction: "会社名を入力",
       title: "社名を入れるだけ",
-      systemAction: "AIが公開サイトや取引実績を瞬時に読み込み、御社の本当の強みを自動整理します。",
+      systemAction: "AIが公開サイトや取引実績を瞬時に読み込み、御社の強みを自動整理します。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
@@ -399,7 +399,7 @@ export function ProductProcessVisual() {
       userTime: "所要 0秒",
       userAction: "診断レポートを確認",
       title: "AI推薦の現状がわかる",
-      systemAction: "客がAIにする12の質問で、なぜ大手に客を奪われているかを白日の元に暴きます。",
+      systemAction: "客がAIにする12の質問で、競合との推薦状況の違いを客観的に可視化します。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
@@ -407,8 +407,8 @@ export function ProductProcessVisual() {
       label: "03",
       userTime: "所要 1クリック",
       userAction: "自社の強みを選択",
-      title: "AI専用看板を配備",
-      systemAction: "今のHPはいじらず、選んだ強みをもとにAI専用の紹介看板をネットに自動開設。",
+      title: "AI推薦データを配備",
+      systemAction: "今のホームページはそのままで、選んだ強みをもとにAI向け公式推薦データをネット上に自動開設。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
@@ -417,7 +417,7 @@ export function ProductProcessVisual() {
       userTime: "作業ゼロ（完全放置）",
       userAction: "本業に専念するだけ",
       title: "毎週のAI回答を自動見守り",
-      systemAction: "AIのおすすめ状況やライバルの動向を毎週自動追跡。社長は普段どおり本業に集中するだけ。",
+      systemAction: "AIのおすすめ状況や競合の動向を毎週自動チェック。社長は普段どおり本業に集中するだけ。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },

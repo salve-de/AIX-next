@@ -21,7 +21,7 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     industry: "試作板金加工・精密機械",
     featureNote: "自社サイト未開設から即日発行",
     beforeProblem: "「急ぎの試作板金」の相談に対し、ネット広告量の多い大手量産工場へ顧客が誘導されていた。",
-    afterSolution: "「単品1個対応・最短即日試作」が確定仕様としてAIに認知され、試作先を探す技術者への推薦枠へ定着。",
+    afterSolution: "「単品1個対応・最短即日試作」がAI公式データとして認知され、試作先を探す技術者への推薦候補へ定着。",
     registeredSpecs: "単品1個対応 / 3D CAD直接入稿 / 最短即日試作",
     href: "/ai/company/localhost-bb4053a36baa",
   },
@@ -32,7 +32,7 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     industry: "自家焙煎・スペシャリティ珈琲",
     featureNote: "SNS運用中心・HPなし",
     beforeProblem: "SNSを更新しても設備データがAIに伝わらず、「作業できるカフェ」の質問で候補から除外されていた。",
-    afterSolution: "「全席電源・高速Wi-Fi・作業歓迎」が公認仕様となり、近隣で作業場所を探すビジネス客へ即答推薦。",
+    afterSolution: "「全席電源・高速Wi-Fi・作業利用歓迎」がAI公式データとなり、近隣で作業場所を探すビジネス客へ推薦候補として提示。",
     registeredSpecs: "全席電源・高速Wi-Fi / 自家焙煎豆 / 作業利用歓迎",
     href: "/ai/company/aoba-cafe?sample=1",
   },
@@ -43,7 +43,7 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     industry: "相続・遺産分割・事業承継",
     featureNote: "週次自動見守り運用",
     beforeProblem: "親身な個別伴走を求める相談者が、AIのアルゴリズムによって大手全国チェーンへ送客されていた。",
-    afterSolution: "「親身な個別伴走・複雑案件の円満調停」が認定看板となり、定型的な大手チェーンを避けたい相談者を獲得。",
+    afterSolution: "「親身な個別伴走・複雑案件の円満調停」がAI公式推薦データとなり、定型的な大手チェーンを避けたい相談者を推薦獲得。",
     registeredSpecs: "初回対面相談無料 / 専任担当一貫対応 / 事前面談見積",
     href: "/ai/company/aoba-souzoku?sample=1",
   },
@@ -54,7 +54,7 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     industry: "特選果樹・産直ぶどう農家",
     featureNote: "ホームページなしから開設",
     beforeProblem: "産直のこだわりがAIに認識されず、量産通販モールに埋もれて大切な贈答用ギフト需要を逃していた。",
-    afterSolution: "「朝採れ当日直送・糖度18度選別」が公認仕様として登録され、高品質ギフトを探す買い手への推薦候補に定着。",
+    afterSolution: "「朝採れ当日直送・糖度18度選別」がAI公式データとして登録され、高品質ギフトを探す買い手への推薦候補に定着。",
     registeredSpecs: "産地直送・当日発送 / 糖度18度選別 / 贈答用ギフト",
     href: "/ai/company/aoba-cafe?sample=1",
   },
@@ -67,7 +67,7 @@ export function VerifiedCompaniesGallery() {
         <div className="section-head-center">
           <span className="pill-badge">業種別の実例シミュレーション</span>
           <h2>町工場も、カフェも、士業も、農園も。<br />AIが客に「ここがおすすめ」と言い始める実例</h2>
-          <p>今のホームページはそのままでOK。AI専用の看板を配備することで、ChatGPTの回答が「大手チェーン」から「自社」へどう激変するかの実例見本です。</p>
+          <p>今のホームページはそのままでOK。AI向け公式推薦データを配備することで、ChatGPTの回答が大手優先から自社おすすめへどう変化するかの実例見本です。</p>
         </div>
 
         <div className="verified-cards-grid">
@@ -101,14 +101,14 @@ export function VerifiedCompaniesGallery() {
                     style={{
                       fontSize: "0.68rem",
                       fontWeight: 700,
-                      color: "#b91c1c",
+                      color: "#64748b",
                       fontFamily: "var(--font-mono, monospace)",
                       display: "block",
                       marginBottom: "4px",
                       letterSpacing: "0.02em",
                     }}
                   >
-                    対策前：大手に客を奪われる現実
+                    未対策時の課題（大手優先）
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
                     {company.beforeProblem}
@@ -126,7 +126,7 @@ export function VerifiedCompaniesGallery() {
                       letterSpacing: "0.02em",
                     }}
                   >
-                    配備後：AIが名指しでおすすめ
+                    公式データ配備後（強みで選定）
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
                     {company.afterSolution}
@@ -135,7 +135,7 @@ export function VerifiedCompaniesGallery() {
               </div>
 
               <div className="card-spec-box" style={{ background: "#ffffff", padding: "10px 12px", borderRadius: "6px", margin: "0 0 14px", border: "1px solid #e2e8f0" }}>
-                <span style={{ display: "block", fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "3px" }}>AIに教え込んだ強み</span>
+                <span style={{ display: "block", fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "3px" }}>登録データ（強みの抜粋）</span>
                 <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontWeight: 600, display: "block", lineHeight: 1.4 }}>{company.registeredSpecs}</strong>
               </div>
 

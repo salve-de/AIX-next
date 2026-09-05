@@ -29,8 +29,8 @@ export default function HomePage() {
                   <em>あなたの会社はスルーされ、大手が紹介されています。</em>
                 </h1>
                 <p className="landing-hero-lead">
-                  AIは御社が嫌いなわけではありません。「文字しか読めないAI」に本当の強みが届いていないだけです。<br />
-                  自社ホームページの改修は一切不要。社名を入れるだけで、AIがあなたをお客さんにおすすめする「専用看板」をネット上に即日配備します。
+                  AIは御社が嫌いなわけではありません。「テキストを解析するAI」に本当の強みが届いていないだけです。<br />
+                  自社ホームページの改修は一切不要。社名を入れるだけで、AIがあなたをお客さんにおすすめする公式推薦データを即日配備します。
                 </p>
               </div>
 
@@ -57,7 +57,7 @@ export default function HomePage() {
                   <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M3 8.5L6.5 12L13 4" />
                   </svg>
-                  <span>完全無料（勝手にお金はかかりません）</span>
+                  <span>完全無料（自動課金なし）</span>
                 </div>
               </div>
 
@@ -79,18 +79,9 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 2. なぜ今、こんなことが起きているのか？（理由が1秒でわかる） */}
+      {/* 2. なぜ今、こんなことが起きているのか？（理由が1秒でわかる3大危機） */}
       {/* ================================================================= */}
-      <section className="landing-shift-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        <div className="section-head-center" style={{ marginBottom: "28px" }}>
-          <span className="pill-badge">なぜ今、起きているのか？</span>
-          <h2>「Google検索」が終わり、顧客は「AIへの直接相談」へ移行しています</h2>
-          <p>お客さんはもう、広告だらけの検索結果を見なくなりました。ChatGPTなどのAIに「直接おすすめを聞く」時代です。<br />ホームページがあるのにお客が来ない、見えない3つの危機をご確認ください。</p>
-        </div>
-
-        {/* 中小企業が直面する3大危機 */}
-        <GoogleDeclineProblemSection />
-      </section>
+      <GoogleDeclineProblemSection />
 
       {/* ================================================================= */}
       {/* 3. 無料診断で何がわかるのか？（手に入る2つの確定成果物） */}
@@ -98,8 +89,8 @@ export default function HomePage() {
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
           <span className="pill-badge">無料診断で手に入るもの</span>
-          <h2>社名を入力するだけ（所要10秒）。<br />あなたの手元に届く「2つの明確な答え」</h2>
-          <p>自社ホームページの改修は一切不要。AIが現在、あなたの会社をどう見ているかを暴く「実況レポート」と、<br />明日からAIがあなたをお客さんにおすすめするための「公式紹介データ」がその場で手に入ります。</p>
+          <h2>社名を入力するだけ（所要10秒）。<br />手元に届く「2つの確定成果物」</h2>
+          <p>自社ホームページの改修は一切不要。「①自社がAIからどう見られているかの実況レポート」と、<br />「②明日からAIがあなたをお客に推薦するための公式データ」がその場で手に入ります。</p>
         </div>
 
         {/* 診断で手に入る2つの成果物プレビュー */}
@@ -117,7 +108,7 @@ export default function HomePage() {
               boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
               overflow: "hidden",
             }}
-            aria-label="手に入るもの 02：自社専用 AI公式おすすめ看板"
+            aria-label="手に入るもの 02：自社専用 AI公式推薦データ"
           >
             {/* ヘッダー */}
             <div
@@ -149,7 +140,7 @@ export default function HomePage() {
                   手に入るもの 02
                 </span>
                 <strong style={{ fontSize: "0.88rem", letterSpacing: "-0.01em" }}>
-                  自社専用 AI公式おすすめ看板（即日自動開設）
+                  自社専用 AI公式推薦データ（即日開設）
                 </strong>
               </div>
               <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
@@ -161,10 +152,10 @@ export default function HomePage() {
             <div style={{ padding: "22px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", alignItems: "center" }}>
               <div>
                 <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", display: "block", marginBottom: "4px" }}>
-                  ChatGPTなどのAIが24時間読み込む「専用看板」
+                  ChatGPTなどのAIが常時参照する「公式推薦データ」
                 </span>
                 <h4 style={{ margin: "0 0 10px", fontSize: "1.08rem", color: "#0f172a", fontWeight: 700, lineHeight: 1.4 }}>
-                  AIが「この会社をお客さんに紹介しよう！」と確信するデータをネットに配備
+                  AIが御社の強みを正しく理解し、推薦候補として認識するデータを配備
                 </h4>
                 <p style={{ margin: "0 0 16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.7 }}>
                   御社ならではの「本当の強み（例：親身な個別対応、1個からの特急試作など）」を、AIが一番読みやすい形式でネット上に自動公開。今のホームページはいじらず、明日からAIがお客さんに御社をおすすめし始める状態を作ります。
@@ -186,7 +177,7 @@ export default function HomePage() {
                       gap: "6px",
                     }}
                   >
-                    <span>おすすめ看板の画面を見る</span>
+                    <span>公式推薦データの実例を見る</span>
                     <ArrowIcon />
                   </Link>
                   <Link
@@ -214,7 +205,7 @@ export default function HomePage() {
                 </span>
                 <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.8 }}>
                   <li><strong>会社名・屋号</strong>：あおば相続法務事務所</li>
-                  <li><strong>AI専用看板</strong>：親身な個別対応・複雑なトラブル特化</li>
+                  <li><strong>AI向け公式データ</strong>：親身な個別対応・複雑な相続トラブル特化</li>
                   <li><strong>安心の裏付け</strong>：国家資格・相談実績などの公的データ</li>
                   <li><strong>対応AI</strong>：ChatGPT / Gemini / Perplexity 全対応</li>
                 </ul>
@@ -313,7 +304,7 @@ export default function HomePage() {
                 <li>買い手がAIにする12の質問での実況レポート</li>
                 <li>自社専用のAI公式推薦データ（自動下書き）</li>
                 <li>今のホームページはそのままでOK（改修不要）</li>
-                <li>クレジットカード登録不要・勝手な課金ゼロ</li>
+                <li>クレジットカード登録不要・自動課金なし</li>
               </ul>
               <a
                 href="#scan"
@@ -362,7 +353,7 @@ export default function HomePage() {
                   fontFamily: "var(--font-mono, monospace)",
                 }}
               >
-                完全放置の専属番人
+                おすすめ
               </span>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "4px" }}>
                 継続運用・順位監視
@@ -376,9 +367,9 @@ export default function HomePage() {
               </div>
               <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
                 <li>毎週月曜にAIの推薦状況を自動で再チェック</li>
-                <li>ライバルが急に客を奪い始めたら即アラート</li>
+                <li>競合が急に浮上した場合の早期アラート</li>
                 <li>AI公式推薦データの常時ホスティング・自動同期</li>
-                <li>いつでもワンクリックで解約可能（縛りなし）</li>
+                <li>いつでもワンクリックで解約可能（契約縛りなし）</li>
               </ul>
               <Link
                 href="/pricing"
@@ -404,7 +395,7 @@ export default function HomePage() {
           </div>
 
           <p style={{ textAlign: "center", fontSize: "0.74rem", color: "#94a3b8", margin: "20px 0 0" }}>
-            ※ 無料診断のあとに、希望された方だけが見守りプランにお申し込みいただけます。無料診断から勝手に課金されることは100%ありません。
+            ※ クレジットカード登録は不要です。無料診断のあとに自動で課金されることは一切ありません。継続的な見守りをご希望の方のみお申し込みいただけます。
           </p>
         </div>
       </section>
