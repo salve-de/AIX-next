@@ -410,14 +410,14 @@ export function ResultClient() {
             自社サイト改修ゼロで、AI公式推薦パスを配備する
           </h2>
           <p style={{ color: "#475569", lineHeight: 1.6 }}>
-            診断で判明した「ライバルが対応できない自社固有の強み（看板）」を選定し、主要AIが迷わず御社を優先推薦するための確定データをネット上に即日常駐させます。
+            診断で判明した「ライバルが対応できない自社固有の強み（看板）」を選定し、主要AIが正確に参照・推薦するための公式データをネット上に即日常駐させます。
           </p>
         </div>
 
         {/* 競合の隙間を突く看板選定 */}
         <PositioningPanel positioning={result.positioning} />
 
-        {/* 配備実行カード（公認確定データ発行＆図解） */}
+        {/* 配備実行カード（公式マスターデータ発行＆図解） */}
         <div style={{ marginTop: "24px" }}>
           <PublicProfileActions result={result} sample={sample} />
         </div>
@@ -481,7 +481,7 @@ export function ResultClient() {
                 type="button"
                 style={{ width: "100%", justifyContent: "center", background: "#0f172a", color: "#ffffff", border: "1px solid #0f172a", padding: "9px 16px", borderRadius: "4px", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
-                  const tweetText = encodeURIComponent(`【AI推薦の公認データを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が優先推薦されるための公式データを配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「AIX」で診断できます。\n#AIX #生成AI #中小企業DX\n`);
+                  const tweetText = encodeURIComponent(`【AI公式推薦パスを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が正確に参照・引用されるための公式データ台帳を配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「AIX」で診断できます。\n#AIX #生成AI #中小企業DX\n`);
                   const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}/result?sample=1`);
                   if (typeof window !== "undefined") {
                     window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");

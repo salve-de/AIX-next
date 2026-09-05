@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Brand />
-          <p>サイト改修ゼロで24時間働くAI専属営業窓口を配備し、AI新時代における生成AIからの優先推薦を支援するサービスです。</p>
+          <p>サイト改修ゼロで24時間働くAI専属営業窓口を配備し、AI新時代における生成AIからの正確な参照・推薦を支援するシステムです。</p>
         </div>
         <nav aria-label="製品">
           <strong>製品</strong>

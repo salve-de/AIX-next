@@ -27,7 +27,7 @@ function profileFromPayload(payload: unknown) {
  */
 export function PublicProfileActions({ result, sample = false }: PublicProfileActionsProps) {
   const [profile, setProfile] = useState<ProfileShape | null>(null);
-  const [busy, setBusy] = useState<"preview" | "">("");
+  const [busy, setBusy] = useState<"deploy" | "">("");
   const [error, setError] = useState("");
   const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
   const [customHighlight, setCustomHighlight] = useState<string>("");
@@ -36,27 +36,27 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   // サイト解析結果（ScanResult）から100%動的に抽出された3つの強み候補
   const strategies = result.positioning?.strategies || derivePositioningAdvice(result).strategies || [];
 
-  async function preview() {
+  async function deployProfile() {
     if (sample) {
       setIsSaved(true);
       return;
     }
-    setBusy("preview");
+    setBusy("deploy");
     setError("");
     try {
       const response = await fetch("/api/ai-profile", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ scanId: result.scanId, action: "preview" }),
+        body: JSON.stringify({ scanId: result.scanId, action: "deploy" }),
       });
       const payload = await response.json() as { error?: string; token?: string; profile?: ProfileShape };
-      if (!response.ok) throw new Error(payload.error || "公開ページを作成できませんでした。");
+      if (!response.ok) throw new Error(payload.error || "公開ページを配備できませんでした。");
       const next = profileFromPayload(payload);
       if (!next || !payload.token) throw new Error("公開ページの確認情報を取得できませんでした。");
       setProfile(next);
       setIsSaved(true);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "公開ページを作成できませんでした。");
+      setError(caught instanceof Error ? caught.message : "公開ページを配備できませんでした。");
     } finally {
       setBusy("");
     }
@@ -66,9 +66,9 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
     <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
       <div className="profile-interactive-header">
         <span className="step-badge">【ステップ 2】自社サイト改修ゼロで、AI公式推薦パスを配備する</span>
-        <h2>選定した看板を、AIが迷わず推薦するための「公認データ」としてネット上に常駐させます</h2>
+        <h2>選定した看板を、AIが正確に参照・引用できる「公式データ」としてネット上に常駐させます</h2>
         <p>
-          新しい営業マンを雇う必要も、自社のホームページを改修する必要もありません。ChatGPTやGemini・Perplexityなどの主要AIが「この会社を推薦して間違いがない」と1秒で判断できる確定仕様を、AI公式推薦パスとして即座にネット上に配備します。
+          新しい営業マンを雇う必要も、自社のホームページを改修する必要もありません。ChatGPTやGemini・Perplexityなどの主要AIが公式情報として正確に参照できる構造化仕様を、AI公式推薦パスとして即座にネット上に配備します。
         </p>
       </div>
 
@@ -147,7 +147,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </div>
         <p className="hot-advice-body">
           {strategies[selectedWeapon]?.passionateReason ||
-            `大手全国チェーンはマニュアル対応に依存しており、個別事情への柔軟な対応力に構造的な弱点を抱えています。一方、${result.discovery.brandName || "御社"}はここに明確な優位性と実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は重大な機会損失です。AI公式データベースへ本看板を最優先で登録することを強く推奨します。`}
+            `大手全国チェーンはマニュアル対応に依存しており、個別事情への柔軟な対応力に構造的な弱点を抱えています。一方、${result.discovery.brandName || "御社"}はここに明確な優位性と実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は重大な機会損失です。AI公式データ基盤へ本看板を反映することを推奨します。`}
         </p>
       </div>
 
@@ -156,7 +156,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         <div className="plan-comparison-header">
           <span className="spec-table-tag">運用仕様・スペック比較</span>
           <h4>無料お試し枠 と フル常時見守りプラン の提供差</h4>
-          <p>古い情報の残留トラブルを防ぐ安全設計と、AIから優先推薦されやすい環境を維持するためのスペック比較です。</p>
+          <p>古い情報の残留トラブルを防ぐ安全設計と、AIから正確に認識・推薦される環境を維持するためのスペック比較です。</p>
         </div>
 
         <div className="table-responsive">
@@ -170,7 +170,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             </thead>
             <tbody>
               <tr>
-                <td><strong>AIに学習させる看板・強み</strong></td>
+                <td><strong>AIが参照する看板・強み</strong></td>
                 <td>選択した1項目のみ</td>
                 <td className="col-highlight"><strong>全業務・全方位を網羅登録</strong></td>
               </tr>
@@ -223,7 +223,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
           <p>
             現在配備する看板：<strong>{customHighlight.trim() || strategies[selectedWeapon]?.name}</strong>
           </p>
-          <small>自社サイトの改修ゼロ。主要生成AIが直接巡回・引用できる「公認データ規格」で即日ネット上に常駐します。</small>
+          <small>自社サイトの改修ゼロ。主要生成AIが直接巡回・引用できる「公式構造化データ規格」で即日ネット上に常駐します。</small>
         </div>
 
         <div className="weapon-action-buttons">
@@ -231,10 +231,10 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             <button
               type="button"
               className="button button-primary"
-              onClick={() => void preview()}
+              onClick={() => void deployProfile()}
               disabled={busy !== ""}
             >
-              {busy === "preview" ? "配備処理中…" : "この看板をAI公式推薦パスとして配備する"} <ArrowIcon />
+              {busy === "deploy" ? "配備処理中…" : "この看板をAI公式推薦パスとして配備する"} <ArrowIcon />
             </button>
           ) : (
             <div className="saved-success-box">
@@ -278,7 +278,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     御社の実働作業：完全ゼロ
                   </span>
                   <strong style={{ fontSize: "0.9rem", color: "#0f172a" }}>
-                    この「AI公式推薦パス」によって、なぜAIが御社をおすすめし始めるのか？
+                    この「AI公式推薦パス」によって、なぜAIが御社を正確に参照・回答できるようになるのか？
                   </strong>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginTop: "12px" }}>
@@ -291,12 +291,12 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                   <div style={{ background: "#f0fdf4", padding: "12px 14px", borderRadius: "8px", border: "1px solid #bbf7d0" }}>
                     <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", display: "block", marginBottom: "4px" }}>◯ AI公式推薦パス（本機能）</span>
                     <p style={{ margin: 0, fontSize: "0.78rem", color: "#14532d", lineHeight: 1.55 }}>
-                      ChatGPTやPerplexityが好む「公認規格（Schema.org構造化データ）」で記述。AIクローラーが直接参照し、「親身な個別対応ならこの会社が適合」と確信を持って回答に引用します。
+                      Schema.org規格に準拠した構造化データで記述。AIクローラーが直接参照し、ユーザーの具体的な相談内容に合わせた回答の根拠データとして引用されやすくなります。
                     </p>
                   </div>
                 </div>
                 <p style={{ margin: "14px 0 0", fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-                  ※AIXが主要生成AIクローラーへ直接インデックスを促すため、お客様側で特別な設定やサーバー操作を行う必要は一切ありません。
+                  ※AIXが主要生成AIクローラーが巡回可能な公開Webページとして保守するため、お客様側で特別な設定やサーバー操作を行う必要は一切ありません。
                 </p>
               </div>
             </div>

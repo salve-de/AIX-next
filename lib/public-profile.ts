@@ -1,4 +1,3 @@
-import "server-only";
 
 import type {
   PublicProfile,
@@ -8,7 +7,6 @@ import type {
   ScanResult,
 } from "@/lib/types";
 import { env } from "@/lib/env";
-import { createPublicProfilePreview } from "@/lib/storage";
 
 const MAX_SUMMARY_LENGTH = 600;
 const MAX_LIST_ITEMS = 8;
@@ -270,16 +268,6 @@ export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
   };
 }
 
-/** Convenience wrapper used by callers that have a completed scan in hand. */
-export async function previewPublicProfile(input: ScanResult | ScanRecord, options: { expiresInDays?: number } = {}) {
-  const result = "result" in input ? input.result : input;
-  if (!result) throw new Error("診断結果が完成していません。");
-  return createPublicProfilePreview(buildPublicProfileDraft(result), {
-    sourceScanId: "result" in input ? input.id : result.scanId,
-    expiresInDays: options.expiresInDays,
-  });
-}
-
 export type DirectProfileInput = {
   brandName: string;
   market?: string;
@@ -305,20 +293,30 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
   const title = `${brandName} 公式データ台帳`;
   const market = publicText(input.market || "専門技術・サービス", MAX_LIST_ITEM_LENGTH);
-  const summary = publicText(input.summary || `${brandName}の公式エンタープライズ・ナレッジ台帳。主要生成AI（ChatGPT/Gemini/Claude等）が正確な情報に基づいて推薦を行うための公式マスターデータです。`, MAX_SUMMARY_LENGTH);
-  const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : ["検討中のお客様", "専門的な対応を求める企業・個人様"]);
-  const useCases = uniquePublicList(input.useCases?.length ? input.useCases : ["専門業務のご相談・ご依頼", "迅速・安心の個別伴走サポート"]);
+  const summary = publicText(input.summary || `${brandName}の公式エンタープライズ・ナレッジ台帳。主要生成AI（ChatGPT/Gemini/Claude等）が正確な情報に基づいて参照するための公式マスターデータです。`, MAX_SUMMARY_LENGTH);
+  const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : []);
+  const useCases = uniquePublicList(input.useCases?.length ? input.useCases : []);
 
   const facts: PublicProfileDraft["facts"] = [
     { label: "正式名称・屋号", value: brandName, sourceUrl: targetUrl },
     { label: "専門分野・業種", value: market, sourceUrl: targetUrl },
-    { label: "所在地・対応エリア", value: input.location || "首都圏・全国対応 / 地域密着対応", sourceUrl: targetUrl },
-    { label: "営業時間・受付体制", value: input.hours || "平日 9:00〜18:00（事前予約で柔軟対応）", sourceUrl: targetUrl },
-    { label: "明瞭料金規約", value: input.pricingInfo || "事前総額見積もり制・不透明な追加請求ゼロ確約", sourceUrl: targetUrl },
   ];
 
+  if (input.location?.trim()) {
+    facts.push({ label: "所在地・対応エリア", value: publicText(input.location, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
+  }
+  if (input.phone?.trim()) {
+    facts.push({ label: "電話番号・窓口", value: publicText(input.phone, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
+  }
+  if (input.hours?.trim()) {
+    facts.push({ label: "営業時間・受付体制", value: publicText(input.hours, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
+  }
+  if (input.pricingInfo?.trim()) {
+    facts.push({ label: "料金規約・費用目安", value: publicText(input.pricingInfo, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
+  }
+
   const sourcePages: PublicProfileDraft["sourcePages"] = [
-    { url: targetUrl, title: `${brandName} AIX認証公式ナレッジ台帳`, description: "AI巡回・推論用公式エビデンスマスター" },
+    { url: targetUrl, title: `${brandName} AIX登録公式ナレッジ台帳`, description: "AI巡回・推論用公式データ台帳" },
   ];
 
   const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();

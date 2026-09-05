@@ -337,7 +337,7 @@ export function WatchClient() {
                   <span className="trend-arrow">→</span>
                   <span className="trend-num-latest text-blue">3件</span>
                 </div>
-                <p className="trend-desc">ChatGPTやPerplexityが推薦パスの公認データを直接読み込み、自社をおすすめする根拠として採用しました。</p>
+                <p className="trend-desc">ChatGPTやPerplexity等の主要AIが推薦パスの公式データを参照し、回答の推論根拠として採用したことが確認されました。</p>
                 <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                   <Link
                     href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
@@ -345,7 +345,7 @@ export function WatchClient() {
                     rel="noreferrer"
                     style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
                   >
-                    常駐中のAI公式推薦パス（公認データ）を確認 ↗
+                    常駐中のAI公式推薦パスを確認 ↗
                   </Link>
                 </div>
               </div>
@@ -480,9 +480,9 @@ export function WatchClient() {
       <section className="watch-section watch-evidence">
         <div className="shell">
           <div className="section-heading-simple">
-            <p className="overline">次回の改善に向けた補強</p>
+            <p className="overline">AIXによる自動情報補強</p>
             <h2>競合に負けている質問を、<br />次回取り返すための情報補強。</h2>
-            <p>以下の項目を公式台帳に補強することで、次回巡回時にさらに多くの質問で自社が推薦候補に入りやすくなります。</p>
+            <p>AIXが自社公式サイトから以下の重要事実を自動収集・照合し、次回巡回時にAI公式台帳へ反映して推薦枠の奪還を図ります（御社の作業は不要です）。</p>
           </div>
           
           <div className="watch-input-grid">
@@ -497,20 +497,32 @@ export function WatchClient() {
                   </div>
                   {answer ? (
                     <div className="saved-answer-box">
-                      <span className="saved-tag">登録済</span>
+                      <span className="saved-tag">AIX自動反映済</span>
                       <p>{answer.value}</p>
                     </div>
                   ) : (
-                    <form onSubmit={(event) => saveEvidence(event, gap.id)} className="gap-input-form">
-                      <input
-                        value={values[gap.id] || ""}
-                        onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))}
-                        placeholder="例：最短即日面談対応、1点からの試作など"
-                      />
-                      <button className="button button-secondary" disabled={saving === gap.id}>
-                        {saving === gap.id ? "保存中…" : "台帳に反映"}
-                      </button>
-                    </form>
+                    <div className="auto-inspect-box" style={{ padding: "14px", background: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
+                        <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0369a1", background: "#e0f2fe", padding: "2px 6px", borderRadius: "3px" }}>AIXが次回自動確認</span>
+                        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>御社の作業は不要です</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: "0.76rem", color: "#475569", lineHeight: 1.5 }}>
+                        次回の週次巡回時に、御社公式サイトから関連する事実を自動検出して公式台帳へ補強します。
+                      </p>
+                      <details style={{ marginTop: "10px", fontSize: "0.72rem", color: "#64748b" }}>
+                        <summary style={{ cursor: "pointer", color: "#0284c7" }}>手動で即時補正する場合</summary>
+                        <form onSubmit={(event) => saveEvidence(event, gap.id)} className="gap-input-form" style={{ marginTop: "8px" }}>
+                          <input
+                            value={values[gap.id] || ""}
+                            onChange={(event) => setValues((current) => ({ ...current, [gap.id]: event.target.value }))}
+                            placeholder="例：最短即日面談対応、1点からの試作など"
+                          />
+                          <button className="button button-secondary" disabled={saving === gap.id}>
+                            {saving === gap.id ? "保存中…" : "即時反映"}
+                          </button>
+                        </form>
+                      </details>
+                    </div>
                   )}
                 </div>
               );

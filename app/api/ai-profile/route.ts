@@ -51,7 +51,7 @@ export async function POST(request: Request) {
 
   const action = stringField(body, "action");
   try {
-    if (action === "preview") {
+    if (action === "preview" || action === "deploy") {
       const scanId = stringField(body, "scanId");
       if (!scanId) return json({ error: "scanIdが必要です。" }, 400);
       const scan = await getScan(scanId);
@@ -64,6 +64,18 @@ export async function POST(request: Request) {
         sourceScanId: scan.id,
         ...(expiresInDays === undefined ? {} : { expiresInDays }),
       });
+
+      if (action === "deploy") {
+        const published = await publishPublicProfile(record.id, record.token);
+        const finalRecord = published || record;
+        return json({
+          profile: toPublicProfile(finalRecord),
+          token: finalRecord.token,
+          slug: finalRecord.slug,
+          url: `/ai/company/${encodeURIComponent(finalRecord.slug)}`,
+        }, 201);
+      }
+
       return json({ profile: toPublicProfile(record), token: record.token }, 201);
     }
 
