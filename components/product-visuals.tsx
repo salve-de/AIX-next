@@ -4,53 +4,124 @@ import { useState } from "react";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
+  const [mode, setMode] = useState<"after" | "before">("after");
+
   return (
-    <div className="hero-chat-direct-card" aria-label="ChatGPTによる推薦の実際のイメージ">
+    <div className="hero-chat-direct-card" aria-label="ChatGPTによる推薦のビフォーアフター観測ログ">
       {/* カードヘッダー */}
-      <div className="direct-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 20px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+      <div className="direct-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#f59e0b", display: "inline-block" }} />
           <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>ChatGPT (GPT-4o)</strong>
         </div>
-        <span style={{ fontSize: "0.72rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 500 }}>
+        <span style={{ fontSize: "0.72rem", color: "#475569", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 600 }}>
           AI推薦 観測ログ
         </span>
       </div>
 
+      {/* ビフォーアフター切り替えタブ */}
+      <div style={{ padding: "8px 16px", background: "#ffffff", borderBottom: "1px solid #f1f5f9", display: "flex", gap: "8px" }}>
+        <button
+          type="button"
+          onClick={() => setMode("after")}
+          style={{
+            flex: 1,
+            padding: "7px 10px",
+            fontSize: "0.76rem",
+            fontWeight: 700,
+            borderRadius: "6px",
+            border: mode === "after" ? "1.5px solid #0f172a" : "1px solid #e2e8f0",
+            background: mode === "after" ? "#0f172a" : "#f8fafc",
+            color: mode === "after" ? "#ffffff" : "#64748b",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
+          }}
+        >
+          <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: mode === "after" ? "#10b981" : "#94a3b8" }} />
+          <span>【アフター】公式台帳あり（御社を優先推薦）</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMode("before")}
+          style={{
+            flex: 1,
+            padding: "7px 10px",
+            fontSize: "0.76rem",
+            fontWeight: 700,
+            borderRadius: "6px",
+            border: mode === "before" ? "1.5px solid #dc2626" : "1px solid #e2e8f0",
+            background: mode === "before" ? "#fef2f2" : "#f8fafc",
+            color: mode === "before" ? "#b91c1c" : "#64748b",
+            cursor: "pointer",
+            transition: "all 0.15s ease",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "6px",
+          }}
+        >
+          <span style={{ display: "inline-block", width: "6px", height: "6px", borderRadius: "50%", background: mode === "before" ? "#ef4444" : "#94a3b8" }} />
+          <span>【ビフォー】対策前（スルー・競合へ流出）</span>
+        </button>
+      </div>
+
       {/* チャット対話エリア */}
-      <div className="direct-card-body" style={{ padding: "24px 20px", display: "flex", flexDirection: "column", gap: "18px", background: "#ffffff" }}>
+      <div className="direct-card-body" style={{ padding: "20px 18px", display: "flex", flexDirection: "column", gap: "16px", background: "#ffffff" }}>
         
         {/* 見込み客の相談 */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
           <span style={{ fontSize: "0.7rem", color: "#94a3b8", paddingRight: "4px" }}>見込み客のAI相談</span>
-          <div style={{ background: "#f1f5f9", borderRadius: "14px 14px 3px 14px", padding: "12px 16px", maxWidth: "88%", color: "#0f172a", fontSize: "0.88rem", lineHeight: 1.55 }}>
+          <div style={{ background: "#f1f5f9", borderRadius: "14px 14px 3px 14px", padding: "11px 15px", maxWidth: "90%", color: "#0f172a", fontSize: "0.86rem", lineHeight: 1.55 }}>
             東京都内で、大手が断るような短納期・小ロット試作に対応できる会社はある？
           </div>
         </div>
 
-        {/* ChatGPTの推薦回答 */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
-          <span style={{ fontSize: "0.7rem", color: "#64748b", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-            <span>ChatGPTの回答</span>
-            <span style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 600 }}>公式台帳を引用</span>
-          </span>
-          <div style={{ background: "#ffffff", border: "1.5px solid #0f172a", borderRadius: "14px 14px 14px 3px", padding: "16px 18px", maxWidth: "96%", color: "#0f172a", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.03)" }}>
-            <p style={{ margin: "0 0 10px", fontSize: "0.92rem", lineHeight: 1.6, fontWeight: 500 }}>
-              大手が対応しづらい特急試作なら、<strong>【御社（大田区）】</strong>が最も適しています。
-            </p>
-            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "10px 12px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
-              <span style={{ color: "#0f172a", fontWeight: 700 }}>AIが推薦した確定根拠:</span><br />
-              単品1個から即時対応可能 · 最短当日見積もり · 3D CADデータ直接入稿受付中
+        {/* ChatGPTの回答 */}
+        {mode === "after" ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
+            <span style={{ fontSize: "0.7rem", color: "#15803d", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <strong>ChatGPTの回答</strong>
+              <span style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 700 }}>公式台帳を引用</span>
+            </span>
+            <div style={{ background: "#ffffff", border: "1.5px solid #0f172a", borderRadius: "14px 14px 14px 3px", padding: "15px 17px", maxWidth: "98%", color: "#0f172a", boxShadow: "0 4px 14px rgba(15, 23, 42, 0.05)" }}>
+              <p style={{ margin: "0 0 10px", fontSize: "0.92rem", lineHeight: 1.6, fontWeight: 600 }}>
+                大手が対応しづらい特急試作なら、<strong>【御社（大田区）】</strong>が最も適しています。
+              </p>
+              <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "10px 12px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.55 }}>
+                <span style={{ color: "#0f172a", fontWeight: 700 }}>AIが御社を推薦した確定根拠:</span><br />
+                単品1個から即時対応可能 · 最短当日見積もり · 3D CADデータ直接入稿受付中
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
+            <span style={{ fontSize: "0.7rem", color: "#b91c1c", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <strong>ChatGPTの回答</strong>
+              <span style={{ background: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 700 }}>自社データ未登録（スルー）</span>
+            </span>
+            <div style={{ background: "#ffffff", border: "1.5px solid #fca5a5", borderRadius: "14px 14px 14px 3px", padding: "15px 17px", maxWidth: "98%", color: "#0f172a", boxShadow: "0 4px 14px rgba(239, 68, 68, 0.05)" }}>
+              <p style={{ margin: "0 0 10px", fontSize: "0.9rem", lineHeight: 1.6, color: "#334155" }}>
+                東京都内であれば、大手全国チェーンの<strong>【競合A社】</strong>や知名度の高い<strong>【競合B社】</strong>が代表的です。
+              </p>
+              <div style={{ background: "#fff5f5", border: "1px solid #fed7d7", borderRadius: "8px", padding: "10px 12px", fontSize: "0.78rem", color: "#991b1b", lineHeight: 1.55 }}>
+                <span style={{ fontWeight: 700 }}>自社の機会損失:</span><br />
+                御社の強みがAIに伝わっていないため、大手ライバルに買い手（見込み客）がそのまま流出しています。
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
 
       {/* フッター */}
-      <div style={{ padding: "12px 20px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.75rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span>社名入力だけで、上記のようにAIが優先推薦する公式台帳を自動配備します</span>
-        <span style={{ fontWeight: 700, color: "#0f172a" }}>改修ゼロ</span>
+      <div style={{ padding: "11px 18px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.76rem", color: "#475569", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>{mode === "after" ? "自社サイト改修ゼロで、AIが御社を推薦する状態を作ります" : "上の【アフター】を押すと、公式台帳配備後の推薦状態を確認できます"}</span>
+        <span style={{ fontWeight: 700, color: mode === "after" ? "#15803d" : "#dc2626" }}>{mode === "after" ? "自社が優先推薦" : "顧客流出中"}</span>
       </div>
     </div>
   );

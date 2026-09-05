@@ -102,27 +102,125 @@ svg { width: 1.1em; height: 1.1em; }
 .landing-hero-form-box { max-width: 100%; margin: 0; }
 .landing-hero .scan-form { margin-top: 0; width: 100%; }
 
-/* 極めて静謐で清潔な1行信頼シグナル（Apple/Stripe水準） */
-.hero-trust-bar {
+/* 重厚で端正な3大安心マイクロバッジ（Stripe/Apple水準） */
+.hero-trust-badges {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 14px;
-  font-size: 0.82rem;
-  color: #64748b;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
 }
-.hero-trust-bar .trust-item {
+.trust-badge {
   display: inline-flex;
   align-items: center;
-  font-weight: 500;
-  color: #475569;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
-.hero-trust-bar .trust-dot {
-  color: #cbd5e1;
-  font-weight: 700;
+.trust-badge .badge-check {
+  color: #16a34a;
+  flex-shrink: 0;
 }
 
-.hero-sample-link-wrapper { margin-top: 12px; }
+/* 洗練されたInstagram・自社URL・主力商品オプショントグル */
+.scan-extra-section {
+  margin-top: 12px;
+  text-align: left;
+}
+.scan-extra-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.scan-extra-toggle:hover {
+  color: #0284c7;
+}
+.scan-extra-toggle .toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+.scan-extra-card {
+  margin-top: 10px;
+  padding: 16px 18px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+  animation: fadeInDown 0.2s ease-out;
+}
+.extra-card-header strong {
+  font-size: 0.84rem;
+  color: #0f172a;
+  display: block;
+  margin-bottom: 3px;
+}
+.extra-card-header p {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+.scan-extra-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.scan-extra-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.scan-extra-field label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #334155;
+}
+.scan-extra-field input {
+  font-size: 0.82rem;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.15s ease;
+}
+.scan-extra-field input:focus {
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+}
+
+@media (max-width: 768px) {
+  .scan-extra-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-sample-link-wrapper { margin-top: 14px; }
 .hero-sample-link { display: inline-flex; align-items: center; color: #0284c7; font-size: 0.84rem; font-weight: 600; text-decoration: none; }
 .hero-sample-link span, .final-secondary-link span { margin-left: 6px; transition: transform .15s ease; }
 .hero-sample-link:hover { text-decoration: underline; }

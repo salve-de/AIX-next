@@ -38,13 +38,26 @@ export default function HomePage() {
                 <ScanForm />
               </div>
 
-              {/* 1行のミニマル安心シグナル */}
-              <div className="hero-trust-bar" aria-label="サービスの特長">
-                <span className="trust-item">所要10秒</span>
-                <span className="trust-dot" aria-hidden="true">·</span>
-                <span className="trust-item">自社サイト改修ゼロ</span>
-                <span className="trust-dot" aria-hidden="true">·</span>
-                <span className="trust-item">完全無料</span>
+              {/* 3大安心マイクロバッジ（Stripe/Apple水準の重厚な信頼シグナル） */}
+              <div className="hero-trust-badges" aria-label="サービスの特長">
+                <div className="trust-badge">
+                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                  <span>所要10秒（社名のみ）</span>
+                </div>
+                <div className="trust-badge">
+                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                  <span>自社サイト改修ゼロ</span>
+                </div>
+                <div className="trust-badge">
+                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M3 8.5L6.5 12L13 4" />
+                  </svg>
+                  <span>完全無料・自動課金なし</span>
+                </div>
               </div>
 
               {/* 診断見本リンク */}
@@ -186,14 +199,27 @@ export default function HomePage() {
           <span className="pill-badge">AI新時代に取り残されないために</span>
           <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
           <ScanForm compact />
-          <div className="hero-trust-bar" style={{ justifyContent: "center", marginTop: "16px" }} aria-label="サービスの特長">
-            <span className="trust-item">所要10秒</span>
-            <span className="trust-dot" aria-hidden="true">·</span>
-            <span className="trust-item">自社サイト改修ゼロ</span>
-            <span className="trust-dot" aria-hidden="true">·</span>
-            <span className="trust-item">完全無料</span>
+          <div className="hero-trust-badges" style={{ justifyContent: "center", marginTop: "18px" }} aria-label="サービスの特長">
+            <div className="trust-badge">
+              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 8.5L6.5 12L13 4" />
+              </svg>
+              <span>所要10秒（社名のみ）</span>
+            </div>
+            <div className="trust-badge">
+              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 8.5L6.5 12L13 4" />
+              </svg>
+              <span>自社サイト改修ゼロ</span>
+            </div>
+            <div className="trust-badge">
+              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 8.5L6.5 12L13 4" />
+              </svg>
+              <span>完全無料・自動課金なし</span>
+            </div>
           </div>
-          <div style={{ marginTop: "14px" }}>
+          <div style={{ marginTop: "16px" }}>
             <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>
           </div>
         </div>
