@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  buildMonthlyValueReport,
   detectCompetitorWebChanges,
   evaluateAutoActionImpact,
   planAndExecuteAutoActions,
@@ -143,3 +144,72 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
   assert.equal(impacts[0].providerAgreement.openai, "improved");
   assert.ok(impacts[0].summary.includes("+2問でAI推薦枠の回復を観測"));
 });
+
+test("buildMonthlyValueReport generates complete executive monthly summary without asking for actions", () => {
+  const latest = {
+    observations: [{ promptId: "p1", ownRecommended: true }, { promptId: "p2", ownRecommended: true }],
+    citations: [{ domain: "example.com" }, { domain: "aoba.example" }],
+  };
+  const previous = {
+    observations: [{ promptId: "p1", ownRecommended: false }],
+    citations: [{ domain: "example.com" }],
+  };
+
+  const report = buildMonthlyValueReport({
+    latest,
+    previous,
+    competitorEvents: [
+      {
+        id: "evt_1",
+        competitorName: "大手ライバル",
+        sourceUrl: "https://rival.example",
+        eventType: "speed_claim_added",
+        summary: "ライバルが新訴求",
+        dimensions: ["スピード"],
+        extractedFacts: ["即日対応"],
+        affectedPromptIds: ["p1"],
+        severity: "medium",
+        confidence: 0.9,
+        detectedAt: "2026-09-01T00:00:00Z",
+      },
+    ],
+    autoActions: [
+      {
+        id: "act_1",
+        triggerEventIds: ["evt_1"],
+        actionType: "profile_fact_updated",
+        factLabel: "対応スピード",
+        factValue: "迅速対応",
+        sourceUrl: "https://aoba.example",
+        affectedPromptIds: ["p1"],
+        summary: "自社一次情報から反映",
+        executedAt: "2026-09-02T00:00:00Z",
+      },
+    ],
+    impacts: [
+      {
+        id: "imp_1",
+        actionId: "act_1",
+        afterScanId: "scan_latest",
+        observedUplift: 1,
+        affectedPromptCount: 1,
+        providerAgreement: { openai: "improved", gemini: "improved", perplexity: "unchanged" },
+        causalConfidence: "high",
+        summary: "+1問の回復を観測",
+        measuredAt: "2026-09-03T00:00:00Z",
+      },
+    ],
+    now: "2026-09-05T00:00:00Z",
+  });
+
+  assert.equal(report.period, "2026年9月度");
+  assert.ok(report.aiObservationCount >= 8);
+  assert.equal(report.competitorChangeCount, 1);
+  assert.equal(report.citationChangeCount, 1);
+  assert.equal(report.profileUpdateCount, 1);
+  assert.equal(report.autoActionCount, 1);
+  assert.ok(report.observedUpliftSummary.includes("+1問のAI推薦枠"));
+  assert.ok(report.topRisks.length > 0);
+  assert.ok(report.upcomingTracking.length > 0);
+});
+

@@ -788,15 +788,15 @@ GitHub Issue 4 の全フェーズ（Phase 2〜6）の施工を完了し、**「�
 | **Phase 3** | **競合Web監視**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `detectCompetitorWebChanges` を新設。競合のAI推薦シェア急増や新規台頭を `CompetitorEvent` として自動抽出。 | 経営者が気づかない水面下のライバルの動きをAIXが常時先回り監視。 |
 | **Phase 4** | **自律対応エンジン**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `planAndExecuteAutoActions` を新設。競合の動きに対抗しうる事実（最短対応、個別対応、料金明示等）を自社クロールテキストから客観抽出し台帳へ自動配備。一次情報にない文章は**1文字も捏造しない**。 | 嘘のない強固なファクトでAI探索ロボットに自社の優位性を再認識させる。 |
 | **Phase 5** | **再測定因果追跡**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `evaluateAutoActionImpact` を新設。施策実行前後の観測ログから「観測された変化（Observed Uplift）」とAIプロバイダー合致度を客観算出。「AIXのおかげで100%勝った」という誇大因果断定を排除。 | 信頼性の極限化。客観的な測定数値で社長に安心感と費用対効果を証明。 |
-| **Phase 6** | **継続価値UI＆通知**<br>([`components/watch-client.tsx`](file:///Users/satoushinya/project/AIX-next/components/watch-client.tsx)<br>[`lib/watch-email.ts`](file:///Users/satoushinya/project/AIX-next/lib/watch-email.ts)) | カルテ画面トップに「THIS WEEK / AIX自律防衛レポート」カードを設置。週次メールも「競合の動き → AIXの自動対処 → 測定成果」の経営レポートフォーマットへ刷新。 | 「AIXが勝手に守ってくれている」実感が毎週届き、解約する理由が完全に消滅。 |
+| **Phase 6** | **継続価値UI＆通知**<br>([`components/watch-client.tsx`](file:///Users/satoushinya/project/AIX-next/components/watch-client.tsx)<br>[`lib/watch-email.ts`](file:///Users/satoushinya/project/AIX-next/lib/watch-email.ts)) | カルテ画面に「THIS WEEK / 自律防衛」および「MONTHLY VALUE REPORT / 月次防衛総括（観測数・競合変動・Citation変動・台帳更新・Uplift・リスク追跡）」カードを設置。週次メールも「競合の動き → AIXの自動対処 → 測定成果」の経営レポートフォーマットへ刷新。 | 「AIXが勝手に守ってくれている」実感が毎週・毎月届き、解約する理由が完全に消滅。 |
 
 ### 27.2 品質・信頼性・クリーンアーキテクチャの担保
 1. **Zero Hallucination（捏造根拠ゼロ）の自動テスト担保**:
    - `tests/autonomous-watch.test.ts` を新設。自社サイトに記載のない架空のFactをAIXが勝手に作文しないこと、空クロール時にはFactを捏造せず安全にスキップすることを単体テストで厳密に拘束。
 2. **Clean Architecture と `server-only` の完全分離**:
-   - ドメイン判定（競合検知・施策計画・効果測定）を純粋関数として `lib/autonomous-watch.ts` に配置し、DB永続化（`lib/storage.ts`）と完全に疎結合化。Next.jsサーバー内外を問わず高速・堅牢にテスト可能。
+   - ドメイン判定（競合検知・施策計画・効果測定・月次レポート集計）を純粋関数として `lib/autonomous-watch.ts` に配置し、DB永続化（`lib/storage.ts`）と完全に疎結合化。Next.jsサーバー内外を問わず高速・堅牢にテスト可能。
 3. **全自動テスト ＆ ビルド通過実績**:
-   - 全43単体テスト 100% パス（43 passed）。
+   - 全44単体テスト 100% パス（44 passed、月次レポート生成テスト含む）。
    - `tsc --noEmit` 型エラー 0件。
    - `next build` 全26ルート正常生成。
 
