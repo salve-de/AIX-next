@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
-import { DirectProfileEditor } from "@/components/direct-profile-editor";
 import { buildDynamicScanResult, sampleResult } from "@/lib/sample-data";
 import { buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
 import { getActivePublicProfileBySlug } from "@/lib/storage";
@@ -255,9 +254,19 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <span className="hero-status-tag">公式確認済</span>
           <span className="hero-sync-date">最終更新：{dateLabel(profile.updatedAt)}</span>
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", margin: "16px 0 12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", margin: "16px 0 12px" }}>
           <h1 style={{ margin: 0 }}>{profile.brandName}</h1>
-          <DirectProfileEditor profile={profile} />
+          {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
+            <a
+              href={profile.targetUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="button button-secondary"
+              style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none" }}
+            >
+              公式サイトを開く ↗
+            </a>
+          ) : null}
         </div>
         <div className="public-company-url-box" style={{ marginTop: "12px", background: "#f8fafc", border: "1.5px solid #0284c7", borderRadius: "8px", padding: "14px 18px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
@@ -583,8 +592,15 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             貴社がAIに推薦されているか10秒で無料診断する <ArrowIcon />
           </Link>
         </div>
-        <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px" }}>
-          【ご案内】本台帳の記載事項は確認時点における公的登録情報および公式サイトの公開事実に基づきます。最新の受付状況や詳細は公式サイトをご確認ください。
+        <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
+          【免責事項および掲載照会】本台帳の記載事項は確認時点（最終更新日）における公式サイトの公開事実に基づき、AIクローラー向けに客観的事実を整理したスナップショットです。手動による編集・改ざんは一切行われません。掲載内容の確認・非公開（掲載停止）のご要望、最新情報への更新照会は{" "}
+          <a
+            href={`mailto:info@aix.jp?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公式情報台帳について`)}`}
+            style={{ color: "#0284c7", textDecoration: "underline" }}
+          >
+            公式窓口（info@aix.jp）
+          </a>
+          {" "}までご連絡ください。速やかに確認・対応いたします。
         </p>
       </div>
     </footer>
