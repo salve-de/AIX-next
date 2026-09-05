@@ -107,21 +107,131 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 4. 実業の変革事例 ＆ 手に入る成果物 */}
+      {/* 4. 無料診断で手に入る【2大確定成果物】 */}
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">手に入る成果物と実例</span>
-          <h2>なぜAIは御社をスルーしているのか？<br />どうすれば推薦候補に選ばれるかを完全可視化。</h2>
-          <p>見込み客がAIに相談する質問ごとに、なぜ大手ライバルが先に出たのか、御社の何をAIに教えれば推薦候補に入りやすくなるのかを明確に提示します。</p>
+          <span className="pill-badge">無料診断で手に入るもの</span>
+          <h2>社名を入れるだけ（所要10秒）。<br />あなたの手元に届く「2つの確定納品物」</h2>
+          <p>自社ホームページの改修は一切不要。AIが御社をスルーしている原因を突き止める「診断カルテ」と、<br />ChatGPTが明日から御社を優先推薦するための「AI公式確定台帳」が即日手に入ります。</p>
         </div>
 
-        {/* 診断で手に入る3大成果物プレビュー */}
-        <div style={{ marginBottom: "40px" }}>
+        {/* 診断で手に入る2大確定成果物プレビュー */}
+        <div style={{ display: "grid", gap: "28px", marginBottom: "40px" }}>
+          {/* 成果物 01：AI診断カルテ */}
           <ProductOutputPreview />
-          <div className="center-link" style={{ marginTop: "16px" }}>
-            <Link className="text-button" href="/result?sample=1">診断カルテの実物見本を見る <span aria-hidden="true">→</span></Link>
-          </div>
+
+          {/* 成果物 02：AI公式推薦台帳 */}
+          <figure
+            style={{
+              margin: 0,
+              background: "#ffffff",
+              border: "1px solid #cbd5e1",
+              borderRadius: "12px",
+              boxShadow: "0 4px 20px -2px rgba(15, 23, 42, 0.08)",
+              overflow: "hidden",
+            }}
+            aria-label="成果物02：自社専用 AI公式台帳"
+          >
+            {/* ヘッダー */}
+            <div
+              style={{
+                background: "#0f172a",
+                color: "#ffffff",
+                padding: "12px 20px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "8px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span
+                  style={{
+                    background: "#16a34a",
+                    color: "#ffffff",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
+                    padding: "2px 8px",
+                    borderRadius: "3px",
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  成果物 02
+                </span>
+                <strong style={{ fontSize: "0.88rem", letterSpacing: "-0.01em" }}>
+                  自社専用 AI公式推薦台帳（即日自動配備）
+                </strong>
+              </div>
+              <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                ※ 自社サイト改修ゼロ・ブログ更新ゼロでネット上に常時公開
+              </span>
+            </div>
+
+            {/* 内容 */}
+            <div style={{ padding: "24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", display: "block", marginBottom: "4px" }}>
+                  主要生成AI（ChatGPT / Gemini / Perplexity）専用の公認データ拠点
+                </span>
+                <h4 style={{ margin: "0 0 10px", fontSize: "1.15rem", color: "#0f172a", fontWeight: 800, lineHeight: 1.4 }}>
+                  AIが「この会社をおすすめして間違いがない」と確信する確定仕様を配備
+                </h4>
+                <p style={{ margin: "0 0 16px", fontSize: "0.82rem", color: "#475569", lineHeight: 1.7 }}>
+                  カルテで特定された「自社の真の強み（例：親身な個別伴走）」を、AIが一番好む構造化規格でネット上に即日公開。自社サイトを1行も触ることなく、明日からAIが優先推薦できる環境が整います。
+                </p>
+                <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+                  <Link
+                    href="/ai/company/aoba-souzoku?sample=1"
+                    style={{
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      color: "#ffffff",
+                      background: "#0f172a",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    実際の公式台帳を見る ➔
+                  </Link>
+                  <Link
+                    href="/result?sample=1"
+                    style={{
+                      fontSize: "0.82rem",
+                      fontWeight: 700,
+                      color: "#0f172a",
+                      background: "#f1f5f9",
+                      border: "1px solid #cbd5e1",
+                      padding: "8px 16px",
+                      borderRadius: "4px",
+                      textDecoration: "none",
+                    }}
+                  >
+                    診断カルテの実物を見る
+                  </Link>
+                </div>
+              </div>
+
+              {/* 右側：仕様ダイジェスト */}
+              <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "18px 20px" }}>
+                <span style={{ fontSize: "0.72rem", color: "#64748b", display: "block", marginBottom: "8px", fontWeight: 700 }}>
+                  台帳に記録される確定仕様（抜粋）
+                </span>
+                <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "0.8rem", color: "#334155", lineHeight: 1.8 }}>
+                  <li><strong>事業者名</strong>：あおば相続法務事務所</li>
+                  <li><strong>AI認定看板</strong>：親身な個別伴走・複雑案件特化</li>
+                  <li><strong>一次検証証跡</strong>：公的資格番号・面談実績認証済</li>
+                  <li><strong>AI連携形式</strong>：Schema.org JSON-LD / llms.txt 完全準拠</li>
+                </ul>
+              </div>
+            </div>
+          </figure>
         </div>
 
         {/* わかりやすい実業の変革事例 */}

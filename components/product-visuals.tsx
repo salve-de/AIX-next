@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
@@ -202,13 +203,225 @@ export function ChatGptComparisonVisual() {
 }
 
 export function ProductOutputPreview() {
-  return <figure className="demo-window" aria-label="AIX診断結果のサンプル">
-    <header className="demo-window-bar"><span className="window-dots"><i /><i /><i /></span><strong>AI推薦・診断カルテ</strong><small>診断結果の例</small></header>
-    <div className="demo-window-toolbar"><div><small>対象</small><strong>あおば相続法務事務所</strong></div><span>買い手の比較質問を12件確認</span></div>
-    <div className="demo-outcome"><div><small>AIの候補に入った質問</small><strong>12問中 <b>2問</b></strong><span>ライバルが優先された質問を特定</span></div><p>AIは「あおば相続法務事務所」より先に「大手全国展開グループ」を勧めました。どの相談で選ばれなかったか、理由と改善方針を示します。</p></div>
-    <div className="demo-metrics"><div><small>自社が候補に入った質問</small><strong>2 / 12</strong></div><div><small>先に選ばれた競合</small><strong>大手グループ <em>8 / 12</em></strong></div><div className="demo-negative"><small>推薦を獲得できる余地</small><strong>10 / 12</strong></div></div>
-      <div className="demo-result-grid"><div className="demo-question"><small>見込み客がAIに聞いた相談質問</small><h3>「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」</h3><div className="demo-winner-row"><span>先に選ばれた競合<strong>大手全国展開グループ</strong></span><span>自社<strong className="demo-lost">候補外</strong></span></div><p>大手は知名度と広告量で先行。あおば相続法務事務所の個別伴走実績がAIに構造化されて伝わっていませんでした。</p></div><div className="demo-next"><div><EvidenceIcon /><span><small>競合が選ばれた理由</small><strong>知名度による機械的選定</strong></span></div><div><TrendIcon /><span><small>推薦枠獲得への改善策</small><strong>「親身な個別伴走」を公式DBに登録</strong></span><ArrowIcon /></div></div></div>
-  </figure>;
+  return (
+    <figure
+      className="deliverable-card-preview"
+      style={{
+        margin: 0,
+        background: "#ffffff",
+        border: "1px solid #cbd5e1",
+        borderRadius: "12px",
+        boxShadow: "0 4px 20px -2px rgba(15, 23, 42, 0.08)",
+        overflow: "hidden",
+      }}
+      aria-label="成果物01：AI診断カルテの実物サンプル"
+    >
+      {/* 成果物ラベルヘッダー */}
+      <div
+        style={{
+          background: "#0f172a",
+          color: "#ffffff",
+          padding: "12px 20px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "8px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <span
+            style={{
+              background: "#0284c7",
+              color: "#ffffff",
+              fontSize: "0.72rem",
+              fontWeight: 800,
+              padding: "2px 8px",
+              borderRadius: "3px",
+              letterSpacing: "0.04em",
+            }}
+          >
+            成果物 01
+          </span>
+          <strong style={{ fontSize: "0.88rem", letterSpacing: "-0.01em" }}>
+            自社専用 AI診断カルテ（即時発行）
+          </strong>
+        </div>
+        <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+          ※ 入力後、10秒でこの精密レポートが画面に生成されます
+        </span>
+      </div>
+
+      {/* 対象企業と診断サマリー */}
+      <div
+        style={{
+          padding: "20px 24px",
+          borderBottom: "1px solid #e2e8f0",
+          background: "#f8fafc",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "14px",
+        }}
+      >
+        <div>
+          <span style={{ display: "block", fontSize: "0.72rem", color: "#64748b", fontWeight: 700, marginBottom: "2px" }}>
+            診断対象企業
+          </span>
+          <strong style={{ fontSize: "1.25rem", color: "#0f172a", letterSpacing: "-0.02em" }}>
+            あおば相続法務事務所
+          </strong>
+          <span style={{ marginLeft: "12px", fontSize: "0.78rem", color: "#64748b" }}>
+            （買い手の相談質問 12問をAIで実測）
+          </span>
+        </div>
+
+        {/* わかりやすい1行結果 */}
+        <div
+          style={{
+            background: "#fee2e2",
+            border: "1px solid #fca5a5",
+            padding: "8px 16px",
+            borderRadius: "6px",
+            display: "flex",
+            alignItems: "baseline",
+            gap: "8px",
+          }}
+        >
+          <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#991b1b" }}>
+            現状のAI観測結果：
+          </span>
+          <span style={{ fontSize: "1.05rem", fontWeight: 800, color: "#991b1b" }}>
+            12問中 10問で大手チェーンへ顧客流出
+          </span>
+        </div>
+      </div>
+
+      {/* 顧客流出の生々しい実態（1問抜粋） */}
+      <div style={{ padding: "24px" }}>
+        <div style={{ marginBottom: "16px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: "0.72rem",
+              fontWeight: 800,
+              color: "#64748b",
+              letterSpacing: "0.04em",
+              marginBottom: "6px",
+            }}
+          >
+            流出事例（見込み客がChatGPTにした質問）
+          </span>
+          <h4
+            style={{
+              margin: 0,
+              fontSize: "1.1rem",
+              fontWeight: 800,
+              color: "#0f172a",
+              lineHeight: 1.4,
+            }}
+          >
+            「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」
+          </h4>
+        </div>
+
+        {/* AIの回答判定（対比） */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "14px",
+            marginBottom: "18px",
+          }}
+        >
+          {/* ライバル */}
+          <div
+            style={{
+              background: "#ffffff",
+              border: "1.5px solid #cbd5e1",
+              borderRadius: "8px",
+              padding: "16px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b" }}>AIが優先推薦した会社</span>
+              <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#16a34a", background: "#f0fdf4", padding: "2px 6px", borderRadius: "3px" }}>優先推薦</span>
+            </div>
+            <strong style={{ fontSize: "1rem", color: "#0f172a", display: "block", marginBottom: "4px" }}>
+              大手全国展開グループ
+            </strong>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#64748b", lineHeight: 1.5 }}>
+              理由：知名度とネット広告量により機械的に選定。
+            </p>
+          </div>
+
+          {/* 自社 */}
+          <div
+            style={{
+              background: "#fff1f2",
+              border: "1.5px solid #fecdd3",
+              borderRadius: "8px",
+              padding: "16px",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+              <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#9f1239" }}>あおば相続法務事務所</span>
+              <span style={{ fontSize: "0.7rem", fontWeight: 800, color: "#e11d48", background: "#ffffff", padding: "2px 6px", borderRadius: "3px" }}>候補外（スルー）</span>
+            </div>
+            <strong style={{ fontSize: "1rem", color: "#9f1239", display: "block", marginBottom: "4px" }}>
+              AIの回答から完全除外
+            </strong>
+            <p style={{ margin: 0, fontSize: "0.78rem", color: "#881337", lineHeight: 1.5 }}>
+              理由：個別伴走の実績や強みがAIに伝わっておらず素通り。
+            </p>
+          </div>
+        </div>
+
+        {/* 改善策の処方箋 */}
+        <div
+          style={{
+            background: "#f0fdf4",
+            border: "1px solid #bbf7d0",
+            borderRadius: "8px",
+            padding: "14px 18px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+          }}
+        >
+          <div>
+            <span style={{ fontSize: "0.72rem", fontWeight: 800, color: "#16a34a", display: "block", marginBottom: "2px" }}>
+              カルテが示す処方箋（改善方針）
+            </span>
+            <strong style={{ fontSize: "0.9rem", color: "#14532d" }}>
+              「親身な個別伴走」を自社の公認看板としてAI公式台帳に登録すれば、推薦奪還が可能
+            </strong>
+          </div>
+          <Link
+            href="/result?sample=1"
+            style={{
+              fontSize: "0.8rem",
+              fontWeight: 700,
+              color: "#0f172a",
+              background: "#ffffff",
+              border: "1px solid #cbd5e1",
+              padding: "6px 14px",
+              borderRadius: "4px",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+            }}
+          >
+            実際のカルテ画面を見る ➔
+          </Link>
+        </div>
+      </div>
+    </figure>
+  );
 }
 
 export function ProductProcessVisual() {
