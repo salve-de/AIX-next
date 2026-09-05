@@ -122,6 +122,7 @@ function watchFromRow(row: any): WatchRecord {
     competitorEvents: row.competitor_events || undefined,
     autoActions: row.auto_actions || undefined,
     autoActionImpacts: row.auto_action_impacts || undefined,
+    monthlyReport: row.monthly_report || undefined,
     nextRunAt: row.next_run_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -485,7 +486,7 @@ export function deleteMemoryWatchData(token: string, scanId: string) {
   return true;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "competitorEvents" | "autoActions" | "autoActionImpacts" | "nextRunAt">>) {
+export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "competitorEvents" | "autoActions" | "autoActionImpacts" | "monthlyReport" | "nextRunAt">>) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
@@ -501,6 +502,7 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
     if (patch.competitorEvents !== undefined) body.competitor_events = patch.competitorEvents;
     if (patch.autoActions !== undefined) body.auto_actions = patch.autoActions;
     if (patch.autoActionImpacts !== undefined) body.auto_action_impacts = patch.autoActionImpacts;
+    if (patch.monthlyReport !== undefined) body.monthly_report = patch.monthlyReport;
     if (patch.nextRunAt !== undefined) body.next_run_at = patch.nextRunAt;
     const rows = await supabase<any[]>(`aix_next_watches?token=eq.${encodeURIComponent(token)}`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify(body) });
     return rows[0] ? watchFromRow(rows[0]) : null;

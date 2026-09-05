@@ -8,7 +8,12 @@ import { buildScanResult } from "@/lib/scan-result";
 import { addFactToPublicProfile, refreshPublicProfileFromScan, updateWatch } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
 import { createWatchRun, finalizeWatchRun, getActiveWatchRun, mergeObservations, updateWatchRun } from "@/lib/watch-runs";
-import { detectCompetitorWebChanges, evaluateAutoActionImpact, planAndExecuteAutoActions } from "@/lib/autonomous-watch";
+import {
+  buildMonthlyValueReport,
+  detectCompetitorWebChanges,
+  evaluateAutoActionImpact,
+  planAndExecuteAutoActions,
+} from "@/lib/autonomous-watch";
 import type { BuyerPrompt, WatchMeasurementRun, WatchRecord } from "@/lib/types";
 
 const DAY_MS = 86_400_000;
@@ -127,10 +132,11 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     await refreshPublicProfileFromScan(watch.latest.targetUrl || result.targetUrl, result).catch(() => null);
   }
 
-  // Phase 3〜5: 競合Web監視、自律対応、再測定検証
+  // Phase 3〜5: 競合Web監視、自律対応、再測定検証、月次レポート生成
   let competitorEvents = watch.competitorEvents;
   let autoActions = watch.autoActions;
   let autoActionImpacts = watch.autoActionImpacts;
+  let monthlyReport = watch.monthlyReport;
 
   if (watch.paid) {
     const detectedEvents = detectCompetitorWebChanges(result, previous);
@@ -150,6 +156,14 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     if (detectedEvents.length) competitorEvents = detectedEvents;
     if (planned.actions.length) autoActions = planned.actions;
     if (impacts.length) autoActionImpacts = impacts;
+
+    monthlyReport = buildMonthlyValueReport({
+      latest: result,
+      previous,
+      competitorEvents,
+      autoActions,
+      impacts: autoActionImpacts,
+    });
   }
 
   const expiresAfterRun = trialExpiredAfterThisRun(watch);
@@ -163,6 +177,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     competitorEvents,
     autoActions,
     autoActionImpacts,
+    monthlyReport,
   })) || finalized;
 
   await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });

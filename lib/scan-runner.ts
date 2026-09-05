@@ -24,7 +24,7 @@ export async function runScan(input: {
 
   await emit("validating", 5, "サイトにつながるか確認しています。", new URL(url).hostname);
   await emit("crawling", 12, "サービスや導入事例など、会社の公開ページを読んでいます。");
-  const crawl = await crawlCompanySite(url, panelKind === "free" ? 24 : 40);
+  const crawl = await crawlCompanySite(url, panelKind === "free" ? 12 : 36);
 
   await emit("discovering", 30, "比較される市場と会社を整理しています。", `公開ページ ${crawl.pages.length}件`);
   const discovery = await discoverCompany(url, crawl.pages);

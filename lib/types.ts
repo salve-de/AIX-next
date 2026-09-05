@@ -470,6 +470,18 @@ export type AutoActionImpact = {
   measuredAt: string;
 };
 
+export type MonthlyValueReport = {
+  period: string;
+  aiObservationCount: number;
+  competitorChangeCount: number;
+  citationChangeCount: number;
+  profileUpdateCount: number;
+  autoActionCount: number;
+  observedUpliftSummary: string;
+  topRisks: string[];
+  upcomingTracking: string[];
+};
+
 export type WatchStatus = "trial" | "active" | "past_due" | "cancelled" | "expired";
 
 export type WatchRecord = {
@@ -489,6 +501,7 @@ export type WatchRecord = {
   competitorEvents?: CompetitorEvent[];
   autoActions?: AutoAction[];
   autoActionImpacts?: AutoActionImpact[];
+  monthlyReport?: MonthlyValueReport;
   nextRunAt: string;
   createdAt: string;
   updatedAt: string;
