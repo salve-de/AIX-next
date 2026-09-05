@@ -3,7 +3,7 @@ import { ArrowIcon } from "@/components/icons";
 import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { ChatGptComparisonVisual, HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
+import { HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
 import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
 import { GoogleDeclineProblemSection } from "@/components/google-decline-problem-section";
 import { ZeroEffortPromiseSection } from "@/components/zero-effort-promise-section";
@@ -39,7 +39,7 @@ export default function HomePage() {
                 <ScanForm />
               </div>
 
-              {/* 3大安心マイクロバッジ（Stripe/Apple水準の重厚な信頼シグナル） */}
+              {/* 3大安心マイクロバッジ */}
               <div className="hero-trust-badges" aria-label="サービスの特長">
                 <div className="trust-badge">
                   <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -79,36 +79,21 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 2. 市場の変化と3大危機：Google検索の衰退 ➔ AI直接相談への大移動 */}
+      {/* 2. なぜ今、対策が必要なのか？（問題の正体・3大危機の自覚） */}
       {/* ================================================================= */}
       <section className="landing-shift-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "28px" }}>
           <span className="pill-badge">なぜ今、対策が必要なのか</span>
           <h2>「Google検索」が終わり、顧客は「AIへの直接相談」へ移行しています</h2>
-          <p>AI専用の確定データを持たない企業は、AIの回答候補から素通りされてしまいます。<br />自社サイト改修ゼロで公式台帳を配備し、AI新時代において自社が正しく認知・推薦されやすい環境を整えましょう。</p>
+          <p>AI専用の確定データを持たない企業は、AIの回答候補から素通りされてしまいます。<br />従来のホームページやSEO対策を放置すると起きる、3つの静かな危機をご確認ください。</p>
         </div>
-        
-        {/* Google vs ChatGPT 対比ビジュアル */}
-        <ChatGptComparisonVisual />
 
         {/* 中小企業が直面する3大危機（広告汚染・SEO無力化・客の無言流出） */}
-        <div style={{ marginTop: "24px" }}>
-          <GoogleDeclineProblemSection />
-        </div>
+        <GoogleDeclineProblemSection />
       </section>
 
       {/* ================================================================= */}
-      {/* 3. 完全放置の約束：なぜURLだけで成立するのか？（全自動アーキテクチャ） */}
-      {/* ================================================================= */}
-      <section className="landing-architecture-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        <ZeroEffortPromiseSection />
-        <div style={{ marginTop: "24px" }}>
-          <ProductProcessVisual />
-        </div>
-      </section>
-
-      {/* ================================================================= */}
-      {/* 4. 無料診断で手に入る2つの確定レポート */}
+      {/* 3. 何が手に入るのか？（無料診断で発行される2大確定レポート） */}
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
@@ -118,7 +103,7 @@ export default function HomePage() {
         </div>
 
         {/* 診断で手に入る2つの成果物プレビュー */}
-        <div style={{ display: "grid", gap: "24px", marginBottom: "40px" }}>
+        <div style={{ display: "grid", gap: "24px", marginBottom: "32px" }}>
           {/* 成果物 01：AI診断カルテ */}
           <ProductOutputPreview />
 
@@ -237,80 +222,199 @@ export default function HomePage() {
             </div>
           </figure>
         </div>
+      </section>
 
-        {/* わかりやすい実業の変革事例 */}
-        <div className="story-grid" style={{ marginBottom: "40px" }}>
-          <article className="story-card">
-            <div className="story-card-header">
-              <span className="category">専門士業法人（相続・事業承継）</span>
-              <h3>「広告費ゼロで、AIの推薦候補入りを実現」</h3>
-            </div>
-            <div className="story-query-snippet">
-              <span className="query-snippet-label">相談者のAI検索：</span>
-              <p>「大手の事務的な対応ではなく、親身に相談に乗ってくれる相続の窓口は？」</p>
-            </div>
-            <div className="story-timeline">
-              <div className="story-before">
-                <strong>導入前の状況：</strong><br />
-                AIで「相続の相談窓口」を聞いても大手ばかりが推薦され、自社の存在は認知されていなかった。
-              </div>
-              <div className="story-after">
-                <strong>AIX導入後の変化：</strong><br />
-                自社サイト改修ゼロで公式台帳を開設。「親身な個別伴走体制」をAIに公式登録したことで、AIが『手厚い個別対応の専門家』として認識し、相談の回答候補に挙がりやすくなった。
-              </div>
-            </div>
-          </article>
+      {/* ================================================================= */}
+      {/* 4. ウチの業種だとどうなる？（主要業種シミュレーション） */}
+      {/* ================================================================= */}
+      <VerifiedCompaniesGallery />
 
-          <article className="story-card">
-            <div className="story-card-header">
-              <span className="category">精密板金加工所（試作・小ロット）</span>
-              <h3>「価格競争から脱出。自社の仕様がAIに正確に伝わる状態へ」</h3>
-            </div>
-            <div className="story-query-snippet">
-              <span className="query-snippet-label">発注者のAI検索：</span>
-              <p>「特殊形状の単品試作。短納期で相談できる板金加工会社は？」</p>
-            </div>
-            <div className="story-timeline">
-              <div className="story-before">
-                <strong>導入前の状況：</strong><br />
-                営業マンがおらず、ネットからの問い合わせも値下げを強いられる相見積もりばかりだった。
-              </div>
-              <div className="story-after">
-                <strong>AIX導入後の変化：</strong><br />
-                大手が対応できない「1点からの特急試作」を公式台帳に明記。AIが『短納期に強い工場』として仕様を認識し、開発者への推薦候補に浮上しやすくなった。
-              </div>
-            </div>
-          </article>
-        </div>
-
-        {/* 全国の事業者による公式台帳 開設・運用実績ギャラリー */}
-        <VerifiedCompaniesGallery />
-
-        {/* 定期見守り体制の可視化 */}
-        <div style={{ marginTop: "40px" }}>
-          <div className="landing-watch-grid">
-            <WatchTrendVisual />
-            <div className="section-intro">
-              <span className="pill-badge">専属のAI見守り体制</span>
-              <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
-              <p>ChatGPTなどのAI回答は日々更新されます。自社が推薦候補に入り続けているか、ライバルの回答状況に変化がないかを毎週自動で追跡調査します。</p>
-              <ul className="watch-feature-list">
-                <li><strong>毎週月曜に自動巡回</strong>：主要AIの回答変動を定期チェック</li>
-                <li><strong>ライバル変動アラート</strong>：競合の急浮上や推薦順位の変化を検知</li>
-                <li><strong>安心の完全自動</strong>：社長の手間ゼロで台帳を常に最新維持</li>
-              </ul>
-              <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
-            </div>
-          </div>
+      {/* ================================================================= */}
+      {/* 5. なぜ社長は何もしなくていいのか？（完全放置の約束と4ステップ） */}
+      {/* ================================================================= */}
+      <section className="landing-architecture-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
+        <ZeroEffortPromiseSection />
+        <div style={{ marginTop: "24px" }}>
+          <ProductProcessVisual />
         </div>
       </section>
 
       {/* ================================================================= */}
-      {/* 5. 最終CTAエリア：純白で余白の広いアクションエリア */}
+      {/* 6. 継続的な安心と明朗価格（「これなら払うわ」の安心アンカー） */}
+      {/* ================================================================= */}
+      <section className="landing-watch-pricing-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
+        {/* 毎週の見守りビジュアル */}
+        <div className="landing-watch-grid" style={{ marginBottom: "36px" }}>
+          <WatchTrendVisual />
+          <div className="section-intro">
+            <span className="pill-badge">専属のAI見守り体制</span>
+            <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
+            <p>ChatGPTなどのAI回答は日々更新されます。自社が推薦候補に入り続けているか、ライバルの回答状況に変化がないかを毎週自動で追跡調査します。</p>
+            <ul className="watch-feature-list">
+              <li><strong>毎週月曜に自動巡回</strong>：主要AIの回答変動を定期チェック</li>
+              <li><strong>ライバル変動アラート</strong>：競合の急浮上や推薦順位の変化を検知</li>
+              <li><strong>安心の完全自動</strong>：社長の手間ゼロで台帳を常に最新維持</li>
+            </ul>
+            <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
+          </div>
+        </div>
+
+        {/* 明朗価格アンカーカード（専属営業マン代わりの圧倒的コストパフォーマンス） */}
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #cbd5e1",
+            borderRadius: "8px",
+            padding: "clamp(24px, 3.5vw, 36px)",
+            boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
+          }}
+        >
+          <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 28px" }}>
+            <span className="pill-badge">明朗・適正な価格設定</span>
+            <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#0f172a", margin: "0 0 10px" }}>
+              専属の営業マンを雇う代わりに。<br />いつでも安心できる明朗な料金体系
+            </h3>
+            <p style={{ fontSize: "0.86rem", color: "#475569", margin: 0, lineHeight: 1.65 }}>
+              月額数十万円の高額コンサルやSEO業者への依頼は不要です。まずは無料診断で現状を把握し、必要な場合のみ週次の自動見守りを開始できます。
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: "20px",
+              maxWidth: "840px",
+              margin: "0 auto",
+            }}
+          >
+            {/* プラン 1：無料診断 */}
+            <div
+              style={{
+                background: "#f8fafc",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                padding: "24px 22px",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "4px" }}>
+                現状把握と台帳開設
+              </span>
+              <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0f172a", margin: "0 0 12px" }}>
+                AI推薦 診断カルテ発行
+              </h4>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
+                <span style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a" }}>0円</span>
+                <span style={{ fontSize: "0.76rem", color: "#64748b" }}>（即日発行・完全無料）</span>
+              </div>
+              <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
+                <li>買い手の相談 12問によるAI実測カルテ</li>
+                <li>自社専用 AI公式推薦台帳の自動下書き</li>
+                <li>自社サイト改修ゼロ・ブログ更新不要</li>
+                <li>クレジットカード登録不要・自動課金なし</li>
+              </ul>
+              <a
+                href="#scan"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  background: "#0f172a",
+                  color: "#ffffff",
+                  fontSize: "0.82rem",
+                  fontWeight: 700,
+                  padding: "10px 16px",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                }}
+              >
+                <span>まずは無料で診断する（10秒）</span>
+                <ArrowIcon />
+              </a>
+            </div>
+
+            {/* プラン 2：毎週の自動見守り */}
+            <div
+              style={{
+                background: "#ffffff",
+                border: "1.5px solid #0f172a",
+                borderRadius: "6px",
+                padding: "24px 22px",
+                display: "flex",
+                flexDirection: "column",
+                position: "relative",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: "-10px",
+                  right: "18px",
+                  background: "#0f172a",
+                  color: "#ffffff",
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  padding: "2px 8px",
+                  borderRadius: "3px",
+                  fontFamily: "var(--font-mono, monospace)",
+                }}
+              >
+                完全放置の専属監視
+              </span>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "4px" }}>
+                継続運用・順位追跡
+              </span>
+              <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0f172a", margin: "0 0 12px" }}>
+                毎週の自動見守りプラン
+              </h4>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
+                <span style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a" }}>月額 9,800円</span>
+                <span style={{ fontSize: "0.76rem", color: "#64748b" }}>（税別）</span>
+              </div>
+              <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
+                <li>毎週月曜のAI推薦変動 自動再チェック</li>
+                <li>ライバル企業の急浮上・順位変動アラート</li>
+                <li>AI公式台帳の常時ホスティング・機械同期</li>
+                <li>いつでもワンクリック解約可能（契約縛りなし）</li>
+              </ul>
+              <Link
+                href="/pricing"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  background: "#f8fafc",
+                  border: "1px solid #cbd5e1",
+                  color: "#0f172a",
+                  fontSize: "0.82rem",
+                  fontWeight: 700,
+                  padding: "10px 16px",
+                  borderRadius: "4px",
+                  textDecoration: "none",
+                }}
+              >
+                <span>料金プランの詳細を見る</span>
+                <ArrowIcon />
+              </Link>
+            </div>
+          </div>
+
+          <p style={{ textAlign: "center", fontSize: "0.74rem", color: "#94a3b8", margin: "20px 0 0" }}>
+            ※ 無料診断後に、ご希望の方のみ自動見守りプランにお申し込みいただけます。無料診断から勝手に課金されることは一切ありません。
+          </p>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* 7. 最終CTAエリア：迷いのないワンアクション */}
       {/* ================================================================= */}
       <section className="landing-final-cta">
         <div className="shell">
-          <span className="pill-badge">AI新時代に取り残されないために</span>
+          <span className="pill-badge">所要10秒・自社サイト改修ゼロ</span>
           <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
           <ScanForm compact />
           <div className="hero-trust-badges" style={{ justifyContent: "center", marginTop: "18px" }} aria-label="サービスの特長">
@@ -333,9 +437,6 @@ export default function HomePage() {
               <span>完全無料・自動課金なし</span>
             </div>
           </div>
-          <div style={{ marginTop: "16px" }}>
-            <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>
-          </div>
         </div>
       </section>
 
@@ -343,3 +444,4 @@ export default function HomePage() {
     </main>
   );
 }
+
