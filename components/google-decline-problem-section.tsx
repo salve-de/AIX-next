@@ -26,37 +26,33 @@ export function GoogleDeclineProblemSection() {
           <span
             style={{
               display: "inline-block",
-              background: "#f1f5f9",
-              border: "1px solid #e2e8f0",
-              color: "#475569",
+              background: "#fef2f2",
+              border: "1px solid #fecaca",
+              color: "#991b1b",
               fontSize: "0.72rem",
-              fontFamily: "var(--font-mono, monospace)",
               fontWeight: 700,
               padding: "4px 12px",
               borderRadius: "4px",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              marginBottom: "16px",
+              letterSpacing: "0.04em",
+              marginBottom: "14px",
             }}
           >
-            Market Shift / 市場構造の地殻変動
+            知らずに顧客を奪われる構造
           </span>
-          <h2
+          <h3
             style={{
-              fontSize: "clamp(1.4rem, 2.8vw, 2.1rem)",
+              fontSize: "clamp(1.25rem, 2.4vw, 1.75rem)",
               fontWeight: 800,
               color: "#0f172a",
-              lineHeight: 1.3,
-              letterSpacing: "-0.025em",
-              margin: "0 0 16px",
+              lineHeight: 1.35,
+              letterSpacing: "-0.02em",
+              margin: "0 0 12px",
             }}
           >
-            Google検索で探す時代は終わりました。<br />
-            顧客は今、ChatGPTやAIに直接「おすすめ」を聞いています。
-          </h2>
-          <p style={{ fontSize: "0.94rem", color: "#475569", lineHeight: 1.75, margin: 0 }}>
-            広告やまとめサイトで埋め尽くされたGoogle検索に、賢い買い手やビジネスパーソンは愛想を尽かしました。<br />
-            従来のホームページやSEO対策を放置している企業が直面している、<strong>「3つの静かな危機」</strong>。
+            従来のホームページやSEO対策を放置すると起きる、3つの静かな危機
+          </h3>
+          <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.7, margin: 0 }}>
+            「うちは昔作ったホームページがあるから大丈夫」という油断が、見えないところで大きな損失を生んでいます。
           </p>
         </div>
 
