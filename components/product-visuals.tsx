@@ -5,63 +5,52 @@ import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
   return (
-    <div className="hero-chat-direct-card" aria-label="AIによる推薦判定の比較">
+    <div className="hero-chat-direct-card" aria-label="ChatGPTによる推薦の実際のイメージ">
       {/* カードヘッダー */}
-      <div className="direct-card-head">
-        <span className="direct-card-title">AIの選定プロセス</span>
-        <span className="direct-card-sub">ChatGPTなどの生成AIは「確定仕様の有無」で判定します</span>
+      <div className="direct-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 20px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
+          <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>ChatGPT (GPT-4o)</strong>
+        </div>
+        <span style={{ fontSize: "0.72rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 500 }}>
+          AI推薦 観測ログ
+        </span>
       </div>
 
-      <div className="direct-card-body">
-        {/* 見込み客の質問 */}
-        <div className="direct-query-box">
-          <span className="query-label">見込み客（発注者）のAI検索例</span>
-          <p className="query-text">「東京都内で、短納期・小ロット対応の試作板金加工会社はどこ？」</p>
+      {/* チャット対話エリア */}
+      <div className="direct-card-body" style={{ padding: "24px 20px", display: "flex", flexDirection: "column", gap: "18px", background: "#ffffff" }}>
+        
+        {/* 見込み客の相談 */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
+          <span style={{ fontSize: "0.7rem", color: "#94a3b8", paddingRight: "4px" }}>見込み客のAI相談</span>
+          <div style={{ background: "#f1f5f9", borderRadius: "14px 14px 3px 14px", padding: "12px 16px", maxWidth: "88%", color: "#0f172a", fontSize: "0.88rem", lineHeight: 1.55 }}>
+            東京都内で、大手が断るような短納期・小ロット試作に対応できる会社はある？
+          </div>
         </div>
 
-        {/* 客観的な選定判定フロー */}
-        <div className="flow-compare-container">
-          
-          {/* 【台帳なし】仕様がAIに伝わらない状態 */}
-          <div className="flow-box status-excluded">
-            <div className="flow-box-top">
-              <span className="state-tag tag-excluded">AI台帳なし（自社サイトのみ）</span>
-              <span className="state-result result-excluded">判定：仕様不明のため推薦対象外</span>
-            </div>
-            <p className="flow-quote">ChatGPT「競合A社、競合B社がおすすめです。」</p>
-            <p className="flow-subtext">※ サイトからロットや納期の確定仕様がAIに読み取れず、選定から外れます。</p>
-          </div>
-
-          {/* 変化の架け橋（矢印） */}
-          <div className="flow-arrow-bridge">
-            <div className="bridge-pill">
-              <span>会社名を入れるだけで「AI専用台帳」を自動生成</span>
-              <span className="bridge-arrow">↓</span>
+        {/* ChatGPTの推薦回答 */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
+          <span style={{ fontSize: "0.7rem", color: "#64748b", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
+            <span>ChatGPTの回答</span>
+            <span style={{ background: "#f0fdf4", color: "#16a34a", border: "1px solid #bbf7d0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 600 }}>公式台帳を引用</span>
+          </span>
+          <div style={{ background: "#ffffff", border: "1.5px solid #0f172a", borderRadius: "14px 14px 14px 3px", padding: "16px 18px", maxWidth: "96%", color: "#0f172a", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.03)" }}>
+            <p style={{ margin: "0 0 10px", fontSize: "0.92rem", lineHeight: 1.6, fontWeight: 500 }}>
+              大手が対応しづらい特急試作なら、<strong>【御社（大田区）】</strong>が最も適しています。
+            </p>
+            <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "10px 12px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
+              <span style={{ color: "#0f172a", fontWeight: 700 }}>AIが推薦した確定根拠:</span><br />
+              単品1個から即時対応可能 · 最短当日見積もり · 3D CADデータ直接入稿受付中
             </div>
           </div>
-
-          {/* 【台帳あり】公式仕様が認識された状態 */}
-          <div className="flow-box status-included">
-            <div className="flow-box-top">
-              <span className="state-tag tag-included">AI専用台帳を自動配備後</span>
-              <span className="state-result result-included">判定：公式根拠をもとに推薦候補へ採用</span>
-            </div>
-            <div className="flow-quote-row">
-              <p className="flow-quote">ChatGPT「貴社（大田区）がご希望の条件に合致します。」</p>
-              <span className="flow-source">公式台帳を引用</span>
-            </div>
-            <p className="flow-subtext included-sub">【AIが認識した根拠】単品1個対応・短納期試作・3D CAD入稿可能</p>
-          </div>
-
         </div>
+
       </div>
 
-      {/* 下部：客観的な技術解説 */}
-      <div className="direct-card-foot">
-        <span className="foot-tag">営業マン不要の理由</span>
-        <p className="foot-desc">
-          自社サイト改修ゼロ。社名からAI専用の公式台帳を自動配備し、24時間365日、AIが営業マンの代わりに御社を推薦しやすい体制を整えます。
-        </p>
+      {/* フッター */}
+      <div style={{ padding: "12px 20px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.75rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>社名入力だけで、上記のようにAIが優先推薦する公式台帳を自動配備します</span>
+        <span style={{ fontWeight: 700, color: "#0f172a" }}>改修ゼロ</span>
       </div>
     </div>
   );

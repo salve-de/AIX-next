@@ -28,9 +28,8 @@ export default function HomePage() {
                   <em>ライバルを「おすすめ」しています。</em>
                 </h1>
                 <p className="landing-hero-lead">
-                  もう、新しい営業マンを雇う必要はありません。<br />
-                  自社サイト改修ゼロ・ブログ更新ゼロ。会社名を入力するだけで、<br />
-                  AIが御社の「本当の強み」を学習し、大手ライバルに埋もれず、自社が優先推薦されやすい環境を整えます。
+                  自社サイト改修ゼロ・完全放置。社名を入力するだけで、<br />
+                  AIが御社を優先推薦する公式台帳を即日配備します。
                 </p>
               </div>
 
@@ -39,37 +38,20 @@ export default function HomePage() {
                 <ScanForm />
               </div>
 
-              {/* 3大安心シグナル */}
-              <ul className="hero-feature-checks" aria-label="選ばれる3つの理由">
-                <li>
-                  <span className="check-mark" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 8.5L6.5 12L13 4" />
-                    </svg>
-                  </span>
-                  <span><strong>作業時間 10秒</strong>：社名またはURLを入力するだけ</span>
-                </li>
-                <li>
-                  <span className="check-mark" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 8.5L6.5 12L13 4" />
-                    </svg>
-                  </span>
-                  <span><strong>改修ゼロ・完全放置</strong>：自社サイトのコード変更やブログ更新は一切不要</span>
-                </li>
-                <li>
-                  <span className="check-mark" aria-hidden="true">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M3 8.5L6.5 12L13 4" />
-                    </svg>
-                  </span>
-                  <span><strong>安心の完全無料</strong>：営業電話・勝手な自動課金は一切ありません</span>
-                </li>
-              </ul>
+              {/* 1行のミニマル安心シグナル */}
+              <div className="hero-trust-bar" aria-label="サービスの特長">
+                <span className="trust-item">所要10秒</span>
+                <span className="trust-dot" aria-hidden="true">·</span>
+                <span className="trust-item">自社サイト改修ゼロ</span>
+                <span className="trust-dot" aria-hidden="true">·</span>
+                <span className="trust-item">完全無料</span>
+              </div>
 
               {/* 診断見本リンク */}
               <div className="hero-sample-link-wrapper">
-                <Link className="hero-sample-link" href="/result?sample=1">実際の診断・自動生成サンプルを見る <span aria-hidden="true">→</span></Link>
+                <Link className="hero-sample-link" href="/result?sample=1">
+                  実際の診断カルテを見る <span aria-hidden="true">→</span>
+                </Link>
               </div>
             </div>
 
@@ -203,13 +185,17 @@ export default function HomePage() {
         <div className="shell">
           <span className="pill-badge">AI新時代に取り残されないために</span>
           <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
-          <div className="cta-trust-badges">
-            <span><strong>所要時間 約10秒</strong></span>
-            <span><strong>サイト改修・コード埋め込み 一切不要</strong></span>
-            <span><strong>営業電話・勝手な自動課金 ゼロ</strong></span>
-          </div>
           <ScanForm compact />
-          <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>
+          <div className="hero-trust-bar" style={{ justifyContent: "center", marginTop: "16px" }} aria-label="サービスの特長">
+            <span className="trust-item">所要10秒</span>
+            <span className="trust-dot" aria-hidden="true">·</span>
+            <span className="trust-item">自社サイト改修ゼロ</span>
+            <span className="trust-dot" aria-hidden="true">·</span>
+            <span className="trust-item">完全無料</span>
+          </div>
+          <div style={{ marginTop: "14px" }}>
+            <Link className="final-secondary-link" href="/pricing">料金プランの詳細を見る <span aria-hidden="true">→</span></Link>
+          </div>
         </div>
       </section>
 

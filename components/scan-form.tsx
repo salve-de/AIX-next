@@ -7,27 +7,19 @@ import { ArrowIcon } from "@/components/icons";
 export function ScanForm({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const [input, setInput] = useState("");
-  const [showExtra, setShowExtra] = useState(false);
-  const [extraUrl, setExtraUrl] = useState("");
-  const [extraSocial, setExtraSocial] = useState("");
-  const [extraProduct, setExtraProduct] = useState("");
   const [error, setError] = useState("");
 
   function submit(event: FormEvent) {
     event.preventDefault();
     const value = input.trim();
     if (!value) {
-      setError("会社名・商品名・店舗名・Instagram・URLのどれか1つを入力してください。");
+      setError("会社名・店舗名、またはサイトURLを入力してください。");
       return;
     }
     setError("");
 
     const query = new URLSearchParams();
     query.set("input", value);
-    if (extraUrl.trim()) query.set("extraUrl", extraUrl.trim());
-    if (extraSocial.trim()) query.set("extraSocial", extraSocial.trim());
-    if (extraProduct.trim()) query.set("extraProduct", extraProduct.trim());
-
     router.push(`/scan?${query.toString()}`);
   }
 
@@ -41,11 +33,11 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
       >
         <div className="scan-field">
           <input
-            aria-label="会社名・商品名・店舗名・Instagramアカウント・URL"
+            aria-label="会社名・店舗名・サイトURL"
             autoCapitalize="none"
             autoCorrect="off"
             inputMode="text"
-            placeholder="会社名・店舗名（例: 山田板金 大田区）またはサイトURL"
+            placeholder="会社名・店舗名（例: 山田板金 大田区）またはURL"
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />
@@ -54,61 +46,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             <ArrowIcon />
           </button>
         </div>
-        <p className="scan-form-note">
-          ※ サイト改修や専門知識は不要です。営業電話や勝手な自動課金は一切ありません。
-        </p>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
-
-        {!compact ? (
-          <div className="extra-info-accordion">
-            <button
-              type="button"
-              className="extra-info-toggle-btn"
-              onClick={() => setShowExtra(!showExtra)}
-            >
-              {showExtra
-                ? "▲ ホームページやInstagramの追加入力を閉じる"
-                : "＋ サイトURLやInstagramもまとめて登録して精度を上げる（任意） ▾"}
-            </button>
-
-            {showExtra ? (
-              <div className="extra-info-panel">
-                <p className="extra-info-lead">
-                  すべてお持ちの方は追加登録すると、AIの分析精度と公式台帳の網羅性が最大化されます（空欄のままでも診断可能）。
-                </p>
-                <div className="extra-info-grid">
-                  <div className="extra-info-col">
-                    <label>自社ホームページURL（任意）</label>
-                    <input
-                      type="text"
-                      placeholder="例: https://yourcompany.jp"
-                      value={extraUrl}
-                      onChange={(e) => setExtraUrl(e.target.value)}
-                    />
-                  </div>
-                  <div className="extra-info-col">
-                    <label>Instagramアカウント（任意）</label>
-                    <input
-                      type="text"
-                      placeholder="例: @your_shop_name"
-                      value={extraSocial}
-                      onChange={(e) => setExtraSocial(e.target.value)}
-                    />
-                  </div>
-                  <div className="extra-info-col">
-                    <label>主力商品・サービス名（任意）</label>
-                    <input
-                      type="text"
-                      placeholder="例: 熟成黒にんにく、試作板金加工"
-                      value={extraProduct}
-                      onChange={(e) => setExtraProduct(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
       </form>
     </div>
   );
