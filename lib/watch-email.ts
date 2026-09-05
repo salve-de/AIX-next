@@ -46,6 +46,7 @@ function firstCompetitor(result: ScanResult) {
 }
 
 async function sendEmail(input: { to: string; subject: string; text: string; html: string; idempotencyKey: string }) {
+  if (!input.to || !input.to.trim()) return { sent: false as const, reason: "no_recipient" };
   if (!env.resendApiKey || !env.watchFromEmail) return { sent: false as const, reason: "unconfigured" };
   try {
     const response = await fetch("https://api.resend.com/emails", {

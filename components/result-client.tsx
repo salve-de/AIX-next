@@ -442,10 +442,21 @@ export function ResultClient() {
             </ul>
           </div>
           <form onSubmit={startWatch}>
-            <label htmlFor="watch-email">ご連絡先メールアドレス（14日間無料トライアル）</label>
-            <input id="watch-email" type="email" required value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@company.jp" />
-            <button className="button button-primary" disabled={watchBusy}>{watchBusy ? "準備しています…" : "14日間無料で試してみる"}<ArrowIcon /></button>
-            <small>リアルモックではメール入力不要です。そのままボタンを押してお試しいただけます。</small>
+            <label htmlFor="watch-email">
+              速報通知メールアドレス <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "#64748b" }}>（任意・空欄のままでも開始できます）</span>
+            </label>
+            <input
+              id="watch-email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="通知を受け取る場合のみ入力（空欄でもOK）"
+            />
+            <button className="button button-primary" disabled={watchBusy}>
+              {watchBusy ? "準備しています…" : "14日間無料で試してみる（メール登録不要）"}
+              <ArrowIcon />
+            </button>
+            <small>※ メール入力は完全任意です。空欄のままボタンを押せば、今すぐ定期見守りカルテを確認できます。</small>
           </form>
         </div>
       </section>

@@ -486,12 +486,13 @@ export function deleteMemoryWatchData(token: string, scanId: string) {
   return true;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "competitorEvents" | "autoActions" | "autoActionImpacts" | "monthlyReport" | "nextRunAt">>) {
+export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "email" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "competitorEvents" | "autoActions" | "autoActionImpacts" | "monthlyReport" | "nextRunAt">>) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
     if (patch.status !== undefined) body.status = patch.status;
     if (patch.paid !== undefined) body.paid = patch.paid;
+    if (patch.email !== undefined) body.email = patch.email;
     if (patch.stripeCustomerId !== undefined) body.stripe_customer_id = patch.stripeCustomerId || null;
     if (patch.stripeSubscriptionId !== undefined) body.stripe_subscription_id = patch.stripeSubscriptionId || null;
     if (patch.baseline !== undefined) body.baseline = patch.baseline;

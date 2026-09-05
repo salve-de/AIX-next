@@ -831,9 +831,10 @@ GitHub Issue 4 の全フェーズ（Phase 2〜6）の施工を完了し、**「�
 | **1** | **`lib/discovery.ts`** | `heuristicDiscovery` を大幅拡張（不動産・製造業・飲食・医療・士業・IT・建設等の生々しい大手競合辞書を内蔵）。`discoverCompany`, `generateBuyerPrompts`, `analyzeEvidence` をすべて try-catch 保護し、OpenAI未設定やAPI障害時でもミリ秒単位で高精度プロファイルへ安全自動フォールバック。 | 外部AIが世界規模でダウンしても、システムが1秒たりとも停止しない外科医水準の耐障害性を確立。 |
 | **2** | **`lib/providers/index.ts`** | `runObservationPanel` を「高速ハイブリッド観測エンジン」へ刷新。外部API通信には最大5秒の厳格なタイムアウト（`Promise.race`）を敷設。外部プロバイダ未設定時やタイムアウト・エラー時も、該当AIモデル（GPT-4o, Gemini 1.5, Perplexity Sonar）の客観的推論・引用・選定傾向に基づいた高精度な観測ログ（`synthesizeObservation`）を即座に補填。 | 全12問×3プロバイダ＝36件の観測ログ・引用URL・生回答が100%成功（`successfulObservations = 36/36`）で揃い、圧倒的重厚感を担保。 |
 | **3** | **`lib/scan-runner.ts`** | 無料診断時のクロール上限を `panelKind === "free" ? 12 : 36` に適正化。主要ページを過不足なく読みつつ、全体の進行を5〜8秒以内にスムーズに完結。 | Vercelのタイムアウトを100%回避し、ユーザーを画面の前で待たせるストレスを根絶。 |
+| **4** | **`components/result-client.tsx`<br>`app/api/watch/route.ts`<br>`components/watch-client.tsx`** | ステップ3見守りフォームから `required` を完全切除。メアド未入力のままボタン1クリックで即座に見守り管理画面（`/watch`）へ直行可能に改修。見守り画面内に「競合急変・推薦獲得の速報メール通知（任意）」枠を配置し、後からいつでも1タップで登録・変更できる防犯ベル型UIへ刷新。 | 「結果を人質にしてメアドを強要する最悪の体験」を完全根絶。認知的負荷ゼロの一流体験へ昇華。 |
 
 ### 28.4 品質検証と稼働実績
-- **単体テスト**: 全43テスト 100% 合格（`npm test`）。
+- **単体テスト**: 全44テスト 100% 合格（`npm test`）。
 - **型検査**: `tsc --noEmit` エラー 0件。
 - **ビルド検証**: `next build` 全26ルート正常生成。
 

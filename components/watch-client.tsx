@@ -32,6 +32,10 @@ export function WatchClient() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState("");
   const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [notificationEmail, setNotificationEmail] = useState("");
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [emailStatus, setEmailStatus] = useState("");
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   useEffect(() => {
     if (sample) return;
@@ -41,7 +45,10 @@ export function WatchClient() {
       .then(async (response) => {
         const data = await response.json() as WatchView & { error?: string };
         if (!response.ok) throw new Error(data.error || "Watchを取得できませんでした。");
-        if (!cancelled) setWatch(data);
+        if (!cancelled) {
+          setWatch(data);
+          if (data.maskedEmail) setNotificationEmail(data.maskedEmail);
+        }
       })
       .catch((caught) => { if (!cancelled) setError(caught instanceof Error ? caught.message : "Watchを取得できませんでした。"); })
       .finally(() => { if (!cancelled) setLoading(false); });
@@ -139,6 +146,29 @@ export function WatchClient() {
     finally { setCheckoutBusy(false); }
   }
 
+  async function saveNotificationEmail(e: FormEvent) {
+    e.preventDefault();
+    if (!token || sample) return;
+    setSavingEmail(true);
+    setEmailStatus("");
+    try {
+      const response = await fetch("/api/watch", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token, email: notificationEmail }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "設定に失敗しました。");
+      setEmailStatus("通知先メールアドレスを保存しました。");
+      setShowEmailForm(false);
+      setWatch((prev) => (prev ? { ...prev, emailConfigured: Boolean(data.email), maskedEmail: data.email || null } : prev));
+    } catch (caught) {
+      setEmailStatus(caught instanceof Error ? caught.message : "更新できませんでした。");
+    } finally {
+      setSavingEmail(false);
+    }
+  }
+
   if (loading) return <div className="full-loading">推薦結果を読み込んでいます。</div>;
   if (!watch || !change) return <main className="empty-page"><SiteHeader compact /><div className="shell empty-content"><h1>推薦の変化を表示できません。</h1><p>{error}</p><Link className="button button-primary" href="/">無料診断へ戻る</Link></div></main>;
 
@@ -228,6 +258,63 @@ export function WatchClient() {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 任意メール通知設定（防犯ベル通知枠） */}
+      <section className="shell" style={{ margin: "14px auto 0" }}>
+        <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "12px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", fontSize: "0.82rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 6px", borderRadius: "3px" }}>
+              通知設定（任意）
+            </span>
+            {watch.emailConfigured && !showEmailForm ? (
+              <span style={{ color: "#334155" }}>
+                速報メール通知先: <strong style={{ color: "#0f172a" }}>{watch.maskedEmail || notificationEmail}</strong>（競合の動き・AI推薦枠の回復を自動通知中）
+              </span>
+            ) : (
+              <span style={{ color: "#64748b" }}>
+                競合が動いた時や自社のAI推薦枠を獲得した時だけ、メールで速報をお届けします（登録不要・いつでも解除可能）。
+              </span>
+            )}
+            {emailStatus ? <span style={{ color: "#16a34a", fontWeight: 600 }}>{emailStatus}</span> : null}
+          </div>
+
+          {!showEmailForm ? (
+            <button
+              type="button"
+              onClick={() => setShowEmailForm(true)}
+              style={{ background: "#f8fafc", border: "1px solid #cbd5e1", color: "#334155", padding: "5px 12px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
+            >
+              {watch.emailConfigured ? "通知先を変更する" : "速報通知メールを設定する（任意） ↗"}
+            </button>
+          ) : (
+            <form onSubmit={saveNotificationEmail} style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+              <input
+                type="email"
+                placeholder="you@company.jp"
+                value={notificationEmail}
+                onChange={(e) => setNotificationEmail(e.target.value)}
+                style={{ padding: "4px 8px", fontSize: "0.8rem", border: "1px solid #94a3b8", borderRadius: "4px", width: "220px" }}
+                required
+                autoFocus
+              />
+              <button
+                type="submit"
+                disabled={savingEmail}
+                style={{ background: "#0f172a", color: "#ffffff", border: "none", padding: "5px 12px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
+              >
+                {savingEmail ? "保存中…" : "保存"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowEmailForm(false)}
+                style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "0.75rem", cursor: "pointer", textDecoration: "underline" }}
+              >
+                閉じる
+              </button>
+            </form>
+          )}
         </div>
       </section>
 

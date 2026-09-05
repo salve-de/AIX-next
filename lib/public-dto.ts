@@ -58,6 +58,8 @@ export type PublicWatch = Omit<
   latest: PublicScanResult;
   history: PublicScanResult[];
   changePack?: PublicChangePack | null;
+  emailConfigured?: boolean;
+  maskedEmail?: string | null;
 };
 
 export type PublicWatchMeasurementRun = {
@@ -161,10 +163,21 @@ export function toPublicChangePack(changePack: ChangePack): PublicChangePack {
   };
 }
 
+function maskEmail(email: string) {
+  const parts = email.split("@");
+  if (parts.length !== 2) return email;
+  const user = parts[0];
+  const domain = parts[1];
+  const maskedUser = user.length > 2 ? `${user.slice(0, 2)}***` : `${user.slice(0, 1)}***`;
+  return `${maskedUser}@${domain}`;
+}
+
 export function toPublicWatch(watch: WatchRecord): PublicWatch {
   return {
     status: watch.status,
     paid: watch.paid,
+    emailConfigured: Boolean(watch.email),
+    maskedEmail: watch.email ? maskEmail(watch.email) : null,
     baseline: toPublicScanResult(watch.baseline),
     latest: toPublicScanResult(watch.latest),
     history: watch.history.map(toPublicScanResult),
