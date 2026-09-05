@@ -93,15 +93,15 @@ export function GoogleDeclineProblemSection() {
                 CRISIS 01
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                Google検索の「広告汚染」と顧客離れ
+                Google検索の広告だらけに嫌気がさした顧客が、AIへ大移動
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              現在のGoogle検索は、画面の上から下まで「スポンサー広告」と「アフィリエイト一括査定サイト」ばかりです。<br />
-              「どれが本当の情報かわからない」と疲弊した顧客は、<strong>『公平で忖度のない答え』を一瞬で出してくれるChatGPTやPerplexityへ大移動</strong>しています。
+              いまのGoogle検索は、上から下まで広告とお金目当ての比較サイトばかりです。<br />
+              「どれが本当のおすすめかわからない」と疲れた買い手は、<strong>『忖度なしで一番いい会社』を一瞬で教えてくれるChatGPTなどのAIへ直接相談</strong>するようになっています。
             </p>
             <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>実務上の実態:</strong> チラシばかり入る郵便ポスト（Google）を見なくなった客が、信頼できる相談相手（AI）に直接聞いている状態。
+              <strong>身近な例え:</strong> チラシだらけの郵便受け（Google）を見なくなり、信頼できる知人（AI）に「どこが一番いい？」と直接聞いている状態です。
             </div>
           </div>
 
@@ -133,15 +133,15 @@ export function GoogleDeclineProblemSection() {
                 CRISIS 02
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                高額SEO・ブログ記事更新の無力化
+                綺麗な写真のホームページも、AIには「白紙」に見えている
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              月額30万円を払ってブログ記事を量産しても、AIは業者の宣伝文句を信用しません。<br />
-              ChatGPT等の探索ロボットが必要としているのは、宣伝記事ではなく<strong>「1秒で検証できる機械専用の確定仕様データ（JSON-LD・出展付き実績）」</strong>です。古いSEOを続けても費用が無駄になります。
+              AIロボットは文字データしか読めないため、デザイン重視のホームページや画像チラシの内容をほとんど理解できません。<br />
+              御社がどんなに良い腕や実績を持っていても、<strong>AIが読める専用データにして届けてあげないと、AIからは「存在しない会社」と同じ</strong>に見えてしまいます。
             </p>
             <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>実務上の実態:</strong> 人間向けの紙パンフレットをいくら印刷しても、駅の自動改札機（AIロボット）には通らないのと同じ。
+              <strong>身近な例え:</strong> 人間向けの綺麗なカラー写真パンフレットを、駅の自動改札機（AIロボット）にかざしても切符と認識されないのと同じです。
             </div>
           </div>
 
@@ -173,15 +173,15 @@ export function GoogleDeclineProblemSection() {
                 CRISIS 03
               </span>
               <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                気付かないうちに「客が全員大手へ流出」
+                気付かないうちに、お客が全員「大手チェーン」へ奪われている
               </strong>
             </div>
             <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              顧客がAIに「近くでおすすめの不動産屋は？」「古家を買い取ってくれる会社は？」と質問した瞬間、<strong>御社の名前すら出ずに、大手チェーン（カチタス等）へ自動送客</strong>されています。<br />
-              問い合わせ自体が発生しないため、客を奪われていることにすら気付けません。
+              お客さんがAIに「近くでおすすめの会社は？」「親身に相談に乗ってくれるところは？」と聞いた瞬間、<strong>御社の名前すら出ずに、広告量の多い大手チェーンへ自動的にお客が誘導</strong>されています。<br />
+              自社のホームページを見てもらう前に客が奪われているため、減っていることにすら気付けません。
             </p>
             <div style={{ marginTop: "auto", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.6 }}>
-              <strong>実務上の実態:</strong> 御社の店の前を通りすらせず、裏口からライバル店行きの直行バスに顧客全員が乗せられている状態。
+              <strong>身近な例え:</strong> 御社の店の前を通りすらせず、裏口から大手ライバル店行きの直行バスに顧客全員が乗せられているような状態です。
             </div>
           </div>
         </div>

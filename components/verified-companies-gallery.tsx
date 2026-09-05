@@ -62,12 +62,12 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
 
 export function VerifiedCompaniesGallery() {
   return (
-    <section className="verified-gallery-section" aria-label="業種別のAI台帳 設計実例">
+    <section className="verified-gallery-section" aria-label="業種別のAI推薦 実例シミュレーション">
       <div className="shell">
         <div className="section-head-center">
-          <span className="pill-badge">業種別の活用モデル</span>
-          <h2>主要業種における、AI台帳の設計仕様と回答の変化</h2>
-          <p>自社サイトの改修やSEO記事の更新は不要。ChatGPTなどのAIに確定仕様を届けることで、推薦結果がどう変わるかの実例シミュレーションです。</p>
+          <span className="pill-badge">業種別の実例シミュレーション</span>
+          <h2>町工場も、カフェも、士業も、農園も。<br />AIが客に「ここがおすすめ」と言い始める実例</h2>
+          <p>今のホームページはそのままでOK。AI専用の看板を配備することで、ChatGPTの回答が「大手チェーン」から「自社」へどう激変するかの実例見本です。</p>
         </div>
 
         <div className="verified-cards-grid">
@@ -82,7 +82,7 @@ export function VerifiedCompaniesGallery() {
               
               <div className="card-badge-pill" style={{ marginBottom: "14px", fontSize: "0.68rem" }}>{company.featureNote}</div>
 
-              {/* 洗練された比較ブロック（煽りバッジを全廃し、端正なタイポグラフィで対比） */}
+              {/* 洗練された比較ブロック（端正なタイポグラフィで対比） */}
               <div
                 style={{
                   background: "#f8fafc",
@@ -101,14 +101,14 @@ export function VerifiedCompaniesGallery() {
                     style={{
                       fontSize: "0.68rem",
                       fontWeight: 700,
-                      color: "#64748b",
+                      color: "#b91c1c",
                       fontFamily: "var(--font-mono, monospace)",
                       display: "block",
                       marginBottom: "4px",
                       letterSpacing: "0.02em",
                     }}
                   >
-                    未対策時の課題
+                    対策前：大手に客を奪われる現実
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
                     {company.beforeProblem}
@@ -126,7 +126,7 @@ export function VerifiedCompaniesGallery() {
                       letterSpacing: "0.02em",
                     }}
                   >
-                    台帳配備後の回答
+                    配備後：AIが名指しでおすすめ
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
                     {company.afterSolution}
@@ -135,12 +135,12 @@ export function VerifiedCompaniesGallery() {
               </div>
 
               <div className="card-spec-box" style={{ background: "#ffffff", padding: "10px 12px", borderRadius: "6px", margin: "0 0 14px", border: "1px solid #e2e8f0" }}>
-                <span style={{ display: "block", fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "3px" }}>登録仕様（抜粋）</span>
+                <span style={{ display: "block", fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "3px" }}>AIに教え込んだ強み</span>
                 <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontWeight: 600, display: "block", lineHeight: 1.4 }}>{company.registeredSpecs}</strong>
               </div>
 
               <Link className="card-view-btn" href={company.href} style={{ marginTop: "auto" }}>
-                <span>台帳サンプルを見る</span>
+                <span>AI推薦データを見る</span>
                 <ArrowIcon />
               </Link>
             </article>
@@ -149,7 +149,7 @@ export function VerifiedCompaniesGallery() {
 
         <div className="gallery-footer-note">
           <p>
-            ※上記は主要業種におけるAI公式台帳の設計イメージ（シミュレーション見本）です。自社名を入力して診断を行うと、御社専用の台帳が即日自動発行されます。
+            ※上記は主要業種におけるシミュレーション見本です。会社名を入力して無料診断を行うと、御社専用の推薦データがその場で自動発行されます。
           </p>
         </div>
       </div>

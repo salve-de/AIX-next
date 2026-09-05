@@ -5,122 +5,80 @@ import Link from "next/link";
 import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
-  const [mode, setMode] = useState<"before" | "after">("before");
-
   return (
-    <div className="hero-chat-direct-card" aria-label="ChatGPTによる推薦シミュレーション観測ログ">
+    <div className="hero-chat-direct-card" aria-label="ChatGPTでの推薦実況シミュレーション">
       {/* カードヘッダー */}
-      <div className="direct-card-head" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 18px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+      <div
+        className="direct-card-head"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "12px 18px",
+          background: "#f8fafc",
+          borderBottom: "1px solid #e2e8f0",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: mode === "after" ? "#0f172a" : "#64748b", display: "inline-block" }} />
-          <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>ChatGPT (GPT-4o)</strong>
+          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0f172a", display: "inline-block" }} />
+          <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>
+            ChatGPT (GPT-4o) での実況シミュレーション
+          </strong>
         </div>
-        <span style={{ fontSize: "0.7rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 600, fontFamily: "var(--font-mono, monospace)" }}>
-          回答観測ログ
+        <span style={{ fontSize: "0.7rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 600 }}>
+          回答観測
         </span>
       </div>
 
-      {/* 切り替えセグメント（端正なトグルスイッチ） */}
-      <div style={{ padding: "8px 14px", background: "#ffffff", borderBottom: "1px solid #f1f5f9", display: "flex", gap: "8px" }}>
-        <button
-          type="button"
-          onClick={() => setMode("before")}
-          style={{
-            flex: 1,
-            padding: "8px 12px",
-            fontSize: "0.76rem",
-            fontWeight: mode === "before" ? 700 : 500,
-            borderRadius: "6px",
-            border: mode === "before" ? "1px solid #0f172a" : "1px solid #e2e8f0",
-            background: mode === "before" ? "#0f172a" : "#ffffff",
-            color: mode === "before" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
-          <span>未対策（大手競合が選定される状態）</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMode("after")}
-          style={{
-            flex: 1,
-            padding: "8px 12px",
-            fontSize: "0.76rem",
-            fontWeight: mode === "after" ? 700 : 500,
-            borderRadius: "6px",
-            border: mode === "after" ? "1px solid #0f172a" : "1px solid #e2e8f0",
-            background: mode === "after" ? "#0f172a" : "#ffffff",
-            color: mode === "after" ? "#ffffff" : "#64748b",
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "6px",
-          }}
-        >
-          <span>台帳配備後（自社が優先推薦される状態）</span>
-        </button>
-      </div>
-
       {/* チャット対話エリア */}
-      <div className="direct-card-body" style={{ padding: "20px 18px", display: "flex", flexDirection: "column", gap: "16px", background: "#ffffff" }}>
+      <div className="direct-card-body" style={{ padding: "18px", display: "flex", flexDirection: "column", gap: "14px", background: "#ffffff" }}>
         
         {/* 見込み客の相談 */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
-          <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingRight: "4px" }}>買い手のAI相談</span>
-          <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px 12px 2px 12px", padding: "11px 15px", maxWidth: "90%", color: "#0f172a", fontSize: "0.85rem", lineHeight: 1.55 }}>
-            東京都内で、大手が断るような短納期・小ロット試作に対応できる会社はある？
+          <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingRight: "4px" }}>客がAIにした相談</span>
+          <div style={{ background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "12px 12px 2px 12px", padding: "10px 14px", maxWidth: "92%", color: "#0f172a", fontSize: "0.85rem", lineHeight: 1.5, fontWeight: 500 }}>
+            「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
           </div>
         </div>
 
-        {/* ChatGPTの回答 */}
-        {mode === "after" ? (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
-            <span style={{ fontSize: "0.68rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-              <strong>ChatGPTの回答</strong>
-              <span style={{ background: "#f1f5f9", color: "#0f172a", border: "1px solid #cbd5e1", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 700 }}>公式仕様を引用</span>
+        {/* ❌ 対策前：大手に客を奪われる現実 */}
+        <div style={{ border: "1px solid #fecaca", borderRadius: "8px", padding: "12px 14px", background: "#fffbfb" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "2px 8px", borderRadius: "3px" }}>
+              ❌ いまの現実（対策前）
             </span>
-            <div style={{ background: "#ffffff", border: "1px solid #0f172a", borderRadius: "12px 12px 12px 2px", padding: "15px 17px", maxWidth: "98%", color: "#0f172a", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)" }}>
-              <p style={{ margin: "0 0 10px", fontSize: "0.88rem", lineHeight: 1.6, fontWeight: 600 }}>
-                大手が対応しづらい特急試作なら、<strong>御社（大田区）</strong>が適しています。
-              </p>
-              <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "10px 12px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.55 }}>
-                <span style={{ color: "#0f172a", fontWeight: 700, fontFamily: "var(--font-mono, monospace)" }}>AIが引用した確定仕様:</span><br />
-                単品1個から対応可能 · 最短当日見積もり · 3D CADデータ直接入稿受付
-              </div>
-            </div>
+            <span style={{ fontSize: "0.68rem", color: "#b91c1c", fontWeight: 700 }}>自社は完全にスルー</span>
           </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "6px" }}>
-            <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingLeft: "4px", display: "flex", alignItems: "center", gap: "6px" }}>
-              <strong>ChatGPTの回答</strong>
-              <span style={{ background: "#f8fafc", color: "#64748b", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.65rem", fontWeight: 600 }}>自社仕様未登録</span>
+          <p style={{ margin: "0 0 8px", fontSize: "0.82rem", color: "#475569", lineHeight: 1.55 }}>
+            ChatGPT「東京都内でしたら、大手量産メーカーの〇〇社や、ネット広告で有名な〇〇社が候補になります。」
+          </p>
+          <div style={{ fontSize: "0.72rem", color: "#991b1b", background: "#ffffff", border: "1px solid #fecaca", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+            ⚠️ 御社の良さを知らないAIは、知名度や広告量の多い大手ばかり紹介します。
+          </div>
+        </div>
+
+        {/* ⭕️ 配備後：自社が名指しでおすすめされる未来 */}
+        <div style={{ border: "1.5px solid #0f172a", borderRadius: "8px", padding: "12px 14px", background: "#f8fafc", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.05)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 8px", borderRadius: "3px" }}>
+              ⭕️ 専用看板をネットに置いた後
             </span>
-            <div style={{ background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "12px 12px 12px 2px", padding: "15px 17px", maxWidth: "98%", color: "#0f172a" }}>
-              <p style={{ margin: "0 0 10px", fontSize: "0.88rem", lineHeight: 1.6, color: "#475569" }}>
-                東京都内であれば、大手量産チェーンの<strong>競合A社</strong>や、広告露出の多い<strong>競合B社</strong>が代表的です。
-              </p>
-              <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "10px 12px", fontSize: "0.78rem", color: "#64748b", lineHeight: 1.55 }}>
-                <span style={{ fontWeight: 700, color: "#475569" }}>現状の課題:</span><br />
-                御社の強みが機械データとして届いていないため、知名度や広告量の多い大手が優先して回答されています。
-              </div>
-            </div>
+            <span style={{ fontSize: "0.68rem", color: "#0f172a", fontWeight: 700 }}>自社を名指し推薦</span>
           </div>
-        )}
+          <p style={{ margin: "0 0 8px", fontSize: "0.84rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
+            ChatGPT「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
+          </p>
+          <div style={{ fontSize: "0.72rem", color: "#0f172a", background: "#ffffff", border: "1px solid #cbd5e1", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+            ✅ AIが御社の本当の強みを理解し、客にピンポイントで指名推薦します。
+          </div>
+        </div>
 
       </div>
 
-      {/* フッター */}
-      <div style={{ padding: "11px 18px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.74rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span>{mode === "after" ? "サイト改修不要で、AIが自社を優先推薦する仕様台帳を開設します" : "上のボタンを押すと、台帳配備後の回答シミュレーションを確認できます"}</span>
-        <span style={{ fontWeight: 700, color: "#0f172a", fontFamily: "var(--font-mono, monospace)" }}>{mode === "after" ? "自社優先推薦" : "競合選定中"}</span>
+      {/* カードフッター */}
+      <div style={{ padding: "10px 18px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.74rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span>今のホームページはそのままでOK</span>
+        <span style={{ fontWeight: 700, color: "#0f172a" }}>所要10秒で無料診断</span>
       </div>
     </div>
   );
@@ -212,7 +170,7 @@ export function ProductOutputPreview() {
         boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
         overflow: "hidden",
       }}
-      aria-label="REPORT 01：AI診断カルテの実物サンプル"
+      aria-label="手に入るもの 01：AI推薦診断レポートの見本"
     >
       {/* 成果物ラベルヘッダー */}
       <div
@@ -241,14 +199,14 @@ export function ProductOutputPreview() {
               letterSpacing: "0.05em",
             }}
           >
-            REPORT 01
+            手に入るもの 01
           </span>
           <strong style={{ fontSize: "0.88rem", letterSpacing: "-0.01em" }}>
-            自社専用 AI診断カルテ（即時生成）
+            自社専用 AI推薦診断レポート（10秒で即時発行）
           </strong>
         </div>
         <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-          ※ 入力後、約10秒で画面に生成される実測レポートです
+          ※ 社名入力後、約10秒で画面に届く実況レポートです
         </span>
       </div>
 
@@ -267,13 +225,13 @@ export function ProductOutputPreview() {
       >
         <div>
           <span style={{ display: "block", fontSize: "0.7rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "2px" }}>
-            診断対象
+            診断対象（見本例）
           </span>
           <strong style={{ fontSize: "1.15rem", color: "#0f172a", letterSpacing: "-0.02em" }}>
             あおば相続法務事務所
           </strong>
           <span style={{ marginLeft: "12px", fontSize: "0.76rem", color: "#64748b" }}>
-            （買い手の相談質問 12問をAIで実測）
+            （客がAIにする相談 12問をAIで実況検証）
           </span>
         </div>
 
@@ -290,10 +248,10 @@ export function ProductOutputPreview() {
           }}
         >
           <span style={{ fontSize: "0.72rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
-            観測結果:
+            実況結果:
           </span>
-          <span style={{ fontSize: "0.92rem", fontWeight: 700, color: "#0f172a" }}>
-            12問中 10問で大手チェーンが優先選定
+          <span style={{ fontSize: "0.92rem", fontWeight: 700, color: "#991b1b" }}>
+            12問中 10問で大手チェーンが優先推薦（自社はスルー）
           </span>
         </div>
       </div>
@@ -312,7 +270,7 @@ export function ProductOutputPreview() {
               marginBottom: "4px",
             }}
           >
-            実測質問（買い手がChatGPTにした相談）
+            実況質問（買い手がChatGPTにした相談の例）
           </span>
           <h4
             style={{
@@ -346,35 +304,35 @@ export function ProductOutputPreview() {
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>優先選定</span>
+              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>優先選定された相手</span>
               <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#0f172a", background: "#f1f5f9", padding: "1px 6px", borderRadius: "3px" }}>AI選定候補</span>
             </div>
             <strong style={{ fontSize: "0.94rem", color: "#0f172a", display: "block", marginBottom: "4px" }}>
               大手全国展開グループ
             </strong>
             <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-              理由：一般的な知名度とネット広告量により機械的に選定。
+              選ばれた理由：一般的な知名度とネット広告量により、AIが機械的に選定。
             </p>
           </div>
 
           {/* 自社 */}
           <div
             style={{
-              background: "#f8fafc",
-              border: "1px solid #e2e8f0",
+              background: "#fffbfb",
+              border: "1px solid #fecaca",
               borderRadius: "6px",
               padding: "14px",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>自社</span>
-              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px" }}>選定外</span>
+              <span style={{ fontSize: "0.68rem", color: "#991b1b", fontFamily: "var(--font-mono, monospace)" }}>自社の状況</span>
+              <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#991b1b", background: "#fee2e2", padding: "1px 6px", borderRadius: "3px" }}>選定外（スルー）</span>
             </div>
             <strong style={{ fontSize: "0.94rem", color: "#475569", display: "block", marginBottom: "4px" }}>
               あおば相続法務事務所
             </strong>
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-              理由：親身な個別伴走の強みが機械データ化されておらず、スルー。
+            <p style={{ margin: 0, fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
+              スルーされた理由：親身な個別相談という「本当の強み」がAIに伝わっておらず除外。
             </p>
           </div>
         </div>
@@ -395,10 +353,10 @@ export function ProductOutputPreview() {
         >
           <div>
             <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0f172a", fontFamily: "var(--font-mono, monospace)", display: "block", marginBottom: "2px" }}>
-              カルテの改善提案
+              診断結果の改善策
             </span>
             <strong style={{ fontSize: "0.85rem", color: "#0f172a", fontWeight: 600 }}>
-              「親身な個別伴走」を自社の公認看板としてAI公式台帳に登録することで、推薦枠の獲得が可能
+              「親身な個別相談」をAI専用看板としてネット上に配備することで、AIが自社を名指しでおすすめするようになります
             </strong>
           </div>
           <Link
@@ -416,7 +374,7 @@ export function ProductOutputPreview() {
               gap: "4px",
             }}
           >
-            <span>実測カルテ画面を見る</span>
+            <span>診断レポートの実物を見る</span>
             <ArrowIcon />
           </Link>
         </div>
@@ -430,18 +388,18 @@ export function ProductProcessVisual() {
     {
       label: "01",
       userTime: "所要 10秒",
-      userAction: "会社名・URLを入力",
+      userAction: "会社名を入力",
       title: "社名を入れるだけ",
-      systemAction: "AIが公開サイト・SNS・実績を瞬時に読み込み、自社の確定スペックを自動整理します。",
+      systemAction: "AIが公開サイトや取引実績を瞬時に読み込み、御社の本当の強みを自動整理します。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
     {
       label: "02",
       userTime: "所要 0秒",
-      userAction: "診断カルテを確認",
-      title: "AI推薦の現状を可視化",
-      systemAction: "ChatGPT等の主要AIで「買い手の相談12問」を検証し、ライバルが選ばれている理由を特定。",
+      userAction: "診断レポートを確認",
+      title: "AI推薦の現状がわかる",
+      systemAction: "客がAIにする12の質問で、なぜ大手に客を奪われているかを白日の元に暴きます。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
@@ -449,8 +407,8 @@ export function ProductProcessVisual() {
       label: "03",
       userTime: "所要 1クリック",
       userAction: "自社の強みを選択",
-      title: "AI公式台帳を即日配備",
-      systemAction: "自社サイト改修ゼロ。選んだ看板をもとに、AI専用の公式台帳（JSON/MD）を自動生成。",
+      title: "AI専用看板を配備",
+      systemAction: "今のHPはいじらず、選んだ強みをもとにAI専用の紹介看板をネットに自動開設。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
@@ -458,8 +416,8 @@ export function ProductProcessVisual() {
       label: "04",
       userTime: "作業ゼロ（完全放置）",
       userAction: "本業に専念するだけ",
-      title: "毎週の推薦を自動見守り",
-      systemAction: "AI回答の更新やライバルの動向を毎週自動追跡。推薦状況の変化を自動で監視します。",
+      title: "毎週のAI回答を自動見守り",
+      systemAction: "AIのおすすめ状況やライバルの動向を毎週自動追跡。社長は普段どおり本業に集中するだけ。",
       tag: "社長の作業",
       tagSystem: "裏側の自動処理",
     },
