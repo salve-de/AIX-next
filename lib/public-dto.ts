@@ -173,6 +173,9 @@ export function toPublicWatch(watch: WatchRecord): PublicWatch {
     nextRunAt: watch.nextRunAt,
     createdAt: watch.createdAt,
     updatedAt: watch.updatedAt,
+    ...(watch.competitorEvents ? { competitorEvents: watch.competitorEvents } : {}),
+    ...(watch.autoActions ? { autoActions: watch.autoActions } : {}),
+    ...(watch.autoActionImpacts ? { autoActionImpacts: watch.autoActionImpacts } : {}),
   };
 }
 

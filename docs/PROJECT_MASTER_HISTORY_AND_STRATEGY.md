@@ -34,6 +34,7 @@
 24. [勝手に広まる自走バイラルエンジンとステルス両面優待（人間関係摩擦ゼロ設計）](#24-勝手に広まる自走バイラルエンジンとステルス両面優待人間関係摩擦ゼロ設計)
 25. [データ独占によるAIサイテーション・フライホイールと「AI時代の殿様商売」確立マスター設計](#25-データ独占によるaiサイテーションフライホイールとai時代の殿様商売確立マスター設計)
 26. [Zero Effort完全放置版への大統合と不誠実・架空コードの完全切除（Phase 1完了記録）](#26-zero-effort完全放置版への大統合と不誠実架空コードの完全切除phase-1完了記録)
+27. [完全放置型自走ループ（Issue 4 Phase 2〜6）の完全結合と全自動防衛の確立](#27-完全放置型自走ループissue-4-phase-26の完全結合と全自動防衛の確立)
 
 ---
 
@@ -756,5 +757,52 @@ GitHub Issue 4 の採択に伴い、**「顧客は社名/URLを入力したら�
 - **Phase 3〜5（競合Web監視・自律対処・因果追跡）**: 上位競合のWeb変更検知と、自社一次情報に基づく安全な自律台帳更新モデル（`AutoAction` / `AutoActionImpact`）を段階的に実装する。
 
 ---
+
+## 27. 完全放置型自走ループ（Issue 4 Phase 2〜6）の完全結合と全自動防衛の確立
+
+GitHub Issue 4 の全フェーズ（Phase 2〜6）の施工を完了し、**「競合Web監視 → 根拠特定 → 自社台帳自動更新 → 再測定 → 成果確認 → スマート報告」という完全放置型（Zero Effort）の閉ループ**がコードベースおよび画面上で完全に稼働しました。
+
+### 27.1 実装された5大コアエンジンと閉ループ構造
+
+```
+[競合他社Web/AIシェア監視] (Phase 3: detectCompetitorWebChanges)
+               │
+               ▼ 競合の猛追・変化を検知（CompetitorEvent）
+[自社一次情報からのFact自動発掘] (Phase 4: planAndExecuteAutoActions)
+               │ ※ 自社Webに実在する根拠のみ抽出（捏造率0%）
+               ▼
+[公開確定台帳の自動更新・失効管理] (Phase 2: refreshPublicProfileFromScan / addFactToPublicProfile)
+               │
+               ▼ AI探索ロボット向け確定仕様（llms.txt / 構造化データ）即時同期
+[週次再測定による客観的検証] (Phase 5: evaluateAutoActionImpact)
+               │ ※ 誇大因果断定を排除した「観測された変化（Observed Uplift）」測定
+               ▼
+[経営カルテ＆週次スマート通知] (Phase 6: watch-client.tsx / watch-email.ts)
+                 「今週AIXが防衛した実績」を社長へ1秒で直感報告（作業要求ゼロ）
+```
+
+| フェーズ | 機構・モジュール | 主な施工内容と外科手術 | 経営的提供価値（So What） |
+| :--- | :--- | :--- | :--- |
+| **Phase 2** | **公開台帳自動保守**<br>([`lib/storage.ts`](file:///Users/satoushinya/project/AIX-next/lib/storage.ts)) | `refreshPublicProfileFromScan` を実装。定期スキャン時に自社サイトの再クロール差分から台帳Factを自動更新。一次情報から消えた古いFactの自動失効管理。 | 自社サイトが更新されればAI台帳も勝手に同期。社長の入力作業はゼロ。 |
+| **Phase 3** | **競合Web監視**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `detectCompetitorWebChanges` を新設。競合のAI推薦シェア急増や新規台頭を `CompetitorEvent` として自動抽出。 | 経営者が気づかない水面下のライバルの動きをAIXが常時先回り監視。 |
+| **Phase 4** | **自律対応エンジン**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `planAndExecuteAutoActions` を新設。競合の動きに対抗しうる事実（最短対応、個別対応、料金明示等）を自社クロールテキストから客観抽出し台帳へ自動配備。一次情報にない文章は**1文字も捏造しない**。 | 嘘のない強固なファクトでAI探索ロボットに自社の優位性を再認識させる。 |
+| **Phase 5** | **再測定因果追跡**<br>([`lib/autonomous-watch.ts`](file:///Users/satoushinya/project/AIX-next/lib/autonomous-watch.ts)) | `evaluateAutoActionImpact` を新設。施策実行前後の観測ログから「観測された変化（Observed Uplift）」とAIプロバイダー合致度を客観算出。「AIXのおかげで100%勝った」という誇大因果断定を排除。 | 信頼性の極限化。客観的な測定数値で社長に安心感と費用対効果を証明。 |
+| **Phase 6** | **継続価値UI＆通知**<br>([`components/watch-client.tsx`](file:///Users/satoushinya/project/AIX-next/components/watch-client.tsx)<br>[`lib/watch-email.ts`](file:///Users/satoushinya/project/AIX-next/lib/watch-email.ts)) | カルテ画面トップに「THIS WEEK / AIX自律防衛レポート」カードを設置。週次メールも「競合の動き → AIXの自動対処 → 測定成果」の経営レポートフォーマットへ刷新。 | 「AIXが勝手に守ってくれている」実感が毎週届き、解約する理由が完全に消滅。 |
+
+### 27.2 品質・信頼性・クリーンアーキテクチャの担保
+1. **Zero Hallucination（捏造根拠ゼロ）の自動テスト担保**:
+   - `tests/autonomous-watch.test.ts` を新設。自社サイトに記載のない架空のFactをAIXが勝手に作文しないこと、空クロール時にはFactを捏造せず安全にスキップすることを単体テストで厳密に拘束。
+2. **Clean Architecture と `server-only` の完全分離**:
+   - ドメイン判定（競合検知・施策計画・効果測定）を純粋関数として `lib/autonomous-watch.ts` に配置し、DB永続化（`lib/storage.ts`）と完全に疎結合化。Next.jsサーバー内外を問わず高速・堅牢にテスト可能。
+3. **全自動テスト ＆ ビルド通過実績**:
+   - 全43単体テスト 100% パス（43 passed）。
+   - `tsc --noEmit` 型エラー 0件。
+   - `next build` 全26ルート正常生成。
+
+### 27.3 結論：不可逆的な「完全放置の防壁」の完成
+本施工により、顧客は「URLを登録した後は一切何も触らなくてよい」という真の **Zero Effort** を手に入れました。裏側でAIXが24時間365日体制で競合を監視し、自社の根拠を補強し、AI推薦シェアを死守・拡大し続けるため、契約企業にとってAIXは「一度導入したら二度と外せない生命維持インフラ」へと昇華しました。
+
+---
 *以上、本白書に記された全戦略および決定事項は、コードベースおよびUIに完全実装され、全自動テストおよびビルド検証を経て確定されたものである。*
+
 

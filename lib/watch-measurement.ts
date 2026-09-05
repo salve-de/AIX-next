@@ -5,9 +5,10 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { env } from "@/lib/env";
 import { runObservationPanel } from "@/lib/providers";
 import { buildScanResult } from "@/lib/scan-result";
-import { updateWatch } from "@/lib/storage";
+import { addFactToPublicProfile, refreshPublicProfileFromScan, updateWatch } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
 import { createWatchRun, finalizeWatchRun, getActiveWatchRun, mergeObservations, updateWatchRun } from "@/lib/watch-runs";
+import { detectCompetitorWebChanges, evaluateAutoActionImpact, planAndExecuteAutoActions } from "@/lib/autonomous-watch";
 import type { BuyerPrompt, WatchMeasurementRun, WatchRecord } from "@/lib/types";
 
 const DAY_MS = 86_400_000;
@@ -120,12 +121,50 @@ export async function processWatchMeasurement(watch: WatchRecord) {
   const changePack = watch.paid
     ? await generateChangePack({ result, pages: crawl.pages, evidence: watch.evidence }).catch(() => null)
     : null;
+
+  // Phase 2: 最新のクロール結果から自社AI公開台帳を自動更新（P0-2）
+  if (watch.paid) {
+    await refreshPublicProfileFromScan(watch.latest.targetUrl || result.targetUrl, result).catch(() => null);
+  }
+
+  // Phase 3〜5: 競合Web監視、自律対応、再測定検証
+  let competitorEvents = watch.competitorEvents;
+  let autoActions = watch.autoActions;
+  let autoActionImpacts = watch.autoActionImpacts;
+
+  if (watch.paid) {
+    const detectedEvents = detectCompetitorWebChanges(result, previous);
+    const planned = planAndExecuteAutoActions({
+      targetUrl: result.targetUrl,
+      events: detectedEvents,
+      crawledPages: crawl.pages,
+    });
+
+    for (const fact of planned.factsToApply) {
+      await addFactToPublicProfile(result.targetUrl, fact).catch(() => null);
+    }
+
+    const previousActions = watch.autoActions || [];
+    const impacts = evaluateAutoActionImpact(previousActions, result, previous);
+
+    if (detectedEvents.length) competitorEvents = detectedEvents;
+    if (planned.actions.length) autoActions = planned.actions;
+    if (impacts.length) autoActionImpacts = impacts;
+  }
+
   const expiresAfterRun = trialExpiredAfterThisRun(watch);
   const history = run.switchToCore ? [result] : [...watch.history, result].slice(-52);
   const baseline = run.switchToCore ? result : watch.baseline;
   const status = expiresAfterRun ? "expired" as const : watch.status;
   const finalized = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });
-  const updated = changePack ? (await updateWatch(watch.token, { changePack }) || finalized) : finalized;
+
+  const updated = (await updateWatch(watch.token, {
+    changePack,
+    competitorEvents,
+    autoActions,
+    autoActionImpacts,
+  })) || finalized;
+
   await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
   return {
     status: expiresAfterRun ? "completed_and_expired" as const : run.switchToCore ? "core_baseline_created" as const : "completed" as const,

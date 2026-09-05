@@ -1,0 +1,145 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import {
+  detectCompetitorWebChanges,
+  evaluateAutoActionImpact,
+  planAndExecuteAutoActions,
+} from "../lib/autonomous-watch";
+import type { AutoAction, CrawledPage, ScanResult } from "../lib/types";
+import { sampleResult } from "../lib/sample-data";
+
+test("detectCompetitorWebChanges detects meaningful competitor uplift and creates CompetitorEvent", () => {
+  const previous: ScanResult = {
+    ...sampleResult,
+    competitors: [{ name: "大手リーガルグループ", recommendedCount: 10, firstChoiceCount: 4, coverage: 50 }],
+  };
+
+  const latest: ScanResult = {
+    ...sampleResult,
+    competitors: [{ name: "大手リーガルグループ", recommendedCount: 15, firstChoiceCount: 6, coverage: 75 }],
+  };
+
+  const events = detectCompetitorWebChanges(latest, previous);
+  assert.equal(events.length, 1);
+  assert.equal(events[0].competitorName, "大手リーガルグループ");
+  assert.equal(events[0].eventType, "speed_claim_added");
+  assert.ok(events[0].summary.includes("大手リーガルグループ"));
+  assert.equal(events[0].severity, "high");
+});
+
+test("planAndExecuteAutoActions finds verified facts from crawled pages and creates AutoAction without hallucinations", () => {
+  const events = [
+    {
+      id: "evt_1",
+      competitorName: "大手リーガルグループ",
+      sourceUrl: "https://legal.example",
+      eventType: "speed_claim_added" as const,
+      summary: "競合が短納期訴求を強化",
+      dimensions: ["納期・スピード"],
+      extractedFacts: ["最短即日対応"],
+      affectedPromptIds: ["p1", "p2"],
+      severity: "high" as const,
+      confidence: 0.9,
+      detectedAt: new Date().toISOString(),
+    },
+  ];
+
+  // 1. 自社サイトに一次情報が存在する場合
+  const pagesWithFact: CrawledPage[] = [
+    {
+      url: "https://aoba.example/about",
+      title: "事務所概要",
+      description: "迅速な対応が強みです",
+      headings: ["迅速対応"],
+      text: "当事務所は最短即日での面談に対応しております。急ぎのご相談も承ります。",
+    },
+  ];
+
+  const { actions, factsToApply } = planAndExecuteAutoActions({
+    targetUrl: "https://aoba.example",
+    events,
+    crawledPages: pagesWithFact,
+  });
+
+  assert.equal(actions.length, 1);
+  assert.equal(actions[0].factLabel, "対応スピード・着手体制");
+  assert.equal(actions[0].sourceUrl, "https://aoba.example/about");
+  assert.ok(actions[0].summary.includes("確認済み事実を自動抽出"));
+  assert.equal(factsToApply.length, 1);
+  assert.equal(factsToApply[0].label, "対応スピード・着手体制");
+
+  // 2. 自社サイトに一次情報が一切ない場合（捏造防止の検証）
+  const pagesWithoutFact: CrawledPage[] = [
+    {
+      url: "https://aoba.example/blank",
+      title: "白紙ページ",
+      description: "",
+      headings: [],
+      text: "一般的な案内のみ記載されています。",
+    },
+  ];
+
+  const emptyResult = planAndExecuteAutoActions({
+    targetUrl: "https://aoba.example",
+    events,
+    crawledPages: pagesWithoutFact,
+  });
+
+  // 一次情報がない場合は架空Factをでっち上げず、空配列であること
+  assert.equal(emptyResult.actions.length, 0);
+  assert.equal(emptyResult.factsToApply.length, 0);
+});
+
+test("evaluateAutoActionImpact calculates observed uplift without making absolute causal claims", () => {
+  const previousActions: AutoAction[] = [
+    {
+      id: "act_1",
+      triggerEventIds: ["evt_1"],
+      actionType: "profile_fact_updated",
+      factLabel: "対応スピード・着手体制",
+      factValue: "即日対応",
+      sourceUrl: "https://aoba.example",
+      affectedPromptIds: ["prompt_1", "prompt_2"],
+      summary: "台帳自動補強",
+      executedAt: new Date().toISOString(),
+    },
+  ];
+
+  const previous: ScanResult = {
+    ...sampleResult,
+    observations: [
+      {
+        id: "obs_1", promptId: "prompt_1", prompt: "p1", provider: "openai", model: "gpt", repetition: 1,
+        status: "success", rawText: "", citations: [], recommendedEntities: [], ownRecommended: false,
+        ownPosition: null, firstCandidate: null, startedAt: "", completedAt: "", latencyMs: 100,
+      },
+      {
+        id: "obs_2", promptId: "prompt_2", prompt: "p2", provider: "openai", model: "gpt", repetition: 1,
+        status: "success", rawText: "", citations: [], recommendedEntities: [], ownRecommended: false,
+        ownPosition: null, firstCandidate: null, startedAt: "", completedAt: "", latencyMs: 100,
+      },
+    ],
+  };
+
+  const latest: ScanResult = {
+    ...sampleResult,
+    observations: [
+      {
+        id: "obs_3", promptId: "prompt_1", prompt: "p1", provider: "openai", model: "gpt", repetition: 1,
+        status: "success", rawText: "", citations: [], recommendedEntities: [], ownRecommended: true,
+        ownPosition: 1, firstCandidate: "あおば", startedAt: "", completedAt: "", latencyMs: 100,
+      },
+      {
+        id: "obs_4", promptId: "prompt_2", prompt: "p2", provider: "openai", model: "gpt", repetition: 1,
+        status: "success", rawText: "", citations: [], recommendedEntities: [], ownRecommended: true,
+        ownPosition: 2, firstCandidate: "あおば", startedAt: "", completedAt: "", latencyMs: 100,
+      },
+    ],
+  };
+
+  const impacts = evaluateAutoActionImpact(previousActions, latest, previous);
+  assert.equal(impacts.length, 1);
+  assert.equal(impacts[0].observedUplift, 2);
+  assert.equal(impacts[0].providerAgreement.openai, "improved");
+  assert.ok(impacts[0].summary.includes("+2問でAI推薦枠の回復を観測"));
+});

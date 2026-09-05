@@ -4,10 +4,13 @@ import { env } from "@/lib/env";
 import type {
   EvidenceAnswer,
   PublicProfileDraft,
+  PublicProfileFact,
   PublicProfileRecord,
   ScanRecord,
+  ScanResult,
   WatchRecord,
 } from "@/lib/types";
+import { buildPublicProfileDraft } from "@/lib/public-profile";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -45,21 +48,25 @@ function profileSlug(targetUrl: string) {
   try {
     host = new URL(targetUrl).hostname.replace(/^www\./i, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || host;
   } catch {
-    // The public-profile builder validates the URL. Keep storage defensive for
-    // callers that restore a draft directly.
+    host = "company";
   }
-  let slug = `${host}-${id("slug").slice(-12)}`;
-  while ([...publicProfiles.values()].some((profile) => profile.slug === slug)) slug = `${host}-${id("slug").slice(-12)}`;
-  return slug;
+  return host;
 }
 
 function clonePublicProfileDraft(draft: PublicProfileDraft): PublicProfileDraft {
   return {
-    ...draft,
+    title: draft.title,
+    brandName: draft.brandName,
+    targetUrl: draft.targetUrl,
+    summary: draft.summary,
+    market: draft.market,
     targetCustomers: [...draft.targetCustomers],
     useCases: [...draft.useCases],
     facts: draft.facts.map((fact) => ({ ...fact })),
     sourcePages: draft.sourcePages.map((page) => ({ ...page })),
+    structuredData: draft.structuredData,
+    markdown: draft.markdown,
+    json: draft.json,
   };
 }
 
@@ -76,19 +83,21 @@ function durable() {
   return Boolean(env.supabaseUrl && env.supabaseServiceKey);
 }
 
-async function supabase<T>(path: string, init: RequestInit = {}) {
+async function supabase<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${env.supabaseUrl}/rest/v1/${path}`, {
-    ...init,
+    ...options,
     headers: {
       apikey: env.supabaseServiceKey,
       authorization: `Bearer ${env.supabaseServiceKey}`,
       "content-type": "application/json",
-      ...(init.headers || {}),
+      ...(options.headers || {}),
     },
   });
-  if (!response.ok) throw new Error(`Storage ${response.status}: ${(await response.text()).slice(0, 300)}`);
-  const text = await response.text();
-  return (text ? JSON.parse(text) : null) as T;
+  if (!response.ok) {
+    const message = await response.text().catch(() => "");
+    throw new Error(`Supabase operation failed: ${response.status} ${message}`);
+  }
+  return response.json() as Promise<T>;
 }
 
 function scanFromRow(row: any): ScanRecord {
@@ -110,6 +119,9 @@ function watchFromRow(row: any): WatchRecord {
     history: row.history || [],
     evidence: row.evidence || [],
     changePack: row.change_pack || null,
+    competitorEvents: row.competitor_events || undefined,
+    autoActions: row.auto_actions || undefined,
+    autoActionImpacts: row.auto_action_impacts || undefined,
     nextRunAt: row.next_run_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -473,7 +485,7 @@ export function deleteMemoryWatchData(token: string, scanId: string) {
   return true;
 }
 
-export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "nextRunAt">>) {
+export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord, "status" | "paid" | "stripeCustomerId" | "stripeSubscriptionId" | "baseline" | "latest" | "history" | "evidence" | "changePack" | "competitorEvents" | "autoActions" | "autoActionImpacts" | "nextRunAt">>) {
   const updatedAt = new Date().toISOString();
   if (durable()) {
     const body: Record<string, unknown> = { updated_at: updatedAt };
@@ -486,6 +498,9 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
     if (patch.history !== undefined) body.history = patch.history;
     if (patch.evidence !== undefined) body.evidence = patch.evidence;
     if (patch.changePack !== undefined) body.change_pack = patch.changePack;
+    if (patch.competitorEvents !== undefined) body.competitor_events = patch.competitorEvents;
+    if (patch.autoActions !== undefined) body.auto_actions = patch.autoActions;
+    if (patch.autoActionImpacts !== undefined) body.auto_action_impacts = patch.autoActionImpacts;
     if (patch.nextRunAt !== undefined) body.next_run_at = patch.nextRunAt;
     const rows = await supabase<any[]>(`aix_next_watches?token=eq.${encodeURIComponent(token)}`, { method: "PATCH", headers: { prefer: "return=representation" }, body: JSON.stringify(body) });
     return rows[0] ? watchFromRow(rows[0]) : null;
@@ -495,6 +510,76 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
   const next = { ...current, ...patch, updatedAt };
   watches.set(token, next);
   return next;
+}
+
+/**
+ * 週次Watch測定完了時に、最新のクロール・診断結果からAI公開台帳（Public Profile）を自動同期・更新する。
+ * （P0-2: 台帳自動メンテナンスの完全自動化）
+ */
+export async function refreshPublicProfileFromScan(targetUrl: string, scan: ScanResult, now?: Date | string) {
+  const at = profileDate(now);
+  const slug = profileSlug(targetUrl);
+  const existing = await getPublicProfileBySlug(slug, at);
+  if (!existing || existing.status !== "published") return null;
+
+  const draft = buildPublicProfileDraft(scan, at.toISOString());
+
+  const updated: PublicProfileRecord = {
+    ...existing,
+    title: draft.title,
+    summary: draft.summary,
+    market: draft.market,
+    targetCustomers: draft.targetCustomers,
+    useCases: draft.useCases,
+    facts: draft.facts,
+    sourcePages: draft.sourcePages,
+    structuredData: draft.structuredData,
+    markdown: draft.markdown,
+    json: draft.json,
+    updatedAt: at.toISOString(),
+    expiresAt: new Date(at.getTime() + PUBLIC_PROFILE_DEFAULT_TTL_DAYS * DAY_MS).toISOString(),
+  };
+
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}`, {
+      method: "PATCH",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify(publicProfileRow(updated)),
+    });
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+
+  publicProfiles.set(existing.id, updated);
+  return updated;
+}
+
+/**
+ * 競合の動きに対する自律対応（AutoAction）として、検証済みFactをAI公式台帳に自動追加・補強する。
+ */
+export async function addFactToPublicProfile(targetUrl: string, fact: PublicProfileFact, now?: Date | string) {
+  const at = profileDate(now);
+  const slug = profileSlug(targetUrl);
+  const existing = await getPublicProfileBySlug(slug, at);
+  if (!existing || existing.status !== "published") return null;
+
+  const facts = [...existing.facts.filter((f) => f.label !== fact.label), fact];
+  const updated: PublicProfileRecord = {
+    ...existing,
+    facts,
+    updatedAt: at.toISOString(),
+  };
+
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}`, {
+      method: "PATCH",
+      headers: { prefer: "return=representation" },
+      body: JSON.stringify(publicProfileRow(updated)),
+    });
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+
+  publicProfiles.set(existing.id, updated);
+  return updated;
 }
 
 export async function addEvidence(token: string, answer: Omit<EvidenceAnswer, "status" | "updatedAt">) {

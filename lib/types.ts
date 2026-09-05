@@ -422,6 +422,54 @@ export type EvidenceAnswer = {
   updatedAt: string;
 };
 
+export type CompetitorEventType = "pricing_added" | "case_study_added" | "feature_updated" | "certification_added" | "speed_claim_added";
+
+export type CompetitorEvent = {
+  id: string;
+  competitorName: string;
+  sourceUrl: string;
+  eventType: CompetitorEventType;
+  summary: string;
+  dimensions: string[];
+  extractedFacts: string[];
+  affectedPromptIds: string[];
+  severity: "high" | "medium" | "low";
+  confidence: number;
+  detectedAt: string;
+};
+
+export type AutoActionType = "profile_fact_updated" | "source_synced" | "gap_addressed";
+
+export type AutoAction = {
+  id: string;
+  triggerEventIds: string[];
+  actionType: AutoActionType;
+  factLabel: string;
+  factValue: string;
+  sourceUrl: string;
+  affectedPromptIds: string[];
+  summary: string;
+  executedAt: string;
+};
+
+export type ProviderMovement = "improved" | "unchanged" | "declined";
+
+export type AutoActionImpact = {
+  id: string;
+  actionId: string;
+  afterScanId: string;
+  observedUplift: number;
+  affectedPromptCount: number;
+  providerAgreement: {
+    openai: ProviderMovement;
+    gemini: ProviderMovement;
+    perplexity: ProviderMovement;
+  };
+  causalConfidence: "high" | "medium" | "low";
+  summary: string;
+  measuredAt: string;
+};
+
 export type WatchStatus = "trial" | "active" | "past_due" | "cancelled" | "expired";
 
 export type WatchRecord = {
@@ -438,6 +486,9 @@ export type WatchRecord = {
   history: ScanResult[];
   evidence: EvidenceAnswer[];
   changePack?: ChangePack | null;
+  competitorEvents?: CompetitorEvent[];
+  autoActions?: AutoAction[];
+  autoActionImpacts?: AutoActionImpact[];
   nextRunAt: string;
   createdAt: string;
   updatedAt: string;

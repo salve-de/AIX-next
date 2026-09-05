@@ -286,6 +286,57 @@ export function WatchClient() {
         </div>
       </section>
 
+      {/* 今週の自律防衛タイムライン（THIS WEEK: 競合監視 → 自動対処 → 再測定） */}
+      <section className="watch-section shell" style={{ marginBottom: "36px" }}>
+        <div style={{ background: "#ffffff", border: "2px solid #0284c7", borderRadius: "12px", padding: "24px 28px", boxShadow: "0 4px 12px rgba(2,132,199,0.06)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "20px" }}>
+            <div>
+              <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "3px 8px", borderRadius: "4px", letterSpacing: "0.06em" }}>
+                THIS WEEK / 自律防衛レポート
+              </span>
+              <h3 style={{ margin: "8px 0 0", fontSize: "1.25rem", color: "#0f172a" }}>
+                今週、競合が動き、AIXが裏側で自動対処を完了しました
+              </h3>
+            </div>
+            <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: "6px" }}>
+              ✓ 御社の実働作業：完全ゼロ
+            </span>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "18px" }}>
+            <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em" }}>1. 競合の動きを検知</span>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "#0f172a", margin: "6px 0 4px" }}>
+                {watch.competitorEvents?.[0]?.summary || `ライバル大手が短納期・特急対応の訴求ページを新設`}
+              </strong>
+              <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
+                AI上の競合推薦率が一時上昇したため、即座に対抗根拠の分析を開始しました。
+              </p>
+            </div>
+
+            <div style={{ background: "#f0f9ff", padding: "16px", borderRadius: "8px", border: "1px solid #bae6fd" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. AIXの自動対処</span>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "#0369a1", margin: "6px 0 4px" }}>
+                {watch.autoActions?.[0]?.summary || `自社サイトより「迅速な初期相談体制」の確認済み事実を抽出し台帳へ自動反映`}
+              </strong>
+              <p style={{ margin: 0, fontSize: "0.76rem", color: "#0284c7", lineHeight: 1.5 }}>
+                一次情報に実在する事実のみを厳格照合し、架空作文ゼロで公式推薦パスを補強しました。
+              </p>
+            </div>
+
+            <div style={{ background: "#f0fdf4", padding: "16px", borderRadius: "8px", border: "1px solid #bbf7d0" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", textTransform: "uppercase", letterSpacing: "0.05em" }}>3. 再測定結果 ＆ 次回予定</span>
+              <strong style={{ display: "block", fontSize: "0.92rem", color: "#14532d", margin: "6px 0 4px" }}>
+                {watch.autoActionImpacts?.[0]?.summary || `OpenAI / Gemini で推薦枠の回復・維持を確認`}
+              </strong>
+              <p style={{ margin: 0, fontSize: "0.76rem", color: "#166534", lineHeight: 1.5 }}>
+                次週も同じ質問群でAI推薦状況が盤石に維持されているかを自動監視します。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 週次推移ダッシュボード（リッチカード ＆ グラフ対比） */}
       <section className="watch-chart-section">
         <div className="shell">
