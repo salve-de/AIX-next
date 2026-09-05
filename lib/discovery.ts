@@ -65,8 +65,18 @@ function heuristicDiscovery(url: string, pages: CrawledPage[]): CompanyDiscovery
 
 export async function discoverCompany(url: string, pages: CrawledPage[]) {
   const domain = new URL(url).hostname.replace(/^www\./, "");
-  if (!env.openAiKey) return heuristicDiscovery(url, pages);
-  const raw = await askJson<any>(`あなたは市場調査および専門家・事業者リサーチの責任者です。入力されたWebサイト・SNS・公開Webを調べ、同じ買い手・クライアント・相談者が比較する市場や競合・代替候補を特定してください。対象は企業、店舗、専門職、工場、インフルエンサー、クリエイターなど幅広く対応してください。単なる同業や補完関係にあるものを競合にしないでください。JSONだけを返してください。\n\n形式:{"legalName":"","brandName":"","summary":"","market":"","targetCustomers":[""],"useCases":[""],"aliases":[""],"competitors":[{"name":"","domain":"","reason":"","confidence":0.0}],"confidence":0.0}\n\n対象URL:${url}\nサイト情報:${JSON.stringify(compactPages(pages))}`, true);
+  const raw = await askJson<any>(`あなたは市場調査および専門家・事業者リサーチの責任者です。入力されたWebサイト・SNS・公開Web・Googleビジネスプロフィール等を調べ、同じ買い手・クライアント・相談者が比較する市場や競合・代替候補を特定してください。
+【厳格な事実確認ルール】
+1. 一次情報（サイト本文、SNS自己紹介、公的情報）に書かれていない架空の商品名・メニュー・実績をAIが勝手に作文（想像・ハルシネーション）することは厳禁です。
+2. 同名店舗や企業がある場合は、URLや記載された地域情報（市区町村）に一致するものを正確に識別してください。
+3. 確証が持てない項目は推測で埋めず、空欄または一般的な業態名にとどめてください。
+4. 単なる同業や補完関係にあるものを競合にしないでください。
+JSONだけを返してください。
+
+形式:{"legalName":"","brandName":"","summary":"","market":"","targetCustomers":[""],"useCases":[""],"aliases":[""],"competitors":[{"name":"","domain":"","reason":"","confidence":0.0}],"confidence":0.0}
+
+対象URL:${url}
+サイト情報:${JSON.stringify(compactPages(pages))}`, true);
   const brandName = String(raw.brandName || raw.legalName || domain).trim().slice(0, 160);
   const legalName = String(raw.legalName || brandName).trim().slice(0, 160);
   const competitors = (Array.isArray(raw.competitors) ? raw.competitors : []).slice(0, 12).map((item: any) => ({

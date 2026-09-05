@@ -47,6 +47,8 @@ export function ResultClient() {
   const [openObservation, setOpenObservation] = useState("");
   const [email, setEmail] = useState("");
   const [watchBusy, setWatchBusy] = useState(false);
+  const [showCorrectionForm, setShowCorrectionForm] = useState(false);
+  const [correctionQuery, setCorrectionQuery] = useState("");
 
   const result = useMemo(() => {
     if (!rawResult) return null;
@@ -118,6 +120,57 @@ export function ResultClient() {
         </span>
       </div>
     </div>
+
+    {/* 同名店舗・別会社誤爆防止の緊急安全弁（一発やり直しバー） */}
+    <aside aria-label="店舗・対象の確認" style={{ background: "#fef9c3", borderBottom: "1px solid #fde047", padding: "8px 0" }}>
+      <div className="shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#854d0e" }}>
+          <span style={{ fontWeight: 800 }}>⚠️ 店舗・対象の確認：</span>
+          <span>もし同名の別店舗や、意図しない地域・法人が表示されている場合はこちら</span>
+        </div>
+        {!showCorrectionForm ? (
+          <button
+            type="button"
+            onClick={() => setShowCorrectionForm(true)}
+            style={{ background: "#ffffff", border: "1px solid #ca8a04", color: "#854d0e", padding: "4px 10px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+          >
+            別の地域・店舗を指定して再診断する ➔
+          </button>
+        ) : (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (correctionQuery.trim()) {
+                router.push(`/scan?input=${encodeURIComponent(correctionQuery.trim())}`);
+              }
+            }}
+            style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", width: "100%", marginTop: "4px" }}
+          >
+            <input
+              type="text"
+              placeholder="例: 青葉ベーカリー 高崎、山田板金 大田区、または正確なURL"
+              value={correctionQuery}
+              onChange={(e) => setCorrectionQuery(e.target.value)}
+              style={{ flex: "1 1 280px", padding: "6px 10px", fontSize: "0.8rem", border: "1px solid #ca8a04", borderRadius: "4px", background: "#ffffff" }}
+              autoFocus
+            />
+            <button
+              type="submit"
+              style={{ background: "#854d0e", color: "#ffffff", border: "none", padding: "6px 14px", borderRadius: "4px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}
+            >
+              再診断する
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCorrectionForm(false)}
+              style={{ background: "transparent", border: "none", color: "#854d0e", fontSize: "0.75rem", cursor: "pointer", textDecoration: "underline" }}
+            >
+              キャンセル
+            </button>
+          </form>
+        )}
+      </div>
+    </aside>
 
     {/* 3ステップ進行バー（迷子防止ステッパー） */}
     <div className="step-stepper-bar" style={{ background: "#ffffff", borderBottom: "1px solid #e2e8f0", padding: "14px 0" }}>

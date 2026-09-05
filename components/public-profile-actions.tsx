@@ -30,6 +30,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   const [busy, setBusy] = useState<"preview" | "">("");
   const [error, setError] = useState("");
   const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
+  const [customHighlight, setCustomHighlight] = useState<string>("");
   const [isSaved, setIsSaved] = useState<boolean>(sample);
 
   // サイト解析結果（ScanResult）から100%動的に抽出された3つの強み候補
@@ -71,6 +72,15 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </p>
       </div>
 
+      {/* AI下書きガイド案内 */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
+        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <span style={{ background: "#0284c7", color: "#ffffff", padding: "2px 6px", borderRadius: "3px", fontSize: "0.68rem" }}>AI自動下書き済</span>
+          ネット上の公開情報から抽出した御店の強み候補（タップで1つ選ぶだけ）
+        </span>
+        <span style={{ fontSize: "0.72rem", color: "#64748b" }}>※ AIによる勝手な架空作文は排除されています</span>
+      </div>
+
       {/* 3つの強み選択ラジオカード（無料プランは1枠のみ選択可能） */}
       <div className="weapon-selector-grid">
         {strategies.map((strat, index) => {
@@ -106,6 +116,27 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             </div>
           );
         })}
+      </div>
+
+      {/* 独自メニュー・看板の1行直接補正（任意：ハルシネーション完全排除） */}
+      <div style={{ marginTop: "14px", padding: "12px 16px", background: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "4px" }}>
+          <label htmlFor="custom-highlight-input" style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f172a" }}>
+            ✨ 一番推したい看板メニュー・固有の強み（任意：1行で修正・補正）
+          </label>
+          <span style={{ fontSize: "0.7rem", color: "#64748b" }}>AIの作文ミスやニュアンスの違いを直接直せます</span>
+        </div>
+        <input
+          id="custom-highlight-input"
+          type="text"
+          placeholder="例: 名物・天然酵母クロワッサン、早朝7時オープン、国産小麦100%、特急短納期 など"
+          value={customHighlight}
+          onChange={(e) => setCustomHighlight(e.target.value)}
+          style={{ width: "100%", padding: "8px 12px", fontSize: "0.85rem", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", boxSizing: "border-box" }}
+        />
+        <p style={{ fontSize: "0.72rem", color: "#64748b", margin: "4px 0 0" }}>
+          ※ 空欄の場合は上記で選択した「{strategies[selectedWeapon]?.name || "看板"}」がそのままAI公式台帳に登録されます。
+        </p>
       </div>
 
       {/* AIXからの戦略コンサルティング分析所見 */}
@@ -190,7 +221,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="weapon-action-box">
         <div className="weapon-action-status">
           <p>
-            現在配備する看板：<strong>{strategies[selectedWeapon]?.name}</strong>
+            現在配備する看板：<strong>{customHighlight.trim() || strategies[selectedWeapon]?.name}</strong>
           </p>
           <small>自社サイトの改修ゼロ。主要生成AIが直接巡回・引用できる「公認データ規格」で即日ネット上に常駐します。</small>
         </div>

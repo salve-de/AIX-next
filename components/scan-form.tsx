@@ -52,7 +52,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
 
           {/* メイン入力 */}
           <div className="expanded-field-main">
-            <label htmlFor="scan-main-input">会社名・店舗名・活動名、またはメインURL <span className="req-tag">必須</span></label>
+            <label htmlFor="scan-main-input">会社名・店舗名・活動名（地域併記推奨）、またはメインURL <span className="req-tag">必須</span></label>
             <input
               id="scan-main-input"
               aria-label="会社名・店舗名・活動名・URL"
@@ -129,7 +129,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             autoCapitalize="none"
             autoCorrect="off"
             inputMode="text"
-            placeholder="会社名・店舗名・活動名（例: 山田板金、HIKAKIN、青葉カフェ）またはURL"
+            placeholder="会社名・店舗名 ＋ 地域（例: 青葉ベーカリー 高崎、山田板金 大田区、HIKAKIN）またはURL"
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />
@@ -139,6 +139,11 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
           </button>
         </div>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
+        {!compact ? (
+          <p className="scan-form-note" style={{ color: "#64748b", fontSize: "0.72rem", marginTop: "6px" }}>
+            ※ 同名店舗・他社との混同を防ぐため「店名 ＋ 地域（例: さくらベーカリー 世田谷）」の入力も可能です
+          </p>
+        ) : null}
 
         {!compact ? (
           <div className="scan-extra-section">
