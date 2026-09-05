@@ -572,7 +572,18 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
     <footer className="public-company-footer">
       <div className="shell">
         <p>AIX 公式企業情報台帳 · 登録番号: {knowledge.registryId} · 最終更新: {dateLabel(profile.updatedAt)}</p>
-        <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "8px" }}>
+        <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+          <span style={{ fontSize: "0.75rem", color: "#475569" }}>
+            主要生成AI（ChatGPT / Perplexity / Gemini等）向け公式推薦パス稼働中
+          </span>
+          <Link
+            href="/"
+            style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0284c7", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
+          >
+            貴社がAIに推薦されているか10秒で無料診断する <ArrowIcon />
+          </Link>
+        </div>
+        <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px" }}>
           【ご案内】本台帳の記載事項は確認時点における公的登録情報および公式サイトの公開事実に基づきます。最新の受付状況や詳細は公式サイトをご確認ください。
         </p>
       </div>

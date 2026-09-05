@@ -22,6 +22,7 @@ export function SiteFooter() {
           <Link href="/terms">利用規約</Link>
           <Link href="/commerce">特商法表記</Link>
           <Link href="/data-rights">データ管理</Link>
+          <Link href="/partners">パートナー制度</Link>
           <Link href="/support">お問い合わせ</Link>
         </nav>
         <div className="footer-meta">

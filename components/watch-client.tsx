@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/site-header";
 import type { PublicWatch, PublicWatchMeasurementRun } from "@/lib/public-dto";
 import { sampleWatch } from "@/lib/sample-data";
 import type { PromptPanelKind } from "@/lib/types";
+import { ExecutiveReferralCard } from "@/components/executive-referral-card";
 
 type WatchView = PublicWatch & { measurementRun?: PublicWatchMeasurementRun | null };
 
@@ -565,6 +566,16 @@ export function WatchClient() {
           </div>
         ) : null}
       </section>
+
+      {/* 経営者相互見守りネットワーク・特別ご紹介優待 */}
+      {watch ? (
+        <div className="shell">
+          <ExecutiveReferralCard
+            brandName={watch.latest.discovery.brandName}
+            watchToken={token}
+          />
+        </div>
+      ) : null}
 
       {error ? <p className="floating-error" role="alert">{error}</p> : null}
       <SiteFooter />

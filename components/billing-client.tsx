@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowIcon, LockIcon } from "@/components/icons";
 import type { WatchRecord } from "@/lib/types";
+import { ExecutiveReferralCard } from "@/components/executive-referral-card";
 
 export function BillingClient() {
   const params = useSearchParams();
@@ -45,6 +46,14 @@ export function BillingClient() {
       {message ? <p className="form-error" role="status">{message}</p> : null}
     </form>
     <p className="billing-note">クレジットカード情報はすべて世界標準の決済機関（Stripe）が直接暗号化管理し、AIXでは保持しません。</p>
+    {watch?.paid ? (
+      <div style={{ marginTop: "32px", textAlign: "left" }}>
+        <ExecutiveReferralCard
+          brandName={watch.latest.discovery.brandName}
+          watchToken={token || watch.token}
+        />
+      </div>
+    ) : null}
     {watch ? <Link className="document-link" href={`/watch?token=${encodeURIComponent(token)}`}>← 見守りダッシュボードへ戻る</Link> : <Link className="document-link" href="/">← トップページへ戻る</Link>}
   </div>;
 }
