@@ -162,61 +162,166 @@ svg { width: 1.1em; height: 1.1em; }
   font-weight: 800;
   color: #0f172a;
 }
-.scan-extra-card {
-  margin-top: 10px;
-  padding: 16px 18px;
+/* 一体型高精度フォームカード（展開時） */
+.scan-form-expanded {
   background: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+  border: 1.5px solid #0f172a;
+  border-radius: 12px;
+  padding: 20px 22px;
+  box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.03);
+  text-align: left;
   animation: fadeInDown 0.2s ease-out;
 }
-.extra-card-header strong {
-  font-size: 0.84rem;
-  color: #0f172a;
-  display: block;
-  margin-bottom: 3px;
+.expanded-header {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 12px;
 }
-.extra-card-header p {
+.expanded-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.expanded-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.expanded-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+.expanded-close-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.expanded-sub {
   font-size: 0.76rem;
   color: #64748b;
-  margin: 0 0 12px;
-  line-height: 1.45;
+  margin: 0;
+  line-height: 1.4;
 }
-.scan-extra-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+.expanded-field-main {
+  margin-bottom: 14px;
 }
-.scan-extra-field {
+.expanded-field-main label,
+.expanded-field label {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.scan-extra-field label {
-  font-size: 0.74rem;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
   font-weight: 700;
   color: #334155;
+  margin-bottom: 6px;
 }
-.scan-extra-field input {
+.req-tag {
+  font-size: 0.65rem;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 700;
+}
+.opt-tag {
+  font-size: 0.65rem;
+  background: #f1f5f9;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.expanded-field-main input {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 0.92rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+.expanded-field-main input:focus {
+  border-color: #0f172a;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+.expanded-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.expanded-field input {
+  width: 100%;
+  padding: 9px 12px;
   font-size: 0.82rem;
-  padding: 8px 10px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #f8fafc;
   color: #0f172a;
   outline: none;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
-.scan-extra-field input:focus {
+.expanded-field input:focus {
   border-color: #0284c7;
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
 }
+.expanded-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+.expanded-note {
+  font-size: 0.74rem;
+  color: #64748b;
+}
+.expanded-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 11px 24px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+.expanded-submit-btn:hover {
+  background: #1e293b;
+  transform: translateY(-1px);
+}
 
 @media (max-width: 768px) {
-  .scan-extra-grid {
+  .expanded-options-grid {
     grid-template-columns: 1fr;
+  }
+  .expanded-footer {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .expanded-submit-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
