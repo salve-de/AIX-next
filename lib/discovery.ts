@@ -57,22 +57,22 @@ function heuristicDiscovery(url: string, pages: CrawledPage[]): CompanyDiscovery
   const domain = new URL(url).hostname.replace(/^www\./, "");
   const home = homePage(url, pages);
   const brandName = (home?.title || domain).split(/[|｜–—-]/)[0].trim().slice(0, 120) || domain;
-  const summary = home?.description || home?.text.slice(0, 500) || "公開サイトから会社概要を抽出";
+  const summary = home?.description || home?.text.slice(0, 500) || "公開サイト・アカウントから概要を抽出";
   const heading = pages.flatMap((page) => page.headings).find((item) => item.length >= 4 && item.length <= 80);
-  const market = heading || "法人向けサービス";
-  return { legalName: brandName, brandName, domain, summary, market, targetCustomers: ["日本の法人"], useCases: [], aliases: [brandName, domain], competitors: [], confidence: 0.35 };
+  const market = heading || "専門サービス・事業";
+  return { legalName: brandName, brandName, domain, summary, market, targetCustomers: ["利用者・取引先"], useCases: [], aliases: [brandName, domain], competitors: [], confidence: 0.35 };
 }
 
 export async function discoverCompany(url: string, pages: CrawledPage[]) {
   const domain = new URL(url).hostname.replace(/^www\./, "");
   if (!env.openAiKey) return heuristicDiscovery(url, pages);
-  const raw = await askJson<any>(`あなたは日本のB2B市場調査責任者です。入力された会社サイトと公開Webを調べ、同じ買い手が同じ予算で比較する市場を特定してください。単なる同業や補完製品を競合にしないでください。JSONだけを返してください。\n\n形式:{"legalName":"","brandName":"","summary":"","market":"","targetCustomers":[""],"useCases":[""],"aliases":[""],"competitors":[{"name":"","domain":"","reason":"","confidence":0.0}],"confidence":0.0}\n\n対象URL:${url}\nサイト情報:${JSON.stringify(compactPages(pages))}`, true);
+  const raw = await askJson<any>(`あなたは市場調査および専門家・事業者リサーチの責任者です。入力されたWebサイト・SNS・公開Webを調べ、同じ買い手・クライアント・相談者が比較する市場や競合・代替候補を特定してください。対象は企業、店舗、専門職、工場、インフルエンサー、クリエイターなど幅広く対応してください。単なる同業や補完関係にあるものを競合にしないでください。JSONだけを返してください。\n\n形式:{"legalName":"","brandName":"","summary":"","market":"","targetCustomers":[""],"useCases":[""],"aliases":[""],"competitors":[{"name":"","domain":"","reason":"","confidence":0.0}],"confidence":0.0}\n\n対象URL:${url}\nサイト情報:${JSON.stringify(compactPages(pages))}`, true);
   const brandName = String(raw.brandName || raw.legalName || domain).trim().slice(0, 160);
   const legalName = String(raw.legalName || brandName).trim().slice(0, 160);
   const competitors = (Array.isArray(raw.competitors) ? raw.competitors : []).slice(0, 12).map((item: any) => ({
     name: String(item.name || "").trim().slice(0, 160),
     domain: item.domain ? String(item.domain).replace(/^https?:\/\//, "").replace(/\/$/, "") : undefined,
-    reason: String(item.reason || "同じ購買場面で比較される代替候補").slice(0, 500),
+    reason: String(item.reason || "同じ場面で比較・検討される代替候補").slice(0, 500),
     confidence: Math.max(0, Math.min(1, Number(item.confidence || .6))),
   })).filter((item: any) => item.name && item.name.toLowerCase() !== brandName.toLowerCase());
   return {
@@ -80,7 +80,7 @@ export async function discoverCompany(url: string, pages: CrawledPage[]) {
     brandName,
     domain,
     summary: String(raw.summary || homePage(url, pages)?.description || "").slice(0, 1_200),
-    market: String(raw.market || "法人向けサービス").slice(0, 160),
+    market: String(raw.market || "専門サービス・事業").slice(0, 160),
     targetCustomers: (Array.isArray(raw.targetCustomers) ? raw.targetCustomers : []).map(String).slice(0, 12),
     useCases: (Array.isArray(raw.useCases) ? raw.useCases : []).map(String).slice(0, 12),
     aliases: [...new Set([brandName, legalName, domain, ...(Array.isArray(raw.aliases) ? raw.aliases.map(String) : [])])].slice(0, 20),

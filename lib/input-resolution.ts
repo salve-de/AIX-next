@@ -31,14 +31,14 @@ function cleanInput(value: string) {
 }
 
 function searchPrompt(input: string) {
-  return `あなたは公開Webの調査担当です。入力された会社名・サービス名・商品名に対応する、診断対象にできる公開サイトの候補を探してください。
+  return `あなたは公開Webの調査担当です。入力された会社名・店舗名・サービス名・クリエイター・インフルエンサー・活動名に対応する、診断対象にできる公開サイトや公式アカウントの候補を探してください。
 
 必ず次のJSONだけを返してください。説明文、Markdown、コードフェンスは不要です。
 {"candidates":[{"url":"https://example.com/","title":"表示名","reason":"この候補と入力名が対応する公開情報上の理由"}]}
 
 ルール:
-- 公式の会社サイト、製品サイト、サービス紹介ページを優先する
-- 検索結果ページ、比較サイト、レビューサイト、SNS、求人サイト、Wikipediaは候補にしない
+- 公式のサイト、製品・サービス紹介ページ、公式SNS（X/Instagram/YouTube）、リンク集（lit.link等）を優先する
+- 検索エンジンの検索結果一覧ページ、汎用比較サイト、求人サイト、Wikipediaは候補にしない
 - 候補が複数ある場合は最大5件。入力と無関係な候補を埋めない
 - URLはhttpまたはhttpsの実在する公開ページを1つだけ書く
 - 断定できないときは候補を空配列にする
@@ -120,8 +120,7 @@ function urlsFromText(text: string) {
 
 const EXCLUDED_HOSTS = new Set([
   "google.com", "www.google.com", "bing.com", "www.bing.com", "search.yahoo.co.jp", "yahoo.co.jp",
-  "wikipedia.org", "ja.wikipedia.org", "linkedin.com", "www.linkedin.com", "facebook.com", "www.facebook.com",
-  "instagram.com", "www.instagram.com", "youtube.com", "www.youtube.com", "x.com", "twitter.com",
+  "wikipedia.org", "ja.wikipedia.org",
   "g2.com", "www.g2.com", "crunchbase.com", "www.crunchbase.com", "prtimes.jp", "www.prtimes.jp",
 ]);
 
@@ -174,12 +173,12 @@ function candidatesFromResult(result: ProviderResult) {
 
 export async function resolvePublicInput(value: string): Promise<InputResolution> {
   const input = cleanInput(value);
-  if (!input) throw new Error("会社名・商品名・サービス名・URLを入力してください。");
+  if (!input) throw new Error("会社名・店舗名・活動名・URLを入力してください。");
   if (isUrlInput(input)) {
     const url = normalizePublicUrl(input);
     return { input, kind: "url", candidates: [{ url, title: "入力された公開サイト", reason: "入力されたURLをそのまま診断します。" }] };
   }
-  if (input.length < 2) throw new Error("会社名・商品名・サービス名を2文字以上で入力してください。");
+  if (input.length < 2) throw new Error("会社名・店舗名・活動名を2文字以上で入力してください。");
 
   const attempts: Array<{ provider: NonNullable<InputResolution["provider"]>; enabled: boolean; run: () => Promise<ProviderResult> }> = [
     { provider: "openai", enabled: Boolean(env.openAiKey), run: () => searchWithOpenAi(input) },

@@ -31,14 +31,14 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
     router.push(`/scan?${query.toString()}`);
   }
 
-  // 開いた時の一体型高精度フォーム
+  // 開いた時の一体型高精度フォーム（全方位対応）
   if (!compact && showExtra) {
     return (
       <div className="scan-form-outer">
         <form className="scan-form-expanded" id="scan" onSubmit={submit} noValidate>
           <div className="expanded-header">
             <div className="expanded-title-row">
-              <strong className="expanded-title">AI推薦 高精度診断フォーム</strong>
+              <strong className="expanded-title">AI推薦 高精度診断フォーム（全クリエイター・事業者対応）</strong>
               <button
                 type="button"
                 className="expanded-close-btn"
@@ -47,19 +47,19 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
                 − 簡易入力に戻す
               </button>
             </div>
-            <p className="expanded-sub">会社名に加え、HPやSNSを連携するとAIの学習精度が最大化されます（空欄のままでも診断可能）。</p>
+            <p className="expanded-sub">会社・店舗はもちろん、インフルエンサーやクリエイター、個人事業主も、SNSや実績を連携するとAIの学習・推薦精度が最大化されます（空欄のままでも診断可能）。</p>
           </div>
 
           {/* メイン入力 */}
           <div className="expanded-field-main">
-            <label htmlFor="scan-main-input">会社名・店舗名、またはサイトURL <span className="req-tag">必須</span></label>
+            <label htmlFor="scan-main-input">会社名・店舗名・活動名、またはメインURL <span className="req-tag">必須</span></label>
             <input
               id="scan-main-input"
-              aria-label="会社名・店舗名・サイトURL"
+              aria-label="会社名・店舗名・活動名・URL"
               autoCapitalize="none"
               autoCorrect="off"
               inputMode="text"
-              placeholder="例: 山田板金 大田区、または https://yamada-bankin.jp"
+              placeholder="例: 山田板金 大田区、HIKAKIN、青葉カフェ、または https://yamada-bankin.jp"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               autoFocus
@@ -69,31 +69,31 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
           {/* 3つの追加オプション入力 */}
           <div className="expanded-options-grid">
             <div className="expanded-field">
-              <label htmlFor="extra-url">自社ホームページURL <span className="opt-tag">任意</span></label>
-              <input
-                id="extra-url"
-                type="url"
-                placeholder="https://example.com"
-                value={extraUrl}
-                onChange={(e) => setExtraUrl(e.target.value)}
-              />
-            </div>
-            <div className="expanded-field">
-              <label htmlFor="extra-social">Instagramアカウント <span className="opt-tag">任意</span></label>
+              <label htmlFor="extra-social">X（旧Twitter）/ Instagram <span className="opt-tag">任意</span></label>
               <input
                 id="extra-social"
                 type="text"
-                placeholder="@your_account"
+                placeholder="@your_account またはURL"
                 value={extraSocial}
                 onChange={(e) => setExtraSocial(e.target.value)}
               />
             </div>
             <div className="expanded-field">
-              <label htmlFor="extra-product">主力商品・看板サービス名 <span className="opt-tag">任意</span></label>
+              <label htmlFor="extra-url">HP / YouTube / note / リンク集 <span className="opt-tag">任意</span></label>
+              <input
+                id="extra-url"
+                type="url"
+                placeholder="https://... または Lit.link"
+                value={extraUrl}
+                onChange={(e) => setExtraUrl(e.target.value)}
+              />
+            </div>
+            <div className="expanded-field">
+              <label htmlFor="extra-product">専門分野・看板実績・主力サービス <span className="opt-tag">任意</span></label>
               <input
                 id="extra-product"
                 type="text"
-                placeholder="例: 特急試作板金、熟成にんにく"
+                placeholder="例: コスメ紹介、特急試作板金、相続専門"
                 value={extraProduct}
                 onChange={(e) => setExtraProduct(e.target.value)}
               />
@@ -125,11 +125,11 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
       >
         <div className="scan-field">
           <input
-            aria-label="会社名・店舗名・サイトURL"
+            aria-label="会社名・店舗名・活動名・URL"
             autoCapitalize="none"
             autoCorrect="off"
             inputMode="text"
-            placeholder="会社名・店舗名（例: 山田板金 大田区）またはURL"
+            placeholder="会社名・店舗名・活動名（例: 山田板金、HIKAKIN、青葉カフェ）またはURL"
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />
@@ -149,7 +149,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
               aria-expanded={false}
             >
               <span className="toggle-icon">＋</span>
-              <span>Instagram・自社サイト・主力商品もまとめて連携して精度を上げる（任意）</span>
+              <span>X・Instagram・YouTube・自社サイトもまとめて連携して精度を上げる（任意）</span>
             </button>
           </div>
         ) : null}

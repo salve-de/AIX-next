@@ -28,8 +28,8 @@ export default function HomePage() {
                   <em>ライバルを「おすすめ」しています。</em>
                 </h1>
                 <p className="landing-hero-lead">
-                  自社サイト改修ゼロ・完全放置。社名を入力するだけで、<br />
-                  AIが御社を優先推薦する公式台帳を即日配備します。
+                  自社サイト改修ゼロ・完全放置。名前やアカウントを入力するだけで、<br />
+                  AIがあなたや御社を優先推薦する公式台帳を即日配備します。
                 </p>
               </div>
 
@@ -44,13 +44,13 @@ export default function HomePage() {
                   <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M3 8.5L6.5 12L13 4" />
                   </svg>
-                  <span>所要10秒（社名のみ）</span>
+                  <span>所要10秒（名前・URLのみ）</span>
                 </div>
                 <div className="trust-badge">
                   <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M3 8.5L6.5 12L13 4" />
                   </svg>
-                  <span>自社サイト改修ゼロ</span>
+                  <span>サイト改修ゼロ</span>
                 </div>
                 <div className="trust-badge">
                   <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
