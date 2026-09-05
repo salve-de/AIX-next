@@ -14,72 +14,79 @@ export default function HomePage() {
       <SiteHeader />
 
       {/* ================================================================= */}
-      {/* 1. ファーストビュー：誰でも1秒で状況がわかる導入 */}
+      {/* 1. ファーストビュー：余白と集中のシングルフォーカスヒーロー */}
       {/* ================================================================= */}
       <section className="landing-hero">
         <div className="shell landing-hero-inner">
-          <div className="landing-hero-grid">
-            
-            {/* 左カラム：問題提起・入力フォーム・安心シグナル */}
-            <div className="landing-hero-col-left">
-              <div className="landing-hero-head-block">
-                <p className="overline">ChatGPT・生成AI おすすめ獲得システム</p>
-                <h1>
-                  お客さんがChatGPTに「おすすめ」を聞いた時、<br />
-                  <em>あなたの会社はスルーされ、大手が紹介されています。</em>
-                </h1>
-                <p className="landing-hero-lead">
-                  AIは御社が嫌いなわけではありません。「テキストを解析するAI」に本当の強みが届いていないだけです。<br />
-                  自社ホームページの改修は一切不要。社名を入れるだけで、AIがあなたをお客さんにおすすめする公式推薦データを即日配備します。
-                </p>
-              </div>
+          <div className="landing-hero-single">
+            <div className="landing-hero-head-block">
+              <p className="overline">ChatGPT・生成AI おすすめ獲得システム</p>
+              <h1>
+                お客さんがChatGPTに「おすすめ」を聞いた時、<br />
+                <em>あなたの会社はスルーされ、大手が紹介されています。</em>
+              </h1>
+              <p className="landing-hero-lead">
+                AIは御社が嫌いなわけではありません。「テキストを解析するAI」に本当の強みが届いていないだけです。<br />
+                自社ホームページの改修は一切不要。社名を入れるだけで、AIがあなたをお客さんにおすすめする公式推薦データを即日配備します。
+              </p>
+            </div>
 
-              {/* 入力フォーム */}
-              <div className="landing-hero-form-box" id="scan">
-                <ScanForm />
-              </div>
+            {/* 入力フォーム */}
+            <div className="landing-hero-form-box" id="scan">
+              <ScanForm />
+            </div>
 
-              {/* 3大安心マイクロバッジ */}
-              <div className="hero-trust-badges" aria-label="サービスの特長">
-                <div className="trust-badge">
-                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 8.5L6.5 12L13 4" />
-                  </svg>
-                  <span>社名を入れるだけ（10秒）</span>
-                </div>
-                <div className="trust-badge">
-                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 8.5L6.5 12L13 4" />
-                  </svg>
-                  <span>今のHPはそのままでOK</span>
-                </div>
-                <div className="trust-badge">
-                  <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M3 8.5L6.5 12L13 4" />
-                  </svg>
-                  <span>完全無料（自動課金なし）</span>
-                </div>
+            {/* 3大安心マイクロバッジ */}
+            <div className="hero-trust-badges" aria-label="サービスの特長">
+              <div className="trust-badge">
+                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                <span>社名を入れるだけ（10秒）</span>
               </div>
-
-              {/* 診断見本リンク */}
-              <div className="hero-sample-link-wrapper">
-                <Link className="hero-sample-link" href="/result?sample=1">
-                  実際の診断レポート見本を見る <span aria-hidden="true">→</span>
-                </Link>
+              <div className="trust-badge">
+                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                <span>今のHPはそのままでOK</span>
+              </div>
+              <div className="trust-badge">
+                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                <span>完全無料（自動課金なし）</span>
               </div>
             </div>
 
-            {/* 右カラム：0.1秒で伝わるChatGPTリアル比較＆診断プレビュー */}
-            <div className="landing-hero-col-right">
-              <HeroChatDiagnosticCard />
+            {/* 診断見本リンク */}
+            <div className="hero-sample-link-wrapper">
+              <Link className="hero-sample-link" href="/result?sample=1">
+                実際の診断レポート見本を見る <span aria-hidden="true">→</span>
+              </Link>
             </div>
-
           </div>
         </div>
       </section>
 
       {/* ================================================================= */}
-      {/* 2. なぜ今、こんなことが起きているのか？（理由が1秒でわかる3大危機） */}
+      {/* 2. ChatGPT実況シミュレーション：実際のAI回答はどうなっているのか？ */}
+      {/* ================================================================= */}
+      <section className="landing-simulation-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
+        <div className="section-head-center" style={{ marginBottom: "28px" }}>
+          <span className="pill-badge">実況シミュレーション</span>
+          <h2>お客さんがChatGPTに聞いた時、<br />実際の回答はどうなっているのか？</h2>
+          <p>
+            AI向け公式データがない状態では知名度の高い大手が機械的に選ばれ、<br />
+            自社専用の公式推薦データを置くと、相談内容の強みに合致して指名推薦されます。
+          </p>
+        </div>
+        <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+          <HeroChatDiagnosticCard />
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* 3. なぜ今、こんなことが起きているのか？（理由が1秒でわかる3大危機） */}
       {/* ================================================================= */}
       <GoogleDeclineProblemSection />
 
