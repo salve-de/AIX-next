@@ -1,3 +1,4 @@
+import { LEGACY_CRAWLER_AGENTS } from "./brand-compatibility";
 export type RobotsRule = { type: "allow" | "disallow"; path: string };
 export type RobotsGroup = { agents: string[]; rules: RobotsRule[] };
 
@@ -32,8 +33,14 @@ function matchesRule(pathname: string, rule: string) {
   catch { return pathname.startsWith(rule); }
 }
 
-export function isAllowedByRobots(source: string, pathname: string, agent = "aixnextbot") {
+export function isAllowedByRobots(source: string, pathname: string, agent = "rovanbot") {
   const groups = parseRobots(source);
+  if (agent.toLowerCase().includes("rovanbot")) {
+    for (const legacy of LEGACY_CRAWLER_AGENTS) {
+      const hasLegacyPolicy = groups.some((group) => group.agents.some((item) => item !== "*" && legacy.includes(item)));
+      if (hasLegacyPolicy && !isAllowedByRobots(source, pathname, legacy)) return false;
+    }
+  }
   const exact = groups.filter((group) => group.agents.some((item) => agent.toLowerCase().includes(item) || item === agent.toLowerCase()));
   const selected = exact.length ? exact : groups.filter((group) => group.agents.includes("*"));
   const rules = selected.flatMap((group) => group.rules).filter((rule) => matchesRule(pathname, rule.path));

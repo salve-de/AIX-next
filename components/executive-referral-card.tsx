@@ -1,5 +1,7 @@
 "use client";
 
+import { siteUrl } from "@/lib/site";
+
 import { useState } from "react";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 
@@ -12,11 +14,11 @@ export function ExecutiveReferralCard({ brandName, watchToken = "" }: ExecutiveR
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState(false);
 
-  // トークンまたは社名から品格ある公認招待コードを自動生成（例: AIX-7749-VIP）
+  // トークンまたは社名から品格ある公認招待コードを自動生成（例: Rovan-7749-VIP）
   const tokenSuffix = watchToken
     ? watchToken.replace(/[^a-zA-Z0-9]/g, "").slice(-4).toUpperCase()
     : "7749";
-  const inviteCode = `AIX-${tokenSuffix || "VIP"}-NETWORK`;
+  const inviteCode = `ROVAN-${tokenSuffix || "VIP"}-NETWORK`;
 
   // 紹介された側が「教えてくれてありがとう」と感謝する、相手本位のLINE・メール用文面
   const shareMessage = `【AI推薦状況の無料確認のご案内】
@@ -25,8 +27,8 @@ ${brandName}の代表です。
 
 10秒で自社がAIに推薦されているか確認できる無料診断がありますので、御社も一度状況を観測されることをお勧めします。
 
-▼ AIX公式 10秒無料診断窓口
-https://aix-next.com/
+▼ Rovan公式 10秒無料診断窓口
+${typeof window !== "undefined" ? window.location.origin : siteUrl}/
 
 ※もし週次見守りなどの対策を実施される場合は、当社の相互見守りネットワーク公認招待コード【 ${inviteCode} 】をご決済時に入力いただくと、【初月利用料（9,800円）が100%免除（初月無料）】になります。よろしければご活用ください。`;
 
@@ -82,7 +84,7 @@ https://aix-next.com/
           <span className="benefit-role">ご紹介元企業様（{brandName || "御社"}）</span>
           <div className="benefit-highlight">
             <strong>1社につき毎月 3,000円 継続還元</strong>
-            <small>3社ご紹介で御社のAIX利用料は【実質永久無料】</small>
+            <small>3社ご紹介で御社のRovan利用料は【実質永久無料】</small>
           </div>
           <p className="benefit-desc">
             ご紹介先が継続される限り、毎月3,000円が御社へ還元（利用料相殺またはお振込）されます。
@@ -131,7 +133,7 @@ https://aix-next.com/
 
       <div className="referral-footer-note">
         <small>
-          ※本制度はAIX利用企業様相互の信頼に基づく特別優待枠です。不正な大量取得や公序良俗に反する配布が行われた場合は優待資格が停止されます。
+          ※本制度はRovan利用企業様相互の信頼に基づく特別優待枠です。不正な大量取得や公序良俗に反する配布が行われた場合は優待資格が停止されます。
         </small>
       </div>
 

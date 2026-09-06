@@ -148,7 +148,7 @@ export function ZeroEffortPromiseSection() {
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
               Web制作会社に改修を依頼したり、サーバーの設定を変更する必要はありません。<br />
-              ChatGPTなどのAI探索ロボットが常時読み込める「公式推薦データ」をAIX側が即日開設します。既存の自社サイトは1文字も触る必要がありません。
+              ChatGPTなどのAI探索ロボットが常時読み込める「公式推薦データ」をRovan側が即日開設します。既存の自社サイトは1文字も触る必要がありません。
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export function ZeroEffortPromiseSection() {
             </span>
             <span style={{ fontSize: "0.88rem", color: "#334155", lineHeight: 1.5 }}>
               <strong>社長は、本業（接客・施工・製造・経営）に100%専念してください。</strong><br />
-              AI公式データの配備・最新維持・競合の監視は、すべてAIXが自動で自走させます。
+              AI公式データの配備・最新維持・競合の監視は、すべてRovanが自動で自走させます。
             </span>
           </div>
           <span

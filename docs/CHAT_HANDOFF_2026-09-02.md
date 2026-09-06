@@ -1,4 +1,4 @@
-# AIX Next — handoff redirect (2026-09-02)
+# Rovan — handoff redirect (2026-09-02)
 
 > **This original handoff has been superseded. Do not resume implementation from the old `eb75456` / `d9fcf1b` state described in the historical version of this file.**
 
@@ -39,7 +39,7 @@ FIND excluded buying questions
 Important truth boundaries remain unchanged:
 
 - Buyer Prompt counts are not customers, leads or revenue.
-- AIX does not claim a universal ChatGPT rank.
+- Rovan does not claim a universal ChatGPT rank.
 - Before/after movement does not prove causality.
 - Samples are fictional.
 - Missing provider results are never fabricated.

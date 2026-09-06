@@ -1,8 +1,8 @@
-# AIX Next — Product Strategy
+# Rovan — Product Strategy
 
 ## Mission
 
-AIX helps a B2B company improve the moment before a buyer contacts sales: the moment the buyer asks an AI which vendors should be considered.
+Rovan helps a B2B company improve the moment before a buyer contacts sales: the moment the buyer asks an AI which vendors should be considered.
 
 The product is not primarily an AI rank tracker. It is a buyer-consideration improvement loop:
 
@@ -37,11 +37,11 @@ Buyer has a need
 
 GA and CRM mostly observe what happens after a visit or contact. If the company is omitted from the AI shortlist and the buyer never visits, that specific pre-visit comparison event is normally invisible to those systems.
 
-AIX observes that decision surface. It does **not** claim that every omitted Buyer Prompt is a lost customer or lost revenue.
+Rovan observes that decision surface. It does **not** claim that every omitted Buyer Prompt is a lost customer or lost revenue.
 
 ## Core questions
 
-AIX must answer five questions without requiring the customer to design the measurement system first:
+Rovan must answer five questions without requiring the customer to design the measurement system first:
 
 1. In which buying questions does the company enter or fall out of the AI shortlist?
 2. Which competitors are selected instead?
@@ -98,7 +98,7 @@ Outputs:
 - denominator and measurement completeness.
 
 Value:
-- the customer can inspect why AIX reached its conclusion instead of trusting a black-box score.
+- the customer can inspect why Rovan reached its conclusion instead of trusting a black-box score.
 
 ### ACT — remove the gap between diagnosis and implementation
 
@@ -111,7 +111,7 @@ Outputs:
 Value:
 - the customer does not have to translate a dashboard into a content brief from scratch.
 
-Change Packs are human-reviewable drafts. AIX must not invent facts and must not publish to the customer site without explicit approval.
+Change Packs are human-reviewable drafts. Rovan must not invent facts and must not publish to the customer site without explicit approval.
 
 ### PROVE — remeasure the same decision surface
 
@@ -127,13 +127,13 @@ Value:
 
 ## Product promise
 
-AIX provides an explicit, repeatable observation panel. It does not promise a universal ChatGPT rank, guaranteed citation, guaranteed shortlist inclusion, causal revenue uplift or a complete representation of every private consumer AI conversation.
+Rovan provides an explicit, repeatable observation panel. It does not promise a universal ChatGPT rank, guaranteed citation, guaranteed shortlist inclusion, causal revenue uplift or a complete representation of every private consumer AI conversation.
 
 ## Differentiation
 
 ### Zero-setup market discovery
 
-The user starts with one company URL. AIX derives the operating company, brand, product category, buyer, use cases, likely substitutes and Buyer Prompt panel.
+The user starts with one company URL. Rovan derives the operating company, brand, product category, buyer, use cases, likely substitutes and Buyer Prompt panel.
 
 ### Buyer-loss model instead of generic visibility score
 
@@ -149,7 +149,7 @@ Prompt counts must never be labeled as customers, leads or revenue.
 
 ### Evidence operating system
 
-AIX converts missing public information into a specific, testable request:
+Rovan converts missing public information into a specific, testable request:
 
 > Average implementation time could not be verified. This evidence gap is related to 11 tracked buying questions.
 
@@ -239,7 +239,7 @@ Within 14 days of payment:
 - at least one Evidence task or Change Pack action is reviewed;
 - the customer reaches a second measurement or scheduled next measurement.
 
-This tests whether AIX actually enters the customer's operating loop.
+This tests whether Rovan actually enters the customer's operating loop.
 
 ### Supporting product metrics
 
@@ -252,13 +252,13 @@ These are product-operating metrics, not guaranteed business outcomes.
 
 ### Optional future business-impact metrics
 
-When a customer connects first-party analytics, AIX may additionally show:
+When a customer connects first-party analytics, Rovan may additionally show:
 - AI-referral sessions;
 - AI-referral demo/contact conversions;
 - CRM-reported AI source;
 - supporting branded/direct traffic trends.
 
-These signals must remain separate from prompt counts. AIX must not infer that a prompt movement caused revenue merely because both changed after an Action.
+These signals must remain separate from prompt counts. Rovan must not infer that a prompt movement caused revenue merely because both changed after an Action.
 
 ## Long-term moat
 
@@ -270,15 +270,15 @@ Company × Market × Buyer Intent × AI Surface × Competitor
 × Before/After × Confidence × optional first-party business outcome
 ```
 
-With sufficient observations, AIX can eventually rank Actions by outcomes observed in comparable companies rather than generic SEO advice, while preserving uncertainty and avoiding unsupported causal claims.
+With sufficient observations, Rovan can eventually rank Actions by outcomes observed in comparable companies rather than generic SEO advice, while preserving uncertainty and avoiding unsupported causal claims.
 
 ## Revenue-outcome advisory extension (2026-09-03)
 
-AI推薦は目的ではなく、認知・候補入り・訪問・問い合わせ・商談・受注へつながる接点の一つである。AIXは顧客サイト、広告、CRM、第三者プロフィールを自動変更するサービスにはしない。顧客が会社名・商品名・サービス名またはURLを入れるだけで、AIが競合を選ぶ買い手の質問、公開根拠の不足、売上に近い改善の優先順位を返し、顧客が必要な施策を判断できることを価値にする。
+AI推薦は目的ではなく、認知・候補入り・訪問・問い合わせ・商談・受注へつながる接点の一つである。Rovanは顧客サイト、広告、CRM、第三者プロフィールを自動変更するサービスにはしない。顧客が会社名・商品名・サービス名またはURLを入れるだけで、AIが競合を選ぶ買い手の質問、公開根拠の不足、売上に近い改善の優先順位を返し、顧客が必要な施策を判断できることを価値にする。
 
-「AISEOで有利になる」は、順位上昇の保証ではなく、AIに選ばれるための判断を他社より早く・具体的にできるという意味で使う。AIXはAISEO Opportunity（候補外、競合、引用、根拠差）とSales Opportunity（顧客の不安、証拠、CTA、次の検証）を一枚にまとめ、Change PackとWatchで任意の変更を再確認する。
+「AISEOで有利になる」は、順位上昇の保証ではなく、AIに選ばれるための判断を他社より早く・具体的にできるという意味で使う。RovanはAISEO Opportunity（候補外、競合、引用、根拠差）とSales Opportunity（顧客の不安、証拠、CTA、次の検証）を一枚にまとめ、Change PackとWatchで任意の変更を再確認する。
 
-唯一、AIX側の公開情報を増やす案として、所有者が明示的に参加した企業だけに検証済み公開プロフィールを提供する実験を検討する。出典、更新日、訂正・削除、スポンサー表示を必須にし、掲載順・AI推薦・売上を販売しない。大量ページや偽レビューは作らない。詳細な方法・公式根拠・実装順は [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md) に記録する。
+唯一、Rovan側の公開情報を増やす案として、所有者が明示的に参加した企業だけに検証済み公開プロフィールを提供する実験を検討する。出典、更新日、訂正・削除、スポンサー表示を必須にし、掲載順・AI推薦・売上を販売しない。大量ページや偽レビューは作らない。詳細な方法・公式根拠・実装順は [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md) に記録する。
 
 ## UX hierarchy
 
@@ -318,7 +318,7 @@ The visitor should be able to inspect:
 
 ## Product boundaries
 
-AIX will not:
+Rovan will not:
 
 - claim to control external AI systems;
 - claim a universal or absolute ChatGPT rank;

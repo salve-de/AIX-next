@@ -19,7 +19,7 @@ export default function SetupPage() {
     ["本番URL", !env.siteUrl.includes("localhost")],
     ["Rate-limit salt", env.rateLimitSalt !== "development-only"],
   ] as const;
-  return <MarketingShell eyebrow="PRODUCTION READINESS" title="AIX Nextの本番設定。" lead="秘密値そのものは表示せず、診断 → 見守り（Watch） → 公開参照インデックス自動配備 → 週次定期防衛まで商品として自走できる設定が揃っているかを確認します。">
+  return <MarketingShell eyebrow="PRODUCTION READINESS" title="Rovanの本番設定。" lead="秘密値そのものは表示せず、診断 → 見守り（Watch） → 公開参照インデックス自動配備 → 週次定期防衛まで商品として自走できる設定が揃っているかを確認します。">
     <div className="readiness-list">{rows.map(([label, ready]) => <div key={label}><strong>{label}</strong><span className={ready ? "ready" : "missing"}>{ready ? "設定済み" : "未設定"}</span></div>)}</div>
     <h2>サンプルだけを見る</h2><p>API Keyがなくても、<code>/result?sample=1</code>と<code>/watch?sample=1</code>で主要画面を確認できます。表示値・会社・競合データはすべてシミュレーションです。</p>
     <h2>実URL診断を動かす</h2><p>市場・競合発見にはOpenAI、3面測定にはOpenAI・Gemini・Perplexityが必要です。3社のうち一部が未設定・失敗した観測は欠損として残し、架空補完しません。</p>

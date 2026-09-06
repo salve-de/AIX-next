@@ -1,5 +1,7 @@
 "use client";
 
+import { siteUrl } from "@/lib/site";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -473,7 +475,7 @@ export function ResultClient() {
             </strong>
           </div>
           <p style={{ margin: "0 0 20px", fontSize: "0.85rem", color: "#475569", lineHeight: 1.6 }}>
-            AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下のいずれかの方法で、定期見守りプランをお得に開始・継続いただけます。
+            Rovanは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下のいずれかの方法で、定期見守りプランをお得に開始・継続いただけます。
           </p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
@@ -492,8 +494,8 @@ export function ResultClient() {
                 type="button"
                 style={{ width: "100%", justifyContent: "center", background: "#0f172a", color: "#ffffff", border: "1px solid #0f172a", padding: "9px 16px", borderRadius: "4px", fontWeight: 600, fontSize: "0.82rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
-                  const tweetText = encodeURIComponent(`【AI公式推薦パスを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が正確に参照・引用されるための公式データ台帳を配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「AIX」で診断できます。\n#AIX #生成AI #中小企業DX\n`);
-                  const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}/result?sample=1`);
+                  const tweetText = encodeURIComponent(`【AI公式推薦パスを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が正確に参照・引用されるための公式データ台帳を配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「Rovan」で診断できます。\n#Rovan #生成AI #中小企業DX\n`);
+                  const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : siteUrl}/result?sample=1`);
                   if (typeof window !== "undefined") {
                     window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
                     alert("Xでの成果報告ウィンドウを開きました！\n投稿完了後、定期見守りプランのお申し込み時に初月50%割引が自動適用されます。");
@@ -512,7 +514,7 @@ export function ResultClient() {
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "2px 6px", borderRadius: "3px" }}>双方 ずっと割引</span>
                 </div>
                 <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 16px" }}>
-                  知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
+                  知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がRovanをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
                 </p>
               </div>
               <button

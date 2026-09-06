@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ==============================================================================
-# AIX Next: Cloud Run Jobs + Cloud Scheduler 一撃デプロイスクリプト
+# Rovan: Cloud Run Jobs + Cloud Scheduler 一撃デプロイスクリプト
 # 10,000社スケール対応・完全放置型週次定期観測インフラの自動構築
 # ==============================================================================
 
@@ -22,7 +22,7 @@ if [ -z "$PROJECT_ID" ]; then
 fi
 
 echo "=================================================="
-echo "AIX Next: Cloud Run Jobs デプロイ開始"
+echo "Rovan: Cloud Run Jobs デプロイ開始"
 echo "Project ID: $PROJECT_ID"
 echo "Region:     $REGION"
 echo "Job Name:   $JOB_NAME"
@@ -44,7 +44,7 @@ if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" --
   gcloud artifacts repositories create "$REPO_NAME" \
     --repository-format=docker \
     --location="$REGION" \
-    --description="Docker repository for AIX background jobs" \
+    --description="Docker repository for Rovan background jobs" \
     --project="$PROJECT_ID"
 fi
 
@@ -92,7 +92,7 @@ SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount
 if ! gcloud iam service-accounts describe "$SERVICE_ACCOUNT_EMAIL" --project="$PROJECT_ID" &>/dev/null; then
   echo "▶ サービスアカウントを作成しています: $SERVICE_ACCOUNT_NAME..."
   gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" \
-    --display-name="AIX Scheduler Service Account" \
+    --display-name="Rovan Scheduler Service Account" \
     --project="$PROJECT_ID"
 fi
 

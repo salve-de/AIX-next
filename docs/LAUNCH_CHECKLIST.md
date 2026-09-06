@@ -1,4 +1,4 @@
-# AIX Next — Commercial Launch Checklist
+# Rovan — Commercial Launch Checklist
 
 The codebase can run locally and the fictional product experience requires no credentials. Do not accept public paid subscriptions until every required item below is complete.
 
@@ -54,7 +54,7 @@ The codebase can run locally and the fictional product experience requires no cr
 - [ ] Configure cost anomaly alerts in GCP Billing.
 - [ ] Set `RATE_LIMIT_SALT` to a random production secret.
 - [ ] Verify per-IP and per-domain scan limits.
-- [ ] Publish the final AIXNextBot URL and support contact.
+- [ ] Publish the final RovanBot URL and support contact.
 
 ## 6. Product quality gates
 

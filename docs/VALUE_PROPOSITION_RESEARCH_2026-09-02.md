@@ -1,8 +1,8 @@
-# AIX — Value Proposition Research (2026-09-02)
+# Rovan — Value Proposition Research (2026-09-02)
 
 ## Executive conclusion
 
-AIX should not be positioned as an "AI rank tracker" or a generic "AI SEO" dashboard.
+Rovan should not be positioned as an "AI rank tracker" or a generic "AI SEO" dashboard.
 
 The strongest product promise is:
 
@@ -30,7 +30,7 @@ Buyer has a problem
 
 Traditional web analytics mostly start after the visit. If the brand is omitted at the AI-shortlist stage and the buyer never visits the site, GA/CRM cannot directly show that missed comparison event.
 
-AIX is therefore most useful at the boundary immediately before the visit or sales contact:
+Rovan is therefore most useful at the boundary immediately before the visit or sales contact:
 
 ```text
 Which buying question excluded us?
@@ -40,7 +40,7 @@ Which buying question excluded us?
 → Did the same buyer-question panel improve after the change?
 ```
 
-Important boundary: a lost Buyer Prompt is **not a lost customer**. AIX must never convert prompt counts into customer or revenue counts without first-party attribution evidence.
+Important boundary: a lost Buyer Prompt is **not a lost customer**. Rovan must never convert prompt counts into customer or revenue counts without first-party attribution evidence.
 
 ---
 
@@ -55,7 +55,7 @@ Sources:
 - https://help.ahrefs.com/en/articles/11064852-what-is-brand-radar-and-how-to-use-it
 - https://ahrefs.com/pricing
 
-Lesson for AIX: buyers will pay for prompt tracking and competitor benchmarking, but AIX should avoid competing only on prompt volume. Ahrefs has much larger data scale.
+Lesson for Rovan: buyers will pay for prompt tracking and competitor benchmarking, but Rovan should avoid competing only on prompt volume. Ahrefs has much larger data scale.
 
 ### Semrush AI Visibility Toolkit
 
@@ -65,7 +65,7 @@ Sources:
 - https://www.semrush.com/pricing/ai/
 - https://ja.semrush.com/pricing/ai/
 
-Lesson for AIX: visibility + competitor + audit is already becoming a standard bundle. AIX needs a sharper workflow from a lost buying question to an executable change and remeasurement.
+Lesson for Rovan: visibility + competitor + audit is already becoming a standard bundle. Rovan needs a sharper workflow from a lost buying question to an executable change and remeasurement.
 
 ### Scrunch
 
@@ -75,7 +75,7 @@ Sources:
 - https://helpcenter.scrunchai.com/en/articles/15871644-understanding-content-gaps-in-scrunch
 - https://helpcenter.scrunchai.com/en/articles/11691414-top-5-ai-content-optimization-problems
 
-Lesson for AIX: the category is moving from monitoring to execution. AIX should surface the already-implemented Change Pack rather than leave it as hidden backend capability.
+Lesson for Rovan: the category is moving from monitoring to execution. Rovan should surface the already-implemented Change Pack rather than leave it as hidden backend capability.
 
 ### Profound
 
@@ -86,7 +86,7 @@ Sources:
 - https://www.tryprofound.com/agents
 - https://www.tryprofound.com/customers
 
-Lesson for AIX: the long-term value stack is measurement → action → remeasurement → optional business-impact attribution.
+Lesson for Rovan: the long-term value stack is measurement → action → remeasurement → optional business-impact attribution.
 
 ### Adjacent competitive-intelligence products: Klue and Crayon
 
@@ -96,7 +96,7 @@ Sources:
 - https://klue.com/
 - https://www.crayon.co/
 
-Lesson for AIX: competitive intelligence becomes valuable when it changes a decision. AIX should sell "recover AI consideration opportunities" rather than "monitor AI rankings."
+Lesson for Rovan: competitive intelligence becomes valuable when it changes a decision. Rovan should sell "recover AI consideration opportunities" rather than "monitor AI rankings."
 
 ---
 
@@ -117,7 +117,7 @@ Implication: first view needs large concrete nouns, a familiar input, a visible 
 
 ---
 
-## 4. AIX value ladder
+## 4. Rovan value ladder
 
 ### FIND — reveal the invisible loss surface
 
@@ -166,7 +166,7 @@ User value:
 
 ---
 
-## 5. What AIX should promise on each surface
+## 5. What Rovan should promise on each surface
 
 ### Homepage
 
@@ -235,9 +235,9 @@ Implemented in the 2026-09-02 value-proposition pass:
 - Watch UI for editable Change Pack preview;
 - stale Change Pack invalidation when company evidence changes.
 
-### P1 — connect AIX to first-party business impact
+### P1 — connect Rovan to first-party business impact
 
-Future optional integrations should connect AI-referral traffic and conversions to AIX without pretending that prompt counts equal leads.
+Future optional integrations should connect AI-referral traffic and conversions to Rovan without pretending that prompt counts equal leads.
 
 Candidate first-party signals:
 - GA4 sessions from AI referrers;
@@ -249,7 +249,7 @@ This should be an optional business-impact layer, not a prerequisite for the cor
 
 ### P1 — prioritize prompts by business importance, not just count
 
-AIX already stores prompt importance and clusters. Future ranking should distinguish high-intent vendor-comparison questions from broad informational questions. A single high-value comparison prompt may matter more than several low-intent mentions.
+Rovan already stores prompt importance and clusters. Future ranking should distinguish high-intent vendor-comparison questions from broad informational questions. A single high-value comparison prompt may matter more than several low-intent mentions.
 
 ### P2 — build an action-outcome evidence base
 
@@ -264,13 +264,13 @@ Evidence gap
 × confidence
 ```
 
-This can eventually help AIX predict which changes are most likely to improve a comparable decision surface, while still avoiding causal claims from simple before/after observations.
+This can eventually help Rovan predict which changes are most likely to improve a comparable decision surface, while still avoiding causal claims from simple before/after observations.
 
 ---
 
 ## 7. Non-negotiable truth boundaries
 
-AIX must not claim:
+Rovan must not claim:
 - a universal or absolute ChatGPT rank;
 - that a lost prompt equals a lost customer;
 - that adding a specific page guarantees an AI recommendation;
@@ -278,7 +278,7 @@ AIX must not claim:
 - invented customer results, implementation times, certifications or ROI;
 - automatic publication without explicit human approval.
 
-AIX should state exactly what it does know:
+Rovan should state exactly what it does know:
 - the prompt panel;
 - provider/model/time;
 - repeated observations;
@@ -292,7 +292,7 @@ AIX should state exactly what it does know:
 
 ## Final positioning
 
-AIX is an **AI buyer-consideration improvement system** for high-value B2B companies.
+Rovan is an **AI buyer-consideration improvement system** for high-value B2B companies.
 
 Externally, do not lead with that category label. Lead with the concrete job:
 

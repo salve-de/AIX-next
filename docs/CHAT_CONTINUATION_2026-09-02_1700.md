@@ -1,4 +1,4 @@
-# AIX Next continuation — 2026-09-02 17:00 JST
+# Rovan continuation — 2026-09-02 17:00 JST
 
 This note supersedes the UI-current-state portion of `CHAT_HANDOFF_2026-09-02.md`.
 

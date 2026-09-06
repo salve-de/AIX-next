@@ -1,8 +1,8 @@
-# AIX — 2026 B2B AI Buyer Behavior Evidence
+# Rovan — 2026 B2B AI Buyer Behavior Evidence
 
 ## Why this matters
 
-AIX assumes that an important part of B2B vendor evaluation can happen before a buyer visits the vendor website or contacts sales. This is not a claim that AI has replaced the whole B2B buying journey. Current 2026 research supports a more precise model:
+Rovan assumes that an important part of B2B vendor evaluation can happen before a buyer visits the vendor website or contacts sales. This is not a claim that AI has replaced the whole B2B buying journey. Current 2026 research supports a more precise model:
 
 ```text
 AI increasingly helps buyers discover, compare and shortlist vendors
@@ -10,7 +10,7 @@ AI increasingly helps buyers discover, compare and shortlist vendors
 → humans and sales reps remain important for validation and final decisions
 ```
 
-That is the product boundary AIX should design around.
+That is the product boundary Rovan should design around.
 
 ---
 
@@ -33,13 +33,13 @@ Sources:
 - https://company.g2.com/news/g2-research-the-answer-economy
 - https://company.g2.com/news/buyer-behavior-2026
 
-### What this supports for AIX
+### What this supports for Rovan
 
-The useful product unit is not "AI traffic" alone. AI can shape the shortlist before the vendor receives a click. AIX should therefore measure the actual comparison questions that include or exclude the company.
+The useful product unit is not "AI traffic" alone. AI can shape the shortlist before the vendor receives a click. Rovan should therefore measure the actual comparison questions that include or exclude the company.
 
 ### What this does not prove
 
-The G2 sample is B2B software, not every Japanese B2B category. It demonstrates a strong market signal, not a universal percentage that should be applied to every AIX customer.
+The G2 sample is B2B software, not every Japanese B2B category. It demonstrates a strong market signal, not a universal percentage that should be applied to every Rovan customer.
 
 ---
 
@@ -55,14 +55,14 @@ Gartner reported on May 20, 2026 that a survey of 645 B2B buyers, conducted Augu
 Source:
 - https://www.gartner.com/en/newsroom/press-releases/2026-05-20-gartner-survey-finds-sixty-nine-percent-of-b-two-b-buyers-turn-to-sales-reps-to-validate-ai-generated-insights
 
-### What this supports for AIX
+### What this supports for Rovan
 
-AIX should not optimize for AI at the expense of humans. The best Evidence improvements are facts that help both:
+Rovan should not optimize for AI at the expense of humans. The best Evidence improvements are facts that help both:
 
 - AI systems retrieve and compare the company accurately;
 - buyers and sales reps can verify the same claims later.
 
-This supports the AIX design choice to improve public evidence such as implementation conditions, segment-specific proof, pricing context, integrations, certifications and customer outcomes when they are real and publishable.
+This supports the Rovan design choice to improve public evidence such as implementation conditions, segment-specific proof, pricing context, integrations, certifications and customer outcomes when they are real and publishable.
 
 ---
 
@@ -73,9 +73,9 @@ McKinsey's 2026 Global B2B Pulse draws on nearly 4,000 decision-makers across 13
 Source:
 - https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/the-surprising-economics-of-b2b-growth-the-new-survival-threshold-and-what-it-takes-to-thrive
 
-### What this supports for AIX
+### What this supports for Rovan
 
-AIX should be positioned as one layer in the commercial system, not as a replacement for SEO, the website, sales or reviews.
+Rovan should be positioned as one layer in the commercial system, not as a replacement for SEO, the website, sales or reviews.
 
 The strongest loop is:
 
@@ -100,8 +100,8 @@ The stronger problem is:
 
 > "A buyer can ask AI to compare vendors before we know that buyer exists. If a competitor is shortlisted and we are not, our normal web analytics may never show that comparison event. We need to know which buying questions exclude us, why, what evidence to improve, and whether comparable measurements move afterward."
 
-This is why AIX should remain a **buyer-consideration improvement loop**, not a generic AI-rank dashboard.
+This is why Rovan should remain a **buyer-consideration improvement loop**, not a generic AI-rank dashboard.
 
 ## Truth boundary
 
-Do not convert the percentages in these external studies into an estimated number of lost AIX customer leads. Customer-specific commercial impact requires first-party attribution such as analytics, CRM, self-reported source or other direct evidence.
+Do not convert the percentages in these external studies into an estimated number of lost Rovan customer leads. Customer-specific commercial impact requires first-party attribution such as analytics, CRM, self-reported source or other direct evidence.

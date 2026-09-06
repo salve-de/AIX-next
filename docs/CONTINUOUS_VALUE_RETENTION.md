@@ -1,6 +1,6 @@
-# AIX Continuous Value & Retention Strategy
+# Rovan Continuous Value & Retention Strategy
 
-> AIXを「一回診断して終わるツール」にしないための継続価値設計。
+> Rovanを「一回診断して終わるツール」にしないための継続価値設計。
 >
 > 最終更新: 2026-09-05
 
@@ -8,7 +8,7 @@
 
 # 0. 結論
 
-AIXの最大の解約リスクは、ユーザーが一度Scanして結果を見たあと、
+Rovanの最大の解約リスクは、ユーザーが一度Scanして結果を見たあと、
 
 ```text
 へえ、今はこうなのか
@@ -24,9 +24,9 @@ AIXの最大の解約リスクは、ユーザーが一度Scanして結果を見�
 
 になることである。
 
-したがってAIXは「現在の診断結果」を売るのではなく、
+したがってRovanは「現在の診断結果」を売るのではなく、
 
-> **AIXを導入してから、自社のAI購買ポジションがどう変わったかを継続的に可視化し、AIXが改善を実行し、その結果を再測定し、次の改善まで進め続けるサービス**
+> **Rovanを導入してから、自社のAI購買ポジションがどう変わったかを継続的に可視化し、Rovanが改善を実行し、その結果を再測定し、次の改善まで進め続けるサービス**
 
 にする。
 
@@ -35,14 +35,14 @@ AIXの最大の解約リスクは、ユーザーが一度Scanして結果を見�
 ```text
 Before
   ↓
-AIXが何をした
+Rovanが何をした
   ↓
 After
   ↓
 次に何をする
 ```
 
-この4点が明確なら、AIXは健康診断ではなく「AI推薦の継続改善担当者」になる。
+この4点が明確なら、Rovanは健康診断ではなく「AI推薦の継続改善担当者」になる。
 
 ---
 
@@ -54,12 +54,12 @@ After
 
 それだけでは顧客は一度見れば十分である。
 
-AIXの月額価値は以下に置く。
+Rovanの月額価値は以下に置く。
 
 1. 自社のAI推薦状況を継続観測する
 2. 競合の変化を検知する
 3. 負けた理由をEvidence単位で特定する
-4. AIXが改善案を作る
+4. Rovanが改善案を作る
 5. 承認後にPR / Draftを作る
 6. 公開後に同じBuyer Promptで再測定する
 7. 何が改善したかを表示する
@@ -81,20 +81,20 @@ Measure
 
 ---
 
-# 2. ホーム画面の中心は「現在値」ではなく「AIX導入後の変化」
+# 2. ホーム画面の中心は「現在値」ではなく「Rovan導入後の変化」
 
 現在のScoreだけを大きく出してはいけない。
 
 ユーザーが最初に見るべきなのは、
 
-> **AIXを入れてから何が変わったか**
+> **Rovanを入れてから何が変わったか**
 
 である。
 
 例:
 
 ```text
-Since AIX started
+Since Rovan started
 
 AI Buyer Share
 18% → 31%
@@ -122,7 +122,7 @@ Gap vs Competitor A
 
 # 3. North Star Metric
 
-AIXには指標が複数ある。
+Rovanには指標が複数ある。
 
 - Recommendation Coverage
 - First Choice Rate
@@ -134,7 +134,7 @@ AIXには指標が複数ある。
 
 候補名:
 
-> **AIX Buyer Panel Share**
+> **Rovan Buyer Panel Share**
 
 意味:
 
@@ -144,12 +144,12 @@ AIXには指標が複数ある。
 
 これは世界中のChatGPT利用者の「市場シェア」ではない。
 
-必ずAIXの測定パネルであることを明記する。
+必ずRovanの測定パネルであることを明記する。
 
 例:
 
 ```text
-AIX Buyer Panel Share
+Rovan Buyer Panel Share
 23% → 27% → 34% → 41%
 ```
 
@@ -166,7 +166,7 @@ AIX Buyer Panel Share
 ```text
 CHANGE IMPACT
 
-9月3日にAIXが変更
+9月3日にRovanが変更
 - 50〜300名向け導入事例を追加
 - 平均導入期間を追加
 - CSV移行情報を追加
@@ -197,7 +197,7 @@ After: 2位推薦
 
 まで見せる。
 
-重要なのは、AIXが「この変更が100%原因」と断定しないこと。
+重要なのは、Rovanが「この変更が100%原因」と断定しないこと。
 
 以下を分離して表示する。
 
@@ -209,7 +209,7 @@ After: 2位推薦
 
 ---
 
-# 5. 「今週AIXが何をしたか」を必ず見せる
+# 5. 「今週Rovanが何をしたか」を必ず見せる
 
 月額サービスで最も危険なのは、ユーザーが
 
@@ -217,12 +217,12 @@ After: 2位推薦
 
 と思うこと。
 
-そのため、AIX Activityを明示する。
+そのため、Rovan Activityを明示する。
 
 例:
 
 ```text
-AIX ACTIVITY — THIS MONTH
+Rovan ACTIVITY — THIS MONTH
 
 450 AI answers measured
 32 competitor pages checked
@@ -233,7 +233,7 @@ AIX ACTIVITY — THIS MONTH
 1 measurable improvement detected
 ```
 
-AIXが裏側で働いた量を可視化する。
+Rovanが裏側で働いた量を可視化する。
 
 ただし「作業量」だけを価値にしない。
 
@@ -256,7 +256,7 @@ Activity
 
 一方、競合の変化は行動理由になる。
 
-AIXは以下を監視する。
+Rovanは以下を監視する。
 
 - Recommendation Coverage変化
 - 新しいBuyer Promptでの競合出現
@@ -274,7 +274,7 @@ AIXは以下を監視する。
 COMPETITOR ALERT
 
 Competitor A
-AIX Buyer Panel Share +11pt this week
+Rovan Buyer Panel Share +11pt this week
 
 Newly cited page:
 competitor.example/security
@@ -290,7 +290,7 @@ Affected Buyer Prompts:
 - 大企業向け
 - 情シス向け
 
-AIX finding:
+Rovan finding:
 あなたにも同等Evidenceがありますが、AIが確認しやすい公開ページに存在しません。
 
 Next action:
@@ -307,7 +307,7 @@ Security Evidence Change Pack ready
 
 「上昇した週だけ価値がある」設計にすると、変化がない週が解約理由になる。
 
-AIXは4つの状態すべてに意味を持たせる。
+Rovanは4つの状態すべてに意味を持たせる。
 
 ## 7.1 Improved
 
@@ -428,7 +428,7 @@ Medium confidence: 1
 
 程度まで入力負荷を落とす。
 
-AIXは勝手に本番公開・main mergeまではしない。
+Rovanは勝手に本番公開・main mergeまではしない。
 
 原則:
 
@@ -438,12 +438,12 @@ AIXは勝手に本番公開・main mergeまではしない。
 
 # 10. Monthly Value Report
 
-請求日の前後で、ユーザーが「今月AIXにいくら払う価値があったか」を理解できるレポートを出す。
+請求日の前後で、ユーザーが「今月Rovanにいくら払う価値があったか」を理解できるレポートを出す。
 
 例:
 
 ```text
-YOUR AIX MONTH
+YOUR Rovan MONTH
 
 AI Buyer Panel Share
 24% → 36% (+12pt)
@@ -457,7 +457,7 @@ New wins
 Lost wins
 -1 Buyer Prompt
 
-AIX work
+Rovan work
 1,350 AI observations
 84 competitor pages checked
 41 citations analyzed
@@ -485,16 +485,16 @@ Publish SSO / Security Evidence
 
 # 11. Retention Homeの理想構成
 
-AIX Workspaceのトップ画面は以下の順にする。
+Rovan Workspaceのトップ画面は以下の順にする。
 
-## 1. Since AIX Started
+## 1. Since Rovan Started
 
 最重要KPIとBaseline差。
 
 ```text
 31%
-AIX Buyer Panel Share
-+13pt since AIX started
+Rovan Buyer Panel Share
++13pt since Rovan started
 ```
 
 ## 2. This Week
@@ -510,9 +510,9 @@ Competitor A +3pt
 
 最近の変更がどう効いたか。
 
-## 4. AIX Activity
+## 4. Rovan Activity
 
-今週 / 今月AIXが何をしたか。
+今週 / 今月Rovanが何をしたか。
 
 ## 5. Competitor Alerts
 
@@ -527,7 +527,7 @@ Competitor A +3pt
 ```text
 今どうなっている
 何が変わった
-AIXが何をした
+Rovanが何をした
 競合はどう動いた
 次に何をする
 ```
@@ -615,17 +615,17 @@ ActivityEvent {
 
 # 13. 成功条件
 
-AIXの継続価値が完成したと言えるのは、ユーザーが毎月以下を答えられる状態。
+Rovanの継続価値が完成したと言えるのは、ユーザーが毎月以下を答えられる状態。
 
-1. AIX導入時より良くなったのか
+1. Rovan導入時より良くなったのか
 2. どのBuyer Promptで良くなったのか
-3. AIXは何をしたのか
+3. Rovanは何をしたのか
 4. その変更後に何が起きたのか
 5. 競合は今どう動いているのか
 6. 今一番危険なことは何か
 7. 次に何をすべきか
 
-そしてAIX側は、ユーザーが何もしなくても毎週、
+そしてRovan側は、ユーザーが何もしなくても毎週、
 
 ```text
 Observe
@@ -651,9 +651,9 @@ Observe
 | P0 | Competitive Evidence Engine | なぜ負けたか分かる |
 | P0 | Claim Graph | 改善対象を正確に持つ |
 | P0 | Dynamic Evidence Gap | 本当に足りないものを出す |
-| P1 | Change Lineage | AIXが何を変えたか追跡 |
+| P1 | Change Lineage | Rovanが何を変えたか追跡 |
 | P1 | Change → Remeasure | 効果を見せる |
-| P1 | Baseline / Since AIX Started | 導入価値を累積表示 |
+| P1 | Baseline / Since Rovan Started | 導入価値を累積表示 |
 | P1 | Competitor Events | 継続監視理由 |
 | P1 | Next Best Action | 次の行動を一本化 |
 | P2 | Monthly Value Report | 更新課金の価値説明 |
@@ -669,9 +669,9 @@ Observe
 
 より、次を使う。
 
-> **AIXを入れた日から、AIで自社がどれだけ選ばれるようになったかを記録し続けます。競合に負けた理由を見つけ、修正し、その修正が効いたかまで確認します。**
+> **Rovanを入れた日から、AIで自社がどれだけ選ばれるようになったかを記録し続けます。競合に負けた理由を見つけ、修正し、その修正が効いたかまで確認します。**
 
-AIXの立ち位置は、
+Rovanの立ち位置は、
 
 > AI SEO health check
 
@@ -683,6 +683,6 @@ AIXの立ち位置は、
 
 ユーザーが最終的に感じる価値は、
 
-> **「AIXに金を払っておけば、AI上で自社がどう扱われているか分からない状態にならず、改善も止まらない」**
+> **「Rovanに金を払っておけば、AI上で自社がどう扱われているか分からない状態にならず、改善も止まらない」**
 
 である。

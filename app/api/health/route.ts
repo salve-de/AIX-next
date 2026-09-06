@@ -22,7 +22,7 @@ export async function GET() {
   const watchReady = scanReady && readiness.persistence && readiness.scheduler;
   const paidReady = watchReady && readiness.billing;
   return Response.json({
-    product: "AIX Next",
+    product: "Rovan",
     version: "0.1.0",
     status: paidReady ? "paid-watch-ready" : watchReady ? "watch-ready" : scanReady ? "scan-ready" : liveProviders ? "partially-configured" : "sample-only",
     generatedAt: new Date().toISOString(),

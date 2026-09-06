@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ---
 
-# AIX プロジェクト AI開発者・エージェント最高行動憲法
+# Rovan プロジェクト AI開発者・エージェント最高行動憲法
 （ALL AI AGENTS MUST OBEY THIS PROTOCOL）
 
 本リポジトリで作業するすべてのAIエージェント（Cursor, Claude, Copilot, ChatGPT, Antigravity等）は、以下の**4大絶対原則**を1文字たりとも妥協せずに遵守せよ。
@@ -31,7 +31,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## 3. 管理者（あなた・俺）も完全放置（無人自販機アーキテクチャ）
 - **受託・コンサル業務の絶対禁止**:
   - 「他社ポータルへの申請・更新代行」「個別口コミの同意取り」「ECの在庫エラー裏方修正」といった**人間が裏で汗をかく労働集約型の代行業は1ミリも組み込んではならない**。
-  - AIXは「完全自動の自動販売機（SaaS）」である。他社サイトへ頭を下げて申請せず、AIX自体が一次情報参照ハブ（JSON-LD）となり、AI探索ロボットに直接読ませる。
+  - Rovanは「完全自動の自動販売機（SaaS）」である。他社サイトへ頭を下げて申請せず、Rovan自体が一次情報参照ハブ（JSON-LD）となり、AI探索ロボットに直接読ませる。
 - **4大法的境界線の死守**:
   1. **Google Maps評価の除外**: 規約違反リスクを切除するため、初版ではMaps評価転載を行わない。
   2. **取扱項目の客観事実（Fact）限定**: 著作権侵害を避け、個別許諾を不要にするため、会社名・住所・価格等の事実データのみ扱う。

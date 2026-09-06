@@ -1,6 +1,6 @@
 # ChatGPT Sites Delivery Boundary
 
-AIX Next keeps GitHub as the canonical source and avoids putting durable business logic behind a presentation-only dependency.
+Rovan keeps GitHub as the canonical source and avoids putting durable business logic behind a presentation-only dependency.
 
 ## Role of ChatGPT Sites
 
@@ -42,7 +42,7 @@ The current Next.js application is the complete local/Codex implementation and t
 
 ## Why this boundary exists
 
-AIX Next performs multi-page crawling, multiple provider calls, retries, weekly scans and private evidence retention. These operations should not be coupled to a beta UI surface. The product remains deployable and testable from GitHub even if the presentation host changes.
+Rovan performs multi-page crawling, multiple provider calls, retries, weekly scans and private evidence retention. These operations should not be coupled to a beta UI surface. The product remains deployable and testable from GitHub even if the presentation host changes.
 
 Official references:
 
