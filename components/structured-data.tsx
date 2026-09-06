@@ -12,7 +12,7 @@ const structuredData = {
       name: BRAND.name,
       alternateName: BRAND.nameJa,
       url: siteUrl,
-      description: "AI回答と公開情報を同じ条件で確認し、参照元付きの情報整理を支援するサービス。",
+      description: "大手に埋もれず、御社の専門性でAIのおすすめ獲得を目指す。自社サイト改修なしで、公開情報の整備と継続測定を支援するサービス。",
     },
     {
       "@type": "WebSite",
@@ -20,7 +20,7 @@ const structuredData = {
       url: siteUrl,
       name: BRAND.name,
       alternateName: BRAND.nameJa,
-      description: "指定した質問・AI・日時の観測結果と、公開情報の整理案を提供するサービス。",
+      description: "URLまたは社名から、AI推薦の現状診断・参照元付きの公開情報の整備・継続測定まで。御社の専門性で推薦候補に入ることを目指すサービス。",
       inLanguage: "ja-JP",
       publisher: { "@id": organizationId },
     },

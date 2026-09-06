@@ -108,13 +108,13 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
     <section className="public-profile-interactive-card" aria-label="公開情報参照ページの下書き">
       <div className="profile-interactive-header" style={{ marginBottom: "20px" }}>
         <p className="overline" style={{ color: "var(--color-success, #059669)", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.08em" }}>
-          公開情報参照ページの下書き
+          AIに選ばれるための情報補強
         </p>
         <h3 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "6px 0 8px", color: "var(--navy, #0f172a)" }}>
-          参照元ページから確認できた内容を、AIと人が読みやすい公開情報として整理します
+          自社の強みが、AIの比較候補から埋もれないように。
         </h3>
         <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: 0 }}>
-          自社サイトを改修せずに、参照元付きの下書きを確認できます。公開後も、AIの回答・推薦・掲載順位は保証されません。
+          地域・専門性・対応条件を出典付きで伝える公開ページを作ります。自社サイトの改修は不要です。公開後はWatchで自動更新を許可し、AI回答の変化を追えます。
         </p>
       </div>
 
@@ -169,8 +169,8 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       {/* Rovanからの分析所見 */}
       <div className="rovan-hot-advice-card">
         <div className="hot-advice-header">
-          <span className="hot-advice-tag">整理案の選定理由</span>
-          <h4>「{strategies[selectedStrategy]?.name || "固有の特徴"}」を公開情報と照合して確認できます</h4>
+          <span className="hot-advice-tag">狙う領域と、その根拠</span>
+          <h4>「{strategies[selectedStrategy]?.name || "固有の特徴"}」を軸に、選ばれる理由を伝える</h4>
         </div>
         <p className="hot-advice-body">
           {strategies[selectedStrategy]?.passionateReason ||
@@ -209,7 +209,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
               <tr>
                 <td><strong>データの鮮度管理</strong></td>
                 <td>参照元を確認</td>
-                <td className="col-highlight"><strong>差分と確認案を提示</strong></td>
+                <td className="col-highlight"><strong>許可した参照元の記載を自動更新</strong></td>
               </tr>
               <tr>
                 <td><strong>比較候補の変化</strong></td>

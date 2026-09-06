@@ -116,7 +116,7 @@ export function ResultClient() {
             <span>① 現状を知る</span>
           </a>
           <a href="#step-2" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            <span>② 公開情報を確認</span>
+            <span>② 選ばれる理由を整える</span>
           </a>
           <a href="#step-3" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
             <span>③ 推移を追跡</span>
@@ -188,7 +188,7 @@ export function ResultClient() {
           <div className="report-header-top">
             <div>
               <p className="overline" style={{ color: "var(--text-muted, #64748b)", fontSize: "0.76rem", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "4px" }}>
-                AI回答の測定レポート
+                AI推薦の獲得に向けた診断レポート
               </p>
               <h1 style={{ fontSize: "clamp(1.65rem, 2.8vw, 2.2rem)", fontWeight: 800, color: "var(--navy, #0f172a)", margin: "0 0 6px", letterSpacing: "-0.025em" }}>
                 {result.discovery.brandName}
@@ -240,7 +240,7 @@ export function ResultClient() {
           <h2>{primaryLoss ? <>AI回答では、<strong>{primaryWinner || "他社候補"}</strong>が<br />先に表示されました。</> : "測定した質問で、自社も候補に含まれました。"}</h2>
           <p>
             {primaryLoss
-              ? "今回指定した質問・AI・測定時点では、自社が候補に含まれない回答でした。原因や顧客行動をこの結果だけで断定せず、参照元と質問条件を確認します。"
+              ? "この相談でも自社が推薦候補に入ることを目指し、専門分野や対応条件で選ばれる理由を探します。今回の観測だけで候補外の原因や顧客の流出は断定せず、参照元と質問条件を確認します。"
               : "測定した質問では、自社が候補に含まれました。回答は質問・参照元・モデルの更新で変わるため、必要に応じて同じ条件で再測定します。"}
           </p>
 
@@ -306,8 +306,8 @@ export function ResultClient() {
       <section className="report-section shell">
         <div className="section-heading-simple">
           <p className="overline">買い手がAIに聞く質問</p>
-          <h2>どの質問で、自社が候補に含まれなかったか。</h2>
-          <p>質問ごとに、今回のAI回答と自社の候補入り状況を確認できます。</p>
+          <h2>どの相談で、次の推薦獲得を目指すか。</h2>
+          <p>質問ごとの候補入り状況から、御社の専門性を伝えるべき場面を探します。未確認の対応分野を強みとして断定するものではありません。</p>
         </div>
         <QuestionList result={result} />
       </section>
@@ -407,12 +407,12 @@ export function ResultClient() {
     <div id="step-2" style={{ background: "var(--bg-surface, #f8fafc)", padding: "48px 0", borderTop: "1px solid var(--border-subtle, #e2e8f0)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", margin: "40px 0" }}>
       <div className="shell">
         <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 36px" }}>
-          <span className="step-badge">【ステップ 2】公開情報の整理</span>
+          <span className="step-badge">【ステップ 2】選ばれる理由を整える</span>
           <h2 style={{ fontSize: "1.8rem", margin: "12px 0 8px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>
-            自社サイトを改修せず、公開情報を整理する
+            大手に埋もれず、専門性で推薦されるための下書きへ
           </h2>
           <p style={{ color: "var(--text-secondary, #475569)", lineHeight: 1.75 }}>
-            診断で確認した項目を、参照元付きの下書きに整理します。内容を確認してから公開でき、AIの回答・推薦・順位は保証しません。
+            狙う顧客層や相談条件を絞り、確認できた事実を参照元付きの下書きにします。自社サイトの改修も、一から文章を作る作業も不要です。内容を確認・承認した後に公開でき、AIの回答・推薦・順位は保証しません。
           </p>
         </div>
 
@@ -435,8 +435,8 @@ export function ResultClient() {
           <div>
             <span className="step-badge" style={{ marginBottom: "8px", display: "inline-block" }}>【ステップ 3】継続・品質維持</span>
             <p className="overline">週次AI回答測定プラン（14日間無料確認）</p>
-            <h2>AI回答の変化を、<br />同じ条件で毎週確認。</h2>
-            <p>AI回答は質問・参照元・モデルの更新で変わります。同じ質問パネルで、自社の候補入り状況と参照元の変化を記録します。</p>
+            <h2>次の推薦獲得を目指して、<br />自社が候補に入れたかを毎週追跡。</h2>
+            <p>同じ質問パネルで、自社の候補入り状況と参照元の変化を記録します。毎回自分でAIに質問して比べる手間を抑え、選ばれる理由の見直しに役立てます。</p>
             <ul style={{ margin: "16px 0", paddingLeft: "20px" }}>
               <li style={{ marginBottom: "6px" }}>{WATCH_MONTHLY_PRICE_LABEL} / 週次の回答測定と差分確認</li>
               <li style={{ marginBottom: "6px" }}>月単位で利用でき、管理画面から解約手続きが可能</li>

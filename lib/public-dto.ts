@@ -9,6 +9,7 @@ import type {
   TakeBackShareMetric,
 } from "@/lib/types";
 import { takeBackShare } from "@/lib/measurement";
+import { northStarShare } from "@/lib/north-star";
 
 /**
  * Fields needed by the Watch screen, without provider answers or operational
@@ -70,6 +71,7 @@ export type PublicWatch = Omit<
   history: PublicScanResult[];
   changePack?: PublicChangePack | null;
   takeBackShare: TakeBackShareMetric;
+  northStar: ReturnType<typeof northStarShare>;
   emailConfigured?: boolean;
   maskedEmail?: string | null;
 };
@@ -192,6 +194,7 @@ export function toPublicWatch(watch: WatchRecord): PublicWatch {
     latest: toPublicScanResult(watch.latest),
     history: watch.history.map(toPublicScanResult),
     takeBackShare: takeBackShare(watch.baseline, watch.latest),
+    northStar: northStarShare(watch.latest, watch.baseline),
     evidence: watch.evidence,
     changePack: watch.changePack ? toPublicChangePack(watch.changePack) : null,
     nextRunAt: watch.nextRunAt,

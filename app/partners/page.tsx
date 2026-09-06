@@ -22,13 +22,13 @@ export default function PartnersPage() {
               PARTNER INFORMATION // Web制作会社・士業・コンサルタント向け
             </span>
             <h1>
-              AI回答の測定と公開情報の整理を、<br />
-              顧客への説明材料に。
+              顧客の専門性を、AIに選ばれる理由へ。<br />
+              Rovanパートナー制度。
             </h1>
             <p className="partners-lead">
-              Rovanは、指定した質問に対するAI回答と参照URLを記録し、公開情報の整理案を確認できるサービスです。
-              パートナー制度の紹介料・招待コード・管理ポータルは現在提供していません。制度の提供範囲が確定するまで、
-              このページでは説明用の情報だけを公開します。
+              自社サイトを改修せず、顧客のニッチな強みを伝える情報補強とAI回答の継続測定を支援します。
+              紹介・パートナー制度は廃止ではなく、受付・報酬管理の実装を復旧するまで開始待ちです。
+              現時点では紹介報酬の発生や割引適用は行いません。
             </p>
 
             <div className="partners-cta-row">
@@ -82,7 +82,7 @@ export default function PartnersPage() {
           <div className="mechanism-card">
             <div className="mechanism-text">
               <span className="mechanism-tag">CURRENT SCOPE</span>
-              <h2>パートナー制度は準備中です</h2>
+              <h2>制度の開始に向けて復旧中です</h2>
               <p>
                 現時点では、紹介料、割引、専用招待コード、パートナー管理画面、申請後の自動案内を提供していません。
                 提供内容や契約条件が確定した場合は、料金・規約・問い合わせ窓口をこのページで更新します。

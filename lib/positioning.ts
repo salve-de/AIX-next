@@ -1,115 +1,93 @@
-import type { ActionableMessage, CompetitorWeakness, PositioningAdvice, ScanResult, StrategicGroundingFaq, StrategyOption } from "@/lib/types";
+import type { Observation, PositioningAdvice, ScanResult, StrategicGroundingFaq, StrategyOption } from "@/lib/types";
+
+/** Discovery describes hypotheses, not source-verified company capabilities. */
+function observedLosses(result: ScanResult) {
+  return result.lostPrompts.flatMap((loss) => {
+    const observations = result.observations.filter((row) => row.promptId === loss.promptId && row.status === "success");
+    return observations.some((row) => !row.ownRecommended)
+      ? [{ ...loss, prompt: observations[0].prompt, observations }]
+      : [];
+  });
+}
+
+function candidateRows(observations: Observation[], focus: string) {
+  const candidates = [...new Set(observations.filter((row) => !row.ownRecommended).flatMap((row) => row.recommendedEntities))];
+  return candidates.slice(0, 3).map((name) => ({
+    name,
+    gap: `自社が候補外だった取得成功の回答で「${name}」が候補に含まれました`,
+    differentiation: `検証仮説：${focus}に応えられる専門性・対応条件が自社の参照元にあるか確認する。他社の対応可否は未確認です。`,
+  }));
+}
 
 function deriveStrategies(result: ScanResult): StrategyOption[] {
   const brand = result.discovery.brandName || "自社";
-  const market = result.discovery.market || "関連市場";
-  const audience = result.discovery.targetCustomers[0] || "検討中の人";
-  const useCase = result.discovery.useCases[0] || "利用場面";
-  const gap = result.evidenceGaps[0]?.label || "選ぶために必要な情報";
-  const observedCandidates = result.competitors.slice(0, 3);
-  const candidateRows = observedCandidates.map((candidate) => {
+  const losses = observedLosses(result);
+  const audience = result.discovery.targetCustomers.filter((value) => value.trim());
+  const useCases = result.discovery.useCases.filter((value) => value.trim());
+  const seeds = [
+    ...audience.slice(0, 1).map((value) => ({ id: "audience", focus: `「${value}」という顧客層`, basis: "会社解析で得た対象顧客の仮説です。実際に対応しているかは未確認です。", rows: [] as Observation[] })),
+    ...useCases.slice(0, 1).map((value) => ({ id: "use-case", focus: `「${value}」という利用場面`, basis: "会社解析で得た用途の仮説です。提供可否や実績は参照元での確認が必要です。", rows: [] as Observation[] })),
+    ...losses.map((loss) => ({ id: `prompt-${loss.promptId}`, focus: `「${loss.prompt}」という相談`, basis: `測定質問 ${loss.promptId} の取得成功 ${loss.observations.length}件中、自社が候補外の回答がありました。需要量や失注を示すものではありません。`, rows: loss.observations })),
+  ];
+
+  return seeds.slice(0, 3).map((seed, index) => {
+    const relatedGap = result.evidenceGaps.find((gap) => seed.rows.some((row) => gap.relatedPromptIds.includes(row.promptId)));
+    const check = relatedGap ? `「${relatedGap.label}」の記載と参照元を確認する。` : "対応対象・条件・専門性の記載と参照元を確認する。";
+    const draft = `${brand}の推薦獲得に向けた検証用下書き（公開前に事実確認）\n対象仮説：${seed.focus}\n${check}\n対応できるという断定は、参照元で確認できるまで掲載しない。`;
     return {
-      name: candidate.name,
-      gap: `今回の回答で、${candidate.name}が候補に含まれました`,
-      differentiation: `${brand}について、${gap}を参照元付きで確認できるように整理します`,
+      id: seed.id,
+      code: `仮説 ${String(index + 1).padStart(2, "0")}`,
+      name: `${seed.focus}に絞る`,
+      targetMarket: `対象仮説：${seed.focus}`,
+      coreThesis: `${seed.focus}で「この条件なら御社」と推薦される専門性を探す`,
+      strategicReason: `${seed.basis} 大手との知名度の差だけで競わず、この対象に応えられる事実を探して推薦獲得を目指します。${check}`,
+      competitorAnalysis: candidateRows(seed.rows, seed.focus),
+      passionateReason: "ニッチを絞る戦略仮説です。会社の対応事実や競合の弱点を断定せず、参照元確認と公開前の承認が必要です。推薦・顧客獲得・売上は保証しません。",
+      deliverables: {
+        profile: { label: "公開プロフィールの検証用下書き", text: draft },
+        website: { label: "相談に答える記事・FAQの構成案", text: `${draft}\n構成案：この相談に対応できる条件／対象外の条件／確認できる参照元。回答内容は未確認です。` },
+        brief: { label: "案内文の検証用下書き", text: `${draft}\n案内する問い合わせ先も公開情報で確認してから記載する。` },
+      },
     };
   });
-
-  const makeStrategy = (input: {
-    id: string;
-    code: string;
-    name: string;
-    title: string;
-    target: string;
-    reason: string;
-    index: number;
-  }): StrategyOption => ({
-    id: input.id,
-    code: input.code,
-    name: input.name,
-    targetMarket: input.target,
-    coreThesis: input.title,
-    strategicReason: input.reason,
-    isRecommended: input.index === 0,
-    competitorAnalysis: candidateRows,
-    passionateReason: "これは公開情報に追加できる候補を示すもので、事実確認と公開前の承認が必要です。AIの推薦・順位・成果は保証しません。",
-    deliverables: {
-      profile: {
-        label: "公開情報プロフィール案",
-        text: `${brand}｜${audience}向けの${market}。${gap}について、確認できる事実と条件を参照元付きで案内します。`,
-      },
-      website: {
-        label: "Webサイト・FAQ案",
-        text: `${useCase}を検討する人向けに、${gap}の対象・条件・確認方法を、事実と参照元付きで説明します。`,
-      },
-      brief: {
-        label: "案内文の下書き",
-        text: `${brand}\n${audience}向けの${market}\n\n${gap}：対象・条件・参照元を確認できます。`,
-      },
-    },
-  });
-
-  return [
-    makeStrategy({ id: "clarity", code: "整理 01", name: "対象・用途を明確にする", title: `${audience}が確認したい対象と用途を整理する`, target: `${audience}が${useCase}を検討する場面`, reason: `今回の質問で確認された${gap}を起点に、${brand}が対応する対象・用途・条件を、公開できる事実だけで整理します。`, index: 0 }),
-    makeStrategy({ id: "conditions", code: "整理 02", name: "条件・対応範囲を明確にする", title: "利用条件と対応範囲を確認できる形にする", target: `${market}の条件を比較したい人`, reason: `価格、納期、地域、受付方法など、記載がある項目と未確認の項目を分け、比較する人が確認できる材料に整えます。`, index: 1 }),
-    makeStrategy({ id: "sources", code: "整理 03", name: "参照元と更新日を整える", title: "事実の参照元と更新状況をそろえる", target: "情報の出どころと鮮度を確認したい人", reason: "参照元ページと更新日時を保持し、公開情報の変更後に同じ質問パネルで回答の変化を確認します。", index: 2 }),
-  ];
 }
 
 export function deriveStrategicGroundingFaqs(result: ScanResult): StrategicGroundingFaq[] {
-  const brand = result.discovery.brandName || "自社";
-  const market = result.discovery.market || "関連市場";
-  const gap = result.evidenceGaps[0]?.label || "選ぶために必要な情報";
-  const primaryLoss = result.lostPrompts[0];
-  const measuredQuestion = primaryLoss?.prompt || `${market}の候補を教えてください`;
-  const answer = `今回の測定では、質問・AI・測定時点における回答を確認しました。${brand}については、${gap}を参照元付きで整理し、公開後に同じ条件で変化を確認します。`;
-  const observation = primaryLoss?.winner
-    ? `今回の「${measuredQuestion}」では「${primaryLoss.winner}」が先に候補に含まれました。`
-    : "今回の回答ログから、比較対象になった候補を確認しました。";
-
-  return [
-    { id: "FAQ-01", q: `${brand}と他の候補を比較するとき、何を確認できますか？`, aiObservations: { chatgpt: observation, gemini: observation, claude: observation, perplexity: observation }, vulnerabilityAnalysis: "この画面で確認できるのは、指定した質問と測定条件における回答差です。市場全体の優劣や他社の弱点を断定しません。", databaseStrategy: `公開する場合は、${gap}を事実・参照元・更新状況と一緒に確認します。`, canonicalGroundingAnswer: answer },
-    { id: "FAQ-02", q: `${brand}の対応条件をAIが確認できるようにするには？`, aiObservations: { chatgpt: "質問や参照元によって回答は変わります。", gemini: "掲載されている事実と参照元を確認します。", claude: "未確認の条件は推測せず、確認中として扱います。", perplexity: "参照元リンクがある情報を測定ログと照合します。" }, vulnerabilityAnalysis: "情報が見つからないことと、サービスが存在しないことは同じではありません。", databaseStrategy: "名称、分野、対応範囲、料金、受付方法などは、記載と参照元を確認してから公開します。", canonicalGroundingAnswer: answer },
-    { id: "FAQ-03", q: "公開情報を整理すると、AIの回答は必ず変わりますか？", aiObservations: { chatgpt: "必ず変わるとは言えません。", gemini: "モデルや検索結果の更新で変化する可能性があります。", claude: "同じ質問・条件で再測定して確認します。", perplexity: "引用された参照元も測定時点で変わります。" }, vulnerabilityAnalysis: "公開情報の整理は参照しやすさを高める手段で、推薦結果を保証するものではありません。", databaseStrategy: "公開後に同じパネルを再測定し、結果と参照元の変化を記録します。", canonicalGroundingAnswer: "いいえ。公開情報を整理しても、AIの回答・推薦・順位・問い合わせ・売上が変わることは保証されません。" },
-  ];
+  return observedLosses(result).slice(0, 3).map((loss, index) => {
+    const providerLog = (provider: Observation["provider"]) => {
+      const rows = loss.observations.filter((row) => row.provider === provider);
+      return rows.length ? rows.map((row) => [
+        `測定ログ ${row.id} / ${row.model} / ${row.completedAt}`,
+        row.rawText || "回答本文は保存されていません。",
+        ...row.citations.map((citation) => `参照元：${citation.url}`),
+      ].join("\n")).join("\n\n") : "この質問の取得成功ログはありません。";
+    };
+    return {
+      id: `FAQ-${index + 1}`,
+      q: loss.prompt,
+      aiObservations: { chatgpt: providerLog("openai"), gemini: providerLog("gemini"), perplexity: providerLog("perplexity"), claude: "測定対象外です。回答ログはありません。" },
+      vulnerabilityAnalysis: "この質問で自社が候補外の回答を観測しました。原因、他社の弱点、会社の対応可否はこのログだけでは判断できません。",
+      databaseStrategy: "この相談に応えられる専門性や条件が自社の公開情報にあるか確認し、参照元のある事実だけを承認後の公開案に使います。",
+      canonicalGroundingAnswer: "回答案は未確定です。この相談への対応可否・条件・参照元が確認できるまで、会社の提供事実として記載しません。",
+    };
+  });
 }
 
-/**
- * Build an evidence-linked communication draft. Every item is a hypothesis
- * for review; the function never infers a competitor's weakness or a business
- * outcome from a prompt count.
- */
+/** Evidence-linked niche hypotheses; never invented company or competitor facts. */
 export function derivePositioningAdvice(result: ScanResult): PositioningAdvice {
-  const brand = result.discovery.brandName || "自社";
-  const market = result.discovery.market || "関連市場";
-  const primaryGap = result.evidenceGaps[0];
-  const primaryLoss = result.lostPrompts[0];
-  const gapLabel = primaryGap?.label || "選ぶために必要な情報";
-  const audience = result.discovery.targetCustomers[0] || "検討中の人";
-  const competitors = result.competitors.slice(0, 3);
-
-  const competitorWeaknesses: CompetitorWeakness[] = competitors.map((comp, index) => {
-      const gap = result.evidenceGaps[index % Math.max(result.evidenceGaps.length, 1)];
-      const loss = result.lostPrompts.find((item) => item.winner === comp.name);
-      return {
-        competitor: comp.name,
-        weakness: loss ? `今回の「${loss.prompt}」で先に候補に含まれた` : "今回の回答で候補に含まれた",
-        rationale: gap ? `${gap.label}を、自社側で確認できる情報と参照元に分けて整理します。` : "測定ログと参照元を確認し、次回も同じ条件で比較します。",
-      };
-    });
-
-  const winningAngle = primaryGap
-    ? `「${primaryGap.label}」を、${brand}が確認できる形にする`
-    : `${brand}が候補に含まれた質問の共通点を整理する`;
-  const summary = primaryLoss?.winner
-    ? `今回の「${primaryLoss.prompt}」では「${primaryLoss.winner}」が先に候補に含まれました。${gapLabel}を参照元付きで整理し、公開後に同じ条件で再測定します。`
-    : `${market}の測定結果をもとに、${brand}を確認するための情報を参照元付きで整理します。`;
-
-  const actionableMessages: ActionableMessage[] = [
-    { channel: "profile", channelLabel: "公開プロフィール案", headline: "誰向けの情報かを最初に示す", copy: `${brand}｜${audience}向けの${market}。${gapLabel}について、確認できる事実と条件を参照元付きで案内します。`, instruction: "記載内容と現在の提供条件を確認してから公開してください。" },
-    { channel: "blog", channelLabel: "Webサイト・FAQ案", headline: "比較される質問に答えを置く", copy: `記事タイトル案：${brand}の${gapLabel}について\n\n対象・条件・手順・参照元を、確認できる事実だけで説明します。未確認の項目は推測せず、確認方法を案内します。`, instruction: "参照元と公開範囲を確認し、必要な部分だけ掲載してください。" },
-    { channel: "flyer", channelLabel: "営業資料・商品ページ案", headline: "選ぶ前に知りたい条件を示す", copy: `${brand}\n${audience}向けの${market}\n\n${gapLabel}：対象・条件・確認方法を掲載\n詳しい内容と参照元→`, instruction: "記載内容が現在の提供条件と一致するか確認してください。" },
-  ];
-
-  return { winningAngle, summary, competitorWeaknesses, actionableMessages, strategies: deriveStrategies(result), strategicFaqs: deriveStrategicGroundingFaqs(result) };
+  const strategies = deriveStrategies(result);
+  const primary = strategies.find((strategy) => strategy.id.startsWith("prompt-")) || strategies[0];
+  const rows = observedLosses(result).flatMap((loss) => loss.observations);
+  return {
+    winningAngle: primary?.coreThesis || "推薦獲得の戦略を絞るための情報が不足しています",
+    summary: primary?.strategicReason || "対象顧客・用途の仮説や取得成功の回答ログを確認できません。会社の強みや競合の弱点を推測した戦略は生成していません。",
+    competitorWeaknesses: candidateRows(rows, "候補外だった相談").map((item) => ({ competitor: item.name, weakness: item.gap, rationale: item.differentiation })),
+    actionableMessages: primary ? [
+      { channel: "profile", channelLabel: "公開プロフィール案", headline: "狭い相談条件で選ばれる理由を探す", copy: primary.deliverables.profile.text, instruction: "対象顧客・用途は仮説です。参照元と現在の提供条件を確認してから公開してください。" },
+      { channel: "blog", channelLabel: "記事・FAQ構成案", headline: "候補外だった相談への回答を検討する", copy: primary.deliverables.website.text, instruction: "会社の回答として使う前に対応可否と参照元を確認してください。自社サイトへの掲載は任意です。" },
+      { channel: "flyer", channelLabel: "案内文の下書き", headline: "選ばれる理由と条件を確認する", copy: primary.deliverables.brief.text, instruction: "未確認の強み・実績・対応条件は記載しないでください。" },
+    ] : [],
+    strategies,
+    strategicFaqs: deriveStrategicGroundingFaqs(result),
+  };
 }

@@ -22,15 +22,15 @@ export default function HomePage() {
         <div className="shell landing-hero-inner">
           <div className="landing-hero-single">
             <div className="landing-hero-head-block">
-              <p className="overline">生成AI向け公開情報の確認・整理</p>
+              <p className="overline">ChatGPT・生成AI おすすめ獲得支援</p>
               <h1>
-                利用者がAIに相談した時、<br />
-                <em>あなたの会社の情報は、比較できる形になっていますか。</em>
+                お客さんがAIに「おすすめ」を聞いた時、<br />
+                <em>大手に埋もれず、あなたの専門性で選ばれる会社へ。</em>
               </h1>
               <p className="landing-hero-lead">
                 今のホームページの改修も、新たな開設も不要。<br />
-                URLまたは社名を入力すると、公開情報とAI回答の現状を確認できます。<br />
-                公開プロフィールは、内容を確認してから公開できます。
+                URLまたは社名から、診断・選ばれる理由の公開・毎週の追跡まで。<br />
+                初回に内容を確認し、継続更新は許可した範囲でRovanに任せられます。
               </p>
             </div>
 
@@ -88,7 +88,7 @@ export default function HomePage() {
           <h2>利用者がAIに相談した時、<br />回答はどう変わるのか？</h2>
           <p>
             ChatGPTやGeminiなど主要AIで、利用者が相談した場合の回答例を比較。<br />
-            AIの回答は質問・提供元・時点で変わります。Rovanは同じ条件で回答を測定し、公開情報を参照元付きで整理します。推薦・順位・売上の改善は保証しません。
+            お客さんの細かな条件に合う専門性で、御社が推薦候補に入ることを目指します。以下は設計上の表示例です。
           </p>
         </div>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
@@ -106,11 +106,11 @@ export default function HomePage() {
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">確認できる2つのもの</span>
-          <h2>URLまたは社名を入力すると、<br />現状と公開情報の整理案を確認できます</h2>
+          <span className="pill-badge">AI推薦の獲得に向けた2つの成果物</span>
+          <h2>推薦の現状を知り、<br />選ばれる理由を公開する。</h2>
           <p>
             今のホームページの改修も、専門知識も一切不要。<br />
-            URLまたは社名を入れるだけで、「自社の現状がわかる診断レポート」と「公開情報の整理案」を確認できます。
+            「推薦の現状がわかる診断レポート」と「専門性・対応条件を伝える公開情報ページ」。ページは初回確認後に公開できます。
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function HomePage() {
 
         {/* 法的免責・客観性保証の注記 */}
         <p style={{ textAlign: "center", fontSize: "0.72rem", color: "#64748b", margin: "0 auto", maxWidth: "780px", lineHeight: 1.6 }}>
-          ※ 各AIの回答は質問・参照元・モデルの更新で変わります。Rovanは参照元付きの公開情報を整理し、同じ条件で回答を測定しますが、特定の回答・推薦・順位・成果を保証しません。
+          ※ AI回答は質問や測定時点で変わります。変化は同じ条件で比較します。
         </p>
       </section>
 
@@ -148,13 +148,13 @@ export default function HomePage() {
         <div className="landing-watch-grid" style={{ marginBottom: "36px" }}>
           <WatchTrendVisual />
           <div className="section-intro">
-            <span className="pill-badge">週次のAI回答測定</span>
-            <h2>AIの回答状況を、<br />同じ条件で毎週確認。</h2>
-            <p>AIの回答は質問・参照元・モデルの更新で変わります。Rovanは同じ質問パネルで回答の変化と参照元を確認し、公開情報を見直す候補を整理します。</p>
+            <span className="pill-badge">推薦獲得を目指す、週次の見守り</span>
+            <h2>自社が選ばれる機会を、<br />毎週の回答から探す。</h2>
+            <p>自社が候補に入った質問、競合だけが登場した質問を同じ条件で追跡。専門性や対応条件の伝え方を見直し、次の推薦獲得につなげるための候補を整理します。</p>
             <ul className="watch-feature-list">
               <li><strong>毎週の再測定</strong>：同じ質問パネルでAI回答の変化を確認</li>
               <li><strong>比較候補の変化</strong>：候補の入れ替わりや参照元の差分を記録</li>
-              <li><strong>公開は確認後</strong>：公開情報の変更は承認した内容だけを反映</li>
+              <li><strong>同意後は自動更新</strong>：有効な有料Watchで、同じサイトの短い記載を参照元付きで更新</li>
             </ul>
             <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
           </div>
@@ -176,7 +176,7 @@ export default function HomePage() {
               必要な範囲だけ選べる、<br />明朗な料金体系
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", margin: 0, lineHeight: 1.75 }}>
-              まずは無料診断で現状を確かめ、必要な場合だけ週次の再測定を申し込めます。AIの回答や売上の改善は保証しません。
+              まずは無料診断で現状を確かめ、必要な場合だけ週次の再測定を申し込めます。
             </p>
           </div>
 
@@ -319,7 +319,7 @@ export default function HomePage() {
       <section className="landing-final-cta">
         <div className="shell">
             <span className="pill-badge">URL・社名だけで開始</span>
-            <h2>AI回答で、自社が候補に含まれていますか？<br />まずは無料診断で現状をご確認ください。</h2>
+            <h2>「この条件なら御社」とAIにおすすめされるために。<br />まずは無料診断で、候補に入れているか確認しましょう。</h2>
           <ScanForm compact />
           <div className="hero-trust-badges" style={{ justifyContent: "center", marginTop: "18px" }} aria-label="サービスの特長">
             <div className="trust-badge">

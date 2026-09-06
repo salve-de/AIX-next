@@ -7,7 +7,7 @@ export function SiteFooter() {
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Brand />
-          <p>公開サイトとAI回答を確認し、参照元付きの公開情報の整理を支援するサービスです。</p>
+          <p>大手に埋もれず、御社の専門性でAIのおすすめ獲得を目指す。自社サイト改修なしで、公開情報の整備と継続測定を支援します。</p>
         </div>
         <nav aria-label="製品">
           <strong>製品</strong>
@@ -34,7 +34,7 @@ export function SiteFooter() {
           ※ ChatGPTはOpenAI OpCo, LLC、GeminiはGoogle LLC、PerplexityはPerplexity AI, Inc.、ClaudeはAnthropic PBCの商標または登録商標です。当サービスは各社との提携、公認、推奨関係を示すものではありません。
         </p>
         <p style={{ fontSize: "0.75rem", color: "var(--muted, #64748b)", lineHeight: 1.6, margin: 0 }}>
-          ※ 本サービスは、参照元付きの公開情報と、指定した条件で取得したAI回答の観測結果を提供します。外部AIにおける特定の回答結果や推薦順位を保証するものではありません。
+          ※ AIの推薦・順位・顧客獲得・売上は保証しません。
         </p>
       </div>
     </footer>

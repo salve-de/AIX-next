@@ -1,5 +1,6 @@
 import { brandedEmailSender } from "@/lib/brand";
 import "server-only";
+import { northStarShare } from "@/lib/north-star";
 import { env } from "@/lib/env";
 import { shortHash } from "@/lib/ids";
 import type { ScanResult, WatchRecord } from "@/lib/types";
@@ -131,6 +132,10 @@ export async function sendWatchStarted(watch: WatchRecord) {
 
 export async function sendWatchUpdate(watch: WatchRecord, previous: ScanResult, options: { trialEnded?: boolean } = {}) {
   const latest = watch.latest;
+  const northStar = northStarShare(latest, watch.baseline);
+  const northStarText = northStar.status === "short-panel"
+    ? "AI顧客奪還シェア：50問パネルの測定開始後に記録します。"
+    : `AI顧客奪還シェア（固定50問・実顧客シェアではありません）\n${northStar.providers.map((row) => `${row.provider}: ${row.value === null ? "未測定" : `${row.value}%`}（候補入り${row.included}/取得成功${row.successful}問、未取得・反復不足${row.missing}問）${row.comparison ? ` 同条件${row.comparison.count}問: ${row.comparison.before}% → ${row.comparison.after}%` : " 比較不可"}`).join("\n")}`;
   const brand = latest.discovery.brandName;
   const url = watchUrl(watch);
   const comparable = comparablePanel(previous, latest);
@@ -160,11 +165,13 @@ export async function sendWatchUpdate(watch: WatchRecord, previous: ScanResult, 
       ? `[Rovan] ${brand}: AI回答測定に変化がありました`
       : `[Rovan] ${brand}: 比較可能な質問パネルを更新しました`;
   const endNote = options.trialEnded ? "\n\n今回で14日間の無料確認が終了しました。自動課金はされません。" : "";
-  const latestAction = watch.autoActions?.find((action) => action.status === "planned" && action.factValue && action.sourceUrl);
+  const latestAction = watch.autoActions?.find((action) => (action.status === "planned" || action.status === "applied") && action.factValue && action.sourceUrl);
+  const actionHeading = latestAction?.status === "applied" ? "情報補強の完了報告" : "公開前の確認案";
+  const actionStatus = latestAction?.status === "applied" ? "許可された範囲で公開ページに反映済み。AI回答への影響は再測定で確認します。" : "公開前の確認待ち（未反映）";
   const latestImpact = watch.autoActionImpacts?.[0];
 
   const autonomousText = latestAction
-    ? `\n\n【公開前の確認案】\n・自社ページの原文スニペット: 「${latestAction.factValue}」\n・出典URL: ${latestAction.sourceUrl}\n・状態: 公開前の確認待ち（自動反映なし）\n`
+    ? `\n\n【${actionHeading}】\n・${latestAction.factLabel}: ${latestAction.factValue}\n・出典URL: ${latestAction.sourceUrl}\n・状態: ${actionStatus}\n`
     : "\n\n競合サイトの変更は、クロール前後差分が保存されていないため判定していません。\n";
 
   const impactText = latestImpact
@@ -172,7 +179,7 @@ export async function sendWatchUpdate(watch: WatchRecord, previous: ScanResult, 
     : "";
 
   const autonomousHtml = latestAction
-    ? `<div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:14px 18px;margin:20px 0;text-align:left"><strong style="color:#0f172a;font-size:14px">公開前の確認案</strong><p style="margin:8px 0 4px;font-size:13px;color:#334155"><strong>自社ページの原文スニペット:</strong> 「${escapeHtml(latestAction.factValue)}」</p><p style="margin:4px 0;font-size:13px;color:#334155"><strong>出典URL:</strong> ${escapeHtml(latestAction.sourceUrl)}</p><p style="margin:4px 0 0;font-size:12px;color:#64748b">状態: 公開前の確認待ち（自動反映なし）</p></div>`
+    ? `<div style="background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:14px 18px;margin:20px 0;text-align:left"><strong style="color:#0f172a;font-size:14px">${actionHeading}</strong><p style="margin:8px 0 4px;font-size:13px;color:#334155"><strong>${escapeHtml(latestAction.factLabel)}:</strong> ${escapeHtml(latestAction.factValue)}</p><p style="margin:4px 0;font-size:13px;color:#334155"><strong>出典URL:</strong> ${escapeHtml(latestAction.sourceUrl)}</p><p style="margin:4px 0 0;font-size:12px;color:#64748b">状態: ${actionStatus}</p></div>`
     : `<p style="font-size:12px;color:#64748b;margin:20px 0">競合サイトの変更は、クロール前後差分が保存されていないため判定していません。</p>`;
 
   const text = `${brand}のAI回答測定に変化がありました。\n\n${comparable ? `比較可能な質問パネル: ${latest.panel.promptCount}問（v${latest.panel.version}）\n自社が候補に含まれた質問: ${previousIncluded} → ${latestIncluded} / ${latest.panel.promptCount}\n候補外として記録された質問: ${previous.lostPrompts.length} → ${latest.lostPrompts.length} / ${latest.panel.promptCount}\n${newIncluded ? `新しく候補に含まれた質問: ${newIncluded}問\n` : ""}${newlyExcludedCount ? `新しく候補外になった質問: ${newlyExcludedCount}問\n` : ""}` : `比較可能な質問パネル: 前回と条件が異なるため、今回を新しい基準として記録\n自社が候補に含まれた質問: ${latestIncluded} / ${latest.panel.promptCount}\n候補外として記録された質問: ${latest.lostPrompts.length} / ${latest.panel.promptCount}\n`}AI回答観測: ${latestObservations.successful} / ${latestObservations.scheduled}件\n${observationCountChanged ? `前回のAI回答観測: ${previousObservations.successful} / ${previousObservations.scheduled}件\n` : ""}${addedCitations || removedCitations ? `参照元URLの変化: 追加${addedCitations}件 / 削除${removedCitations}件\n` : ""}${impactText}${autonomousText}\nこの通知は指定した質問・AI・日時の観測結果です。事業成果は測定していません。\n結果を見る: ${url}${endNote}`;
@@ -187,5 +194,5 @@ export async function sendWatchUpdate(watch: WatchRecord, previous: ScanResult, 
     ? `<p style="margin:4px 0;font-size:13px;color:#334155"><strong>再測定:</strong> 対象${latestImpact.affectedPromptCount}問の候補入り件数差分 ${signed(latestImpact.observedUplift)}件（因果効果は未検証）</p>`
     : "";
   const html = `<div style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111827;line-height:1.65;max-width:620px"><p style="font-size:12px;letter-spacing:.08em;color:#64748b">Rovan</p><h1 style="font-size:24px;margin:8px 0 20px">${escapeHtml(brand)}のAI回答測定に変化がありました。</h1><table style="border-collapse:collapse;width:100%;margin:0 0 24px">${rows}</table>${impactHtml}${autonomousHtml}<p style="font-size:13px;color:#475569">指定した質問・AI・日時の観測結果です。事業成果は測定していません。</p><p><a href="${escapeHtml(url)}" style="display:inline-block;background:#0b1b2a;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">結果を見る</a></p>${options.trialEnded ? '<p style="font-size:12px;color:#64748b;margin-top:24px">今回で14日間の無料確認が終了しました。自動課金はされません。</p>' : ""}</div>`;
-  return sendEmail({ to: watch.email, subject, text, html, idempotencyKey: `watch-update/${watch.id}/${shortHash(latest.measuredAt)}` });
+  return sendEmail({ to: watch.email, subject, text: `${northStarText}\n\n${text}`, html: `<p style="white-space:pre-line">${escapeHtml(northStarText)}</p>${html}`, idempotencyKey: `watch-update/${watch.id}/${shortHash(latest.measuredAt)}` });
 }

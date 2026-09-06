@@ -38,7 +38,7 @@ export function ExecutiveDiagnosticSummary({
             <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)", fontSize: "0.72rem", fontWeight: 800, padding: "3px 10px", borderRadius: "4px", border: "1px solid var(--border-subtle, #e2e8f0)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
               Measurement Summary / 測定要約
             </span>
-            <span style={{ color: "var(--text-muted, #64748b)", fontSize: "0.82rem", fontWeight: 600 }}>AI回答と公開情報の確認</span>
+            <span style={{ color: "var(--text-muted, #64748b)", fontSize: "0.82rem", fontWeight: 600 }}>AI推薦の獲得に向けた現状診断</span>
           </div>
           <div style={{ fontSize: "0.76rem", color: "var(--text-secondary, #475569)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 12px", borderRadius: "6px", fontFamily: "var(--font-mono, monospace)" }}>
             TARGET: <strong style={{ color: "var(--navy, #0f172a)" }}>{brandName}</strong>
@@ -56,9 +56,9 @@ export function ExecutiveDiagnosticSummary({
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "16px", marginBottom: "24px" }}>
           <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "10px", padding: "22px", display: "flex", flexDirection: "column", gap: "10px" }}>
-            <strong style={{ fontSize: "0.98rem", color: "var(--navy, #0f172a)", lineHeight: 1.4 }}>回答が変わる主な条件</strong>
+            <strong style={{ fontSize: "0.98rem", color: "var(--navy, #0f172a)", lineHeight: 1.4 }}>目指す変化：AI顧客奪還シェア</strong>
             <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.7, margin: 0 }}>
-              AIの回答は、質問文、参照元、モデル、地域、測定時点で変わります。1回の回答だけで自社や他社の優劣を断定しません。
+              固定50問で、自社が推薦候補に入った質問の割合をAI別に追います。全問取得時の分母は50、欠損時は取得成功した質問数です。無料の短いパネルとは区別し、前後比較は両時点で条件が揃う質問に限定します。実際の顧客シェアではありません。
             </p>
           </div>
           <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "10px", padding: "22px", display: "flex", flexDirection: "column", gap: "10px" }}>
@@ -71,11 +71,11 @@ export function ExecutiveDiagnosticSummary({
 
         <div className="shadow-ambient-sm" style={{ background: "var(--bg-base, #ffffff)", border: "1.5px solid var(--navy, #0f172a)", borderRadius: "10px", padding: "24px 26px", marginBottom: "26px", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
-            <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>次にできること：参照元付きの公開情報を整理する</strong>
+            <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>次の一手：専門性で選ばれる理由を公開する</strong>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary, #475569)", fontFamily: "var(--font-mono, monospace)", background: "var(--bg-surface, #f1f5f9)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "3px 10px", borderRadius: "4px" }}>確認・承認が必要</span>
           </div>
           <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", lineHeight: 1.75, margin: "0 0 16px" }}>
-            Rovanは、参照元で確認できる名称・分野・条件などを、JSON-LDとMarkdownの下書きに整理します。既存サイトへ自動で書き込まず、内容を確認してから公開できます。
+            御社の専門性や対応条件を、参照元付きのページへ。初回に内容を確認して公開します。自社サイトの改修や、一から文章を作る作業は不要です。
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem" }}>
             {["URLまたは社名の入力", "参照元リンクを保持", "未確認の情報は推測しない", "公開後に同じ条件で再測定"].map((label) => <span key={label} style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 10px", borderRadius: "6px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>✓ {label}</span>)}
@@ -110,7 +110,7 @@ export function ExecutiveDiagnosticSummary({
         <div style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid var(--border-subtle, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
           <div style={{ fontSize: "0.84rem", color: "var(--text-secondary, #475569)" }}>公開情報の下書きは、内容を確認してから公開できます。</div>
           <a href="#step-2" style={{ background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)", color: "#ffffff", fontSize: "0.82rem", fontWeight: 700, padding: "9px 18px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "8px", textDecoration: "none", boxShadow: "0 2px 4px rgba(15, 23, 42, 0.16)", transition: "all 0.15s ease" }}>
-            公開情報の整理案を見る <span aria-hidden="true">↓</span>
+            選ばれる理由を伝える下書きを見る <span aria-hidden="true">↓</span>
           </a>
         </div>
       </div>

@@ -5,7 +5,7 @@ export function ZeroEffortPromiseSection() {
     <section
       id="zero-effort-promise"
       className="zero-effort-promise-section shell"
-      aria-label="入力の手間を抑えた公開情報整理"
+      aria-label="手間を抑えてAI推薦の獲得を目指す仕組み"
       style={{
         margin: "36px auto 44px",
       }}
@@ -43,7 +43,7 @@ export function ZeroEffortPromiseSection() {
                 letterSpacing: "0.05em",
               }}
             >
-              入力の手間を抑えた確認フロー
+              AI推薦への取り組みを、少ない手間で
             </span>
           </div>
           <h2
@@ -57,7 +57,7 @@ export function ZeroEffortPromiseSection() {
             }}
           >
             まずはURLまたは社名を入れるだけ。<br />
-            必要な確認を、短い流れで進められます。
+            情報の整備と毎週の追跡を、Rovanに任せて本業へ。
           </h2>
           <p
             style={{
@@ -71,7 +71,7 @@ export function ZeroEffortPromiseSection() {
             }}
           >
             ホームページの改修やサーバー設定は不要です。<br />
-            <strong>入力だけで何を確認できるのか。</strong> その流れを3つの理由で説明します。
+            <strong>専門知識や追加の質問票は不要。</strong> 初回に対象サイト・公開内容を確認し、継続更新を許可します。
           </p>
         </div>
 
@@ -109,11 +109,11 @@ export function ZeroEffortPromiseSection() {
                 01
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                公開ページから、確認できる情報を整理するから
+                公開情報から、選ばれる理由の材料を集めるから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              URLまたは社名を入力すると、公開ページから名称・分野・条件など確認できる情報を整理します。<br />
+              URLまたは社名を起点に、専門分野・対応地域・利用条件など、御社がどんな相談に応えられるかを公開ページから整理します。<br />
               参照元にない実績や強みを推測して追加することはありません。
             </p>
           </div>
@@ -143,12 +143,12 @@ export function ZeroEffortPromiseSection() {
                 02
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                自社サイトを改修せず、参照元付きのページを作れるから
+                自社サイトの改修なしで、専門性を伝えるページを作れるから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
               Web制作会社に改修を依頼したり、サーバー設定を変更したりする必要はありません。<br />
-              参照元付きの公開情報ページを下書きにまとめ、内容を確認してから公開できます。既存サイトには書き込みません。
+              参照元付きの公開情報ページをRovan上に用意し、初回確認後に公開できます。
             </p>
           </div>
 
@@ -177,12 +177,12 @@ export function ZeroEffortPromiseSection() {
                 03
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                同じ条件で、AI回答の変化を確認できるから
+                同意した範囲の更新と、推薦の追跡を任せられるから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              AIの回答は質問・参照元・モデルの更新で変わります。<br />
-              週次プランでは同じ質問パネルで回答と参照元の差分を測定し、公開情報の見直し候補を記録します。
+              有効な有料Watchでは、同意後の週次処理で同じサイトの料金・対応地域などの短い記載を参照元付きで更新。毎週の承認は不要です。<br />
+              同じ質問で推薦状況を追跡し、自動更新の停止・直前の更新の取り消しもできます。
             </p>
           </div>
         </div>
@@ -217,8 +217,8 @@ export function ZeroEffortPromiseSection() {
               安心の約束
             </span>
             <span style={{ fontSize: "0.88rem", color: "#334155", lineHeight: 1.5 }}>
-              <strong>まずはURLまたは社名の入力だけで、現状を確認できます。</strong><br />
-              公開情報の変更は自動公開せず、確認・承認した内容だけを反映します。
+              <strong>初回確認のあとは、許可した事実更新を任せて本業へ。</strong><br />
+              会社紹介文や自社サイトは書き換えません。自動更新は公開ページの30日間の有効期限内で動作し、期限は延長しません。
             </span>
           </div>
           <span

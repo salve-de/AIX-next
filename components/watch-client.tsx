@@ -9,6 +9,8 @@ import { SiteHeader } from "@/components/site-header";
 import { toPublicWatch } from "@/lib/public-dto";
 import type { PublicWatch, PublicWatchMeasurementRun } from "@/lib/public-dto";
 import { sampleWatch } from "@/lib/sample-data";
+import { ProfileAutomationControls } from "@/components/profile-automation-controls";
+import { ExecutiveReferralCard } from "@/components/executive-referral-card";
 import type { PromptPanelKind } from "@/lib/types";
 
 type WatchView = PublicWatch & { measurementRun?: PublicWatchMeasurementRun | null; publicProfileUrl?: string | null; resultUrl?: string };
@@ -354,13 +356,24 @@ export function WatchClient() {
           <small>{change.newCitations ? `新しく確認 ${change.newCitations}件` : "取得した回答の参照元"}</small>
         </div>
         <div>
-          <span>候補回復率（測定質問ベース）</span>
+          <span>候補回復率（補助指標）</span>
           <strong><b>{change.takeBackShare.value === null ? "—" : `${change.takeBackShare.value}%`}</b></strong>
           <small>{change.takeBackShare.value === null ? change.takeBackShare.note : `${change.takeBackShare.recoveredPromptCount}/${change.takeBackShare.eligiblePromptCount}問を回復`}</small>
         </div>
       </section>
 
-      {/* 今週の週次モニタリングタイムライン（測定 → 確認案 → 再測定） */}
+      <section className="watch-section shell" aria-label="AI顧客奪還シェア">
+        <h2>AI顧客奪還シェア</h2>
+        <p>固定50問で、自社が推薦候補に入った割合。実際の顧客数・市場シェアではありません。各AIの反復回答の過半数で候補入りと判定します。</p>
+        {watch.northStar.status === "short-panel" ? <p>現在は{watch.latest.panel.promptCount}問の短いパネルです。有料プランの50問測定から北極星の記録を開始します。</p> : <div className="table-responsive"><table>
+          <thead><tr><th scope="col">AI</th><th scope="col">候補入り／取得成功</th><th scope="col">シェア</th><th scope="col">未取得・反復不足</th><th scope="col">同条件の推移</th></tr></thead>
+          <tbody>{watch.northStar.providers.map((row) => <tr key={row.provider}><th scope="row">{row.provider === "openai" ? "OpenAI" : row.provider === "gemini" ? "Gemini" : "Perplexity"}</th><td>{row.included}／{row.successful}問</td><td>{row.value === null ? "未測定" : `${row.value}%${row.missing ? "（部分観測）" : ""}`}</td><td>{row.missing}／50問</td><td>{row.comparison ? `${row.comparison.before}% → ${row.comparison.after}%（共通${row.comparison.count}問）` : "比較不可"}</td></tr>)}</tbody>
+        </table></div>}
+        <p>今回：{formatDate(watch.northStar.measuredAt)}{watch.northStar.baselineMeasuredAt ? `／基準：${formatDate(watch.northStar.baselineMeasuredAt)}` : ""}。条件が一致しない回答は推移に含めません。</p>
+      </section>
+      <ProfileAutomationControls scanId={new URL(watch.resultUrl || "/result", "https://rovan.invalid").searchParams.get("id") || watch.baseline.scanId} watchToken={token} sample={sample} />
+      <ExecutiveReferralCard />
+      {/* 今週の週次モニタリングタイムライン */}
       <section className="watch-section shell" style={{ marginBottom: "24px" }}>
         <div style={{ background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 10px)", padding: "24px 28px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "20px" }}>
@@ -369,7 +382,7 @@ export function WatchClient() {
                 THIS WEEK / 週次モニタリングレポート
               </span>
               <h3 style={{ margin: "8px 0 0", fontSize: "1.2rem", color: "#0f172a", fontWeight: 800, letterSpacing: "-0.02em" }}>
-                今週の変化と、公開前の確認案を記録しました
+                今週の実行内容と、AI回答の変化
               </h3>
             </div>
             <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: "6px" }}>
@@ -389,12 +402,12 @@ export function WatchClient() {
             </div>
 
             <div style={{ background: "#f0f9ff", padding: "16px", borderRadius: "8px", border: "1px solid #bae6fd" }}>
-                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. 公開前の確認案</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. 情報補強の実行記録</span>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "#0369a1", margin: "6px 0 4px" }}>
                 {watch.autoActions?.[0]?.summary || "公開プロフィールへの変更候補はありません"}
               </strong>
               <p style={{ margin: 0, fontSize: "0.76rem", color: "#0284c7", lineHeight: 1.5 }}>
-                参照元ページから確認できる候補だけを示します。公開プロフィールへの反映には明示的な確認が必要です。
+                反映済みの更新と、未反映の案を区別します。自動更新を許可した範囲は週ごとの承認なしで実行します。
               </p>
             </div>
 
@@ -420,7 +433,7 @@ export function WatchClient() {
                 MONTHLY VALUE REPORT / 月次レポート総括
               </span>
               <h3 style={{ margin: "8px 0 0", fontSize: "1.25rem", color: "#0f172a" }}>
-                期間内のAI回答測定と確認案
+                期間内の情報補強とAI回答の変化
               </h3>
             </div>
             <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
@@ -496,7 +509,7 @@ export function WatchClient() {
           <div className="watch-trend-cards-grid">
             <div className="watch-trend-card trend-card-primary">
               <div className="trend-card-head">
-                <span className="trend-tag">候補回復率（測定質問ベース）</span>
+                <span className="trend-tag">候補回復率（補助指標）</span>
                 <span className="trend-diff">{change.takeBackShare.value === null ? "比較不可" : `${change.takeBackShare.value}%`}</span>
               </div>
               <div className="trend-card-body">
@@ -688,7 +701,7 @@ export function WatchClient() {
                         <span style={{ fontSize: "0.75rem", color: "#64748b" }}>推測で補いません</span>
                       </div>
                       <p style={{ margin: 0, fontSize: "0.76rem", color: "#475569", lineHeight: 1.5 }}>
-                        次回の測定でも参照元ページを確認し、確認できた変化だけを結果に反映します。公開プロフィールの更新には明示的な確認が必要です。
+                        参照元にある記載は、許可された自動更新の対象です。参照元にない実績や条件は作りません。
                       </p>
                     </div>
                   )}

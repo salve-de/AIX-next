@@ -6,6 +6,7 @@ import {
   listActivePublicProfiles,
   publishPublicProfile,
   revokePublicProfile,
+  manageProfileAutomation,
 } from "@/lib/storage";
 import { getScan } from "@/lib/storage";
 import { consumeProfileCreation } from "@/lib/rate-limit";
@@ -122,11 +123,33 @@ export async function POST(request: Request) {
       return json({ profile: toPublicProfile(record) });
     }
 
+    if (["automation_enable", "automation_disable", "automation_rollback"].includes(action)) {
+      const profileId = stringField(body, "profileId");
+      const token = stringField(body, "token");
+      if (!profileId || !token) return json({ error: "管理情報が必要です。" }, 400);
+      const operation = action === "automation_enable" ? "enable" : action === "automation_disable" ? "disable" : "rollback";
+      const record = await manageProfileAutomation(profileId, token, operation, stringField(body, "watchToken"));
+      if (!record) return json({ error: "操作できません。公開ページと有効な有料Watchの管理権限を確認してください。状態が変わった場合は再読み込みしてください。" }, 409);
+      return json({ profile: toPublicProfile(record), automation: automationView(record) });
+    }
+
     return json({ error: "actionはpreview、deploy、create_direct、publish、revokeのいずれかです。" }, 400);
   } catch (error) {
     console.error("AI PROFILE ERROR:", error);
     return json({ error: safeError(error) }, 400);
   }
+}
+
+function automationView(record: Awaited<ReturnType<typeof getPublicProfile>>) {
+  const previous = record?.automation?.previousFacts;
+  return {
+    enabled: record?.status === "published" && record?.automation?.enabled === true,
+    lastUpdatedAt: record?.automation?.lastUpdatedAt || null,
+    canRollback: record?.status === "published" && Boolean(previous),
+    changedFactCount: record?.automation?.changedFactCount || 0,
+    previousFacts: record && previous ? toPublicProfile({ ...record, facts: previous }).facts : [],
+    currentFacts: record ? toPublicProfile(record).facts : [],
+  };
 }
 
 /**
@@ -141,7 +164,7 @@ export async function GET(request: Request) {
     if (!token) return json({ error: "profileIdとtokenが必要です。" }, 401);
     const record = await getPublicProfile(profileId);
     if (!record || record.token !== token) return json({ error: "公開ページが見つかりません。" }, 404);
-    return json({ profile: toPublicProfile(record) });
+    return json({ profile: toPublicProfile(record), automation: automationView(record) });
   }
 
   const slug = params.get("slug")?.trim() || "";

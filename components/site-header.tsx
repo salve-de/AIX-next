@@ -20,13 +20,13 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
             料金プラン
           </Link>
           <Link className="header-cta" href="/#scan">
-            無料でAI回答を確認する
+            AI推薦の現状を無料診断
           </Link>
         </nav>
         <details className="mobile-menu">
           <summary>メニュー</summary>
           <nav aria-label="モバイルナビゲーション">
-            <Link href="/#scan">無料診断</Link>
+            <Link href="/#scan">AI推薦の現状を無料診断</Link>
             <Link href="/result?sample=1">① 診断レポート（見本）</Link>
             <Link href="/ai/company/aoba-souzoku?sample=1">② 公開情報の見本</Link>
             <Link href="/watch?sample=1">③ 週次見守り（見本）</Link>

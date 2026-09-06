@@ -6,7 +6,7 @@ import { WATCH_MONTHLY_PRICE_LABEL, WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL, WAT
 
 export const metadata: Metadata = {
   title: "料金プラン",
-  description: "無料診断と、同じ条件でAI回答を確認する週次見守りの料金・提供範囲。",
+  description: "専門性でAIのおすすめ獲得を目指すRovan。無料診断と週次見守りの料金・提供範囲。",
 };
 
 const free = [
@@ -29,8 +29,8 @@ const paid = [
 export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
-    title="AI回答と公開情報を、同じ条件で確認する。"
-    lead="URLや社名を入力すると、指定した質問とAI回答、回答で参照されたURLを確認できます。公開情報の整理案は内容を確認してから公開します。AIの推薦・順位・売上の改善は保証しません。"
+    title="大手に埋もれず、専門性でAIのおすすめ獲得を目指す。"
+    lead="URLまたは社名から、推薦の現状診断と、御社が選ばれる理由を伝える下書きへ。サイト改修や追加の質問票なしで取り組めます。公開は内容を確認・承認した後に行います。AIの推薦・順位・売上の改善は保証しません。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
@@ -56,18 +56,18 @@ export default function PricingPage() {
     <div className="pricing-value-strip" aria-label="サービスで確認できること">
       <article>
         <small>現在</small>
-        <strong>AI回答の現状を確認</strong>
+        <strong>推薦候補に入れているかを診断</strong>
         <span>指定した質問とAI回答を記録し、自社が候補に含まれたか、どのURLが参照されたかを確認します。</span>
       </article>
       <article>
         <small>整理</small>
-        <strong>公開情報を参照元付きで整理</strong>
-        <span>公開サイトで確認できる事実と参照元URLを整理し、公開前の下書きとして確認できます。</span>
+        <strong>専門性で選ばれる理由を伝える</strong>
+        <span>公開情報で確認できた専門分野・対応条件を参照元付きの下書きへ。一から文章を作る手間を抑えます。</span>
       </article>
       <article>
         <small>継続</small>
-        <strong>同じ条件で週次測定</strong>
-        <span>同じ質問・AI・条件で前回との差分を確認します。結果は将来の推薦や売上を保証しません。</span>
+        <strong>推薦獲得への変化を毎週追う</strong>
+        <span>同じ質問・AI・条件で、自社が候補に入ったかを比較。次に見直す情報を探します。結果は将来の推薦や売上を保証しません。</span>
       </article>
     </div>
 

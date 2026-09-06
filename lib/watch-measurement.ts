@@ -5,7 +5,7 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { env } from "@/lib/env";
 import { runObservationPanel } from "@/lib/providers";
 import { buildScanResult } from "@/lib/scan-result";
-import { updateWatch } from "@/lib/storage";
+import { updateWatch, refreshPublicProfileFromScan } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
 import { createWatchRun, finalizeWatchRun, getActiveWatchRun, mergeObservations, updateWatchRun } from "@/lib/watch-runs";
 import { CORE_PANEL_SIZE } from "@/lib/prompt-panels";
@@ -158,6 +158,23 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     if (detectedEvents.length) competitorEvents = detectedEvents;
     if (planned.actions.length) autoActions = planned.actions;
     if (impacts.length) autoActionImpacts = impacts;
+
+    const refreshed = await refreshPublicProfileFromScan(watch.token, result, crawl.pages);
+    if (refreshed.length) {
+      const executed = refreshed.map((profile) => ({
+        id: `profile_${profile.id}_${result.scanId}`,
+        triggerEventIds: [],
+        actionType: "profile_fact_updated" as const,
+        factLabel: "公開情報の自動更新",
+        factValue: `${profile.automation?.changedFactCount || 0}件の記載差分を反映`,
+        sourceUrl: profile.targetUrl,
+        affectedPromptIds: [],
+        summary: "許可された参照元の記載をRovan公開ページへ反映しました。変更履歴から直前の更新を取り消せます。AI回答への影響は次回測定で確認します。",
+        status: "applied" as const,
+        executedAt: profile.automation!.lastUpdatedAt,
+      }));
+      autoActions = [...executed, ...(autoActions || []).filter((action) => !executed.some((next) => next.id === action.id))].slice(0, 52);
+    }
 
     monthlyReport = buildMonthlyValueReport({
       latest: result,

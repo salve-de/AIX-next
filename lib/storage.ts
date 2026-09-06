@@ -3,14 +3,15 @@ import { id } from "@/lib/ids";
 import { env } from "@/lib/env";
 import type {
   EvidenceAnswer,
+  CrawledPage,
   PublicProfileDraft,
-  PublicProfileFact,
   PublicProfileRecord,
   ScanRecord,
   ScanResult,
   WatchRecord,
 } from "@/lib/types";
-import { buildPublicProfileDraft } from "@/lib/public-profile";
+import { toPublicProfile } from "@/lib/public-profile";
+import { buildAutomatedFacts, changedFacts, mergeAutomatedFacts } from "@/lib/profile-automation";
 import { publicProfileSlug } from "@/lib/public-profile-path";
 import { durableStorageAvailable } from "@/lib/runtime-readiness";
 
@@ -140,6 +141,7 @@ function publicProfileFromRow(row: any): PublicProfileRecord {
     json: String(row.json || ""),
     token: String(row.token || ""),
     sourceScanId: String(row.source_scan_id || "unknown"),
+    automation: row.automation || undefined,
     createdAt: String(row.created_at),
     updatedAt: String(row.updated_at),
     expiresAt: String(row.expires_at),
@@ -170,6 +172,7 @@ function publicProfileRow(record: PublicProfileRecord) {
     updated_at: record.updatedAt,
     expires_at: record.expiresAt,
     published_at: record.publishedAt || null,
+    automation: record.automation || null,
   };
 }
 
@@ -482,75 +485,69 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
   return next;
 }
 
-/**
- * 週次Watch測定完了時に、最新のクロール・診断結果から公開情報の下書きを生成する。
- * （P0-2: 台帳自動メンテナンスの完全自動化）
- */
-export async function refreshPublicProfileFromScan(targetUrl: string, scan: ScanResult, now?: Date | string) {
-  const at = profileDate(now);
-  const slug = publicProfileSlug(targetUrl);
-  const existing = await getPublicProfileBySlug(slug, at);
-  if (!existing || existing.status !== "published") return null;
-
-  const draft = buildPublicProfileDraft(scan, at.toISOString());
-
-  const updated: PublicProfileRecord = {
-    ...existing,
-    title: draft.title,
-    summary: draft.summary,
-    market: draft.market,
-    targetCustomers: draft.targetCustomers,
-    useCases: draft.useCases,
-    facts: draft.facts,
-    sourcePages: draft.sourcePages,
-    structuredData: draft.structuredData,
-    markdown: draft.markdown,
-    json: draft.json,
-    updatedAt: at.toISOString(),
-    expiresAt: new Date(at.getTime() + PUBLIC_PROFILE_DEFAULT_TTL_DAYS * DAY_MS).toISOString(),
-  };
-
+/** Compare-and-swap prevents a running job from undoing a stop or rollback. */
+async function saveProfileAutomation(existing: PublicProfileRecord, candidate: PublicProfileRecord) {
+  const updatedAt = new Date(Math.max(Date.now(), Date.parse(existing.updatedAt) + 1)).toISOString();
+  const safe = toPublicProfile({ ...candidate, updatedAt });
+  const updated = { ...candidate, ...safe, updatedAt };
   if (durable()) {
-    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}`, {
-      method: "PATCH",
-      headers: { prefer: "return=representation" },
-      body: JSON.stringify(publicProfileRow(updated)),
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}&status=eq.published&updated_at=eq.${encodeURIComponent(existing.updatedAt)}&expires_at=gt.${encodeURIComponent(new Date().toISOString())}`, {
+      method: "PATCH", headers: { prefer: "return=representation" },
+      // Do not send status/token/expiry; an automatic update cannot republish.
+      body: JSON.stringify({ facts: updated.facts, structured_data: updated.structuredData, markdown: updated.markdown, json: updated.json, automation: updated.automation, updated_at: updatedAt }),
     });
     return rows[0] ? publicProfileFromRow(rows[0]) : null;
   }
-
+  const current = publicProfiles.get(existing.id);
+  if (!current || current.status !== "published" || current.updatedAt !== existing.updatedAt || Date.parse(current.expiresAt) <= Date.now()) return null;
   publicProfiles.set(existing.id, updated);
   return updated;
 }
 
-/**
- * 競合の動きに対する自律対応（AutoAction）として、検証済みFactを
- * 公開前の確認案として記録する。公開プロフィールへの反映は承認後に限る。
- */
-export async function addFactToPublicProfile(targetUrl: string, fact: PublicProfileFact, now?: Date | string) {
-  const at = profileDate(now);
-  const slug = publicProfileSlug(targetUrl);
-  const existing = await getPublicProfileBySlug(slug, at);
-  if (!existing || existing.status !== "published") return null;
-
-  const facts = [...existing.facts.filter((f) => f.label !== fact.label), fact];
-  const updated: PublicProfileRecord = {
-    ...existing,
-    facts,
-    updatedAt: at.toISOString(),
-  };
-
-  if (durable()) {
-    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}`, {
-      method: "PATCH",
-      headers: { prefer: "return=representation" },
-      body: JSON.stringify(publicProfileRow(updated)),
-    });
-    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+export async function manageProfileAutomation(profileId: string, token: string, action: "enable" | "disable" | "rollback", watchToken = "") {
+  const record = await getPublicProfile(profileId);
+  if (!record || record.token !== token || record.status !== "published") return null;
+  if (action === "enable") {
+    const watch = await getWatch(watchToken);
+    if (!watch || !watch.paid || watch.status !== "active" || watch.scanId !== record.sourceScanId || watch.latest.targetUrl !== record.targetUrl) return null;
+    return saveProfileAutomation(record, { ...record, automation: { ...record.automation, enabled: true, watchId: watch.id, grantedAt: new Date().toISOString() } });
   }
+  if (!record.automation) return record;
+  if (action === "rollback" && !record.automation.previousFacts) return null;
+  return saveProfileAutomation(record, {
+    ...record,
+    ...(action === "rollback" ? { facts: record.automation.previousFacts! } : {}),
+    automation: { ...record.automation, enabled: false, ...(action === "rollback" ? { previousFacts: undefined, managedFacts: record.automation.previousManagedFacts || [], previousManagedFacts: undefined, lastRunId: undefined, changedFactCount: 0 } : {}) },
+  });
+}
 
-  publicProfiles.set(existing.id, updated);
-  return updated;
+/** Refresh only explicitly linked profiles; never guess ownership from a URL. */
+export async function refreshPublicProfileFromScan(watchToken: string, scan: ScanResult, pages: CrawledPage[]) {
+  const watch = await getWatch(watchToken);
+  if (!watch || !watch.paid || watch.status !== "active" || watch.latest.targetUrl !== scan.targetUrl) return [];
+  let records: PublicProfileRecord[];
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?status=eq.published&automation->>watchId=eq.${encodeURIComponent(watch.id)}&expires_at=gt.${encodeURIComponent(new Date().toISOString())}`);
+    records = rows.map(publicProfileFromRow);
+  } else {
+    records = [...publicProfiles.values()];
+  }
+  const applied: PublicProfileRecord[] = [];
+  for (const record of records) {
+    if (record.status !== "published" || Date.parse(record.expiresAt) <= Date.now() || !record.automation?.enabled || record.automation.watchId !== watch.id || record.sourceScanId !== watch.scanId || record.targetUrl !== scan.targetUrl) continue;
+    if (record.automation.lastRunId === scan.scanId) { applied.push(record); continue; }
+    const managedFacts = buildAutomatedFacts(record, pages);
+    if (!managedFacts) continue;
+    const facts = mergeAutomatedFacts(record, managedFacts);
+    const count = changedFacts(record.facts, facts);
+    if (!count) continue;
+    const updated = await saveProfileAutomation(record, {
+      ...record, facts,
+      automation: { ...record.automation, lastRunId: scan.scanId, lastUpdatedAt: new Date().toISOString(), previousFacts: record.facts, previousManagedFacts: record.automation.managedFacts || [], managedFacts, changedFactCount: count },
+    });
+    if (updated) applied.push(updated);
+  }
+  return applied;
 }
 
 export async function addEvidence(token: string, answer: Omit<EvidenceAnswer, "status" | "updatedAt">) {

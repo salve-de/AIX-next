@@ -7,10 +7,10 @@ import "./rovan-brand.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Rovan（ロヴァン）— AI回答と公開情報を確認する", template: "%s | Rovan" },
-  description: "URLまたは社名から、AI回答と参照元付きの公開情報を確認できます。自社サイトを改修せず、公開プロフィールは内容を確認してから公開します。",
+  title: { default: "Rovan（ロヴァン）— 専門性でAIのおすすめ獲得を目指す", template: "%s | Rovan" },
+  description: "大手に埋もれず、御社の専門性でAIの推薦候補へ。URLまたは社名から診断・公開情報の整備・継続測定まで、自社サイト改修なしで取り組めます。",
   applicationName: BRAND.name,
-  openGraph: { siteName: BRAND.name, type: "website", locale: "ja_JP", title: "Rovan — AI回答と公開情報を確認する", description: "URLまたは社名から、AI回答と参照元付きの公開情報を確認できます。推薦・順位・売上の改善は保証しません。", url: "/" },
+  openGraph: { siteName: BRAND.name, type: "website", locale: "ja_JP", title: "Rovan — 専門性でAIのおすすめ獲得を目指す", description: "大手に埋もれず、御社の専門性でAIの推薦候補へ。URLまたは社名から診断・公開情報の整備・継続測定まで、自社サイト改修なしで取り組めます。", url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 

@@ -425,6 +425,18 @@ export type PublicProfileDraft = Pick<
 export type PublicProfileRecord = PublicProfile & {
   token: string;
   sourceScanId: string;
+  /** Private grant and recovery snapshot; never serialized to a public page. */
+  automation?: {
+    enabled: boolean;
+    watchId: string;
+    grantedAt: string;
+    lastRunId?: string;
+    lastUpdatedAt?: string;
+    previousFacts?: PublicProfileFact[];
+    previousManagedFacts?: PublicProfileFact[];
+    managedFacts?: PublicProfileFact[];
+    changedFactCount?: number;
+  };
 };
 
 export type EvidenceAnswer = {
