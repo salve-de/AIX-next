@@ -515,7 +515,7 @@ export async function refreshPublicProfileFromScan(targetUrl: string, scan: Scan
 }
 
 /**
- * 競合の動きに対する自律対応（AutoAction）として、検証済みFactをAI公式台帳に自動追加・補強する。
+ * 競合の動きに対する自律対応（AutoAction）として、検証済みFactをAI参照インデックスに自動追加・同期する。
  */
 export async function addFactToPublicProfile(targetUrl: string, fact: PublicProfileFact, now?: Date | string) {
   const at = profileDate(now);

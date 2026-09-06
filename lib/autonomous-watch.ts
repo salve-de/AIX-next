@@ -42,9 +42,9 @@ export function detectCompetitorWebChanges(
       competitorName,
       sourceUrl: latest.targetUrl,
       eventType: "speed_claim_added",
-      summary: `ライバル「${competitorName}」が短納期・個別対応の訴求ページを新設し、AI推薦率が+${Math.max(1, uplift)}問上昇`,
-      dimensions: ["納期・対応スピード", "個別相談体制"],
-      extractedFacts: ["最短即日・柔軟着手対応", "専任担当者による個別ヒアリング"],
+      summary: `競合「${competitorName}」がAI相談において推薦枠を獲得（前回比+${Math.max(1, uplift)}問の変動を客観検知）`,
+      dimensions: ["対応スピード・受付体制", "サービス提供範囲"],
+      extractedFacts: ["客観観測：競合上位推薦質問の検出"],
       affectedPromptIds,
       severity: uplift >= 3 ? "high" : "medium",
       confidence: 0.92,
@@ -122,7 +122,7 @@ export function planAndExecuteAutoActions(options: {
         factValue: fact.value,
         sourceUrl: fact.sourceUrl || targetUrl,
         affectedPromptIds: event.affectedPromptIds,
-        summary: `自社公式サイト（${matchedFact.sourceUrl}）より「${fact.label}」の確認済み事実を自動抽出し、AI公式推薦パスへ補強反映`,
+        summary: `自社公式サイト（${matchedFact.sourceUrl}）より「${fact.label}」の確認済み事実を自動抽出し、自社AI参照インデックスへ客観反映`,
         executedAt: now,
       });
     }
@@ -170,8 +170,8 @@ export function evaluateAutoActionImpact(
       },
       causalConfidence: uplift > 0 ? "high" : "medium",
       summary: uplift > 0
-        ? `先週AIXが自動補強した「${action.factLabel}」により、対象${affectedSet.size}問中+${uplift}問でAI推薦枠の回復を観測`
-        : `対象${affectedSet.size}問において推薦枠の維持を確認（継続監視中）`,
+        ? `対象${affectedSet.size}問において前回比+${uplift}問の推薦枠獲得を客観観測（原因断定なし・推移記録）`
+        : `対象${affectedSet.size}問において推薦枠の現状水準を記録（継続観測中）`,
       measuredAt: now,
     });
   }
@@ -214,8 +214,8 @@ export function buildMonthlyValueReport(options: {
 
   const totalUplift = impacts.reduce((sum, imp) => sum + (imp.observedUplift > 0 ? imp.observedUplift : 0), 0);
   const observedUpliftSummary = totalUplift > 0
-    ? `自律台帳補強後、対象質問群において累計+${totalUplift}問のAI推薦枠の回復・改善を観測`
-    : "主要AI推薦枠の現状水準を安定維持（競合の侵食をゼロで防衛中）";
+    ? `前週比で対象質問群において累計+${totalUplift}問のAI推薦枠の変動を客観観測`
+    : "主要AI推薦枠の現状水準を安定記録（競合の侵食なし）";
 
   const topRisks = competitorEvents.slice(0, 2).map((evt) =>
     `競合「${evt.competitorName}」が${evt.dimensions.join("・")}の訴求を強化（AIXが継続追跡中）`
@@ -227,7 +227,7 @@ export function buildMonthlyValueReport(options: {
   const upcomingTracking = [
     "次週の週次スキャンで同一プロンプト群のAI推薦率を定点再測定",
     "上位競合の公式サイトにおける料金・サポート訴求の差分追跡",
-    "自社公式サイトの最新情報に基づくAI公開台帳の自動同期維持",
+    "自社公式サイトの最新情報に基づくAI公開参照インデックスの自動同期維持",
   ];
 
   const date = new Date(now);

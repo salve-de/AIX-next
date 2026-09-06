@@ -288,12 +288,12 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   const brandName = publicText(input.brandName, 180);
   if (!brandName) throw new Error("会社名または屋号を入力してください。");
 
-  // 自社サイトがない場合、このAIX公式台帳そのものが公式Web拠点URLとなる
+  // 自社サイトがない場合、このAIX参照インデックスそのものがWeb参照拠点URLとなる
   const slug = brandName.toLowerCase().replace(/[^a-z0-9\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf-]+/gi, "-").replace(/^-+|-+$/g, "") || "company";
   const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
-  const title = `${brandName} 公式データ台帳`;
+  const title = `${brandName} 公開情報参照インデックス`;
   const market = publicText(input.market || "専門技術・サービス", MAX_LIST_ITEM_LENGTH);
-  const summary = publicText(input.summary || `${brandName}の公式エンタープライズ・ナレッジ台帳。主要生成AI（ChatGPT/Gemini/Claude等）が正確な情報に基づいて参照するための公式マスターデータです。`, MAX_SUMMARY_LENGTH);
+  const summary = publicText(input.summary || `${brandName}の公開情報参照インデックス。主要生成AI（ChatGPT/Gemini/Claude等）が客観的な事実に基づいて参照するための構造化データです。`, MAX_SUMMARY_LENGTH);
   const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : []);
   const useCases = uniquePublicList(input.useCases?.length ? input.useCases : []);
 

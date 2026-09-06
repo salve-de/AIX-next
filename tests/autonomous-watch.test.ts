@@ -142,8 +142,9 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
   assert.equal(impacts.length, 1);
   assert.equal(impacts[0].observedUplift, 2);
   assert.equal(impacts[0].providerAgreement.openai, "improved");
-  assert.ok(impacts[0].summary.includes("+2問でAI推薦枠の回復を観測"));
+  assert.ok(impacts[0].summary.includes("+2問の推薦枠獲得を客観観測"));
 });
+
 
 test("buildMonthlyValueReport generates complete executive monthly summary without asking for actions", () => {
   const latest = {
@@ -211,5 +212,25 @@ test("buildMonthlyValueReport generates complete executive monthly summary witho
   assert.ok(report.observedUpliftSummary.includes("+1問のAI推薦枠"));
   assert.ok(report.topRisks.length > 0);
   assert.ok(report.upcomingTracking.length > 0);
+});
+
+test("extractCompetitorTextDiff extracts objective diff snippets without hallucinated text", () => {
+  const { extractCompetitorTextDiff } = require("../lib/competitor-diff");
+  const previousText = "当社は地域密着の不動産会社です。仲介業務を行っています。";
+  const currentText = "当社は地域密着の不動産会社です。仲介業務を行っています。最短即日での直接買取に対応を開始しました。買取手数料無料・仲介手数料0円です。";
+
+  const diff = extractCompetitorTextDiff({
+    competitorName: "大手買取チェーン",
+    sourceUrl: "https://kaitori.example",
+    previousText,
+    currentText,
+  });
+
+  assert.equal(diff.hasMeaningfulDiff, true);
+  assert.equal(diff.competitorName, "大手買取チェーン");
+  assert.ok(diff.evidences.length >= 2);
+  assert.ok(diff.evidences.some((e: any) => e.dimension === "納期・対応スピード"));
+  assert.ok(diff.evidences.some((e: any) => e.dimension === "料金・費用"));
+  assert.ok(diff.summary.includes("大手買取チェーン"));
 });
 

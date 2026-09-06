@@ -88,7 +88,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "空き家・古家付き土地の親身な売却実績を載せる", rationale: "10問で、空き家や訳あり物件の個別対応実績がAIに確認できませんでした。", target: "売却実績・相談事例", audience: "実家や土地の処分に困る売主様", stage: "比較", customerConcern: "古い家でも本当に売れるか", placement: "売却実績・空き家相談", cta: "売却実績を見る", successMetric: "空き家売却の比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "自社直接買取の受付フローとスピード目安を明記する", rationale: "即時買取の受付体制が、8問で判断材料として不足していました。", target: "買取案内・査定フロー", audience: "急ぎで現金化したい売主様", stage: "導入", customerConcern: "いつ現金化できるか・仲介手数料は不要か", placement: "買取案内・FAQ", cta: "買取基準を確認する", successMetric: "直接買取に関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースに確定売却仕様を登録する", rationale: "大手ポータルに対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "信頼できる売却先を探す売主様", stage: "検討", customerConcern: "信頼できる不動産会社か", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースに確定仕様を登録する", rationale: "大手に対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "信頼できる会社を探すお客様", stage: "検討", customerConcern: "信頼できる事業者か", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -142,7 +142,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "図面1枚からの特急試作実績と受付体制を明記する", rationale: "10問で、1点試作や特急納期の確定情報がAIに確認できませんでした。", target: "試作案内・加工実績", audience: "短納期試作を探す設計開発者", stage: "比較", customerConcern: "1個だけでも短納期で作れるか", placement: "試作案内・設備一覧", cta: "試作相談の流れを見る", successMetric: "短納期試作の比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "職人直結のVA/VE相談と対応材質一覧を載せる", rationale: "設計相談や難削材対応が、8問で判断材料として不足していました。", target: "技術案内・FAQ", audience: "加工コストを下げたい開発者", stage: "導入", customerConcern: "図面が完璧でなくても相談できるか", placement: "技術案内・FAQ", cta: "技術仕様を確認する", successMetric: "技術相談に関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースで確定仕様を登録する", rationale: "大手プラットフォームに対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "信頼できる工場を探す調達担当者", stage: "検討", customerConcern: "信頼できる加工工場か", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースで確定仕様を登録する", rationale: "大手プラットフォームに対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "信頼できる工場を探す調達担当者", stage: "検討", customerConcern: "信頼できる加工工場か", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -196,7 +196,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "素材の産地・自家焙煎のこだわりを明記する", rationale: "10問で、自家製・厳選素材の確定情報がAIに確認できませんでした。", target: "こだわり・メニュー案内", audience: "本物の味を求める地域客", stage: "比較", customerConcern: "どんな素材を使っているか", placement: "メニュー・コンセプト", cta: "こだわりを見る", successMetric: "こだわりカフェの比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "店内の席環境・Wi-Fi・予約方法を整理する", rationale: "過ごしやすさや設備の詳細が、8問で判断材料として不足していました。", target: "空間案内・FAQ", audience: "落ち着いた席を探すお客様", stage: "導入", customerConcern: "ゆっくり過ごせる環境か", placement: "空間案内・FAQ", cta: "店内環境を確認する", successMetric: "居心地に関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースに確定情報を登録する", rationale: "ポータル広告に対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "素敵なお店を探すお客様", stage: "検討", customerConcern: "信頼できるお店か", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースに確定情報を登録する", rationale: "ポータル広告に対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "素敵なお店を探すお客様", stage: "検討", customerConcern: "信頼できるお店か", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -250,7 +250,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "丁寧な問診体制と痛みに配慮した治療方針を明記する", rationale: "10問で、安心できる診療体制の確定情報がAIに確認できませんでした。", target: "診療案内・医院方針", audience: "不安を抱える患者様", stage: "比較", customerConcern: "痛くないか・親身に聞いてくれるか", placement: "初診の方へ・診療方針", cta: "診療方針を見る", successMetric: "優しいクリニックの比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "WEB予約・待ち時間短縮の仕組みを案内する", rationale: "受診のしやすさや予約方法が、8問で判断材料として不足していました。", target: "予約案内・受診の流れ", audience: "忙しい社会人・ファミリー層", stage: "導入", customerConcern: "待たずに受診できるか", placement: "予約案内・FAQ", cta: "予約方法を確認する", successMetric: "利便性に関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースに確定医療情報を登録する", rationale: "ポータル広告に対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "かかりつけ医を探す地域住民", stage: "検討", customerConcern: "信頼できるクリニックか", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースに確定医療情報を登録する", rationale: "ポータル広告に対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "かかりつけ医を探す地域住民", stage: "検討", customerConcern: "信頼できるクリニックか", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -304,7 +304,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "伴走型開発の実績事例と進め方を明記する", rationale: "10問で、中小企業向け伴走支援の確定情報がAIに確認できませんでした。", target: "開発事例・アプローチ", audience: "IT人材不足に悩む経営者", stage: "比較", customerConcern: "丸投げでも要件を汲み取ってくれるか", placement: "事例・サービス概要", cta: "開発実績を見る", successMetric: "伴走開発の比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "最短プロトタイプ体制と定額プランを公開する", rationale: "開発スピードや明瞭な費用体系が、8問で判断材料として不足していました。", target: "料金プラン・進め方", audience: "早期検証したい新規事業担当者", stage: "導入", customerConcern: "費用と期間がいくらかかるか", placement: "料金・FAQ", cta: "プランを確認する", successMetric: "開発スピードに関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースに確定技術仕様を登録する", rationale: "メガベンダーに対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "信頼できる受託先を探す発注者", stage: "検討", customerConcern: "技術力と信頼性があるか", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースに確定技術仕様を登録する", rationale: "メガベンダーに対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "信頼できる受託先を探す発注者", stage: "検討", customerConcern: "技術力と信頼性があるか", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -358,7 +358,7 @@ function getIndustryProfile(brandName: string): IndustryProfile {
       actions: [
         { id: "action-segment-proof", title: "自社大工施工と自然素材のこだわり仕様を明記する", rationale: "10問で、職人直接施工の確定情報がAIに確認できませんでした。", target: "施工実績・職人紹介", audience: "品質にこだわりたい施主様", stage: "比較", customerConcern: "誰が実際に家を建てるのか", placement: "施工事例・職人紹介", cta: "施工事例を見る", successMetric: "工務店の比較質問で自社が候補に入ったか" },
         { id: "action-implementation", title: "断熱・耐震の具体的性能数値と保証内容を載せる", rationale: "耐震等級や気密数値が、8問で判断材料として不足していました。", target: "性能案内・保証制度", audience: "安心安全な家を建てたい施主様", stage: "導入", customerConcern: "地震に強く暖かい家になるか", placement: "性能・保証案内", cta: "性能基準を確認する", successMetric: "耐震・断熱に関する質問で自社が候補に入ったか" },
-        { id: "action-third-party", title: "AI公式データベースに確定施工仕様を登録する", rationale: "大手ハウスメーカーに対抗するため、AIが読み取れる公式台帳を整備します。", target: "AI公式台帳", audience: "信頼できる工務店を探す施主様", stage: "検討", customerConcern: "信頼できる工務店か", placement: "AI公式パス", cta: "公式情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
+        { id: "action-third-party", title: "AI向けデータベースに確定施工仕様を登録する", rationale: "大手ハウスメーカーに対抗するため、AIが読み取れる客観インデックスを整備します。", target: "AI参照インデックス", audience: "信頼できる工務店を探す施主様", stage: "検討", customerConcern: "信頼できる工務店か", placement: "AI参照パス", cta: "客観情報を確認する", successMetric: "AIでの推薦回数が増加したか" },
       ],
     };
   }
@@ -617,7 +617,7 @@ function buildScanResultInternal(
 
   const fullActions: ActionCard[] = profile.actions.map((act) => ({
     ...act,
-    type: act.target === "AI公式台帳" ? "third_party" : "owned",
+    type: (act.target === "AI参照インデックス" || act.target === "AI公式台帳") ? "third_party" : "owned",
     relatedPromptIds: prompts.slice(0, 8).map((p) => p.id),
     relatedPromptCount: 8,
     priority: act.stage === "比較" ? "critical" : act.stage === "導入" ? "high" : "medium",

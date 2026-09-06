@@ -186,7 +186,7 @@ export function WatchClient() {
         ? `${change.newCitations}件のページが、新しく参照されました。`
         : "今回は、候補入りの大きな変化はありませんでした。";
   const changeDescription = meaningfulChanges > 0
-    ? "同じ比較質問を比べた結果です。自社サイト改修ゼロのまま、AI公式台帳の配備によりAIの推薦候補枠を獲得しやすくなっています。"
+    ? "同じ比較質問を比べた結果です。自社サイト改修ゼロのまま、AI参照インデックスの配備によりAIの推薦候補枠を獲得しやすくなっています。"
     : "変化がないときは通知せず、次に動きがあったときだけ知らせます。";
   const samplePack = sample ? {
     generatedAt: watch.latest.measuredAt,
@@ -344,7 +344,7 @@ export function WatchClient() {
           <div className="watch-change-hero-state">
             <span className="watch-change-state-dot" aria-hidden="true" />
             <strong>{meaningfulChanges > 0 ? "推薦獲得に成功" : "変化なし"}</strong>
-            <small>{meaningfulChanges > 0 ? "公式台帳の反映を確認" : "次の変化を待機"}</small>
+            <small>{meaningfulChanges > 0 ? "参照インデックスの反映を確認" : "次の変化を待機"}</small>
           </div>
         </div>
       </section>
@@ -369,7 +369,7 @@ export function WatchClient() {
         <div>
           <span>新しく確認できた引用</span>
           <strong><b>{change.newCitations ? `+${change.newCitations}` : "+3件"}</b></strong>
-          <small>公式台帳のデータ参照</small>
+          <small>参照インデックスのデータ参照</small>
         </div>
       </section>
 
@@ -502,7 +502,7 @@ export function WatchClient() {
           <div className="section-heading-simple">
             <p className="overline">週次推移ダッシュボード</p>
             <h2>AI推薦枠の獲得と、ライバル排除の推移。</h2>
-            <p>前回と同じ12問を比較しているため、AI公式台帳の開設によって自社がどれだけ推薦されやすくなったかが一目で分かります。</p>
+            <p>前回と同じ12問を比較しているため、AI参照インデックスの配備によって自社がどれだけ推薦されやすくなったかが一目で分かります。</p>
           </div>
 
           <div className="watch-trend-cards-grid">
@@ -538,7 +538,7 @@ export function WatchClient() {
 
             <div className="watch-trend-card">
               <div className="trend-card-head">
-                <span className="trend-tag">AI公式推薦パスの引用（推論根拠）</span>
+                <span className="trend-tag">AI参照インデックスの引用（推論根拠）</span>
                 <span className="trend-diff text-blue">+3件 増加</span>
               </div>
               <div className="trend-card-body">
@@ -547,7 +547,7 @@ export function WatchClient() {
                   <span className="trend-arrow">→</span>
                   <span className="trend-num-latest text-blue">3件</span>
                 </div>
-                <p className="trend-desc">ChatGPTやPerplexity等の主要AIが推薦パスの公式データを参照し、回答の推論根拠として採用したことが確認されました。</p>
+                <p className="trend-desc">ChatGPTやPerplexity等の主要AIが参照インデックスの公開データを参照し、回答の推論根拠として採用したことが確認されました。</p>
                 <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                   <Link
                     href={sample ? "/ai/company/aoba-souzoku?sample=1" : `/ai/company/${encodeURIComponent(watch.latest.discovery.brandName)}`}
@@ -555,7 +555,7 @@ export function WatchClient() {
                     rel="noreferrer"
                     style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
                   >
-                    常駐中のAI公式推薦パスを確認 ↗
+                    常駐中のAI参照インデックスを確認 ↗
                   </Link>
                 </div>
               </div>
@@ -583,7 +583,7 @@ export function WatchClient() {
               className="button button-primary"
               style={{ fontSize: "0.75rem", padding: "6px 12px", background: "#0284c7" }}
               onClick={() => {
-                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI公式台帳で強みを確定仕様化する「AIX」を活用しています。\n#AIX #生成AI #中小企業DX\n`);
+                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI参照インデックスで客観強みを構造化する「AIX」を活用しています。\n#AIX #生成AI #中小企業DX\n`);
                 const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}`);
                 if (typeof window !== "undefined") {
                   window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
@@ -607,7 +607,7 @@ export function WatchClient() {
                 <div className="won-item-foot">
                   <span className="foot-reason-label">AIが推薦した決定理由：</span>
                   <p className="foot-reason-text">
-                    AI公式台帳の【親身な個別伴走体制・マニュアルなし】の仕様が照合され、大手を抑えて適合率上位として判定されました。
+                    AI参照インデックスの【親身な個別伴走体制・マニュアルなし】の事実が照合され、大手を抑えて適合率上位として判定されました。
                   </p>
                 </div>
               </div>
@@ -654,10 +654,10 @@ export function WatchClient() {
                       rel="noreferrer"
                       style={{ fontSize: "0.72rem", color: "#0284c7", fontWeight: 700, textDecoration: "none" }}
                     >
-                      [AI公式台帳 ↗]
+                      [AI参照インデックス ↗]
                     </Link>
                   </div>
-                  <small>AI公式台帳配備済（ChatGPT・Perplexity引用対応）</small>
+                  <small>AI参照インデックス配備済（ChatGPT・Perplexity引用対応）</small>
                 </td>
                 <td>{watch.baseline.recommendationCoverage}%</td>
                 <td><strong>{watch.latest.recommendationCoverage}%</strong></td>
@@ -692,7 +692,7 @@ export function WatchClient() {
           <div className="section-heading-simple">
             <p className="overline">AIXによる自動情報補強</p>
             <h2>競合に負けている質問を、<br />次回取り返すための情報補強。</h2>
-            <p>AIXが自社公式サイトから以下の重要事実を自動収集・照合し、次回巡回時にAI公式台帳へ反映して推薦枠の奪還を図ります（御社の作業は不要です）。</p>
+            <p>AIXが自社公式サイトから以下の重要事実を自動収集・照合し、次回巡回時にAI参照インデックスへ反映して推薦枠の奪還を図ります（御社の作業は不要です）。</p>
           </div>
           
           <div className="watch-input-grid">
@@ -717,8 +717,9 @@ export function WatchClient() {
                         <span style={{ fontSize: "0.75rem", color: "#64748b" }}>御社の作業は不要です</span>
                       </div>
                       <p style={{ margin: 0, fontSize: "0.76rem", color: "#475569", lineHeight: 1.5 }}>
-                        次回の週次巡回時に、御社公式サイトから関連する事実を自動検出して公式台帳へ補強します。
+                        次回の週次巡回時に、御社公式サイトから関連する事実を自動検出してAI参照インデックスへ補強します。
                       </p>
+
                       <details style={{ marginTop: "10px", fontSize: "0.72rem", color: "#64748b" }}>
                         <summary style={{ cursor: "pointer", color: "#0284c7" }}>手動で即時補正する場合</summary>
                         <form onSubmit={(event) => saveEvidence(event, gap.id)} className="gap-input-form" style={{ marginTop: "8px" }}>

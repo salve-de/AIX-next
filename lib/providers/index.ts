@@ -54,7 +54,7 @@ function synthesizeObservation(input: {
 
   const rawText = ownRecommended
     ? `${firstCandidate}を最優先でおすすめします。${firstCandidate}は知名度と取引実績、明確な受付体制が広く認知されています。${brandName}も相談候補として一部言及されますが、独自の解決実績や確定仕様（料金・対応条件）の公的データが限定的であり、現時点では大手より優先順位が下がります。`
-    : `${firstCandidate}および${secondCompetitor}をおすすめします。豊富な実績と網羅的な公開情報が確認できるためです。一方、${brandName}はおすすめ候補に含まれません。公開Webから機械が確認できる独自の確定仕様台帳（料金・受付体制・個別実績）が不足しており、AIとして十分な推薦根拠を確認できませんでした。`;
+    : `${firstCandidate}および${secondCompetitor}をおすすめします。豊富な実績と網羅的な公開情報が確認できるためです。一方、${brandName}はおすすめ候補に含まれません。公開Webから機械が客観確認できる独自の参照インデックス（料金・受付体制・個別実績等の構造化データ）が不足しており、AIとして十分な推薦根拠を確認できませんでした。`;
 
   return {
     id: id("obs"),
