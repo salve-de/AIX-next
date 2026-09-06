@@ -33,7 +33,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   const [error, setError] = useState("");
   const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
   const [customHighlight, setCustomHighlight] = useState<string>("");
-  const [isSaved, setIsSaved] = useState<boolean>(sample);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // サイト解析結果（ScanResult）から100%動的に抽出された3つの強み候補
   const strategies = result.positioning?.strategies || derivePositioningAdvice(result).strategies || [];
@@ -66,10 +66,14 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
 
   return (
     <section className="public-profile-interactive-card" aria-label="AI公式データベースへの登録">
-      <div className="profile-interactive-header">
-        <span className="step-badge">【ステップ 2】自社サイト改修ゼロで、AI公式推薦パスを配備する</span>
-        <h2>選定した看板を、AIが正確に参照・引用できる「公式データ」としてネット上に常駐させます</h2>
-        <p>
+      <div className="profile-interactive-header" style={{ marginBottom: "20px" }}>
+        <p className="overline" style={{ color: "var(--color-success, #059669)", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.08em" }}>
+          AI公式データの即時生成・配備プレビュー
+        </p>
+        <h3 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "6px 0 8px", color: "var(--navy, #0f172a)" }}>
+          選定した看板を、AIが正確に参照・引用できる「公式データ」として即座にネット上に配備できます
+        </h3>
+        <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: 0 }}>
           新しい営業マンを雇う必要も、自社のホームページを改修する必要もありません。ChatGPTやGemini・Perplexityなどの主要AIが公式情報として正確に参照できる構造化仕様を、AI公式推薦パスとして即座にネット上に配備します。
         </p>
       </div>
@@ -78,7 +82,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px", flexWrap: "wrap", gap: "8px" }}>
         <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f172a", display: "inline-flex", alignItems: "center", gap: "6px" }}>
           <span style={{ background: "#0284c7", color: "#ffffff", padding: "2px 6px", borderRadius: "3px", fontSize: "0.68rem" }}>AI自動下書き済</span>
-          ネット上の公開情報から抽出した御店の強み候補（タップで1つ選ぶだけ）
+          ネット上の公開情報から抽出した御社の強み候補（タップで1つ選ぶだけ）
         </span>
         <span style={{ fontSize: "0.72rem", color: "#64748b" }}>※ AIによる勝手な架空作文は排除されています</span>
       </div>
@@ -214,7 +218,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         <div className="no-website-benefit-note">
           <span className="benefit-badge">自社サイトをお持ちでない企業様へ</span>
           <p>
-            初期制作費用をかけずに、発行された公式ページ（<code>{`${siteUrl}/ai/company/...`}</code>）をGoogleマップや名刺・SNSに記載するだけで、<strong>主要AIとユーザーの双方が正確に確認できる「公式Web拠点」</strong>としてそのままご活用いただけます。
+            初期制作費用をかけずに、発行された公式ページ（<code>rovan.com/ai/company/...</code>）をGoogleマップや名刺・SNSに記載するだけで、<strong>主要AIとユーザーの双方が正確に確認できる「公式Web拠点」</strong>としてそのままご活用いただけます。
           </p>
         </div>
       </div>

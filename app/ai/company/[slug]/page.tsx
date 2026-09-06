@@ -38,7 +38,7 @@ function sampleCafeProfile(): PublicProfile {
     slug: "aoba-cafe",
     brandName: "青葉カフェ",
     title: "青葉カフェ 公開情報参照インデックス",
-    targetUrl: "http://localhost:3000/ai/company/青葉カフェ",
+    targetUrl: "https://aoba-cafe.example.com",
     market: "自家焙煎・スペシャリティ珈琲・こだわりスイーツ",
     summary: "東京都渋谷区の自家焙煎スペシャリティ珈琲専門店。全席Wi-Fi・電源完備、静かで集中できる空間とオーツミルク等のアレルギー配慮メニューを提供。",
     targetCustomers: ["静かに集中して作業・読書をしたい個人", "こだわりの自家焙煎珈琲を楽しみたい愛好家"],
@@ -50,15 +50,15 @@ function sampleCafeProfile(): PublicProfile {
     publishedAt: "2026-09-01T09:00:00.000Z",
     sourcePages: [
       {
-        url: "http://localhost:3000/ai/company/青葉カフェ",
+        url: "https://aoba-cafe.example.com",
         title: "青葉カフェ 公式情報参照元",
         description: "自家焙煎珈琲と居心地の良い空間の公開ファクト",
       },
     ],
     facts: [
-      { label: "店舗名", value: "青葉カフェ", sourceUrl: "http://localhost:3000/ai/company/青葉カフェ" },
-      { label: "所在地", value: "東京都渋谷区神宮前", sourceUrl: "http://localhost:3000/ai/company/青葉カフェ" },
-      { label: "こだわり", value: "自家焙煎・スペシャルティ等級豆100%", sourceUrl: "http://localhost:3000/ai/company/青葉カフェ" },
+      { label: "店舗名", value: "青葉カフェ", sourceUrl: "https://aoba-cafe.example.com" },
+      { label: "所在地", value: "東京都渋谷区神宮前", sourceUrl: "https://aoba-cafe.example.com" },
+      { label: "こだわり", value: "自家焙煎・スペシャルティ等級豆100%", sourceUrl: "https://aoba-cafe.example.com" },
     ],
     structuredData: "{}",
     markdown: "",
@@ -312,7 +312,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             ) : null}
           </div>
           <p style={{ margin: "0 0 6px", fontSize: "0.88rem", fontWeight: 700, color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>
-            <code>{`${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
+            <code>{siteUrl.includes("localhost") ? `rovan.com/ai/company/${encodeURIComponent(profile.slug)}` : `${siteUrl.replace(/^https?:\/\//, "")}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
           </p>
           <small style={{ fontSize: "0.76rem", color: "var(--text-secondary, #475569)", display: "block", lineHeight: 1.55 }}>
             ※ 本ページは主要AI（ChatGPT・Gemini・Perplexity等）が直接巡回し、回答推論の根拠として参照する国際規格データです。

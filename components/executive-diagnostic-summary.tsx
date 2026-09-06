@@ -86,11 +86,11 @@ export function ExecutiveDiagnosticSummary({
               color: "var(--navy, #0f172a)",
             }}
           >
-            なぜAIは御社を「100位中{rank}位」と判定したのか？<br />
-            そして、本システムが「具体的にどう解決したのか」。
+            なぜAIは御社を「主要ライバル中 {rank}位（候補外）」と判定したのか？<br />
+            そして、本システムで「具体的にどう逆転・解決できるのか」。
           </h2>
           <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--text-secondary, #475569)", lineHeight: 1.75 }}>
-            御社の実力や接客力が劣っているわけではありません。原因は<strong>「AI学習データの圧倒的な知名度偏向」</strong>と<strong>「AI探索ロボット専用台帳の欠如」</strong>という機械的な構造問題でした。
+            御社の実力や接客力が劣っているわけではありません。原因は<strong>「AI学習データの圧倒的な知名度偏向」</strong>と<strong>「AI探索ロボット専用台帳の欠如」</strong>という機械的な構造問題です。
           </p>
         </div>
 
@@ -205,7 +205,7 @@ export function ExecutiveDiagnosticSummary({
                 Action
               </span>
               <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>
-                社長の作業は「社名を入力しただけ」。あとは自走システムで公式窓口が稼働
+                【解決の処方箋】社長の作業は「社名を入力しただけ」。あとは自走システムで公式窓口を即座に配備
               </strong>
             </div>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary, #475569)", fontFamily: "var(--font-mono, monospace)", background: "var(--bg-surface, #f1f5f9)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "3px 10px", borderRadius: "4px" }}>
@@ -214,8 +214,8 @@ export function ExecutiveDiagnosticSummary({
           </div>
           <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", lineHeight: 1.75, margin: "0 0 16px" }}>
             ITの専門知識も、既存ホームページの改修工事も一切不要です。<br />
-            Rovanが自社の公開情報と公的データベースを解析し、ChatGPTやPerplexity等のAI探索ロボットが1秒で読める<strong>「AI公式確定仕様台帳（国際規格JSON-LD・全データ出展証跡完備）」を自社サイトの外側に全自動配備</strong>しました。<br />
-            「大手が対応しにくい親身な個別対応」や「地域密着の強み」が、主要AIのナレッジベースに直接常駐しています。
+            Rovanが自社の公開情報と公的データベースを解析し、ChatGPTやPerplexity等のAI探索ロボットが1秒で読める<strong>「AI公式確定仕様台帳（国際規格JSON-LD・全データ出展証跡完備）」を自社サイトの外側に即座に自動配備</strong>できます。<br />
+            「大手が対応しにくい親身な個別対応」や「地域密着の強み」を、主要AIのナレッジベースに直接認識・常駐させることが可能です。
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem" }}>
             <span style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 10px", borderRadius: "6px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>
@@ -311,7 +311,7 @@ export function ExecutiveDiagnosticSummary({
           }}
         >
           <div style={{ fontSize: "0.84rem", color: "var(--text-secondary, #475569)" }}>
-            配備された確定仕様台帳は、ステップ2の<strong>「AI公式推薦データ」</strong>からいつでも実物をご確認いただけます。
+            生成されたAI公式推薦データ（下書きプレビュー）は、下のステップ2から即座にご確認・配備いただけます。
           </div>
           <a
             href="#step-2"

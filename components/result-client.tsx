@@ -275,10 +275,10 @@ export function ResultClient() {
         </div>
       </section>
 
-      {/* エグゼクティブ要約：なぜ93位だったのか？ × 具体的にどう解決したのか（施工価値） */}
+      {/* エグゼクティブ要約：なぜ下位だったのか？ × 具体的にどう逆転・解決できるのか（処方箋） */}
       <ExecutiveDiagnosticSummary
         brandName={result.discovery.brandName}
-        rank={93}
+        rank={result.marketPosition || 9}
         topCompetitor={topCompetitor?.name || "全国展開の大手チェーン"}
         lostCount={result.lostPrompts.length}
         totalCount={result.panel.promptCount}
