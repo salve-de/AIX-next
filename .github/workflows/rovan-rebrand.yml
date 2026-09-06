@@ -1,78 +1,117 @@
-name: Rovan rename audit
+name: Apply and verify Rovan rename
 
 on:
   push:
     branches: [chore/rovan-rebrand]
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: rovan-rename-audit
+  group: rovan-rename-migration
   cancel-in-progress: false
 
 jobs:
-  audit:
+  rename:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: feature
+            base: feature/positioning-autopilot
+            expected: cadcdacd1d1f9b9e0089a33aa53e9165f47b3037
+            candidate: chore/rovan-feature-ready
+          - variant: main
+            base: main
+            expected: e1fac6aeb4ea37b27959fc1f92bda56aa042e79e
+            candidate: chore/rovan-main-ready
     env:
       NEXT_TELEMETRY_DISABLED: "1"
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Inventory tracked branding and preserve source snapshot
+      - name: Preserve migration and select exact source
+        env:
+          BASE: ${{ matrix.base }}
+          EXPECTED: ${{ matrix.expected }}
+          CANDIDATE: ${{ matrix.candidate }}
         run: |
-          mkdir -p /tmp/rovan-audit
-          git archive --format=zip HEAD > /tmp/rovan-audit/source.zip
-          python3 - <<'PY'
-          import pathlib, re, subprocess
-          pattern = re.compile(r'aix|エーアイエックス|エーアイ・エックス', re.I)
-          matches = []
-          for path in subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0'):
-              if not path:
-                  continue
-              try:
-                  text = pathlib.Path(path).read_text()
-              except (UnicodeError, OSError):
-                  continue
-              for n, line in enumerate(text.splitlines(), 1):
-                  if pattern.search(line):
-                      matches.append(f'{path}:{n}: {line}')
-          pathlib.Path('/tmp/rovan-audit/branding.txt').write_text('\n'.join(matches) + '\n')
-          print(f'Legacy branding lines: {len(matches)}')
-          for line in matches:
-              print(line[:600])
-          PY
-      - uses: actions/upload-artifact@v4
-        with:
-          name: rovan-source-audit
-          path: /tmp/rovan-audit
-          retention-days: 3
+          cp scripts/rebrand-rovan.py /tmp/rebrand-rovan.py
+          actual=$(git rev-parse "origin/$BASE")
+          test "$actual" = "$EXPECTED"
+          git checkout -b "$CANDIDATE" "$EXPECTED"
+          mkdir -p /tmp/rovan-validation
+          git archive --format=zip HEAD > /tmp/rovan-validation/before.zip
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-      - name: Install exact locked dependencies
-        run: npm ci
-      - name: Read installed framework metadata conventions
+      - run: npm ci
+      - name: Read installed Next metadata conventions
         run: |
-          find node_modules/next/dist/docs -iname '*metadata*' -o -iname '*opengraph*' 2>/dev/null | head -20 || true
-      - name: Baseline quality checks
+          sed -n '1,200p' node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md | tee /tmp/rovan-validation/framework-guide.txt
+      - name: Apply scoped rename and verify protected contracts
+        run: python3 /tmp/rebrand-rovan.py
+      - name: Lint, tests, typecheck and production build
         run: |
-          set +e
-          failed=0
-          for check in lint test typecheck build; do
-            echo "## $check"
-            npm run "$check" 2>&1 | tee "/tmp/rovan-audit/$check.log"
-            status=${PIPESTATUS[0]}
-            echo "$check=$status" | tee -a /tmp/rovan-audit/status.txt
-            if [ "$status" -ne 0 ]; then failed=1; fi
-          done
-          exit "$failed"
+          set -o pipefail
+          npm run check 2>&1 | tee /tmp/rovan-validation/check.log
+      - name: Check HTTP outputs without external provider calls
+        run: |
+          npm start -- --port 3000 > /tmp/rovan-validation/server.log 2>&1 &
+          echo $! > /tmp/rovan-server.pid
+          for n in $(seq 1 30); do curl -fsS http://localhost:3000/ > /dev/null && break || sleep 1; done
+          node --input-type=module <<'JS' | tee /tmp/rovan-validation/http.log
+          import assert from 'node:assert/strict';
+          const routes = ['/', '/pricing', '/terms', '/privacy', '/support', '/commerce', '/partners', '/billing', '/data-rights', '/result?sample=1', '/watch?sample=1', '/ai/company/aoba-souzoku?sample=1', '/llms.txt', '/ai-index.json', '/api/health', '/ai/company/aoba-souzoku/json?sample=1', '/ai/company/aoba-souzoku/md?sample=1'];
+          for (const route of routes) {
+            const response = await fetch('http://localhost:3000' + route);
+            assert.equal(response.status, 200, route);
+            const text = await response.text();
+            assert.match(text, /Rovan/, route);
+            assert.doesNotMatch(text, /\bAIX\b|aix\.jp|aix-next\.com/, route);
+            console.log('PASS', route);
+          }
+          const data = await (await fetch('http://localhost:3000/ai-index.json')).json();
+          assert.equal(data.name, 'Rovan');
+          assert.equal(data.alternateName, 'ロヴァン');
+          const health = await (await fetch('http://localhost:3000/api/health')).json();
+          assert.equal(health.product, 'Rovan');
+          console.log('All HTTP branding checks passed. No real scan, payment, deletion or email was invoked.');
+          JS
+      - name: Capture desktop and mobile rendering
+        if: matrix.variant == 'feature'
+        run: |
+          npm install --prefix /tmp/rovan-browser --no-package-lock agent-browser
+          /tmp/rovan-browser/node_modules/.bin/agent-browser install --with-deps
+          AB=/tmp/rovan-browser/node_modules/.bin/agent-browser
+          "$AB" open http://localhost:3000
+          "$AB" wait --load networkidle
+          "$AB" snapshot -i > /tmp/rovan-validation/browser.txt
+          "$AB" screenshot /tmp/rovan-validation/desktop.png
+          "$AB" set viewport 390 844
+          "$AB" screenshot /tmp/rovan-validation/mobile.png
+          "$AB" close
+      - name: Commit verified changes to isolated review branch only
+        env:
+          CANDIDATE: ${{ matrix.candidate }}
+        run: |
+          git diff --check
+          git config user.name "Rovan Migration"
+          git config user.email "actions@github.com"
+          git add .env.example AGENTS.md PROJECT_RULES.md README.md app components docs lib package.json package-lock.json public tests .github/workflows
+          git diff --cached --stat | tee /tmp/rovan-validation/diff-stat.txt
+          git diff --cached > /tmp/rovan-validation/rename.patch
+          git commit -m "Rename service to Rovan (ロヴァン), preserve data contracts and verify branding"
+          git rev-parse HEAD | tee /tmp/rovan-validation/commit.txt
+          git push origin "HEAD:refs/heads/$CANDIDATE"
+          git archive --format=zip HEAD > /tmp/rovan-validation/after.zip
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rovan-baseline-validation
-          path: /tmp/rovan-audit/*.log
-          retention-days: 3
+          name: rovan-validation-${{ matrix.variant }}
+          path: /tmp/rovan-validation
+          retention-days: 7
