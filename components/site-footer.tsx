@@ -29,9 +29,12 @@ export function SiteFooter() {
           <span>© 2026 Rovan</span>
         </div>
       </div>
-      <div className="shell" style={{ borderTop: "1px solid var(--line, #e2e8f0)", paddingTop: "16px", marginTop: "24px" }}>
+      <div className="shell" style={{ borderTop: "1px solid var(--line, #e2e8f0)", paddingTop: "16px", marginTop: "24px", display: "flex", flexDirection: "column", gap: "6px" }}>
         <p style={{ fontSize: "0.75rem", color: "var(--muted, #64748b)", lineHeight: 1.6, margin: 0 }}>
           ※ ChatGPTはOpenAI OpCo, LLC、GeminiはGoogle LLC、PerplexityはPerplexity AI, Inc.、ClaudeはAnthropic PBCの商標または登録商標です。当サービスは各社との提携、公認、推奨関係を示すものではありません。
+        </p>
+        <p style={{ fontSize: "0.75rem", color: "var(--muted, #64748b)", lineHeight: 1.6, margin: 0 }}>
+          ※ 本サービスは、生成AIの探索ロボットが参照しやすい公開仕様データおよび客観的分析を提供するものであり、外部AIにおける特定の回答結果や推薦順位を永続的または絶対的に保証するものではありません。
         </p>
       </div>
     </footer>

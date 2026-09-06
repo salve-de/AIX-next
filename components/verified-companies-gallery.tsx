@@ -43,7 +43,7 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     industry: "相続・遺産分割・事業承継",
     featureNote: "週次自動見守り運用",
     beforeProblem: "親身な個別伴走を求める相談者が、AIのアルゴリズムによって大手全国チェーンへ送客されていた。",
-    afterSolution: "「親身な個別伴走・複雑案件の円満調停」がAI公式推薦データとなり、定型的な大手チェーンを避けたい相談者を推薦獲得。",
+    afterSolution: "「親身な個別伴走・複雑案件の円満調停」がAI公式推薦データとなり、定型的な大手チェーンを避けたい相談者の推薦候補として選定。",
     registeredSpecs: "初回対面相談無料 / 専任担当一貫対応 / 事前面談見積",
     href: "/ai/company/aoba-souzoku?sample=1",
   },

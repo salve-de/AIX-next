@@ -41,14 +41,14 @@ export function HeroChatDiagnosticCard() {
           </div>
         </div>
 
-        {/* 右：【AFTER】公式データ配備後（御社を名指し推薦） */}
+        {/* 右：【AFTER】公式データ配備後（御社が推薦候補に浮上） */}
         <div className="split-card card-after">
           <div className="split-card-header header-after">
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <span className="split-status-badge tag-won">公式データ配備後</span>
               <span className="after-arrow-indicator" aria-hidden="true">➔</span>
             </div>
-            <span className="split-outcome-label outcome-won">御社を名指し推薦</span>
+            <span className="split-outcome-label outcome-won">御社が推薦候補に浮上</span>
           </div>
           <div className="split-card-body">
             <div className="ai-speaker-bar">
@@ -59,7 +59,7 @@ export function HeroChatDiagnosticCard() {
               「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
             </p>
             <div className="split-cause-box cause-won">
-              <strong>【結果】</strong> AIが御社の公式強みデータを直接参照し、ぴったり合う推薦先として名指しで送客されます。
+              <strong>【結果】</strong> AIが御社の公式強みデータを直接参照し、相談内容に合致する推薦候補として御社が提示されるようになります。
             </div>
           </div>
         </div>

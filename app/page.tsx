@@ -85,7 +85,7 @@ export default function HomePage() {
           <h2>お客さんがAIに相談した時、<br />回答はどう変わるのか？</h2>
           <p>
             ChatGPTやGeminiなど主要AIで、お客さんが相談した時の実際の回答を比較。<br />
-            AI向けデータがない状態では知名度の高い大手が優先され、公式データを配備すると御社が名指しで推薦されます。
+            AI向けデータがない状態では知名度の高い大手が優先されますが、公式データを配備することで、御社の強みに合致した有力候補としてAIに認識・提案されるようになります。
           </p>
         </div>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
@@ -107,7 +107,7 @@ export default function HomePage() {
           <h2>社名を入力するだけで、<br />御社に起きる「3つの変化」</h2>
           <p>
             ホームページの改修も、専門知識も一切不要。<br />
-            社名を入れた瞬間から、AIに選ばれる会社へと自動で切り替わります。
+            社名を入れた瞬間から、AIが御社を正しく推薦できる環境へと自動で切り替わります。
           </p>
         </div>
 
@@ -198,13 +198,13 @@ export default function HomePage() {
               <span style={{ fontSize: "0.72rem", color: "#38bdf8", fontWeight: 600 }}>最終ゴール</span>
             </div>
             <strong style={{ fontSize: "1.02rem", color: "#ffffff", lineHeight: 1.4, marginBottom: "8px" }}>
-              明日から「AIが御社を名指し推薦」
+              明日から「AI推薦の有力候補」へ堂々浮上
             </strong>
             <p style={{ fontSize: "0.82rem", color: "#cbd5e1", lineHeight: 1.6, margin: "0 0 14px" }}>
-              お客さんがAIに相談した際、大手を押しのけて御社が名指しで案内され始めます。
+              お客さんがAIに相談した際、大手に埋もれることなく、御社ならではの強みに基づいて推薦候補として提示される体制が整います。
             </p>
             <div style={{ marginTop: "auto", background: "#1e293b", border: "1px solid #334155", padding: "8px 10px", borderRadius: "4px", fontSize: "0.74rem", color: "#38bdf8", fontWeight: 700 }}>
-              得られる成果：大手に奪われていた推薦客を奪還
+              得られる成果：大手に独占されていた推薦枠へ堂々参入
             </div>
           </div>
         </div>
@@ -279,7 +279,7 @@ export default function HomePage() {
                   AIが御社の強みを正しく理解し、推薦候補として認識するデータを配備
                 </h4>
                 <p style={{ margin: "0 0 16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.7 }}>
-                  御社ならではの「本当の強み（例：親身な個別対応、1個からの特急試作など）」を、AIが一番読みやすい形式でネット上に自動公開。今のホームページはいじらず、明日からAIがお客さんに御社をおすすめし始める状態を作ります。
+                  御社ならではの「本当の強み（例：親身な個別対応、1個からの特急試作など）」を、AIが一番読みやすい形式でネット上に自動公開。今のホームページはいじらず、明日からAIがお客さんに御社を自信を持っておすすめできる基盤を確立します。
                 </p>
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
                   <Link
@@ -334,6 +334,11 @@ export default function HomePage() {
             </div>
           </figure>
         </div>
+
+        {/* 法的免責・客観性保証の注記 */}
+        <p style={{ textAlign: "center", fontSize: "0.72rem", color: "#64748b", margin: "0 auto", maxWidth: "780px", lineHeight: 1.6 }}>
+          ※ 各AIによる推薦・回答内容は利用者の質問や外部各社のアルゴリズムにより動的に生成されます。本システムはAI探索ロボットが御社を正しく選定できる客観的データ基盤を構築するものであり、特定の回答順位や成果を保証するものではありません。
+        </p>
       </section>
 
       {/* ================================================================= */}
