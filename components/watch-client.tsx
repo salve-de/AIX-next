@@ -204,21 +204,27 @@ export function WatchClient() {
   return (
     <main className="watch-page">
       <SiteHeader compact />
-      
-      {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
-      <div className="system-status-ribbon" style={{ background: "#f8fafc", color: "#0f172a", padding: "10px 0", borderBottom: "1px solid #e2e8f0" }}>
-        <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
-              画面種別：週次見守り 管理画面
+
+      {/* 画面現在地（知的極細サブバー） */}
+      <div className="report-subbar" style={{ background: "#ffffff", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "8px 0", fontSize: "0.78rem" }}>
+        <div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
+            <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
+            <span>/</span>
+            <strong style={{ color: "var(--navy, #0f172a)", fontWeight: 700 }}>週次見守り 管理画面</strong>
+            <span>/</span>
+            <span style={{ color: "var(--text-secondary, #475569)", background: "var(--bg-surface, #f1f5f9)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.74rem" }}>
+              {watch.latest.discovery.brandName}
             </span>
-            <strong style={{ fontSize: "0.85rem", color: "#0f172a" }}>
-              {watch.latest.discovery.brandName} の推薦獲得推移 ＆ 競合モニタリング
-            </strong>
+            {sample ? (
+              <span style={{ background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.7rem", fontWeight: 600 }}>
+                リアルモック
+              </span>
+            ) : null}
           </div>
-          <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
-            {sample ? "※ リアルモック画面（推移データを体験できます）" : watch.paid ? "有料契約中" : "14日間無料トライアル中"}
-          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
+            <span>{sample ? "※ 推移体験用サンプル" : watch.paid ? "有料契約中" : "14日間無料トライアル中"}</span>
+          </div>
         </div>
       </div>
 

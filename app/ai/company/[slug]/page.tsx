@@ -221,71 +221,103 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
       </div>
     </header>
 
-    {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
-    <div className="system-status-ribbon" style={{ background: "#f8fafc", color: "#0f172a", padding: "10px 0", borderBottom: "1px solid #e2e8f0" }}>
-      <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "3px" }}>
-            画面種別：AI向け公開情報参照インデックス（客観整理データ）
+    {/* 極細パンくずサブバー */}
+    <div style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "10px 0" }}>
+      <div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.8rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
+          <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
+          <span>/</span>
+          <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>AI公開情報参照インデックス</span>
+          <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+            {profile.brandName}
           </span>
-          <strong style={{ fontSize: "0.85rem", color: "#0f172a" }}>
-            {profile.brandName} の公開情報参照データ（ChatGPT・Perplexity等のAIクローラー専用）
-          </strong>
         </div>
-        <span style={{ fontSize: "0.75rem", color: "#64748b" }}>
-          ※ 公式サイトの公開事実に基づき、AI探索ロボット向けに客観整理した参照データです
+        <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
+          Schema.org 構造化データ準拠 · AI探索ロボット用
         </span>
       </div>
     </div>
 
-    {/* 公開台帳ステータスバー */}
-    <div className="system-status-ribbon">
-      <div className="shell ribbon-content">
-        <div className="ribbon-col"><span>インデックス番号</span><strong>{knowledge.registryId}</strong></div>
-        <div className="ribbon-col"><span>公開規格</span><strong>Schema.org 構造化データ</strong></div>
-        <div className="ribbon-col"><span>情報区分</span><strong className="text-green">公開情報照合済（客観事実）</strong></div>
-        <div className="ribbon-col"><span>最終更新日</span><strong>{dateLabel(profile.updatedAt)}</strong></div>
-      </div>
-    </div>
-
     {/* ヒーローヘッダー */}
-    <section className="public-company-hero">
+    <section className="public-company-hero" style={{ padding: "36px 0 32px" }}>
       <div className="shell">
-        <div className="public-hero-meta-bar">
-          <span className="hero-status-tag">公開情報照合済</span>
-          <span className="hero-sync-date">最終更新：{dateLabel(profile.updatedAt)}</span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", margin: "16px 0 12px" }}>
-          <h1 style={{ margin: 0 }}>{profile.brandName}</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 8px", borderRadius: "4px" }}>
+                ● 公開情報照合済
+              </span>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
+                最終更新：{dateLabel(profile.updatedAt)}
+              </span>
+            </div>
+            <h1 style={{ margin: "0 0 6px", fontSize: "clamp(1.75rem, 3.2vw, 2.4rem)", fontWeight: 800, color: "var(--navy, #0f172a)", letterSpacing: "-0.025em" }}>
+              {profile.brandName}
+            </h1>
+            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
+              {profile.summary || `${profile.brandName}の公開情報参照インデックスです。客観的事実および公式提供条件を正確に整理・掲載しています。`}
+            </p>
+          </div>
           {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
             <a
               href={profile.targetUrl}
               target="_blank"
               rel="noreferrer"
               className="button button-secondary"
-              style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none" }}
+              style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", fontSize: "0.8rem", padding: "8px 14px", borderRadius: "6px" }}
             >
               公式サイトを開く ↗
             </a>
           ) : null}
         </div>
-        <div className="public-company-url-box" style={{ marginTop: "12px", background: "#f8fafc", border: "1.5px solid #0284c7", borderRadius: "8px", padding: "14px 18px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>生成AI向け構造化インデックス</span>
+
+        {/* 4連メタデータインスペクター */}
+        <div
+          className="shadow-ambient-sm"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gap: "10px",
+            background: "var(--bg-base, #ffffff)",
+            border: "1px solid var(--border-subtle, #e2e8f0)",
+            borderRadius: "8px",
+            padding: "12px 16px",
+            marginBottom: "16px",
+          }}
+        >
+          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>インデックス番号</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>{knowledge.registryId}</strong></div>
+          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>公開規格</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>Schema.org 構造化データ</strong></div>
+          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>情報区分</span><strong style={{ fontSize: "0.82rem", color: "var(--color-success, #059669)" }}>客観事実照合済</strong></div>
+          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>AI直接参照</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>常駐・常時巡回中</strong></div>
+        </div>
+
+        {/* AI巡回エンドポイントカード */}
+        <div
+          className="shadow-ambient-sm"
+          style={{
+            background: "var(--bg-surface, #f8fafc)",
+            border: "1px solid var(--border-subtle, #cbd5e1)",
+            borderRadius: "8px",
+            padding: "14px 18px",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--navy, #0f172a)", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
+              生成AI巡回エンドポイント（JSON-LD）
+            </span>
             {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
-              <span style={{ fontSize: "0.75rem", color: "#64748b" }}>公式サイト：<a href={profile.targetUrl} target="_blank" rel="noreferrer">{decodeURIComponent(profile.targetUrl)}</a></span>
+              <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
+                参照元：<a href={profile.targetUrl} target="_blank" rel="noreferrer" style={{ color: "var(--accent-blue, #0284c7)" }}>{decodeURIComponent(profile.targetUrl)}</a>
+              </span>
             ) : null}
           </div>
-          <p className="public-company-domain" style={{ margin: "0 0 6px", fontSize: "0.95rem", fontWeight: 700, color: "#0f172a" }}>
+          <p style={{ margin: "0 0 6px", fontSize: "0.88rem", fontWeight: 700, color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>
             <code>{`${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
           </p>
-          <small className="direct-domain-note" style={{ fontSize: "0.78rem", color: "#334155", display: "block", lineHeight: 1.55 }}>
-            【AI参照の仕組み】本ページはChatGPT・Gemini・Perplexityなどの主要生成AIが直接巡回し、回答推論の根拠として参照するための客観構造化データ（Schema.org準拠）です。人間向けの一般的なホームページと異なり、AIが誤解なく客観的事実・仕様を認識できる形式で常駐しています。※特定のAIによる推薦結果を保証するものではありません。
+          <small style={{ fontSize: "0.76rem", color: "var(--text-secondary, #475569)", display: "block", lineHeight: 1.55 }}>
+            ※ 本ページは主要AI（ChatGPT・Gemini・Perplexity等）が直接巡回し、回答推論の根拠として参照する国際規格データです。
           </small>
         </div>
-        <p className="public-company-summary" style={{ marginTop: "16px" }}>
-          {profile.summary || `${profile.brandName}の公開情報参照インデックスです。客観的事実および公式提供条件を正確に整理・掲載しています。`}
-        </p>
       </div>
     </section>
 

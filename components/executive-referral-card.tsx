@@ -2,7 +2,7 @@
 
 import { siteUrl } from "@/lib/site";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
 
 type ExecutiveReferralCardProps = {
@@ -13,6 +13,13 @@ type ExecutiveReferralCardProps = {
 export function ExecutiveReferralCard({ brandName, watchToken = "" }: ExecutiveReferralCardProps) {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState(false);
+  const [baseUrl, setBaseUrl] = useState(siteUrl);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setBaseUrl(window.location.origin);
+    }
+  }, []);
 
   // トークンまたは社名から品格ある公認招待コードを自動生成（例: Rovan-7749-VIP）
   const tokenSuffix = watchToken
@@ -28,7 +35,7 @@ ${brandName}の代表です。
 10秒で自社がAIに推薦されているか確認できる無料診断がありますので、御社も一度状況を観測されることをお勧めします。
 
 ▼ Rovan公式 10秒無料診断窓口
-${typeof window !== "undefined" ? window.location.origin : siteUrl}/
+${baseUrl}/
 
 ※もし週次見守りなどの対策を実施される場合は、当社の相互見守りネットワーク公認招待コード【 ${inviteCode} 】をご決済時に入力いただくと、【初月利用料（9,800円）が100%免除（初月無料）】になります。よろしければご活用ください。`;
 

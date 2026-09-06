@@ -106,111 +106,86 @@ export function ResultClient() {
   return <main className="report-page">
     <SiteHeader compact />
 
-    {/* 画面アイデンティティ（誰でも一瞬でわかる看板） */}
-    <div className="system-status-ribbon" style={{ background: "var(--bg-surface, #f8fafc)", color: "var(--text-primary, #0f172a)", padding: "10px 0", borderBottom: "1px solid var(--border-subtle, #e2e8f0)" }}>
-      <div className="shell ribbon-content" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "#ffffff", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "var(--radius-badge, 4px)" }}>
-            画面種別：AI診断レポート
+    {/* 極細スマートサブバー（多重帯を完全統合・ファーストビューを開放） */}
+    <div className="report-subbar" style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "10px 0" }}>
+      <div className="shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", fontSize: "0.8rem" }}>
+        {/* 左：パンくず */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
+          <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
+          <span>/</span>
+          <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>AI診断レポート</span>
+          <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+            {result.discovery.brandName}
           </span>
-          <strong style={{ fontSize: "0.86rem", color: "var(--text-primary, #0f172a)" }}>
-            {result.discovery.brandName} の推薦状況 ＆ AI公式推薦データ配備
-          </strong>
+          {sample ? <span style={{ fontSize: "0.72rem", color: "var(--accent-blue, #0284c7)", background: "#e0f2fe", padding: "1px 6px", borderRadius: "3px", fontWeight: 600 }}>リアルモック</span> : null}
         </div>
-        <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
-          {sample ? "※ リアルモック画面（全ステップをお試しいただけます）" : "診断完了済"}
-        </span>
-      </div>
-    </div>
 
-    {/* 同名店舗・別会社誤爆防止の緊急安全弁（一発やり直しバー） */}
-    <aside aria-label="店舗・対象の確認" style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: "10px 0" }}>
-      <div className="shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", fontSize: "0.8rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#334155" }}>
-          <span style={{ fontWeight: 700, background: "#fef3c7", border: "1px solid #fde68a", color: "#b45309", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem" }}>対象確認</span>
-          <span>同名の別店舗や、意図しない地域・法人が表示されている場合はこちら</span>
-        </div>
-        {!showCorrectionForm ? (
-          <button
-            type="button"
-            onClick={() => setShowCorrectionForm(true)}
-            style={{
-              background: "#ffffff",
-              border: "1px solid #cbd5e1",
-              color: "#0f172a",
-              padding: "5px 12px",
-              borderRadius: "6px",
-              fontSize: "0.76rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)",
-              transition: "all 0.15s ease",
-            }}
-          >
-            別の地域・店舗を指定して再診断する ➔
-          </button>
-        ) : (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (correctionQuery.trim()) {
-                router.push(`/scan?input=${encodeURIComponent(correctionQuery.trim())}`);
-              }
-            }}
-            style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", width: "100%", marginTop: "6px" }}
-          >
-            <input
-              type="text"
-              placeholder="例: 青葉ベーカリー 高崎、山田板金 大田区、または正確なURL"
-              value={correctionQuery}
-              onChange={(e) => setCorrectionQuery(e.target.value)}
-              style={{ flex: "1 1 300px", padding: "8px 12px", fontSize: "0.82rem", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", outline: "none" }}
-              autoFocus
-            />
-            <button
-              type="submit"
-              style={{ background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)", color: "#ffffff", border: "none", padding: "8px 16px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.16)" }}
-            >
-              再診断する
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowCorrectionForm(false)}
-              style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "0.78rem", cursor: "pointer", textDecoration: "underline" }}
-            >
-              キャンセル
-            </button>
-          </form>
-        )}
-      </div>
-    </aside>
-
-    {/* 3ステップ進行バー（迷子防止ステッパー） */}
-    <div className="step-stepper-bar" style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "14px 0" }}>
-      <div className="shell">
-        <nav aria-label="診断と対策の手順" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
-          <a href="#step-1" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#ffffff", border: "1.5px solid #0f172a", transition: "all 0.15s ease" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#0f172a", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>1</span>
-            <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "#0f172a", display: "block" }}>ステップ 1：現状を知る</strong>
-              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>AI診断レポート・客観比較</small>
-            </div>
+        {/* 中央：スリムな3ステップ・ナビゲーション */}
+        <nav aria-label="診断ステップ" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <a href="#step-1" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--navy, #0f172a)", color: "#ffffff", fontSize: "0.74rem", fontWeight: 700 }}>
+            <span>① 現状を知る</span>
           </a>
-          <a href="#step-2" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0", transition: "all 0.15s ease" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#0284c7", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>2</span>
-            <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "#0284c7", display: "block" }}>ステップ 2：武器を配備する</strong>
-              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>AI公式推薦データ（改修ゼロ）</small>
-            </div>
+          <a href="#step-2" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+            <span>② 武器を配備</span>
           </a>
-          <a href="#step-3" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0", transition: "all 0.15s ease" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#64748b", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>3</span>
-            <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "#0f172a", display: "block" }}>ステップ 3：推移を追跡する</strong>
-              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>週次自動見守り ＆ 特別優待</small>
-            </div>
+          <a href="#step-3" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+            <span>③ 推移を追跡</span>
           </a>
         </nav>
+
+        {/* 右：対象店舗の再指定リンク */}
+        <div>
+          {!showCorrectionForm ? (
+            <button
+              type="button"
+              onClick={() => setShowCorrectionForm(true)}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--text-muted, #64748b)",
+                fontSize: "0.76rem",
+                fontWeight: 600,
+                cursor: "pointer",
+                padding: "4px 8px",
+                textDecoration: "underline",
+              }}
+            >
+              ※対象店舗・地域を変更する
+            </button>
+          ) : (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (correctionQuery.trim()) {
+                  router.push(`/scan?input=${encodeURIComponent(correctionQuery.trim())}`);
+                }
+              }}
+              style={{ display: "flex", alignItems: "center", gap: "6px" }}
+            >
+              <input
+                type="text"
+                placeholder="例: 青葉ベーカリー 高崎、URL"
+                value={correctionQuery}
+                onChange={(e) => setCorrectionQuery(e.target.value)}
+                style={{ padding: "4px 8px", fontSize: "0.78rem", border: "1px solid #cbd5e1", borderRadius: "4px", background: "#ffffff", outline: "none" }}
+                autoFocus
+              />
+              <button
+                type="submit"
+                style={{ background: "var(--navy, #0f172a)", color: "#ffffff", border: "none", padding: "4px 10px", borderRadius: "4px", fontSize: "0.76rem", fontWeight: 700, cursor: "pointer" }}
+              >
+                再診断
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowCorrectionForm(false)}
+                style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "0.74rem", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
 
@@ -218,27 +193,52 @@ export function ResultClient() {
     {/* 【ステップ 1：現状を知る（AI診断カルテ）】 */}
     {/* ========================================================= */}
     <div id="step-1">
-      <section className="report-header">
+      <section className="report-header" style={{ padding: "40px 0 36px" }}>
         <div className="shell">
           <div className="report-header-top">
             <div>
-              <span className="step-badge" style={{ marginBottom: "8px", display: "inline-block" }}>【ステップ 1】現状を知る</span>
-              <p className="overline">自社専用 AI診断レポート</p>
-              <h1>{result.discovery.brandName}</h1>
-              <p className="report-host">{host}</p>
+              <p className="overline" style={{ color: "var(--text-muted, #64748b)", fontSize: "0.76rem", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "4px" }}>
+                自社専用 AI診断レポート
+              </p>
+              <h1 style={{ fontSize: "clamp(1.65rem, 2.8vw, 2.2rem)", fontWeight: 800, color: "var(--navy, #0f172a)", margin: "0 0 6px", letterSpacing: "-0.025em" }}>
+                {result.discovery.brandName}
+              </h1>
+              <p className="report-host" style={{ margin: 0, fontSize: "0.82rem", color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)" }}>
+                {host}
+              </p>
             </div>
-            <span className={sample ? "sample-badge" : "report-date"}>{sample ? "動的リアルモック" : formatDate(result.measuredAt)}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <span className="report-date" style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 10px", borderRadius: "4px" }}>
+                {sample ? "サンプル検証レポート" : `実測日: ${formatDate(result.measuredAt)}`}
+              </span>
+            </div>
           </div>
-          <p className="report-headline">
-            {hasMeasurement ? <>比較した<strong>{result.panel.promptCount}問</strong>のうち、<br /><span>{result.lostPrompts.length}問でライバルが先に選ばれました。</span></> : <>商品・市場は確認できました。<br /><span>AI回答の測定は未完了です。</span></>}
-          </p>
-          <div className="report-meta">
-            <span>{result.discovery.market}</span>
-            <span>主要なAIで確認</span>
-            <span>{result.panel.promptCount}問の比較質問を調査</span>
+
+          <div className="report-headline" style={{ margin: "24px 0 18px", fontSize: "clamp(1.25rem, 2.2vw, 1.65rem)", fontWeight: 700, color: "var(--navy, #0f172a)", lineHeight: 1.4, letterSpacing: "-0.02em" }}>
+            {hasMeasurement ? (
+              <>
+                比較した<strong>{result.panel.promptCount}問</strong>中、
+                <span style={{ color: "var(--navy, #0f172a)" }}>
+                  <strong>{result.lostPrompts.length}問</strong>でライバルが先に選ばれました。
+                </span>
+              </>
+            ) : (
+              <>
+                商品・市場は確認できました。AI回答の測定は未完了です。
+              </>
+            )}
           </div>
-          <ReportActions result={result} sample={sample} />
-          {sample ? <p className="sample-note">画面の使い方を見るためのリアルモックです。このままステップ2の看板配備もお試しいただけます。</p> : null}
+
+          <div className="report-meta" style={{ display: "flex", flexWrap: "wrap", gap: "12px 18px", color: "var(--text-secondary, #475569)", fontSize: "0.78rem" }}>
+            <span>対象市場: {result.discovery.market}</span>
+            <span>主要AI（ChatGPT / Perplexity / Gemini）実測</span>
+            <span>比較質問: 全{result.panel.promptCount}問</span>
+          </div>
+
+          <div style={{ marginTop: "18px" }}>
+            <ReportActions result={result} sample={sample} />
+          </div>
+
           {!sample ? displayWarnings.map((warning) => <p className="report-warning" key={warning}>{warning}</p>) : null}
         </div>
       </section>
