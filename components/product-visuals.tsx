@@ -18,7 +18,7 @@ export function HeroChatDiagnosticCard() {
         </p>
       </div>
 
-      {/* 左右対比グリッド（PC: 2カラム横並び、スマホ: 縦並び） */}
+      {/* 左右対比グリッド（PC: 2カラム+中央矢印、スマホ: 縦並び+下向き矢印） */}
       <div className="split-comparison-grid">
         
         {/* 左：【BEFORE】対策前のいま（競合・大手に顧客流出） */}
@@ -39,6 +39,21 @@ export function HeroChatDiagnosticCard() {
               <strong>【現実】</strong> AI向けデータがないため、AIは知名度や広告量の多い大手を機械的に提案。御社は候補から除外されます。
             </div>
           </div>
+        </div>
+
+        {/* 中央コネクター：変化を示すドラマチックな矢印 */}
+        <div className="split-connector" aria-label="公式データ配備による変化">
+          <div className="connector-circle">
+            {/* PC用：右向き矢印 */}
+            <svg className="connector-arrow-pc" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" />
+            </svg>
+            {/* スマホ用：下向き矢印 */}
+            <svg className="connector-arrow-mobile" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 5v14m-6-6 6 6 6-6" />
+            </svg>
+          </div>
+          <span className="connector-label">公式データ配備で劇的転換</span>
         </div>
 
         {/* 右：【AFTER】公式データ配備後（御社が名指し指名推薦） */}
