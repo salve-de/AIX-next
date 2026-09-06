@@ -1,5 +1,20 @@
 # Rovan（ロヴァン）
 
+## 2026-09-06 最新の戦略・実装引き継ぎ
+
+**必須作業ゼロ、任意の方針選択、競合の弱点と自社の強み、実際の対応と結果の可視化。** 今回の会話で採用された方針と実装順を保存しました。
+
+- **[実装AI向け入口・読む順番](docs/ROVAN_HANDOFF_2026-09-06.md)**
+- [ユーザー発言・決定・理由・過去案の訂正](docs/ROVAN_CONVERSATION_DECISIONS_2026-09-06.md)
+- [戦略・実装指示書 v1.0 原本：34タスク、依存、受入条件、テスト](docs/ROVAN_STRATEGY_IMPLEMENTATION_V1.md)
+- [実装補足・完了判定](docs/ROVAN_EXECUTION_HANDOFF_2026-09-06.md)
+- [研究・出典と適用限界](docs/ROVAN_RESEARCH_REGISTER_2026-09-06.md)
+- [機械可読のタスク状態](docs/ROVAN_IMPLEMENTATION_STATE_2026-09-06.json)
+
+以下の説明は既存の実装・計画の履歴を含みます。新しい製品方針と矛盾する部分は上記引き継ぎを優先し、実装済みかはコードとテストから確認してください。文書保存は、機能実装・本番公開・料金変更の完了を意味しません。既存の [実装PR #3](https://github.com/salve-de/AIX-next/pull/3) と [Issue #4](https://github.com/salve-de/AIX-next/issues/4) も参照します。
+
+---
+
 正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。名称と移行時の互換性は [改名記録](docs/ROVAN_BRAND_MIGRATION.md) を参照してください。
 
 > **生成AI時代の推薦獲得・競合分析システム（ChatGPT / Perplexity / Gemini 対策）**

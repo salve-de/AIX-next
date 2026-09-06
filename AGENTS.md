@@ -1,3 +1,11 @@
+# ROVAN: latest owner decisions and implementation handoff
+
+Before product changes, read `docs/ROVAN_HANDOFF_2026-09-06.md`, then its linked conversation decisions, original 34-task implementation plan, execution supplement, and task state.
+
+Current product policy: **zero mandatory customer work, optional meaningful direction, real work and outcomes made visible, minimal routine owner operations**. Optional direction must change prioritization without changing historical fixed measurements. Do not interpret older Zero Effort text as banning optional choices, or generated drafts as completed external changes.
+
+The handoff's dated product decisions supersede conflicting older product plans, not unrelated security, repository, or framework rules. Prices, customer segments, workload limits, and retention effects are hypotheses. The documentation PR does not implement runtime features or authorize an automatic production deployment. Read the current code and verify completion instead of trusting old Issue checkboxes.
+
 <!-- BEGIN:nextjs-agent-rules -->
 
 # This is NOT the Next.js you know
