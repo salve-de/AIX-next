@@ -26,7 +26,7 @@ export default function HomePage() {
                 <em>あなたの会社はスルーされ、大手が紹介されています。</em>
               </h1>
               <p className="landing-hero-lead">
-                今のホームページはそのままでOK。<br />
+                今のホームページの改修も、新たな開設も不要。<br />
                 社名を入れるだけで、AI専用の推薦データを即日配備します。
               </p>
             </div>
@@ -48,7 +48,7 @@ export default function HomePage() {
                 <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M3 8.5L6.5 12L13 4" />
                 </svg>
-                <span>今のHPはそのままでOK</span>
+                <span>HPの改修・開設も不要</span>
               </div>
               <div className="trust-badge">
                 <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -151,7 +151,7 @@ export default function HomePage() {
                 </strong>
               </div>
               <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-                ※ 今のホームページはそのままでOK。1文字もいじる必要はありません
+                ※ ホームページの改修・新たな開設は不要。1文字も作業する必要はありません
               </span>
             </div>
 
@@ -310,7 +310,7 @@ export default function HomePage() {
               <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
                 <li>買い手がAIにする12の質問での実況レポート</li>
                 <li>自社専用のAI公式推薦データ（自動下書き）</li>
-                <li>今のホームページはそのままでOK（改修不要）</li>
+                <li>ホームページの改修・新たな開設も不要</li>
                 <li>クレジットカード登録不要・自動課金なし</li>
               </ul>
               <a

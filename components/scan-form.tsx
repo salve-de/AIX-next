@@ -59,7 +59,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
               autoCapitalize="none"
               autoCorrect="off"
               inputMode="text"
-              placeholder="例: 山田板金 大田区、HIKAKIN、青葉カフェ、または https://yamada-bankin.jp"
+              placeholder="例: 山田板金 大田区、青葉カフェ 高崎、または https://yamada-bankin.jp"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               autoFocus
@@ -129,7 +129,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
             autoCapitalize="none"
             autoCorrect="off"
             inputMode="text"
-            placeholder="会社名・店舗名 ＋ 地域（例: 青葉ベーカリー 高崎、山田板金 大田区、HIKAKIN）またはURL"
+            placeholder="会社名・店舗名 ＋ 地域（例: 青葉ベーカリー 高崎、山田板金 大田区）またはURL"
             value={input}
             onChange={(event) => setInput(event.target.value)}
           />

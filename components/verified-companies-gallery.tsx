@@ -67,7 +67,7 @@ export function VerifiedCompaniesGallery() {
         <div className="section-head-center">
           <span className="pill-badge">業種別の実例シミュレーション</span>
           <h2>町工場も、カフェも、士業も、農園も。<br />AIが客に「ここがおすすめ」と言い始める実例</h2>
-          <p>今のホームページはそのままでOK。AI向け公式推薦データを配備することで、ChatGPTの回答が大手優先から自社おすすめへどう変化するかの実例見本です。</p>
+          <p>ホームページの改修も、新たな開設も不要。AI向け公式推薦データを配備することで、ChatGPTの回答が大手優先から自社おすすめへどう変化するかの実例見本です。</p>
         </div>
 
         <div className="verified-cards-grid">
