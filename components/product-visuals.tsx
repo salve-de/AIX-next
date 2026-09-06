@@ -18,14 +18,14 @@ export function HeroChatDiagnosticCard() {
         </p>
       </div>
 
-      {/* 左右対比グリッド（PC: 2カラム+中央矢印、スマホ: 縦並び+下向き矢印） */}
+      {/* 左右対比グリッド（隙間なくピタッと並べて一瞬で比較可能に） */}
       <div className="split-comparison-grid">
         
-        {/* 左：【BEFORE】対策前（競合・大手に顧客流出） */}
+        {/* 左：【BEFORE】対策前（他社のみ推薦・自社除外） */}
         <div className="split-card card-before">
           <div className="split-card-header header-before">
-            <div className="split-status-badge tag-lost">未対策の場合（現状）</div>
-            <span className="split-outcome-label outcome-lost">他社のみが推薦される</span>
+            <span className="split-status-badge tag-lost">対策前（現状）</span>
+            <span className="split-outcome-label outcome-lost">他社のみ推薦（自社除外）</span>
           </div>
           <div className="split-card-body">
             <div className="ai-speaker-bar">
@@ -36,30 +36,18 @@ export function HeroChatDiagnosticCard() {
               「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
             </p>
             <div className="split-cause-box cause-lost">
-              <strong>【現状】</strong> AIが参照できる自社データがないため、知名度や広告量の多い大手が優先して提示されます。
+              <strong>【結果】</strong> 自社データがないため、AIは知名度のある大手を推薦。御社は候補から除外されます。
             </div>
           </div>
         </div>
 
-        {/* 中央コネクター：変化を示すドラマチックな矢印 */}
-        <div className="split-connector" aria-label="公式データ配備による変化">
-          <div className="connector-circle">
-            {/* PC用：右向き矢印 */}
-            <svg className="connector-arrow-pc" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M5 12h14m-6-6 6 6-6 6" />
-            </svg>
-            {/* スマホ用：下向き矢印 */}
-            <svg className="connector-arrow-mobile" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 5v14m-6-6 6 6 6-6" />
-            </svg>
-          </div>
-          <span className="connector-label">自社データの配備で推薦を獲得</span>
-        </div>
-
-        {/* 右：【AFTER】公式データ配備後（御社が名指し指名推薦） */}
+        {/* 右：【AFTER】公式データ配備後（御社を名指し推薦） */}
         <div className="split-card card-after">
           <div className="split-card-header header-after">
-            <div className="split-status-badge tag-won">公式データ配備後</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span className="split-status-badge tag-won">公式データ配備後</span>
+              <span className="after-arrow-indicator" aria-hidden="true">➔</span>
+            </div>
             <span className="split-outcome-label outcome-won">御社を名指し推薦</span>
           </div>
           <div className="split-card-body">
@@ -71,7 +59,7 @@ export function HeroChatDiagnosticCard() {
               「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
             </p>
             <div className="split-cause-box cause-won">
-              <strong>【導入後】</strong> AIが御社の公式強みデータを直接参照できるため、相談内容に合致する推薦先として御社が名指しで案内されます。
+              <strong>【結果】</strong> AIが御社の公式強みデータを直接参照し、ぴったり合う推薦先として名指しで送客されます。
             </div>
           </div>
         </div>

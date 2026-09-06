@@ -38,7 +38,7 @@ export function GoogleDeclineProblemSection() {
               fontFamily: "var(--font-mono, monospace)",
             }}
           >
-            なぜ今、起きているのか？
+            従来のホームページが効かなくなった理由
           </span>
           <h2
             style={{
@@ -50,140 +50,137 @@ export function GoogleDeclineProblemSection() {
               margin: "0 0 14px",
             }}
           >
-            「Google検索」が終わり、顧客は「AIへの直接相談」へ移行しています
+            「Google検索」の利用が減り、顧客は「AIへの直接相談」へ移行しています
           </h2>
           <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.75, margin: 0 }}>
-            お客さんはもう広告だらけの検索結果を見比べません。ChatGPTなどのAIに「おすすめ」を直接聞く時代です。<br />
-            従来のホームページがあるのに客足が遠のく、3つの見えない理由をご確認ください。
+            広告だらけの検索結果を見比べるのをやめ、ChatGPTなどのAIに「どこが一番いい？」と聞く客が急増。<br />
+            自社のホームページがあるのに客足が遠のく、3つの見えない理由です。
           </p>
         </div>
 
-        {/* 3大危機のカードグリッド */}
+        {/* 3大危機のカードグリッド（文字数を削ぎ落とし、0.5秒で刺さるフォーマット） */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
             gap: "18px",
-            marginBottom: "32px",
+            marginBottom: "16px",
           }}
         >
-          {/* 課題 01 */}
+          {/* 理由 01 */}
           <div
             style={{
               background: "#f8fafc",
               border: "1px solid #e2e8f0",
               borderRadius: "6px",
-              padding: "24px 22px",
+              padding: "22px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
+              gap: "10px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
               <span
                 style={{
                   fontFamily: "var(--font-mono, monospace)",
-                  fontSize: "0.75rem",
+                  fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
                   background: "#e2e8f0",
-                  padding: "2px 8px",
+                  padding: "2px 7px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                課題 01
+                理由 01
               </span>
-              <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                Google検索の広告増加と、顧客のAI直接相談への移行
+              <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
+                検索が広告だらけになり、客がAIへ逃げた
               </strong>
             </div>
-            <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              従来のGoogle検索は、広告や比較サイトが多くを占めるようになりました。<br />
-              「どれが本当のおすすめかわからない」と感じた買い手は、<strong>公平で忖度のない答えを一瞬で出してくれるChatGPTなどのAIへ直接相談</strong>するようになっています。
+            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+              広告や比較サイトにうんざりした客は、忖度のないAIに直接おすすめを聞くようになりました。
             </p>
-            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
-              <strong>背景:</strong> 広告が並ぶ検索結果を見比べず、信頼できる相談窓口（AI）に「どこが一番いい？」と直接聞く購買行動への変化です。
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+              <strong>損失:</strong> 従来の検索経由の問い合わせが、静かに激減しています。
             </div>
           </div>
 
-          {/* 課題 02 */}
+          {/* 理由 02 */}
           <div
             style={{
               background: "#f8fafc",
               border: "1px solid #e2e8f0",
               borderRadius: "6px",
-              padding: "24px 22px",
+              padding: "22px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
+              gap: "10px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
               <span
                 style={{
                   fontFamily: "var(--font-mono, monospace)",
-                  fontSize: "0.75rem",
+                  fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
                   background: "#e2e8f0",
-                  padding: "2px 8px",
+                  padding: "2px 7px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                課題 02
+                理由 02
               </span>
-              <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                デザイン重視のWebサイトと、AIの読解の壁
+              <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
+                綺麗なホームページほど、AIには読めない
               </strong>
             </div>
-            <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              写真やデザイン中心のWebサイトは、人間には美しく見えても、テキストを解析するAI探索ロボットには正しく伝わらないことがあります。<br />
-              <strong>AIが理解できる公式データとして整備されていない場合、優れた実績や強みがあってもAIの推薦候補から漏れてしまいます。</strong>
+            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+              写真やデザイン中心のサイトは、文章を解析するAIロボットには強みが1文字も伝わりません。
             </p>
-            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
-              <strong>背景:</strong> 人間向けの綺麗なパンフレットを置くだけでは、機械の読み取り口（AIロボット）には認識されないのと同じ状態です。
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+              <strong>損失:</strong> 優れた実績があっても、AIからは「存在しない」扱いになります。
             </div>
           </div>
 
-          {/* 課題 03 */}
+          {/* 理由 03 */}
           <div
             style={{
               background: "#f8fafc",
               border: "1px solid #e2e8f0",
               borderRadius: "6px",
-              padding: "24px 22px",
+              padding: "22px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
+              gap: "10px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
               <span
                 style={{
                   fontFamily: "var(--font-mono, monospace)",
-                  fontSize: "0.75rem",
+                  fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
                   background: "#e2e8f0",
-                  padding: "2px 8px",
+                  padding: "2px 7px",
                   borderRadius: "3px",
                   letterSpacing: "0.05em",
                 }}
               >
-                課題 03
+                理由 03
               </span>
-              <strong style={{ fontSize: "1.0rem", color: "#0f172a", lineHeight: 1.4 }}>
-                気付かないうちに、大手チェーンへ比較が集中
+              <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
+                気付かないうちに、客が大手チェーンへ全員流出
               </strong>
             </div>
-            <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              顧客がAIに「近くでおすすめの会社は？」「親身に相談できるところは？」と尋ねた際、AIはWeb上の露出量が多い大手チェーンを優先して提示します。<br />
-              <strong>自社のWebサイトを見てもらう前の段階で大手に誘導されてしまう</strong>ため、機会損失に気付くことができません。
+            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+              AIは知名度のある大手ばかりを紹介するため、自社は比較される前に除外されます。
             </p>
-            <div style={{ marginTop: "auto", background: "#ffffff", border: "1px solid #e2e8f0", padding: "10px 12px", borderRadius: "4px", fontSize: "0.78rem", color: "#475569", lineHeight: 1.6 }}>
-              <strong>背景:</strong> 自社の店舗を見比べてもらう前に、大手チェーンの相談窓口へ顧客が直接案内されているような状態です。
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+              <strong>損失:</strong> 問い合わせが来ないため、客を奪われた事実にすら気付けません。
             </div>
           </div>
         </div>
