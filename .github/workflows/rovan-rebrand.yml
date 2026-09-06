@@ -1,0 +1,78 @@
+name: Rovan rename audit
+
+on:
+  push:
+    branches: [chore/rovan-rebrand]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rovan-rename-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Inventory tracked branding and preserve source snapshot
+        run: |
+          mkdir -p /tmp/rovan-audit
+          git archive --format=zip HEAD > /tmp/rovan-audit/source.zip
+          python3 - <<'PY'
+          import pathlib, re, subprocess
+          pattern = re.compile(r'aix|エーアイエックス|エーアイ・エックス', re.I)
+          matches = []
+          for path in subprocess.check_output(['git', 'ls-files', '-z']).decode().split('\0'):
+              if not path:
+                  continue
+              try:
+                  text = pathlib.Path(path).read_text()
+              except (UnicodeError, OSError):
+                  continue
+              for n, line in enumerate(text.splitlines(), 1):
+                  if pattern.search(line):
+                      matches.append(f'{path}:{n}: {line}')
+          pathlib.Path('/tmp/rovan-audit/branding.txt').write_text('\n'.join(matches) + '\n')
+          print(f'Legacy branding lines: {len(matches)}')
+          for line in matches:
+              print(line[:600])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rovan-source-audit
+          path: /tmp/rovan-audit
+          retention-days: 3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install exact locked dependencies
+        run: npm ci
+      - name: Read installed framework metadata conventions
+        run: |
+          find node_modules/next/dist/docs -iname '*metadata*' -o -iname '*opengraph*' 2>/dev/null | head -20 || true
+      - name: Baseline quality checks
+        run: |
+          set +e
+          failed=0
+          for check in lint test typecheck build; do
+            echo "## $check"
+            npm run "$check" 2>&1 | tee "/tmp/rovan-audit/$check.log"
+            status=${PIPESTATUS[0]}
+            echo "$check=$status" | tee -a /tmp/rovan-audit/status.txt
+            if [ "$status" -ne 0 ]; then failed=1; fi
+          done
+          exit "$failed"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rovan-baseline-validation
+          path: /tmp/rovan-audit/*.log
+          retention-days: 3
