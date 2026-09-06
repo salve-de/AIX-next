@@ -21,6 +21,47 @@
   --orange-soft: #fff1e9;
   --danger: #bd5a2f;
   --shadow: 0 22px 60px rgba(25, 45, 57, .12);
+
+  /* 8pt スペーシングシステム */
+  --sp-1: 8px;
+  --sp-2: 16px;
+  --sp-3: 24px;
+  --sp-4: 32px;
+  --sp-6: 48px;
+  --sp-8: 64px;
+  --sp-12: 96px;
+
+  /* モジュラースケール・タイポグラフィ（音階比率） */
+  --text-display: clamp(26px, 3.8vw, 36px);
+  --text-h2: clamp(20px, 2.8vw, 26px);
+  --text-h3: 18px;
+  --text-body: 15px;
+  --text-caption: 12px;
+
+  /* 行間 */
+  --lh-tight: 1.35;
+  --lh-snug: 1.45;
+  --lh-relaxed: 1.75;
+
+  /* セマンティックカラー（60-30-10則） */
+  --bg-base: #ffffff;
+  --bg-surface: #f8fafc;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-subtle: #e2e8f0;
+  
+  --color-brand: #0f172a;
+  --color-accent-blue: #0284c7;
+  --color-danger: #dc2626;
+  --color-danger-bg: #fef2f2;
+  --color-success: #059669;
+  --color-success-bg: #f0fdf4;
+
+  /* 角丸の統一（アフォーダンスの統制） */
+  --radius-card: 8px;
+  --radius-btn: 6px;
+  --radius-badge: 4px;
 }
 
 * { box-sizing: border-box; }

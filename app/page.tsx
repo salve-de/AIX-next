@@ -160,19 +160,19 @@ export default function HomePage() {
         {/* 明朗価格アンカーカード（専属営業マン代わりの圧倒的コストパフォーマンス） */}
         <div
           style={{
-            background: "#ffffff",
-            border: "1px solid #cbd5e1",
-            borderRadius: "8px",
-            padding: "clamp(24px, 3.5vw, 36px)",
-            boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
+            background: "var(--bg-base, #ffffff)",
+            border: "1px solid var(--border-subtle, #e2e8f0)",
+            borderRadius: "var(--radius-card, 8px)",
+            padding: "clamp(24px, 4vw, 40px)",
+            boxShadow: "0 2px 12px rgba(15, 23, 42, 0.04)",
           }}
         >
-          <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 28px" }}>
+          <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 32px" }}>
             <span className="pill-badge">明朗・適正な価格設定</span>
-            <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "#0f172a", margin: "0 0 10px" }}>
+            <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 10px", lineHeight: 1.35 }}>
               月30万円の営業マンを雇う代わりに。<br />いつでも安心できる明朗な料金体系
             </h3>
-            <p style={{ fontSize: "0.86rem", color: "#475569", margin: 0, lineHeight: 1.65 }}>
+            <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", margin: 0, lineHeight: 1.75 }}>
               SEO業者への高額な依頼や広告費の垂れ流しはもう不要です。まずは無料診断で現状を確かめ、必要な場合だけ週次の自動見守りを開始できます。
             </p>
           </div>
@@ -181,7 +181,7 @@ export default function HomePage() {
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "20px",
+              gap: "24px",
               maxWidth: "840px",
               margin: "0 auto",
             }}
@@ -189,26 +189,26 @@ export default function HomePage() {
             {/* プラン 1：無料診断 */}
             <div
               style={{
-                background: "#f8fafc",
-                border: "1px solid #e2e8f0",
-                borderRadius: "6px",
-                padding: "24px 22px",
+                background: "var(--bg-surface, #f8fafc)",
+                border: "1px solid var(--border-subtle, #e2e8f0)",
+                borderRadius: "var(--radius-card, 8px)",
+                padding: "28px 24px",
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "4px" }}>
+              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
                 現状把握とおすすめデータ発行
               </span>
-              <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0f172a", margin: "0 0 12px" }}>
+              <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
                 無料AI推薦 診断レポート
               </h4>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a" }}>0円</span>
-                <span style={{ fontSize: "0.76rem", color: "#64748b" }}>（即日発行・完全無料）</span>
+                <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>0円</span>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-muted, #64748b)" }}>（即日発行・完全無料）</span>
               </div>
-              <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
-                <li>買い手がAIにする12の質問での実況レポート</li>
+              <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
+                <li>買い手がAIにする12の質問での診断レポート</li>
                 <li>自社専用のAI公式推薦データ（自動下書き）</li>
                 <li>ホームページの改修・新たな開設も不要</li>
                 <li>クレジットカード登録不要・自動課金なし</li>
@@ -219,14 +219,16 @@ export default function HomePage() {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "6px",
-                  background: "#0f172a",
+                  gap: "8px",
+                  background: "var(--color-brand, #0f172a)",
                   color: "#ffffff",
-                  fontSize: "0.82rem",
+                  fontSize: "0.86rem",
                   fontWeight: 700,
-                  padding: "10px 16px",
-                  borderRadius: "4px",
+                  minHeight: "48px",
+                  padding: "0 20px",
+                  borderRadius: "var(--radius-btn, 6px)",
                   textDecoration: "none",
+                  transition: "background 0.15s ease",
                 }}
               >
                 <span>まずは無料で診断してみる（10秒）</span>
@@ -237,42 +239,43 @@ export default function HomePage() {
             {/* プラン 2：毎週の自動見守り */}
             <div
               style={{
-                background: "#ffffff",
-                border: "1.5px solid #0f172a",
-                borderRadius: "6px",
-                padding: "24px 22px",
+                background: "var(--bg-base, #ffffff)",
+                border: "2px solid var(--color-brand, #0f172a)",
+                borderRadius: "var(--radius-card, 8px)",
+                padding: "28px 24px",
                 display: "flex",
                 flexDirection: "column",
                 position: "relative",
+                boxShadow: "0 4px 16px rgba(15, 23, 42, 0.06)",
               }}
             >
               <span
                 style={{
                   position: "absolute",
-                  top: "-10px",
-                  right: "18px",
-                  background: "#0f172a",
+                  top: "-11px",
+                  right: "20px",
+                  background: "var(--color-brand, #0f172a)",
                   color: "#ffffff",
-                  fontSize: "0.65rem",
+                  fontSize: "0.68rem",
                   fontWeight: 700,
-                  padding: "2px 8px",
-                  borderRadius: "3px",
+                  padding: "2px 10px",
+                  borderRadius: "var(--radius-badge, 4px)",
                   fontFamily: "var(--font-mono, monospace)",
                 }}
               >
                 おすすめ
               </span>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "4px" }}>
+              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
                 継続運用・順位監視
               </span>
-              <h4 style={{ fontSize: "1.15rem", fontWeight: 800, color: "#0f172a", margin: "0 0 12px" }}>
+              <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
                 毎週の自動見守りプラン
               </h4>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "1.8rem", fontWeight: 800, color: "#0f172a" }}>月額 9,800円</span>
-                <span style={{ fontSize: "0.76rem", color: "#64748b" }}>（1日あたり約320円）</span>
+                <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>月額 9,800円</span>
+                <span style={{ fontSize: "0.78rem", color: "var(--text-muted, #64748b)" }}>（1日あたり約320円）</span>
               </div>
-              <ul style={{ margin: "0 0 20px", paddingLeft: "16px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.8, flex: 1 }}>
+              <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
                 <li>毎週月曜にAIの推薦状況を自動で再チェック</li>
                 <li>競合が急に浮上した場合の早期アラート</li>
                 <li>AI公式推薦データの常時ホスティング・自動同期</li>
@@ -284,14 +287,15 @@ export default function HomePage() {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "6px",
-                  background: "#f8fafc",
-                  border: "1px solid #cbd5e1",
-                  color: "#0f172a",
-                  fontSize: "0.82rem",
+                  gap: "8px",
+                  background: "var(--bg-surface, #f8fafc)",
+                  border: "1px solid var(--border-subtle, #cbd5e1)",
+                  color: "var(--text-primary, #0f172a)",
+                  fontSize: "0.86rem",
                   fontWeight: 700,
-                  padding: "10px 16px",
-                  borderRadius: "4px",
+                  minHeight: "48px",
+                  padding: "0 20px",
+                  borderRadius: "var(--radius-btn, 6px)",
                   textDecoration: "none",
                 }}
               >

@@ -98,7 +98,7 @@ export function ReportActions({ result, sample = false }: ReportActionsProps) {
   }
 
   return <div className="report-actions" aria-label="結果を保存する">
-    <span className="report-actions-label">カルテの保存</span>
+    <span className="report-actions-label">レポートの保存</span>
     <button type="button" onClick={() => window.print()}>印刷 / PDF保存</button>
     <button type="button" onClick={() => download(`${filename}.csv`, lostPromptCsv(result), "text/csv;charset=utf-8")}>質問一覧（CSV）</button>
     <button type="button" onClick={() => download(`${filename}.md`, markdownReport(result), "text/markdown;charset=utf-8")}>要約テキスト</button>
