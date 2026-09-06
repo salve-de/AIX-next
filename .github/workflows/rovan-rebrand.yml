@@ -21,7 +21,7 @@ jobs:
         include:
           - variant: feature
             base: feature/positioning-autopilot
-            expected: cadcdacd1d1f9b9e0089a33aa53e9165f47b3037
+            expected: c0ed9705ad580db87939ce5846cd96e1ecfe4476
             candidate: chore/rovan-feature-ready
           - variant: main
             base: main
@@ -40,7 +40,9 @@ jobs:
           CANDIDATE: ${{ matrix.candidate }}
         run: |
           cp scripts/rebrand-rovan.py /tmp/rebrand-rovan.py
+          cp scripts/finalize-rovan.py /tmp/finalize-rovan.py
           actual=$(git rev-parse "origin/$BASE")
+          echo "Source $BASE is $actual; expected $EXPECTED"
           test "$actual" = "$EXPECTED"
           git checkout -b "$CANDIDATE" "$EXPECTED"
           mkdir -p /tmp/rovan-validation
@@ -52,15 +54,16 @@ jobs:
       - run: npm ci
       - name: Read installed Next metadata conventions
         run: |
-          sed -n '1,200p' node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md | tee /tmp/rovan-validation/framework-guide.txt
+          sed -n '1,200p' node_modules/next/dist/docs/01-app/01-getting-started/14-metadata-and-og-images.md > /tmp/rovan-validation/framework-guide.txt
       - name: Apply scoped rename and verify protected contracts
-        run: python3 /tmp/rebrand-rovan.py
+        run: python3 /tmp/finalize-rovan.py
       - name: Lint, tests, typecheck and production build
         run: |
           set -o pipefail
           npm run check 2>&1 | tee /tmp/rovan-validation/check.log
       - name: Check HTTP outputs without external provider calls
         run: |
+          set -o pipefail
           npm start -- --port 3000 > /tmp/rovan-validation/server.log 2>&1 &
           echo $! > /tmp/rovan-server.pid
           for n in $(seq 1 30); do curl -fsS http://localhost:3000/ > /dev/null && break || sleep 1; done
@@ -102,7 +105,8 @@ jobs:
           git diff --check
           git config user.name "Rovan Migration"
           git config user.email "actions@github.com"
-          git add .env.example AGENTS.md PROJECT_RULES.md README.md app components docs lib package.json package-lock.json public tests .github/workflows
+          git add -u
+          git add lib/brand.ts lib/brand-compatibility.ts docs/ROVAN_BRAND_MIGRATION.md tests/brand.test.ts
           git diff --cached --stat | tee /tmp/rovan-validation/diff-stat.txt
           git diff --cached > /tmp/rovan-validation/rename.patch
           git commit -m "Rename service to Rovan (ロヴァン), preserve data contracts and verify branding"
