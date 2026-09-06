@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
 
-export function ScanForm({ compact = false }: { compact?: boolean }) {
+export function ScanForm({ compact = false, hideExtraToggle = false }: { compact?: boolean; hideExtraToggle?: boolean }) {
   const router = useRouter();
   const [input, setInput] = useState("");
   const [showExtra, setShowExtra] = useState(false);
@@ -141,7 +141,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
         {error ? <p className="form-error" role="alert">{error}</p> : null}
 
 
-        {!compact ? (
+        {!compact && !hideExtraToggle ? (
           <div className="scan-extra-section">
             <button
               type="button"

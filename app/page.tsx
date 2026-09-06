@@ -33,59 +33,37 @@ export default function HomePage() {
 
             {/* 入力フォーム */}
             <div className="landing-hero-form-box" id="scan">
-              <ScanForm />
+              <ScanForm hideExtraToggle />
             </div>
 
-            {/* 1行スマート対比インジケーター（直感理解） */}
-            <div className="hero-compact-contrast" aria-label="AI推薦の劇的対比">
-              <div className="contrast-step user-step">
-                <span className="contrast-tag">客のAI相談</span>
-                <span className="contrast-text">「地元の親身な会社は？」</span>
-              </div>
-              <span className="contrast-arrow" aria-hidden="true">→</span>
-              <div className="contrast-step before-step">
-                <span className="contrast-tag tag-before">未対策</span>
-                <span className="contrast-text">大手のみ紹介（自社スルー）</span>
-              </div>
-              <span className="contrast-arrow" aria-hidden="true">→</span>
-              <div className="contrast-step after-step">
-                <span className="contrast-tag tag-after">データ配備後</span>
-                <span className="contrast-text"><strong>御社を名指し推薦</strong></span>
-              </div>
+            {/* 3大安心マイクロコピー（丸ボタンを排した知的なインライン表示） */}
+            <div className="hero-trust-row" aria-label="サービスの特長">
+              <span className="trust-item">
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                社名入力で10秒
+              </span>
+              <span className="trust-sep" aria-hidden="true">•</span>
+              <span className="trust-item">
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                HPの改修・開設も不要
+              </span>
+              <span className="trust-sep" aria-hidden="true">•</span>
+              <span className="trust-item">
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M3 8.5L6.5 12L13 4" />
+                </svg>
+                完全無料（自動課金なし）
+              </span>
             </div>
 
-            {/* 3大安心マイクロバッジ */}
-            <div className="hero-trust-badges" aria-label="サービスの特長">
-              <div className="trust-badge">
-                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
-                <span>社名を入れるだけ（10秒）</span>
-              </div>
-              <div className="trust-badge">
-                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
-                <span>HPの改修・開設も不要</span>
-              </div>
-              <div className="trust-badge">
-                <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
-                <span>完全無料（自動課金なし）</span>
-              </div>
-            </div>
-
-            {/* 観測・実地調査対象の主要AI */}
-            <div className="hero-ai-targets" aria-label="実地調査する主要生成AI">
-              <div className="hero-ai-targets-inner">
-                <span className="targets-caption">実地調査する主要AI:</span>
-                <span className="target-pill"><span className="target-dot" aria-hidden="true" />ChatGPT</span>
-                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Perplexity</span>
-                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Google Gemini</span>
-                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Claude</span>
-              </div>
-              <p className="hero-ai-targets-note">※ これらの主要AIで御社を実際に検索し、お客さんへの推薦状況を客観的に洗い出します</p>
+            {/* 実地調査する主要AI（丸ボタンを排した品格ある表示） */}
+            <div className="hero-ai-targets-clean" aria-label="実地調査する主要生成AI">
+              <span className="ai-clean-caption">実地調査する主要AI:</span>
+              <span className="ai-clean-names">ChatGPT / Perplexity / Google Gemini / Claude</span>
             </div>
 
             {/* 診断見本リンク */}
@@ -99,18 +77,18 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 2. ChatGPT実況シミュレーション：実際のAI回答はどう変わるのか？ */}
+      {/* 2. ChatGPT実況シミュレーション：一目でわかる劇的ビフォーアフター */}
       {/* ================================================================= */}
-      <section className="landing-simulation-section shell" style={{ paddingTop: "56px", paddingBottom: "56px" }}>
-        <div className="section-head-center" style={{ marginBottom: "28px" }}>
-          <span className="pill-badge">AI対話の実況シミュレーション</span>
-          <h2>お客さんがChatGPTやPerplexityに聞いた時、<br />実際の回答はどう変わるのか？</h2>
+      <section className="landing-simulation-section shell" style={{ paddingTop: "64px", paddingBottom: "64px" }}>
+        <div className="section-head-center" style={{ marginBottom: "32px" }}>
+          <span className="pill-badge">AI対話の劇的ビフォーアフター</span>
+          <h2>お客さんがAIに聞いた時、<br />回答はどう変わるのか？（実況対比）</h2>
           <p>
-            主要AI（ChatGPT・Perplexity・Google Gemini）で、買い手が相談した際の回答を実際に調査。<br />
+            ChatGPTやPerplexityなどの主要AIで、買い手が相談した際の回答を実際に調査。<br />
             AI向け公式データがない状態では知名度の高い大手が選ばれ、公式データを配備すると御社が指名推薦されます。
           </p>
         </div>
-        <div style={{ maxWidth: "780px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "880px", margin: "0 auto" }}>
           <HeroChatDiagnosticCard />
         </div>
       </section>

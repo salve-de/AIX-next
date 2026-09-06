@@ -6,79 +6,67 @@ import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
   return (
-    <div className="hero-chat-direct-card" aria-label="ChatGPTでの推薦実況シミュレーション">
-      {/* カードヘッダー */}
-      <div
-        className="direct-card-head"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "10px 16px",
-          background: "#f8fafc",
-          borderBottom: "1px solid #e2e8f0",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#0f172a", display: "inline-block" }} />
-          <strong style={{ fontSize: "0.78rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>
-            ChatGPT (GPT-4o) での実況シミュレーション
-          </strong>
+    <div className="hero-chat-split-container" aria-label="ChatGPTでの推薦ビフォーアフター実況">
+      {/* 共通の起点：買い手（見込み客）の生々しい相談 */}
+      <div className="split-user-prompt-box">
+        <div className="split-prompt-header">
+          <span className="split-prompt-dot" aria-hidden="true" />
+          <span className="split-prompt-label">買い手（見込み客）がChatGPTにした相談</span>
         </div>
-        <span style={{ fontSize: "0.68rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 7px", borderRadius: "4px", fontWeight: 600 }}>
-          回答観測
-        </span>
+        <p className="split-prompt-text">
+          「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
+        </p>
       </div>
 
-      {/* チャット対話エリア */}
-      <div className="direct-card-body" style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: "10px", background: "#ffffff" }}>
+      {/* 左右対比グリッド（PC: 2カラム横並び、スマホ: 縦並び） */}
+      <div className="split-comparison-grid">
         
-        {/* 見込み客の相談 */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "3px" }}>
-          <span style={{ fontSize: "0.66rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingRight: "4px" }}>客がAIにした相談</span>
-          <div style={{ background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "10px 10px 2px 10px", padding: "8px 12px", maxWidth: "94%", color: "#0f172a", fontSize: "0.82rem", lineHeight: 1.48, fontWeight: 500 }}>
-            「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
+        {/* 左：【BEFORE】対策前のいま（競合・大手に顧客流出） */}
+        <div className="split-card card-before">
+          <div className="split-card-header header-before">
+            <div className="split-status-badge tag-lost">BEFORE（未対策のいま）</div>
+            <span className="split-outcome-label outcome-lost">自社はスルー（選定外）</span>
+          </div>
+          <div className="split-card-body">
+            <div className="ai-speaker-bar">
+              <span className="ai-name">ChatGPT (GPT-4o) の回答</span>
+              <span className="ai-status">大手優先</span>
+            </div>
+            <p className="ai-dialogue-text">
+              「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
+            </p>
+            <div className="split-cause-box cause-lost">
+              <strong>【現実】</strong> AI向けデータがないため、AIは知名度や広告量の多い大手を機械的に提案。御社は候補から除外されます。
+            </div>
           </div>
         </div>
 
-        {/* 未対策時：大手優先の回答 */}
-        <div style={{ border: "1px solid #e2e8f0", borderRadius: "7px", padding: "10px 13px", background: "#f8fafc" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 7px", borderRadius: "4px" }}>
-              未対策時のAI回答（大手優先）
-            </span>
-            <span style={{ fontSize: "0.66rem", color: "#64748b", fontWeight: 600 }}>自社は選定外</span>
+        {/* 右：【AFTER】公式データ配備後（御社が名指し指名推薦） */}
+        <div className="split-card card-after">
+          <div className="split-card-header header-after">
+            <div className="split-status-badge tag-won">AFTER（公式データ配備後）</div>
+            <span className="split-outcome-label outcome-won">御社を名指し推薦</span>
           </div>
-          <p style={{ margin: "0 0 6px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.5 }}>
-            ChatGPT「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
-          </p>
-          <div style={{ fontSize: "0.7rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "5px 8px", borderRadius: "4px", lineHeight: 1.45 }}>
-            ※ AI向けデータがない場合、AIは知名度や広告量の多い大手を機械的に提案します。
-          </div>
-        </div>
-
-        {/* 推薦データ配備後：自社が指名推薦される回答 */}
-        <div style={{ border: "1.5px solid #0f172a", borderRadius: "7px", padding: "11px 13px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 7px", borderRadius: "4px" }}>
-              公式データ配備後のAI回答（自社を推薦）
-            </span>
-            <span style={{ fontSize: "0.66rem", color: "#0f172a", fontWeight: 700 }}>強みに合致して選定</span>
-          </div>
-          <p style={{ margin: "0 0 6px", fontSize: "0.82rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.5 }}>
-            ChatGPT「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
-          </p>
-          <div style={{ fontSize: "0.7rem", color: "#0f172a", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "5px 8px", borderRadius: "4px", lineHeight: 1.45 }}>
-            ※ AIが自社の公式強みデータを直接参照できるため、相談にぴったり合う推薦先として提示されます。
+          <div className="split-card-body">
+            <div className="ai-speaker-bar">
+              <span className="ai-name">ChatGPT (GPT-4o) の回答</span>
+              <span className="ai-status status-won">強みに合致して選定</span>
+            </div>
+            <p className="ai-dialogue-text ai-dialogue-won">
+              「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
+            </p>
+            <div className="split-cause-box cause-won">
+              <strong>【成果】</strong> AIが御社の公式強みデータを直接参照できるため、相談にぴったり合う推薦先として名指しで送客されます。
+            </div>
           </div>
         </div>
 
       </div>
 
-      {/* カードフッター */}
-      <div style={{ padding: "9px 16px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.72rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span>自社サイトの改修：不要</span>
-        <span style={{ fontWeight: 700, color: "#0f172a" }}>所要10秒で無料診断</span>
+      {/* カード下部の安心注記 */}
+      <div className="split-footer-bar">
+        <span>※ ホームページの改修・新たな開設は不要（所要10秒）</span>
+        <span className="split-footer-tag">ChatGPT / Perplexity / Gemini 全対応</span>
       </div>
     </div>
   );
