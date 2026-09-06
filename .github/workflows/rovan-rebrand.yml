@@ -98,11 +98,15 @@ jobs:
           "$AB" set viewport 390 844
           "$AB" screenshot /tmp/rovan-validation/mobile.png
           "$AB" close
-      - name: Commit verified changes to isolated review branch only
+      - name: Commit verified application changes with contents-only permission
         env:
           CANDIDATE: ${{ matrix.candidate }}
         run: |
           git diff --check
+          git diff -- .github/workflows > /tmp/rovan-validation/workflow.patch
+          mkdir -p /tmp/rovan-validation/workflows
+          cp .github/workflows/*.yml /tmp/rovan-validation/workflows/
+          git restore --source=HEAD --worktree --staged .github/workflows
           git config user.name "Rovan Migration"
           git config user.email "actions@github.com"
           git add -u
@@ -111,8 +115,8 @@ jobs:
           git diff --cached > /tmp/rovan-validation/rename.patch
           git commit -m "Rename service to Rovan (ロヴァン), preserve data contracts and verify branding"
           git rev-parse HEAD | tee /tmp/rovan-validation/commit.txt
-          git push origin "HEAD:refs/heads/$CANDIDATE"
           git archive --format=zip HEAD > /tmp/rovan-validation/after.zip
+          git push origin "HEAD:refs/heads/$CANDIDATE"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
