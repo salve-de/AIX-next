@@ -6,12 +6,12 @@ import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
   return (
-    <div className="hero-chat-split-container" aria-label="AIでの推薦ビフォーアフター実況">
-      {/* 共通の起点：買い手（見込み客）の生々しい相談 */}
+    <div className="hero-chat-split-container" aria-label="AIでの推薦ビフォーアフター比較">
+      {/* 共通の起点：見込み客による相談例 */}
       <div className="split-user-prompt-box">
         <div className="split-prompt-header">
           <span className="split-prompt-dot" aria-hidden="true" />
-          <span className="split-prompt-label">買い手（見込み客）がAIにした相談</span>
+          <span className="split-prompt-label">見込み客によるAIへの相談例</span>
         </div>
         <p className="split-prompt-text">
           「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
@@ -21,11 +21,11 @@ export function HeroChatDiagnosticCard() {
       {/* 左右対比グリッド（PC: 2カラム+中央矢印、スマホ: 縦並び+下向き矢印） */}
       <div className="split-comparison-grid">
         
-        {/* 左：【BEFORE】対策前のいま（競合・大手に顧客流出） */}
+        {/* 左：【BEFORE】対策前（競合・大手に顧客流出） */}
         <div className="split-card card-before">
           <div className="split-card-header header-before">
-            <div className="split-status-badge tag-lost">BEFORE（未対策のいま）</div>
-            <span className="split-outcome-label outcome-lost">自社はスルー（選定外）</span>
+            <div className="split-status-badge tag-lost">未対策の場合（現状）</div>
+            <span className="split-outcome-label outcome-lost">他社のみが推薦される</span>
           </div>
           <div className="split-card-body">
             <div className="ai-speaker-bar">
@@ -36,7 +36,7 @@ export function HeroChatDiagnosticCard() {
               「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
             </p>
             <div className="split-cause-box cause-lost">
-              <strong>【現実】</strong> AI向けデータがないため、AIは知名度や広告量の多い大手を機械的に提案。御社は候補から除外されます。
+              <strong>【現状】</strong> AIが参照できる自社データがないため、知名度や広告量の多い大手が優先して提示されます。
             </div>
           </div>
         </div>
@@ -53,13 +53,13 @@ export function HeroChatDiagnosticCard() {
               <path d="M12 5v14m-6-6 6 6 6-6" />
             </svg>
           </div>
-          <span className="connector-label">公式データ配備で劇的転換</span>
+          <span className="connector-label">自社データの配備で推薦を獲得</span>
         </div>
 
         {/* 右：【AFTER】公式データ配備後（御社が名指し指名推薦） */}
         <div className="split-card card-after">
           <div className="split-card-header header-after">
-            <div className="split-status-badge tag-won">AFTER（公式データ配備後）</div>
+            <div className="split-status-badge tag-won">公式データ配備後</div>
             <span className="split-outcome-label outcome-won">御社を名指し推薦</span>
           </div>
           <div className="split-card-body">
@@ -71,7 +71,7 @@ export function HeroChatDiagnosticCard() {
               「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
             </p>
             <div className="split-cause-box cause-won">
-              <strong>【成果】</strong> AIが御社の公式強みデータを直接参照できるため、相談にぴったり合う推薦先として名指しで送客されます。
+              <strong>【導入後】</strong> AIが御社の公式強みデータを直接参照できるため、相談内容に合致する推薦先として御社が名指しで案内されます。
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ export function HeroChatDiagnosticCard() {
       {/* カード下部の安心注記 */}
       <div className="split-footer-bar">
         <span>※ ホームページの改修・新たな開設は不要（所要10秒）</span>
-        <span className="split-footer-tag">主要AIすべてに対応</span>
+        <span className="split-footer-tag">ChatGPT / Google Gemini / Perplexity / Claude / Copilot 対応</span>
       </div>
     </div>
   );
@@ -209,7 +209,7 @@ export function ProductOutputPreview() {
           </strong>
         </div>
         <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-          ※ 社名入力後、約10秒で画面に届く実況レポートです
+          ※ 社名入力後、約10秒で画面に届く診断レポートです
         </span>
       </div>
 
@@ -234,7 +234,7 @@ export function ProductOutputPreview() {
             あおば相続法務事務所
           </strong>
           <span style={{ marginLeft: "12px", fontSize: "0.76rem", color: "#64748b" }}>
-            （客がAIにする相談 12問をAIで実況検証）
+            （見込み客がAIにする相談 12問を実際に検証）
           </span>
         </div>
 
@@ -251,10 +251,10 @@ export function ProductOutputPreview() {
           }}
         >
           <span style={{ fontSize: "0.72rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
-            実況結果:
+            診断結果:
           </span>
           <span style={{ fontSize: "0.92rem", fontWeight: 700, color: "#991b1b" }}>
-            12問中 10問で大手チェーンが優先推薦（自社はスルー）
+            12問中 10問で大手チェーンが優先推薦（自社は選定外）
           </span>
         </div>
       </div>
@@ -273,7 +273,7 @@ export function ProductOutputPreview() {
               marginBottom: "4px",
             }}
           >
-            実況質問（買い手がChatGPTにした相談の例）
+            相談内容の例（見込み客がAIに聞いた相談）
           </span>
           <h4
             style={{

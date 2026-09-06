@@ -60,6 +60,12 @@ export default function HomePage() {
               </span>
             </div>
 
+            {/* 調査対象AI（モデル番号なし・主要サービス名を堂々提示） */}
+            <div className="hero-ai-targets-clean" aria-label="調査対象AI">
+              <span className="ai-clean-caption">調査対象AI:</span>
+              <span className="ai-clean-names">ChatGPT • Google Gemini • Perplexity • Claude • Copilot</span>
+            </div>
+
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
               <Link className="hero-sample-link" href="/result?sample=1">
@@ -71,15 +77,15 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
-      {/* 2. ChatGPT実況シミュレーション：一目でわかる劇的ビフォーアフター */}
+      {/* 2. AI回答シミュレーション：一目でわかるビフォーアフター比較 */}
       {/* ================================================================= */}
       <section className="landing-simulation-section shell" style={{ paddingTop: "64px", paddingBottom: "64px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">AI対話の劇的ビフォーアフター</span>
-          <h2>お客さんがAIに聞いた時、<br />回答はどう変わるのか？（実況対比）</h2>
+          <span className="pill-badge">導入前後の回答比較</span>
+          <h2>お客さんがAIに相談した時、<br />回答はどう変わるのか？</h2>
           <p>
-            買い手がAIに相談した際、回答がどう変わるのかを実際にシミュレーション。<br />
-            AI向け公式データがない状態では知名度の高い大手が選ばれ、公式データを配備すると御社が指名推薦されます。
+            ChatGPTやGeminiなど主要AIで、お客さんが相談した時の実際の回答を比較。<br />
+            AI向けデータがない状態では知名度の高い大手が優先され、公式データを配備すると御社が名指しで推薦されます。
           </p>
         </div>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
@@ -93,13 +99,13 @@ export default function HomePage() {
       <GoogleDeclineProblemSection />
 
       {/* ================================================================= */}
-      {/* 3. 無料診断で何がわかるのか？（手に入る2つの確定成果物） */}
+      {/* 3. 無料診断で何がわかるのか？（手に入る2つの診断結果） */}
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
           <span className="pill-badge">無料診断で手に入るもの</span>
-          <h2>社名を入力するだけ（所要10秒）。<br />手元に届く「2つの確定成果物」</h2>
-          <p>ホームページの改修・開設は一切不要。ChatGPTやPerplexityなどの主要AIで御社を実際に検索し、<br />「自社がAIからどう見られているかの実況レポート」と「明日からAIが推薦するための公式データ」がその場で手に入ります。</p>
+          <h2>社名を入力するだけ（所要10秒）。<br />手元に届く「2つの診断結果」</h2>
+          <p>ホームページの改修・開設は一切不要。ChatGPTやPerplexityなどの主要AIで御社を実際に検索し、<br />「自社がAIからどう評価されているかの診断レポート」と「明日からAIが推薦するための公式データ」がその場で手に入ります。</p>
         </div>
 
         {/* 診断で手に入る2つの成果物プレビュー */}
@@ -210,13 +216,13 @@ export default function HomePage() {
               {/* 右側：強みダイジェスト */}
               <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "16px 18px" }}>
                 <span style={{ fontSize: "0.68rem", color: "#64748b", display: "block", marginBottom: "8px", fontWeight: 700, fontFamily: "var(--font-mono, monospace)" }}>
-                  AIに教え込む御社の強み（例）
+                  AIが参照する御社の強み（例）
                 </span>
                 <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "0.78rem", color: "#334155", lineHeight: 1.8 }}>
                   <li><strong>会社名・屋号</strong>：あおば相続法務事務所</li>
                   <li><strong>AI向け公式データ</strong>：親身な個別対応・複雑な相続トラブル特化</li>
                   <li><strong>安心の裏付け</strong>：国家資格・相談実績などの公的データ</li>
-                  <li><strong>対応AI</strong>：ChatGPT / Gemini / Perplexity 全対応</li>
+                  <li><strong>対応AI</strong>：ChatGPT • Google Gemini • Perplexity • Claude • Copilot</li>
                 </ul>
               </div>
             </div>
