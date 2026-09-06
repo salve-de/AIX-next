@@ -58,6 +58,18 @@ export default function HomePage() {
               </div>
             </div>
 
+            {/* 観測・実地調査対象の主要AI */}
+            <div className="hero-ai-targets" aria-label="実地調査する主要生成AI">
+              <div className="hero-ai-targets-inner">
+                <span className="targets-caption">実地調査する主要AI:</span>
+                <span className="target-pill"><span className="target-dot" aria-hidden="true" />ChatGPT</span>
+                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Perplexity</span>
+                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Google Gemini</span>
+                <span className="target-pill"><span className="target-dot" aria-hidden="true" />Claude</span>
+              </div>
+              <p className="hero-ai-targets-note">※ これらの主要AIで御社を実際に検索し、お客さんへの推薦状況を客観的に洗い出します</p>
+            </div>
+
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
               <Link className="hero-sample-link" href="/result?sample=1">
@@ -74,10 +86,10 @@ export default function HomePage() {
       <section className="landing-simulation-section shell">
         <div className="section-head-center">
           <span className="pill-badge">実況シミュレーション</span>
-          <h2>お客さんがChatGPTに聞いた時、<br />実際の回答はどうなっているのか？</h2>
+          <h2>お客さんがChatGPTやPerplexityに聞いた時、<br />実際の回答はどうなっているのか？</h2>
           <p>
-            AI向け公式データがない状態では知名度の高い大手が機械的に選ばれ、<br />
-            自社専用の公式推薦データを置くと、相談内容の強みに合致して指名推薦されます。
+            主要AI（ChatGPT・Perplexity・Google Gemini）で、買い手が相談した際の回答を実際に調査。<br />
+            AI向け公式データがない状態では知名度の高い大手が選ばれ、自社専用の公式推薦データを置くと指名推薦されます。
           </p>
         </div>
         <div style={{ maxWidth: "780px", margin: "0 auto" }}>
@@ -97,7 +109,7 @@ export default function HomePage() {
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
           <span className="pill-badge">無料診断で手に入るもの</span>
           <h2>社名を入力するだけ（所要10秒）。<br />手元に届く「2つの確定成果物」</h2>
-          <p>自社ホームページの改修は一切不要。「①自社がAIからどう見られているかの実況レポート」と、<br />「②明日からAIがあなたをお客に推薦するための公式データ」がその場で手に入ります。</p>
+          <p>ホームページの改修・開設は一切不要。ChatGPTやPerplexityなどの主要AIで御社を実際に検索し、<br />「自社がAIからどう見られているかの実況レポート」と「明日からAIが推薦するための公式データ」がその場で手に入ります。</p>
         </div>
 
         {/* 診断で手に入る2つの成果物プレビュー */}
@@ -426,7 +438,7 @@ export default function HomePage() {
               <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M3 8.5L6.5 12L13 4" />
               </svg>
-              <span>今のHPはそのままでOK</span>
+              <span>HPの改修・開設も不要</span>
             </div>
             <div className="trust-badge">
               <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
