@@ -25,6 +25,10 @@ export default function HomePage() {
                 お客さんがChatGPTに「おすすめ」を聞いた時、<br />
                 <em>あなたの会社はスルーされ、大手が紹介されています。</em>
               </h1>
+              <p className="landing-hero-lead">
+                今のホームページはそのままでOK。<br />
+                社名を入れるだけで、AI専用の推薦データを即日配備します。
+              </p>
             </div>
 
             {/* 入力フォーム */}
@@ -67,8 +71,8 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* 2. ChatGPT実況シミュレーション：実際のAI回答はどうなっているのか？ */}
       {/* ================================================================= */}
-      <section className="landing-simulation-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        <div className="section-head-center" style={{ marginBottom: "28px" }}>
+      <section className="landing-simulation-section shell">
+        <div className="section-head-center">
           <span className="pill-badge">実況シミュレーション</span>
           <h2>お客さんがChatGPTに聞いた時、<br />実際の回答はどうなっているのか？</h2>
           <p>
