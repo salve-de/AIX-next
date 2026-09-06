@@ -4,7 +4,7 @@
 対象: Rovanの事業目的、AI検索での発見・引用、Rovan側で公開する機械可読データ、売上につながる測定、既存サービスとの差、法務・運用境界\
 読者: Rovanの事業責任者、プロダクト設計・実装担当、将来の顧客説明担当
 
-この文書は、これまでの会話と既存のプロダクト文書を統合した、現在の判断の基準である。外部サービスが公開している機能は、そのサービス自身の説明として扱い、AIの順位や売上への効果が検証済みであるとは扱わない。
+この文書は、2026-09-03時点の調査・意思決定履歴を残す資料である。現在の実装契約は [`AGENTS.md`](../AGENTS.md)、[`docs/CORE_PRODUCT_STRATEGY.md`](CORE_PRODUCT_STRATEGY.md)、[`docs/CONTINUOUS_VALUE_RETENTION.md`](CONTINUOUS_VALUE_RETENTION.md) を優先する。外部サービスが公開している機能は、そのサービス自身の説明として扱い、AIの順位や売上への効果が検証済みであるとは扱わない。
 
 ## 0. 先に結論
 
@@ -98,9 +98,11 @@ Rovanの対象は、AI全体の神秘的な「順位」ではなく、買い手�
 
 「公開ページを作るだけでAIに選ばれる」という意味ではない。このページが成立するには、単なるコピーではなく、出典を整理した構造、更新履歴、比較に使える独自の検証価値が必要になる。
 
-## 3. 現在のRovan実装の事実
+## 3. 調査時点（2026-09-03）のRovan実装記録
 
-現在のブランチは `codex/aix-next-v2` で、主なコードと文書は `/Users/satoushinya/project/AIX-next` にある。未コミット変更を含むため、既存変更を捨てずに扱う。
+この章は調査日時点のスナップショットです。現行実装の確認にはリポジトリのコードと [`AGENTS.md`](../AGENTS.md) を使ってください。
+
+調査時点のブランチ名・ローカルパスは当時の作業環境に依存するため、ここでは固定しない。未コミット変更を含む作業では、現在のブランチと `git status` を確認してから扱う。
 
 ### 3.1 すでにあるもの
 
@@ -110,7 +112,7 @@ Rovanの対象は、AI全体の神秘的な「順位」ではなく、買い手�
 - 生の回答、Citation、推奨エンティティ、測定条件。
 - Recommendation Coverage、First Choice Rate、Mention Coverage、Citation Coverage、Repeat Agreement、Measurement Completeness。
 - 候補外Prompt、競合Evidence、Evidence Gap、First Action。
-- Free Scan、14日Watch、Founder Watchの価値階段。
+- Free Scan、14日Watch、paid Weekly Watchの価値階段。
 - Watchの固定Core Promptと同一条件での再測定。
 - Change Pack。事実確認前のドラフトとして、見出し・本文・FAQ・利用根拠・公開前チェックを出す。
 - AI可読下書き。クロール済み公開ページから`llms.txt`とJSON-LDをダウンロードできる。
@@ -118,7 +120,7 @@ Rovanの対象は、AI全体の神秘的な「順位」ではなく、買い手�
 - 公開Rovan自身の`robots.txt`、`sitemap.xml`、`llms.txt`、`ai-index.json`。
 - 結果・Watch・Evidenceは非公開、noindex、no-storeを基本にする。
 
-### 3.2 まだないもの
+### 3.2 調査時点でまだなかったもの
 
 - 会社ごとのRovan公開AI情報レコード。
 - そのレコードの公開・非公開・削除・期限切れ状態管理。
@@ -128,7 +130,7 @@ Rovanの対象は、AI全体の神秘的な「順位」ではなく、買い手�
 - 会社所有ドメインへ接続する読み取り専用MCP Resource / OpenAPIフィード。
 - 公開レイヤーの参加前後を比較する実験台帳。
 
-現在のAI可読出力は、[lib/ai-readable.ts](/Users/satoushinya/project/AIX-next/lib/ai-readable.ts)で作る人間レビュー前の下書きであり、[components/watch-client.tsx](/Users/satoushinya/project/AIX-next/components/watch-client.tsx)からダウンロードするだけである。Rovanが会社ごとのページを公開する機能はまだない。
+調査時点では、AI可読出力は [`lib/ai-readable.ts`](../lib/ai-readable.ts) で作る人間レビュー前の下書きであり、[`components/watch-client.tsx`](../components/watch-client.tsx) からダウンロードするだけだった。現在は別途、明示的なプレビュー・公開操作を伴う公開プロフィール機能が実装されているため、この記述を現行仕様として扱わない。
 
 ## 4. 外部AI・検索が実際に見る入口
 
@@ -410,10 +412,10 @@ AI可視性を表示するだけだと、顧客は「ふーん」で終わる。
 
 - 無料Scan: FIND + EXPLAIN。会社名・商品名・サービス名またはURL入力、候補外、競合、Citation、Evidence Gap、First Action。
 - 14日Watch: PROVE。固定質問を同じ条件で再測定し、変更後の動きを見る。
-- Founder Watch: ACT + PROVE。50問の固定Core、Discovery、Evidence inbox、Change Pack、週次履歴。
+- paid Weekly Watch: ACT + PROVE。50問の固定Core、Discovery、Evidence inbox、Change Pack、週次履歴。
 - Rovan公開情報レイヤー: 参加企業だけの任意追加。公開前承認、出典、削除、参照・流入計測が条件。
 
-North Starは「Paid Project Activation」。支払い後14日以内に、比較可能な測定、EvidenceまたはChange Packの確認、次の再測定まで進むことを目標にする。
+当時の仮説としてNorth Starを「Paid Project Activation」と置いていたが、現行のNorth Starは [`docs/CONTINUOUS_VALUE_RETENTION.md`](CONTINUOUS_VALUE_RETENTION.md) に定義する「候補回復率（測定質問ベース）」である。支払い・継続は補助指標として扱う。
 
 ## 12. 測定設計と因果の扱い
 

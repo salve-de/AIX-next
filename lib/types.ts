@@ -300,6 +300,19 @@ export type MeasurementPanel = {
   country: "JP";
 };
 
+/**
+ * A comparable change between two measurement runs. This is a prompt-level
+ * recovery rate, not a share of customers, revenue, or the whole AI market.
+ */
+export type TakeBackShareMetric = {
+  status: "available" | "not-comparable" | "incomplete";
+  value: number | null;
+  recoveredPromptCount: number;
+  eligiblePromptCount: number;
+  baselineLostPromptCount: number;
+  note: string;
+};
+
 export type ScanResult = {
   scanId: string;
   targetUrl: string;
@@ -449,7 +462,11 @@ export type AutoAction = {
   sourceUrl: string;
   affectedPromptIds: string[];
   summary: string;
-  executedAt: string;
+  /** Planned suggestions are not public changes until explicitly approved. */
+  status?: "planned" | "applied";
+  plannedAt?: string;
+  /** Kept optional for compatibility with older stored records. */
+  executedAt?: string;
 };
 
 export type ProviderMovement = "improved" | "unchanged" | "declined";

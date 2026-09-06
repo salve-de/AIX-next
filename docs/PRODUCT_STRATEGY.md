@@ -1,5 +1,7 @@
 # Rovan — Product Strategy
 
+> 現行の日本語仕様は `docs/CORE_PRODUCT_STRATEGY.md` と `docs/CONTINUOUS_VALUE_RETENTION.md` を正本とする。この文書は英語で整理した補助資料であり、数値・指標・提供範囲はコードと正本に合わせて更新する。
+
 ## Mission
 
 Rovan helps a B2B company improve the moment before a buyer contacts sales: the moment the buyer asks an AI which vendors should be considered.
@@ -18,10 +20,10 @@ Find where the company is excluded
 
 Do not lead with internal category names such as AI Buyer Intelligence, AEO, GEO or LLMO. The first screen must state the job directly:
 
-> ChatGPTで、競合に先に選ばれている質問を見つける。
+> ChatGPT等のAI回答で、自社が候補に含まれない質問を見つける。
 > 候補入りを増やすために、何を直すべきかまで出す。
 
-The visible first-viewport proof should include a concrete rank, prompt denominator, competitor, excluded buyer question and first Action.
+The visible proof should include a bounded result with its prompt denominator, observed comparison candidate, excluded buyer question and first Action. Do not show an unlabeled or universal rank as proof.
 
 ## The business problem
 
@@ -79,7 +81,7 @@ Excluded at launch:
 ### FIND — expose the lost consideration surface
 
 Outputs:
-- measured market position;
+- candidate coverage under the declared panel;
 - shortlisted Buyer Prompts;
 - excluded Buyer Prompts;
 - competitor selected instead.
@@ -116,7 +118,7 @@ Change Packs are human-reviewable drafts. Rovan must not invent facts and must n
 ### PROVE — remeasure the same decision surface
 
 Outputs:
-- baseline vs latest rank;
+- baseline vs latest candidate coverage;
 - shortlisted/lost prompt movement;
 - newly won/lost Buyer Prompts;
 - citation changes;
@@ -211,9 +213,9 @@ Customer question answered:
 
 > After I changed something, did the same buying questions move?
 
-### Founder Watch — ACT + PROVE continuously
+### Weekly Watch — ACT + PROVE continuously
 
-- ¥29,800/month before tax;
+- ¥10,780/month including tax (¥9,800 before tax; confirm the production Stripe price before selling);
 - one brand;
 - 50 fixed Core prompts plus Discovery prompts;
 - three AI surfaces and repeated observations;
@@ -232,19 +234,15 @@ Prompt/provider quotas are proof and capacity details, not the headline value pr
 
 ## North-star and supporting metrics
 
-### North-star: Paid Project Activation
+### North-star: Prompt Candidate Recovery Rate
 
-Within 14 days of payment:
-- a valid comparable Core measurement completes;
-- at least one Evidence task or Change Pack action is reviewed;
-- the customer reaches a second measurement or scheduled next measurement.
-
-This tests whether Rovan actually enters the customer's operating loop.
+The primary product metric is the share of prompts that were excluded at baseline and include the company in a comparable later measurement. It is reported with the eligible prompt denominator and the panel/provider/model/region/repetition conditions. It is not a customer, revenue or market-share metric.
 
 ### Supporting product metrics
 
 - **Buyer Prompt Shortlist Coverage** — share of comparable Core prompts where the company is shortlisted.
 - **Prompt Recovery Rate** — previously excluded Core prompts that become shortlisted in a comparable later measurement.
+- **Paid Project Activation** — a supporting business-operations metric for whether a paid Watch reaches its first comparable rerun; it is not the product North Star.
 - **Action-to-Remeasure Completion** — Action/Change Pack reviewed and followed by comparable remeasurement.
 - **Evidence Resolution Rate** — high-priority evidence gaps resolved or verified.
 
@@ -287,7 +285,7 @@ AI推薦は目的ではなく、認知・候補入り・訪問・問い合わせ
 The page should visually read as:
 
 ```text
-ChatGPT + company vs competitors + rank/result + URL input
+AI answer + company versus observed candidates + bounded result + URL input
 ```
 
 Do not require the visitor to understand AEO/GEO/LLMO terminology.
@@ -296,7 +294,7 @@ Do not require the visitor to understand AEO/GEO/LLMO terminology.
 
 The visitor should understand:
 
-> This finds the buyer questions where AI recommends competitors instead of us.
+> This finds the buyer questions where our company is not included in the measured AI answer.
 
 ### 5–10 seconds — value understanding
 

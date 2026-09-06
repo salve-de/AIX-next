@@ -125,7 +125,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
             transition: "all 0.15s ease",
           }}
         >
-          {expandedIds.size === filtered.length ? "全問のAI推論根拠を閉じる" : "全問のAI推論根拠を一括展開（検証ログ）"}
+          {expandedIds.size === filtered.length ? "全問の判定根拠を閉じる" : "全問の判定根拠を一括表示（検証ログ）"}
         </button>
       </div>
 
@@ -210,7 +210,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                   }}
                 >
                   <div style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
-                    先に選ばれた競合:
+                    今回先に含まれた候補:
                     <strong style={{ display: "block", fontSize: "0.86rem", color: "var(--navy, #0f172a)", fontWeight: 700, marginTop: "2px" }}>
                       {loss.winner || "特定できず"}
                     </strong>
@@ -224,7 +224,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                 </div>
               </div>
 
-              {/* 出展・AI推論検証トグルボタン */}
+              {/* 出典・判定根拠の確認ボタン */}
               <div style={{ marginTop: "14px", paddingTop: "12px", borderTop: "1px solid var(--border-subtle, #f1f5f9)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                 <button
                   type="button"
@@ -246,14 +246,14 @@ export function QuestionList({ result }: { result: ScanResult }) {
                   aria-expanded={isExpanded}
                 >
                   <span>{isExpanded ? "▲" : "▼"}</span>
-                  <span>{isExpanded ? "AI推論根拠・出展ソースを閉じる" : "AI推論根拠・出展ソースを検証する（バックトレース証跡ログ）"}</span>
+                  <span>{isExpanded ? "判定根拠・参照元を閉じる" : "判定根拠・参照元を確認する（検証ログ）"}</span>
                 </button>
                 <span style={{ fontSize: "0.72rem", color: "var(--text-muted, #94a3b8)", fontFamily: "var(--font-mono, monospace)" }}>
                   AUDIT: {loss.observations.length} MODELS OBSERVED
                 </span>
               </div>
 
-              {/* 展開される証跡・出展ログ（バックトレースビューア） */}
+              {/* 展開される検証ログ */}
               {isExpanded ? (
                 <div
                   className="question-evidence-panel"
@@ -268,14 +268,14 @@ export function QuestionList({ result }: { result: ScanResult }) {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
                     <strong style={{ color: "var(--navy, #0f172a)", fontSize: "0.84rem" }}>
-                      AI観測生ログ ＆ 一次情報出展リスト（バックトレース監査）
+                      AI回答ログ ＆ 参照元URL一覧（検証ログ）
                     </strong>
                     <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
                       入力質問: 「{loss.prompt}」
                     </span>
                   </div>
 
-                  {/* 各AIモデルごとの実測ログ */}
+                  {/* 各AIサービスの回答ログ */}
                   <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
                     {loss.observations.map((obs: Observation) => (
                       <div
@@ -311,15 +311,15 @@ export function QuestionList({ result }: { result: ScanResult }) {
 
                         {/* AIの生回答抜粋 */}
                         <div style={{ background: "var(--bg-surface, #f1f5f9)", padding: "10px 12px", borderRadius: "6px", marginBottom: "10px", fontSize: "0.8rem", color: "#1e293b", lineHeight: 1.6 }}>
-                          <strong style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", marginBottom: "4px" }}>AIの推論回答（抜粋）:</strong>
+                          <strong style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", marginBottom: "4px" }}>AI回答（抜粋）:</strong>
                           {obs.rawText}
                         </div>
 
-                        {/* AIが参照した一次情報ソース（出展URL） */}
+                        {/* AI回答に含まれた参照元URL */}
                         {obs.citations && obs.citations.length > 0 ? (
                           <div>
                             <span style={{ fontSize: "0.74rem", fontWeight: 700, color: "var(--text-secondary, #475569)", display: "block", marginBottom: "4px" }}>
-                              AIが推論根拠として参照・引用した一次情報出展（Web Search Sources）:
+                              AI回答に含まれた参照元URL（Web Search Sources）:
                             </span>
                             <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "0.76rem" }}>
                               {obs.citations.map((cite: Citation, cIdx: number) => (
@@ -338,7 +338,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                           </div>
                         ) : (
                           <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #94a3b8)" }}>
-                            ※ 本クエリではAIの事前知識ベースおよび公的学習データから推論されました。
+                            ※ この回答では参照元URLを取得できませんでした。
                           </span>
                         )}
                       </div>

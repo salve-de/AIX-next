@@ -10,7 +10,7 @@ import type { AutoAction, CrawledPage, ScanResult } from "../lib/types";
 import { sampleResult } from "../lib/sample-data";
 import { extractCompetitorTextDiff } from "../lib/competitor-diff";
 
-test("detectCompetitorWebChanges detects meaningful competitor uplift and creates CompetitorEvent", () => {
+test("detectCompetitorWebChanges does not infer competitor web changes from AI candidate movement", () => {
   const previous: ScanResult = {
     ...sampleResult,
     competitors: [{ name: "大手リーガルグループ", recommendedCount: 10, firstChoiceCount: 4, coverage: 50 }],
@@ -22,11 +22,7 @@ test("detectCompetitorWebChanges detects meaningful competitor uplift and create
   };
 
   const events = detectCompetitorWebChanges(latest, previous);
-  assert.equal(events.length, 1);
-  assert.equal(events[0].competitorName, "大手リーガルグループ");
-  assert.equal(events[0].eventType, "speed_claim_added");
-  assert.ok(events[0].summary.includes("大手リーガルグループ"));
-  assert.equal(events[0].severity, "high");
+  assert.deepEqual(events, []);
 });
 
 test("planAndExecuteAutoActions finds verified facts from crawled pages and creates AutoAction without hallucinations", () => {
@@ -64,11 +60,11 @@ test("planAndExecuteAutoActions finds verified facts from crawled pages and crea
   });
 
   assert.equal(actions.length, 1);
-  assert.equal(actions[0].factLabel, "対応スピード・着手体制");
+  assert.equal(actions[0].factLabel, "自社ページの原文");
   assert.equal(actions[0].sourceUrl, "https://aoba.example/about");
-  assert.ok(actions[0].summary.includes("確認済み事実を自動抽出"));
+  assert.ok(actions[0].summary.includes("原文スニペット"));
   assert.equal(factsToApply.length, 1);
-  assert.equal(factsToApply[0].label, "対応スピード・着手体制");
+  assert.equal(factsToApply[0].label, "自社ページの原文");
 
   // 2. 自社サイトに一次情報が一切ない場合（捏造防止の検証）
   const pagesWithoutFact: CrawledPage[] = [
@@ -143,7 +139,8 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
   assert.equal(impacts.length, 1);
   assert.equal(impacts[0].observedUplift, 2);
   assert.equal(impacts[0].providerAgreement.openai, "improved");
-  assert.ok(impacts[0].summary.includes("+2問の推薦枠獲得を客観観測"));
+  assert.ok(impacts[0].summary.includes("自社が候補に含まれた件数"));
+  assert.ok(impacts[0].summary.includes("因果効果は未検証"));
 });
 
 
@@ -205,12 +202,12 @@ test("buildMonthlyValueReport generates complete executive monthly summary witho
   });
 
   assert.equal(report.period, "2026年9月度");
-  assert.ok(report.aiObservationCount >= 8);
-  assert.equal(report.competitorChangeCount, 1);
+  assert.equal(report.aiObservationCount, 2);
+  assert.equal(report.competitorChangeCount, 0);
   assert.equal(report.citationChangeCount, 1);
   assert.equal(report.profileUpdateCount, 1);
-  assert.equal(report.autoActionCount, 1);
-  assert.ok(report.observedUpliftSummary.includes("+1問のAI推薦枠"));
+  assert.equal(report.autoActionCount, 0);
+  assert.ok(report.observedUpliftSummary.includes("自社が候補に含まれた件数"));
   assert.ok(report.topRisks.length > 0);
   assert.ok(report.upcomingTracking.length > 0);
 });
@@ -233,4 +230,3 @@ test("extractCompetitorTextDiff extracts objective diff snippets without halluci
   assert.ok(diff.evidences.some((e: any) => e.dimension === "料金・費用"));
   assert.ok(diff.summary.includes("大手買取チェーン"));
 });
-

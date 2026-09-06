@@ -72,7 +72,7 @@ test("保存済みプロフィールは発行者だけ改名し企業名・事�
   assert.equal(JSON.parse(source).publisher, "AIX");
   const oldTitle = "AIX株式会社 | AIX公開情報";
   const title = currentProfileTitle(oldTitle, "AIX株式会社");
-  assert.equal(title, "AIX株式会社 | Rovan公開情報");
+  assert.equal(title, "AIX株式会社 | Rovan公開情報参照ページ");
   assert.equal(currentProfileTitle("AIX株式会社の公式サイト", "AIX株式会社"), "AIX株式会社の公式サイト");
   assert.equal(currentProfileMarkdown(`# ${oldTitle}\n\nAIX対応`, oldTitle, title), `# ${title}\n\nAIX対応`);
   assert.equal(currentProfileJson("invalid JSON"), "invalid JSON");

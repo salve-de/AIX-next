@@ -1,4 +1,4 @@
-import { currentProfileJson, currentProfileMarkdown, currentProfileTitle } from "./brand-compatibility";
+import { currentProfileTitle } from "./brand-compatibility";
 
 import type {
   PublicProfile,
@@ -7,7 +7,7 @@ import type {
   ScanRecord,
   ScanResult,
 } from "@/lib/types";
-import { env } from "@/lib/env";
+import { siteUrl } from "@/lib/site";
 
 const MAX_SUMMARY_LENGTH = 600;
 const MAX_LIST_ITEMS = 8;
@@ -97,7 +97,8 @@ function markdownText(value: string) {
 }
 
 function sourceLink(url: string, label: string) {
-  return `[${markdownText(label)}](${url})`;
+  const destination = url.replace(/[<>\r\n]/g, "");
+  return `[${markdownText(label)}](<${destination}>)`;
 }
 
 function buildMarkdown(input: {
@@ -123,7 +124,11 @@ function buildMarkdown(input: {
   if (input.facts.length) {
     lines.push("", "## 公開されている情報", "", ...input.facts.map((fact) => `- **${markdownText(fact.label)}**: ${markdownText(fact.value)}`));
   }
-  lines.push("", "## 公式サイト", "", `- ${sourceLink(input.targetUrl, input.targetUrl)}`);
+  if (input.targetUrl) {
+    lines.push("", "## 参照元サイト", "", `- ${sourceLink(input.targetUrl, input.targetUrl)}`);
+  } else {
+    lines.push("", "## 参照元サイト", "", "- 記録された参照元はありません。");
+  }
   if (input.sourcePages.length) {
     lines.push("", "## 出典", "", ...input.sourcePages.map((page) => `- ${sourceLink(page.url, page.title)}${page.description ? ` — ${markdownText(page.description)}` : ""}`));
   }
@@ -134,7 +139,7 @@ function buildMarkdown(input: {
  * Converts an existing ScanResult into a deliberately small public draft.
  * ScanResult has no persisted CrawledPage list, so this layer only uses the
  * public discovery summary and the official target URL already present in the
- * result. Citation URLs from the measured answers may add more official pages;
+ * result. Citation URLs from the measured answers may add more source pages;
  * only URLs on the target's own host are retained. It never publishes answer
  * text, prompts, competitor metrics, evidence gaps, actions, warnings, costs,
  * or model fields.
@@ -144,7 +149,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
   if (!result) throw new Error("診断結果が完成していません。");
 
   const targetUrl = publicUrl(result.targetUrl);
-  if (!targetUrl) throw new Error("公開用の公式URLを確認できませんでした。");
+  if (!targetUrl) throw new Error("公開用のURLを確認できませんでした。");
 
   const discovery = result.discovery;
   const competitorNames = Array.isArray(discovery.competitors) ? discovery.competitors.map((item) => item.name) : [];
@@ -155,10 +160,12 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
   // A discovery summary that repeats a competitor observation is not a
   // company fact. Omit it rather than attempting to rewrite the statement.
   const summary = summaryCandidate && !containsCompetitorName(summaryCandidate, competitorNames) ? summaryCandidate : "";
-  const market = publicText(discovery.market, MAX_LIST_ITEM_LENGTH);
-  const targetCustomers = uniquePublicList(Array.isArray(discovery.targetCustomers) ? discovery.targetCustomers : []);
-  const useCases = uniquePublicList(Array.isArray(discovery.useCases) ? discovery.useCases : []);
-  const title = `${brandName} | Rovan公開情報`;
+  const marketCandidate = publicText(discovery.market, MAX_LIST_ITEM_LENGTH);
+  const market = marketCandidate && !containsCompetitorName(marketCandidate, competitorNames) ? marketCandidate : "";
+  const publicList = (values: unknown[]) => uniquePublicList(values).filter((item) => !containsCompetitorName(item, competitorNames));
+  const targetCustomers = publicList(Array.isArray(discovery.targetCustomers) ? discovery.targetCustomers : []);
+  const useCases = publicList(Array.isArray(discovery.useCases) ? discovery.useCases : []);
+  const title = `${brandName} | Rovan公開情報参照ページ`;
   const facts: PublicProfileDraft["facts"] = [];
 
   const addFact = (label: string, value: string) => {
@@ -174,7 +181,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
 
   const sourcePages: PublicProfileDraft["sourcePages"] = [{
     url: targetUrl,
-    title: `${brandName} 公式サイト`,
+    title: `${brandName} 参照元サイト`,
     description: summary,
   }];
   const ownHost = new URL(targetUrl).hostname.replace(/^www\./i, "").toLowerCase();
@@ -189,7 +196,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
       seenSourceUrls.add(citationUrl);
       sourcePages.push({
         url: citationUrl,
-        title: publicText(citation.title, 180) || "公式ページ",
+        title: publicText(citation.title, 180) || "公開ページ",
         description: "",
       });
       if (sourcePages.length >= 8) break;
@@ -217,7 +224,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
     publisher: "Rovan",
     subject: {
       name: brandName,
-      officialUrl: targetUrl,
+      sourceUrl: targetUrl,
     },
     ...(summary ? { summary } : {}),
     ...(market ? { market } : {}),
@@ -244,25 +251,112 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
   };
 }
 
-/** Removes bearer credentials and internal source identifiers from responses. */
+function objectValue(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+
+function safeStoredFacts(values: unknown[], fallbackSourceUrl: string) {
+  const facts: PublicProfileDraft["facts"] = [];
+  const seen = new Set<string>();
+  for (const value of values) {
+    const item = objectValue(value);
+    if (!item) continue;
+    const label = publicText(item.label, 80);
+    const factValue = publicText(item.value, MAX_LIST_ITEM_LENGTH);
+    const sourceUrl = publicUrl(item.sourceUrl) || (item.sourceUrl === fallbackSourceUrl ? fallbackSourceUrl : "");
+    if (!label || !factValue || !sourceUrl) continue;
+    const key = `${label}\u0000${factValue}\u0000${sourceUrl}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    facts.push({ label, value: factValue, sourceUrl });
+    if (facts.length >= 32) break;
+  }
+  return facts;
+}
+
+function safeStoredSourcePages(values: unknown[]) {
+  const pages: PublicProfileDraft["sourcePages"] = [];
+  const seen = new Set<string>();
+  for (const value of values) {
+    const item = objectValue(value);
+    if (!item) continue;
+    const url = publicUrl(item.url);
+    const title = publicText(item.title, 180) || "公開ページ";
+    const description = publicText(item.description, MAX_SUMMARY_LENGTH);
+    if (!url || seen.has(url)) continue;
+    seen.add(url);
+    pages.push({ url, title, description });
+    if (pages.length >= 8) break;
+  }
+  return pages;
+}
+
+function safeStoredTitle(value: unknown, brandName: string) {
+  const candidate = currentProfileTitle(publicText(value, 180), brandName);
+  return candidate && !PRIVATE_MARKERS.some((marker) => marker.test(candidate)) && !/公式台帳|公認推薦|ランキング|AI公式/iu.test(candidate)
+    ? candidate
+    : `${brandName} | Rovan公開情報参照ページ`;
+}
+
+function buildPublicStructuredData(input: { brandName: string; targetUrl: string; summary: string; market: string; useCases: string[] }) {
+  return `${jsonText({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: input.brandName,
+    ...(input.targetUrl ? { url: input.targetUrl } : {}),
+    ...(input.summary ? { description: input.summary } : {}),
+    ...(input.market ? { knowsAbout: [input.market] } : {}),
+    ...(input.useCases.length ? { keywords: input.useCases } : {}),
+    inLanguage: "ja-JP",
+  })}\n`;
+}
+
+function buildPublicJson(input: { brandName: string; targetUrl: string; summary: string; market: string; targetCustomers: string[]; useCases: string[]; facts: PublicProfileDraft["facts"]; sourcePages: PublicProfileDraft["sourcePages"]; updatedAt: string }) {
+  return `${JSON.stringify({
+    recordVersion: "1",
+    publisher: "Rovan",
+    subject: {
+      name: input.brandName,
+      ...(input.targetUrl ? { sourceUrl: input.targetUrl } : {}),
+    },
+    ...(input.summary ? { summary: input.summary } : {}),
+    ...(input.market ? { market: input.market } : {}),
+    ...(input.targetCustomers.length ? { targetCustomers: input.targetCustomers } : {}),
+    ...(input.useCases.length ? { useCases: input.useCases } : {}),
+    facts: input.facts,
+    sourcePages: input.sourcePages,
+    updatedAt: input.updatedAt,
+  }, null, 2)}\n`;
+}
+
+/** Rebuilds all public artifacts from allow-listed profile fields. */
 export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
-  const title = currentProfileTitle(record.title, record.brandName);
+  const brandName = publicText(record.brandName, 180) || "公開情報ページ";
+  const targetUrl = publicUrl(record.targetUrl);
+  const summary = publicText(record.summary, MAX_SUMMARY_LENGTH);
+  const market = publicText(record.market, MAX_LIST_ITEM_LENGTH);
+  const targetCustomers = uniquePublicList(Array.isArray(record.targetCustomers) ? record.targetCustomers : []);
+  const useCases = uniquePublicList(Array.isArray(record.useCases) ? record.useCases : []);
+  const facts = safeStoredFacts(Array.isArray(record.facts) ? record.facts : [], targetUrl);
+  const sourcePages = safeStoredSourcePages(Array.isArray(record.sourcePages) ? record.sourcePages : []);
+  const title = safeStoredTitle(record.title, brandName);
+  const publicInput = { brandName, targetUrl, summary, market, targetCustomers, useCases, facts, sourcePages, updatedAt: record.updatedAt };
   return {
     id: record.id,
     slug: record.slug,
     status: record.status,
     title,
-    brandName: record.brandName,
-    targetUrl: record.targetUrl,
-    summary: record.summary,
-    market: record.market,
-    targetCustomers: [...record.targetCustomers],
-    useCases: [...record.useCases],
-    facts: record.facts.map((fact) => ({ ...fact })),
-    sourcePages: record.sourcePages.map((page) => ({ ...page })),
-    structuredData: record.structuredData,
-    markdown: currentProfileMarkdown(record.markdown, record.title, title),
-    json: currentProfileJson(record.json),
+    brandName,
+    targetUrl,
+    summary,
+    market,
+    targetCustomers,
+    useCases,
+    facts,
+    sourcePages,
+    structuredData: buildPublicStructuredData(publicInput),
+    markdown: buildMarkdown({ title, brandName, targetUrl, summary, market, targetCustomers, useCases, facts, sourcePages }),
+    json: buildPublicJson(publicInput),
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
     expiresAt: record.expiresAt,
@@ -284,25 +378,25 @@ export type DirectProfileInput = {
 
 /**
  * 自社サイトを持たない企業（町工場・農家・個人商店等）向けに、
- * 入力された会社名や強みから直接「公式Web拠点」のドラフトを構築する。
+ * 入力された会社名や公開情報から参照ページのドラフトを構築する。
  */
 export function buildDirectPublicProfileDraft(input: DirectProfileInput, generatedAt = new Date().toISOString()): PublicProfileDraft {
   const brandName = publicText(input.brandName, 180);
   if (!brandName) throw new Error("会社名または屋号を入力してください。");
 
-  // 自社サイトがない場合、このRovan参照インデックスそのものがWeb参照拠点URLとなる
+  // 自社サイトがない場合も、Rovan上のページは公開情報の整理先として扱う。
   const slug = brandName.toLowerCase().replace(/[^a-z0-9\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf-]+/gi, "-").replace(/^-+|-+$/g, "") || "company";
-  const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
-  const title = `${brandName} 公開情報参照インデックス`;
-  const market = publicText(input.market || "専門技術・サービス", MAX_LIST_ITEM_LENGTH);
-  const summary = publicText(input.summary || `${brandName}の公開情報参照インデックス。主要生成AI（ChatGPT/Gemini/Claude等）が客観的な事実に基づいて参照するための構造化データです。`, MAX_SUMMARY_LENGTH);
+  const targetUrl = `${siteUrl}/ai/company/${encodeURIComponent(slug)}`;
+  const title = `${brandName} | Rovan公開情報参照ページ`;
+  const market = publicText(input.market || "", MAX_LIST_ITEM_LENGTH);
+  const summary = publicText(input.summary || `「${brandName}」について入力された情報を、公開前に確認できる形で整理した参照ページです。`, MAX_SUMMARY_LENGTH);
   const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : []);
   const useCases = uniquePublicList(input.useCases?.length ? input.useCases : []);
 
   const facts: PublicProfileDraft["facts"] = [
-    { label: "正式名称・屋号", value: brandName, sourceUrl: targetUrl },
-    { label: "専門分野・業種", value: market, sourceUrl: targetUrl },
+    { label: "入力された名称", value: brandName, sourceUrl: targetUrl },
   ];
+  if (market) facts.push({ label: "入力された分野", value: market, sourceUrl: targetUrl });
 
   if (input.location?.trim()) {
     facts.push({ label: "所在地・対応エリア", value: publicText(input.location, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
@@ -318,7 +412,7 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   }
 
   const sourcePages: PublicProfileDraft["sourcePages"] = [
-    { url: targetUrl, title: `${brandName} Rovan登録公式ナレッジ台帳`, description: "AI巡回・推論用公式データ台帳" },
+    { url: targetUrl, title: `${brandName} | Rovan公開情報参照ページ`, description: "入力された情報を整理した参照ページ" },
   ];
 
   const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();
@@ -329,8 +423,8 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
     name: brandName,
     url: targetUrl,
     description: summary,
-    knowsAbout: [market],
-    keywords: useCases,
+    ...(market ? { knowsAbout: [market] } : {}),
+    ...(useCases.length ? { keywords: useCases } : {}),
     inLanguage: "ja-JP",
     validThrough: validThroughDate,
   };
@@ -340,10 +434,10 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
     publisher: "Rovan",
     subject: {
       name: brandName,
-      officialUrl: targetUrl,
+      sourceUrl: targetUrl,
     },
     summary,
-    market,
+    ...(market ? { market } : {}),
     targetCustomers,
     useCases,
     facts,

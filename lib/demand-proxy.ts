@@ -83,7 +83,7 @@ function inferCluster(prompt: string): BuyerPrompt["cluster"] {
   if (/比較|主要\s*\d+社|比べ/i.test(prompt)) return "comparison";
   if (/費用対効果|コスパ|費用|価格|料金/i.test(prompt)) return "value";
   if (/乗り換え|Excel|スプレッドシート|代替/i.test(prompt)) return "alternative";
-  if (/導入|短期間|いつから|始め|即日|すぐに|急ぎ|スピード/i.test(prompt)) return "implementation";
+  if (/導入|短期間|いつから|始め|即日|すぐに|急ぎ|スピード|手続き|進め方|受付方法|利用前|初回相談/i.test(prompt)) return "implementation";
   if (/監査|信頼|安全|証跡|認証/i.test(prompt)) return "trust";
   if (/支援|サポート|問い合わせ/i.test(prompt)) return "support";
   if (/従業員|企業規模|部門|担当者|向け/i.test(prompt)) return "segment";
@@ -133,7 +133,7 @@ function signalForPrompt(prompt: BuyerPrompt, result: ScanResult, lostPromptIds:
         ? "この質問では自社が候補に入りませんでした"
         : "この質問はまだ測定できていません";
   const detail = successful.length
-    ? `${successful.length}件のAI回答を確認。自社の候補入り${ownRecommendationRate}%・第一候補${firstChoiceRate}%。重要度${importance}/5、緊急度${urgency}/5、${lostPrompt ? "失注あり" : "失注判定なし"}から、次に確認する優先度を算出しています。検索数や売上の実測値ではありません。`
+    ? `${successful.length}件のAI回答を確認。自社の候補入り${ownRecommendationRate}%・第一候補${firstChoiceRate}%。重要度${importance}/5、緊急度${urgency}/5、${lostPrompt ? "候補外の質問あり" : "候補外の質問なし"}から、次に確認する優先度を算出しています。検索数や売上の実測値ではありません。`
     : `この質問の成功したAI回答はありません。重要度${importance}/5、緊急度${urgency}/5、意図「${intent}」から仮の優先度を算出しています。再測定するまで需要の有無は判断できません。`;
   const nextAction = lostPrompt || (successful.length > 0 && ownRecommendationRate < 50)
     ? "この質問で選ばれる根拠を公開情報から確認し、改善後に同じ質問を再測定する"
@@ -189,7 +189,7 @@ export function buildDemandProxy(input: DemandProxyInput): DemandProxy {
     limitations: [
       "この一覧は今回のAI回答と質問設計から作った需要の手掛かりです。検索ボリューム、顧客数、購入確率、売上を測定したものではありません。",
       "外部接続がないため、GA4・Search Console・広告・CRMの実績は含みません。",
-      "priorityPromptsのscoreは、重要度・緊急度・購入に近い質問か・今回の失注・測定有無を合成した相対優先度です。",
+      "priorityPromptsのscoreは、重要度・緊急度・購入に近い質問か・今回の候補外・測定有無を合成した相対優先度です。",
     ],
   };
 }

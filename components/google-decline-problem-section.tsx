@@ -1,13 +1,11 @@
 "use client";
 
-import Link from "next/link";
-
 export function GoogleDeclineProblemSection() {
   return (
     <section
       id="google-decline"
       className="google-decline-section shell"
-      aria-label="Google検索の衰退と中小企業の課題"
+      aria-label="検索とAI回答の使い分け"
       style={{
         margin: "44px auto",
       }}
@@ -38,7 +36,7 @@ export function GoogleDeclineProblemSection() {
               fontFamily: "var(--font-mono, monospace)",
             }}
           >
-            従来のホームページが効かなくなった理由
+            AI回答時代に確認しておきたいこと
           </span>
           <h2
             style={{
@@ -50,11 +48,11 @@ export function GoogleDeclineProblemSection() {
               margin: "0 0 14px",
             }}
           >
-            「Google検索」の利用が減り、顧客は「AIへの直接相談」へ移行しています
+            検索だけでなく、AIに直接相談して比較する場面もあります
           </h2>
           <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.75, margin: 0 }}>
-            広告だらけの検索結果を見比べるのをやめ、ChatGPTなどのAIに「どこが一番いい？」と聞く客が急増。<br />
-            自社のホームページがあるのに客足が遠のく、3つの見えない理由です。
+            ChatGPTなどのAIに「どこが自分に合う？」と尋ねる場面では、質問・参照元・測定時点によって表示される候補が変わります。<br />
+            ここでは、回答を測定する前に確認しておきたい3つのポイントを整理します。
           </p>
         </div>
 
@@ -97,14 +95,14 @@ export function GoogleDeclineProblemSection() {
                 理由 01
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                検索が広告だらけになり、客がAIへ逃げた
+                比較の入口が検索だけではなくなった
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              広告や比較サイトにうんざりした客は、忖度のないAIに直接おすすめを聞くようになりました。
+              一部の人は検索結果だけでなく、AIに条件を伝えて候補を比較するようになっています。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>損失:</strong> 従来の検索経由の問い合わせが、静かに激減しています。
+              <strong>確認点:</strong> AI経由の流入や問い合わせは、アクセス解析などで別に確認する必要があります。
             </div>
           </div>
 
@@ -138,14 +136,14 @@ export function GoogleDeclineProblemSection() {
                 理由 02
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                綺麗なホームページほど、AIには読めない
+                人向けの表示だけでは比較しにくいことがある
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              写真やデザイン中心のサイトは、文章を解析するAIロボットには強みが1文字も伝わりません。
+              写真やデザインだけでなく、名称・分野・条件・参照元を文章と構造化データで示すと、AIや人が確認しやすくなります。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>損失:</strong> 優れた実績があっても、AIからは「存在しない」扱いになります。
+              <strong>確認点:</strong> 掲載内容がどのページに書かれているか、参照元をたどれる状態にします。
             </div>
           </div>
 
@@ -179,14 +177,14 @@ export function GoogleDeclineProblemSection() {
                 理由 03
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                気付かないうちに、客が大手チェーンへ全員流出
+                回答の候補は質問ごとに変わる
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              AIは知名度のある大手ばかりを紹介するため、自社は比較される前に除外されます。
+              AIは質問・参照元・モデルの更新によって異なる候補を表示します。自社が含まれるかは、同じ条件で測定して確認します。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>損失:</strong> 問い合わせが来ないため、客を奪われた事実にすら気付けません。
+              <strong>確認点:</strong> 1回の回答だけで判断せず、質問パネルと測定日をそろえて推移を見ます。
             </div>
           </div>
         </div>

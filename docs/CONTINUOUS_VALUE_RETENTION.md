@@ -1,684 +1,173 @@
-# Rovan Continuous Value & Retention Strategy
+# Rovan 継続価値・リテンション設計
 
-> Rovanを「一回診断して終わるツール」にしないための継続価値設計。
+> Rovanを一回の診断で終わらせず、同じ条件でAI回答の変化を確認できるサービスとして設計するための現行仕様。
 >
-> 最終更新: 2026-09-05
+> 最終更新: 2026-09-06
 
----
+## 0. 結論
 
-# 0. 結論
-
-Rovanの最大の解約リスクは、ユーザーが一度Scanして結果を見たあと、
+Rovanの月額価値は、AIの順位や売上を約束することではない。利用者が指定した質問・AI・地域・測定時点を記録し、同じ条件で再測定して、次の4点を確認できることにある。
 
 ```text
-へえ、今はこうなのか
+前回の観測
   ↓
-何個か直す
+今回の観測
   ↓
-その後どうなったかよく分からない
+変化した質問・参照元
   ↓
-毎月払う理由がない
-  ↓
-解約
+次に確認する公開情報
 ```
 
-になることである。
+変更案は、取得した事実と参照元を確認できる下書きとして扱う。Rovanは対象サイト、第三者サイト、AI Providerの内部データを勝手に変更しない。
 
-したがってRovanは「現在の診断結果」を売るのではなく、
+## 1. 現行の北極星指標
 
-> **Rovanを導入してから、自社のAI購買ポジションがどう変わったかを継続的に可視化し、Rovanが改善を実行し、その結果を再測定し、次の改善まで進め続けるサービス**
+### 候補回復率（測定質問ベース）
 
-にする。
-
-ユーザーが毎月理解できるべきことは4つだけ。
+初回測定で自社が候補外だった質問のうち、同じ質問パネル・AI提供元・モデル・地域・反復条件で再測定し、今回自社が候補に含まれた質問の割合。
 
 ```text
-Before
-  ↓
-Rovanが何をした
-  ↓
-After
-  ↓
-次に何をする
+候補回復率 =
+  初回に候補外で、今回候補入りを確認できた質問数
+  ÷ 初回に候補外で、今回も比較可能だった質問数
 ```
 
-この4点が明確なら、Rovanは健康診断ではなく「AI推薦の継続改善担当者」になる。
+次のものとは区別する。
 
----
+- 顧客数、問い合わせ数、契約数、売上、検索ボリューム
+- AI Providerの内部順位や全利用者の会話
+- 市場シェア、顧客シェア、競合の売上
+- 変更施策の因果効果
 
-# 1. 継続課金の本質
+比較条件が一致しない、またはAI回答を取得できない場合は、数値を作らず「比較不可」「未完了」と表示する。
 
-## 1.1 一回診断では弱い
+## 2. 継続測定で確認する項目
 
-単発Scanで分かるのは「今どう見えているか」だけ。
+毎回、数値だけでなく母数と条件を並べる。
 
-それだけでは顧客は一度見れば十分である。
+| 項目 | 表示内容 |
+| --- | --- |
+| 質問パネル | パネル種別、バージョン、質問数 |
+| 観測条件 | AI提供元、モデル、地域、測定日時、反復回数 |
+| 取得状態 | 予定数、成功数、未取得数 |
+| 候補入り | 自社が回答に含まれた質問数・割合 |
+| 参照元 | AI回答から取得できたURLと質問との対応 |
+| 変更 | 前回との差分。差分がない場合も「変化なし」と明示 |
+| 次の確認 | 公開情報に追加確認できる項目と参照元 |
 
-Rovanの月額価値は以下に置く。
+取得できなかった回答は候補外として数えない。成功した回答だけを母数にした場合は、そのことを画面と書き出しデータに残す。
 
-1. 自社のAI推薦状況を継続観測する
-2. 競合の変化を検知する
-3. 負けた理由をEvidence単位で特定する
-4. Rovanが改善案を作る
-5. 承認後にPR / Draftを作る
-6. 公開後に同じBuyer Promptで再測定する
-7. 何が改善したかを表示する
-8. 次の最有力改善を自動で決める
-
-つまり、
+## 3. 提供する価値のループ
 
 ```text
 Measure
-→ Explain
-→ Fix
-→ Publish
-→ Remeasure
-→ Learn
-→ Next Action
+  → Explain
+  → Review
+  → Publish only after approval
+  → Remeasure
+  → Record uncertainty
 ```
 
-を回し続けることが月額商品の本体である。
+### 3.1 Measure
 
----
+固定した質問パネルでAI回答を取得し、回答本文・候補文字列・参照元URL・提供元・モデル・測定日時を保存する。
 
-# 2. ホーム画面の中心は「現在値」ではなく「Rovan導入後の変化」
+### 3.2 Explain
 
-現在のScoreだけを大きく出してはいけない。
+自社が候補に含まれたか、候補外だった質問、回答に含まれた他社候補、引用された公開ページを確認できるようにする。候補名は回答ログ上の文字列であり、他社の品質評価ではない。
 
-ユーザーが最初に見るべきなのは、
+### 3.3 Review
 
-> **Rovanを入れてから何が変わったか**
+公開情報から確認できる事実と、未確認の項目を分ける。Change Packや公開プロフィールは、原典照合と掲載権限の確認を経る下書きとする。
 
-である。
+### 3.4 Publish only after approval
 
-例:
+明示的な承認がない限り、Rovanの公開プロフィールを公開・更新しない。対象会社のサイトへ自動で書き込まない。
 
-```text
-Since Rovan started
+### 3.5 Remeasure
 
-AI Buyer Share
-18% → 31%
-+13pt
+変更後は、質問・AI・地域・反復条件を揃えて再測定する。条件が変わった場合は、前回との比較を成立させない。
 
-Recommendation Prompts
-9 / 50 → 16 / 50
+### 3.6 Record uncertainty
 
-First Choice
-6% → 11%
+観測された時間的な変化と、変更が原因であるという因果判断を分離する。外部サイト、検索結果、モデル更新、質問文の差を確認できるようにする。
 
-Citation Prompts
-7 → 14
+## 4. Watch画面の情報設計
 
-Market Position
-4 / 12 → 2 / 12
+ダッシュボードの優先順位は次の順にする。
 
-Gap vs Competitor A
--21pt → -8pt
-```
+1. **今回の状態** — 自社の候補入り率、取得成功数、測定日時。
+2. **前回との差分** — 候補入り・候補外・参照元URLの変化。
+3. **比較条件** — パネル、質問数、AI、モデル、地域、反復回数。
+4. **根拠** — 対象質問、回答ログ、参照元URL。
+5. **次の確認** — 公開情報の整理案。公開前確認が必要であることを明示。
 
-「現在31%」だけではなく、必ずBaselineとの差を見せる。
+大きな数字を単独で見せない。数字の直下に母数・条件・注記を置き、カードを増やすより同じ定義の表と差分にまとめる。
 
----
+## 5. 変化の状態
 
-# 3. 絶対北極星：AI顧客奪還シェア（Competitor Take-Back Share）
+| 状態 | 意味 |
+| --- | --- |
+| 改善 | 同じ比較条件で、自社が候補に含まれた質問を確認 |
+| 低下 | 同じ比較条件で、自社が候補外になった質問を確認 |
+| 条件変更 | パネル、AI、モデル、地域、反復条件が一致せず比較不可 |
+| 取得不足 | 一部または全部のAI回答を取得できず、確定できない |
+| 変化なし | 比較可能な条件で前回との差分を確認できない |
 
-Rovanには分析上複数の指標（Coverage, First Choice Rate, Citation等）が存在するが、プロジェクト全体および顧客向けには**単一の絶対北極星**を定める。
+「改善」「低下」は観測上のラベルであり、顧客行動や売上の変化を意味しない。
 
-> **『AI顧客奪還シェア（Competitor Take-Back Share）』**
+## 6. 競合・参照元の扱い
 
-### 定義
+AI回答に含まれた他社候補は、今回の質問に対する比較対象として表示する。競合サイトの本文差分を検知した証拠が保存されていない場合、「競合サイトが変更された」とは表示しない。
 
-> 地域の買い手がAI（ChatGPT/Gemini/Perplexity等）に相談した際、ライバル大手を抑えて自社が最有力候補として選ばれた割合。
+現行実装では、競合Webの前後クロール差分を永続化していないため、競合Web変更イベントは生成しない。AI回答内の候補増減と、競合サイト本文の変更は別のデータとして追加するまで混同しない。
 
-### 計測ロジック（テレビ視聴率調査・ミステリーショッパー方式）
+## 7. Activityと通知
 
-- 世界中の一般人のプライベートチャットを盗聴することは技術的・法的に不可能。
-- 代わりに、その地域・業種で買い手が実際に相談する「代表50問パネル」に対し、Rovanの監視ロボットが一般購入者として定期的に覆面調査を自動実行する。
-- 「固定パネル50問中、大手を抑えて自社が推薦候補枠に入った割合」を100%客観的事実として算出する。
+通知に載せるのは、実際に保存された観測・差分・参照元・確認案だけとする。作業量を示す架空の件数や、確認していない競合巡回件数を表示しない。
 
-例:
+通知の最小構成は次のとおり。
 
-```text
-AI顧客奪還シェア（大手に奪われていた客の防衛率）
-0% → 23% → 38% → 54%（+54pt 奪還成功）
-```
+- 対象と測定日時
+- パネルと取得成功数
+- 自社が候補に含まれた質問数
+- 候補外として記録された質問数
+- 参照元URLの追加・削除
+- 比較不可または取得不足の理由
+- 公開前の確認案（存在する場合）
+- 結果画面へのリンク
 
-ユーザーが毎週・毎月追うべき、経営の命運を握る一本のグラフにする。
+無料期間や課金条件は料金ページ・特商法表記・決済画面と同じ値を使う。
 
-### コア運用方針（大手衝突回避・感謝しろモデル）
+## 8. データ境界
 
-- 社長への質問・確認通知・1タップ操作すら全廃（完全放置）。
-- 大手の資本力勝負（即日等）を完全回避し、裏で蓄積したAI推薦ビッグデータを元に、御社既存の「地域密着・自社施工等のニッチ事実」をAI公式台帳へ自動補強。
-- 社長には「大手と殴り合わずに済むよう調整しておいた（作業ゼロ）」という参謀からの完了報告のみを届ける。
+| 保存するもの | 公開してよいもの | 公開しないもの |
+| --- | --- | --- |
+| 回答ログ、参照元、条件、差分 | 承認済み事実、参照元、更新日時 | 未承認の回答ログ、他社名を含む測定ログ、Evidence、メール、トークン |
+| Change Pack、確認項目 | 確認済みの公開プロフィール | 原価、秘密値、Provider内部情報 |
+| Watch履歴、取得状態 | 公開範囲を明示した要約 | 顧客・売上・市場シェアへの換算 |
 
----
+## 9. 現行実装との対応
 
-# 4. Change Impactを中核UIにする
+| 現行実装 | 扱い |
+| --- | --- |
+| 無料診断 | 固定した無料質問パネルで一度観測。未取得は欠損として扱う |
+| 有料Watch | 固定コアパネルを同じ条件で再測定し、履歴と差分を保存 |
+| Change Pack | 取得済み公開ページと確認済み入力を素材にした承認前ドラフト |
+| 自動対応案 | 原文スニペットを確認案として記録するだけ。自動公開・自動反映はしない |
+| 競合Web変更 | 永続クロール差分がないため判定しない |
+| 候補回復率 | 比較可能なパネルと成功観測が揃った場合だけ算出 |
 
-`Change → Remeasure`は単なる分析機能ではなく、継続価値の中心にする。
+## 10. 成功条件
 
-例:
+利用者が毎回、次を答えられること。
 
-```text
-CHANGE IMPACT
+1. 今回どの条件で測定したか。
+2. 何件の回答を取得できたか。
+3. どの質問で自社が候補に含まれたか。
+4. 前回から何が変わったか。
+5. どのURLが根拠になったか。
+6. 次に何を確認するか。
+7. 何がまだ分からないか。
 
-9月3日にRovanが変更
-- 50〜300名向け導入事例を追加
-- 平均導入期間を追加
-- CSV移行情報を追加
-
-Affected Buyer Prompts: 11
-
-Before
-Recommendation Coverage: 17%
-
-After
-Recommendation Coverage: 26%
-
-Observed uplift: +9pt
-
-Provider result
-OpenAI      improved
-Gemini      improved
-Perplexity  unchanged
-```
-
-さらにPrompt単位で、
-
-```text
-「従業員100名向け勤怠管理」
-Before: 推薦なし
-After: 2位推薦
-```
-
-まで見せる。
-
-重要なのは、Rovanが「この変更が100%原因」と断定しないこと。
-
-以下を分離して表示する。
-
-- Observed uplift
-- Temporal association
-- Provider agreement
-- Prompt-level agreement
-- Causal confidence
-
----
-
-# 5. 「今週Rovanが何をしたか」を必ず見せる
-
-月額サービスで最も危険なのは、ユーザーが
-
-> 「金を払っているけど何をしてくれているのか分からない」
-
-と思うこと。
-
-そのため、Rovan Activityを明示する。
-
-例:
-
-```text
-Rovan ACTIVITY — THIS MONTH
-
-450 AI answers measured
-32 competitor pages checked
-18 citation sources analyzed
-4 competitive gaps found
-3 change packs generated
-2 GitHub PRs created
-1 measurable improvement detected
-```
-
-Rovanが裏側で働いた量を可視化する。
-
-ただし「作業量」だけを価値にしない。
-
-Activityは必ず、
-
-```text
-Activity
-→ Finding
-→ Action
-→ Result
-```
-
-へ接続する。
-
----
-
-# 6. 競合監視を継続理由にする
-
-自社だけを毎週見ても変化が少なく、飽きる可能性がある。
-
-一方、競合の変化は行動理由になる。
-
-Rovanは以下を監視する。
-
-- Recommendation Coverage変化
-- 新しいBuyer Promptでの競合出現
-- Citation Source変化
-- 競合サイトの重要ページ変更
-- 新しい価格・プラン
-- 新しい導入事例
-- 新しいSecurity / Compliance Evidence
-- 新しいIntegration
-- 新しい第三者評価
-
-例:
-
-```text
-COMPETITOR ALERT
-
-Competitor A
-Rovan Buyer Panel Share +11pt this week
-
-Newly cited page:
-competitor.example/security
-
-New evidence detected:
-- ISO 27001
-- SOC 2
-- SSO
-- Data residency
-
-Affected Buyer Prompts:
-- セキュリティ重視
-- 大企業向け
-- 情シス向け
-
-Rovan finding:
-あなたにも同等Evidenceがありますが、AIが確認しやすい公開ページに存在しません。
-
-Next action:
-Security Evidence Change Pack ready
-```
-
-これなら「競合が動いていないか確認する」という継続理由が生まれる。
-
----
-
-# 7. 変化がない週にも価値を作る
-
-毎週ランキングが改善するとは限らない。
-
-「上昇した週だけ価値がある」設計にすると、変化がない週が解約理由になる。
-
-Rovanは4つの状態すべてに意味を持たせる。
-
-## 7.1 Improved
-
-```text
-+4 Buyer Promptsで新しく推薦入り
-```
-
-## 7.2 Declined
-
-```text
--2 Buyer Promptsで推薦喪失
-競合Aが新しく上位へ
-```
-
-## 7.3 Environment changed
-
-```text
-GeminiのCitation Source構成が変化
-新しい競合がBuyer Prompt 3件に出現
-```
-
-## 7.4 Stable
-
-```text
-50 Buyer Prompts中48件で状態維持
-重大な競合変化なし
-AI Provider側の大きな変動なし
-```
-
-何も起きていない場合でも、
-
-> **「重大な変化が起きていないことを確認できた」**
-
-という監視価値を提供する。
-
----
-
-# 8. 常にNext Best Actionを一つ出す
-
-ダッシュボードに大量のOpportunityを並べるだけでは弱い。
-
-ユーザーが知りたいのは、
-
-> **結局、次に何をやれば一番効きそうなのか**
-
-である。
-
-常に一つを最上位に出す。
-
-例:
-
-```text
-NEXT BEST ACTION
-
-平均導入期間を公開する
-
-Why now
-- 11 Buyer Promptsに関連
-- 主要競合3社中3社が公開
-- 自社は公開Evidenceなし
-- OpenAI / GeminiのLost Promptで共通して関連
-
-Expected affected prompts: 11
-Confidence: High
-
-[Change Packを見る]
-[承認してPRを作る]
-```
-
-Next Best Actionは、
-
-- Impact
-- Confidence
-- Effort
-- Evidence quality
-- Provider agreement
-- Competitor prevalence
-
-などでPriorityを決める。
-
----
-
-# 9. 「金を払っとくから勝手に強くしといて」に近づける
-
-ユーザーへ毎週大量の作業を要求してはいけない。
-
-理想的な自動化範囲:
-
-```text
-毎週
-  ↓
-同一Buyer Promptを再測定
-  ↓
-競合変化を検知
-  ↓
-Citationを解析
-  ↓
-Competitive Gapを更新
-  ↓
-公開情報からEvidenceを補完
-  ↓
-Change Packを生成
-  ↓
-GitHub PR / WordPress Draftまで作成
-```
-
-ユーザーには、
-
-```text
-今週3件の改善案を作りました。
-
-Expected affected prompts: 17
-High confidence: 2
-Medium confidence: 1
-
-[3件を確認]
-```
-
-程度まで入力負荷を落とす。
-
-Rovanは勝手に本番公開・main mergeまではしない。
-
-原則:
-
-> **分析・準備・Draft/PRまでは自動。公開は承認付き。**
-
----
-
-# 10. Monthly Value Report
-
-請求日の前後で、ユーザーが「今月Rovanにいくら払う価値があったか」を理解できるレポートを出す。
-
-例:
-
-```text
-YOUR Rovan MONTH
-
-AI Buyer Panel Share
-24% → 36% (+12pt)
-
-Market Position
-5 / 14 → 3 / 14
-
-New wins
-+7 Buyer Prompts
-
-Lost wins
--1 Buyer Prompt
-
-Rovan work
-1,350 AI observations
-84 competitor pages checked
-41 citations analyzed
-6 gaps discovered
-4 changes prepared
-3 changes published
-
-Measured change impact
-2 / 3 published changes showed positive observed movement
-
-Biggest win
-「100〜300名向け」Prompt cluster
-+21pt
-
-Current biggest risk
-Competitor B is gaining in Security prompts
-
-Next best action
-Publish SSO / Security Evidence
-```
-
-このレポートが、更新課金の理由を毎月説明する。
-
----
-
-# 11. Retention Homeの理想構成
-
-Rovan Workspaceのトップ画面は以下の順にする。
-
-## 1. Since Rovan Started
-
-最重要KPIとBaseline差。
-
-```text
-31%
-Rovan Buyer Panel Share
-+13pt since Rovan started
-```
-
-## 2. This Week
-
-```text
-+4 new recommendation wins
--1 lost recommendation
-Competitor A +3pt
-2 citation source changes
-```
-
-## 3. Change Impact
-
-最近の変更がどう効いたか。
-
-## 4. Rovan Activity
-
-今週 / 今月Rovanが何をしたか。
-
-## 5. Competitor Alerts
-
-競合の重要変化。
-
-## 6. Next Best Action
-
-次に一番効きそうな一手。
-
-この順番にすることで、ユーザーは数十秒で、
-
-```text
-今どうなっている
-何が変わった
-Rovanが何をした
-競合はどう動いた
-次に何をする
-```
-
-を理解できる。
-
----
-
-# 12. 実装データとして追加すべきもの
-
-最低限、以下を永続化する。
-
-## Baseline
-
-```ts
-Baseline {
-  watchId
-  startedAt
-  scanId
-  buyerPanelShare
-  recommendationCoverage
-  firstChoiceRate
-  citationCoverage
-  marketPosition
-}
-```
-
-## ChangeLineage
-
-```ts
-ChangeLineage {
-  changePackId
-  baselineScanId
-  gapIds
-  claimIds
-  promptIds
-  approvedAt
-  publishedAt
-  target
-}
-```
-
-## ChangeImpact
-
-```ts
-ChangeImpact {
-  changePackId
-  beforeScanId
-  afterScanId
-  observedUplift
-  providerAgreement
-  promptAgreement
-  causalConfidence
-  measuredAt
-}
-```
-
-## CompetitorEvent
-
-```ts
-CompetitorEvent {
-  competitorId
-  type
-  sourceUrl
-  detectedAt
-  affectedPromptIds
-  affectedDimensions
-  severity
-}
-```
-
-## ActivityEvent
-
-```ts
-ActivityEvent {
-  watchId
-  type
-  objectId
-  summary
-  createdAt
-}
-```
-
----
-
-# 13. 成功条件
-
-Rovanの継続価値が完成したと言えるのは、ユーザーが毎月以下を答えられる状態。
-
-1. Rovan導入時より良くなったのか
-2. どのBuyer Promptで良くなったのか
-3. Rovanは何をしたのか
-4. その変更後に何が起きたのか
-5. 競合は今どう動いているのか
-6. 今一番危険なことは何か
-7. 次に何をすべきか
-
-そしてRovan側は、ユーザーが何もしなくても毎週、
-
-```text
-Observe
-→ Detect
-→ Explain
-→ Prepare Fix
-→ Remeasure
-→ Report
-```
-
-まで進める。
-
----
-
-# 14. 開発優先順位への反映
-
-`CORE_PRODUCT_STRATEGY.md`にあるP0/P1開発と直結する。
-
-特に優先する。
-
-| Priority | Work | Retention value |
-|---|---|---|
-| P0 | Competitive Evidence Engine | なぜ負けたか分かる |
-| P0 | Claim Graph | 改善対象を正確に持つ |
-| P0 | Dynamic Evidence Gap | 本当に足りないものを出す |
-| P1 | Change Lineage | Rovanが何を変えたか追跡 |
-| P1 | Change → Remeasure | 効果を見せる |
-| P1 | Baseline / Since Rovan Started | 導入価値を累積表示 |
-| P1 | Competitor Events | 継続監視理由 |
-| P1 | Next Best Action | 次の行動を一本化 |
-| P2 | Monthly Value Report | 更新課金の価値説明 |
-| P3 | Additional UI polish | 上記の後 |
-
----
-
-# 15. 顧客向け説明
-
-弱い説明:
-
-> AI検索順位を監視します。
-
-より、次を使う。
-
-> **Rovanを入れた日から、AIで自社がどれだけ選ばれるようになったかを記録し続けます。競合に負けた理由を見つけ、修正し、その修正が効いたかまで確認します。**
-
-Rovanの立ち位置は、
-
-> AI SEO health check
-
-ではなく、
-
-> **continuous AI recommendation improvement operator**
-
-である。
-
-ユーザーが最終的に感じる価値は、
-
-> **「Rovanに金を払っておけば、AI上で自社がどう扱われているか分からない状態にならず、改善も止まらない」**
-
-である。
+この条件を満たさない「総合スコア」「市場シェア」「顧客奪還数」は、継続価値の指標として採用しない。

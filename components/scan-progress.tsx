@@ -50,7 +50,7 @@ export function ScanProgress() {
   const controller = useRef<AbortController | null>(null);
   const startedScan = useRef("");
   const resolvedInput = useRef("");
-  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site" | "product_site">("resolving");
+  const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site" | "product_site" | "direct_preview">("resolving");
   const [candidates, setCandidates] = useState<InputResolutionCandidate[]>([]);
   const [selectedUrl, setSelectedUrl] = useState("");
   const [stage, setStage] = useState<ScanStage>("created");
@@ -58,20 +58,11 @@ export function ScanProgress() {
   const [message, setMessage] = useState("診断を準備しています。");
   const [detail, setDetail] = useState("診断先を確認しています");
   const [error, setError] = useState("");
-  const [directBrandName, setDirectBrandName] = useState(
+  const [directBrandName] = useState(
     extraProduct ? extraProduct : socialInfo.username ? socialInfo.username : rawInput
   );
-  const [directMarket, setDirectMarket] = useState(
-    extraProduct || inputKind === "product"
-      ? "D2Cブランド・特産品・プロダクト"
-      : socialInfo.isSocial
-      ? "飲食・美容・小売・地域サービス"
-      : "専門技術・加工・サービス"
-  );
-  const [directLocation, setDirectLocation] = useState(
-    extraProduct || inputKind === "product" ? "全国通販・オンライン直販 / 発送" : "全国対応 / 地域密着"
-  );
   const [directCreating, setDirectCreating] = useState(false);
+  const [directDraft, setDirectDraft] = useState<{ profileId: string; token: string; slug: string } | null>(null);
 
   const createDirectProfile = useCallback(async () => {
     setDirectCreating(true);
@@ -79,11 +70,11 @@ export function ScanProgress() {
     try {
       const finalBrand = (directBrandName || rawInput).trim();
       const summaryParts = [
-        `${finalBrand}の公式企業情報台帳。`,
-        extraSocial ? `Instagram公式（${extraSocial}）と連携。` : socialInfo.isSocial ? `${socialInfo.displayLabel || "SNS"}公式と連携。` : "",
-        extraProduct ? `主力製品「${extraProduct}」の仕様・推薦データを掲載。` : "",
-        extraUrl ? `自社公式サイト（${extraUrl}）と同期。` : "自社サイトを持たない企業様向けに直接発行され、",
-        `主要生成AI（ChatGPT/Gemini等）推薦用の公式マスターデータです。`
+        `${finalBrand}の公開情報参照ページの下書きです。`,
+        extraSocial ? `入力されたSNS参照先: ${extraSocial}。` : socialInfo.isSocial ? `入力されたSNS参照先: ${socialInfo.displayLabel || "SNS"}。` : "",
+        extraProduct ? `入力された商品・サービス名: ${extraProduct}。` : "",
+        extraUrl ? `入力された参照元URL: ${extraUrl}。` : "参照元URLは未指定です。",
+        "公開前に内容を確認し、必要な情報だけを掲載してください。"
       ].filter(Boolean).join(" ");
 
       const response = await fetch("/api/ai-profile", {
@@ -92,21 +83,38 @@ export function ScanProgress() {
         body: JSON.stringify({
           action: "create_direct",
           brandName: finalBrand,
-          market: directMarket,
-          location: directLocation,
           summary: summaryParts,
         }),
       });
       const data = await response.json();
-      if (!response.ok || !data.slug) throw new Error(data.error || "公式Web拠点の発行に失敗しました。");
-      
-      // 発行された本物の公式ナレッジ台帳ページへジャンプ！
-      router.push(`/ai/company/${encodeURIComponent(data.slug)}`);
+      if (!response.ok || !data.slug || !data.profile?.id || !data.token) throw new Error(data.error || "公開ページの下書きを作成できませんでした。");
+      setDirectDraft({ profileId: data.profile.id, token: data.token, slug: data.slug });
+      setPhase("direct_preview");
+      setDirectCreating(false);
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "公式Web拠点の発行に失敗しました。");
+      setError(caught instanceof Error ? caught.message : "公開ページの下書きを作成できませんでした。");
       setDirectCreating(false);
     }
-  }, [directBrandName, directLocation, directMarket, extraProduct, extraSocial, extraUrl, rawInput, router, socialInfo.displayLabel, socialInfo.isSocial]);
+  }, [directBrandName, extraProduct, extraSocial, extraUrl, rawInput, socialInfo.displayLabel, socialInfo.isSocial]);
+
+  const publishDirectProfile = useCallback(async () => {
+    if (!directDraft) return;
+    setDirectCreating(true);
+    setError("");
+    try {
+      const response = await fetch("/api/ai-profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action: "publish", profileId: directDraft.profileId, token: directDraft.token }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.profile?.status !== "published") throw new Error(data.error || "公開ページを公開できませんでした。");
+      router.push(`/ai/company/${encodeURIComponent(directDraft.slug)}`);
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "公開ページを公開できませんでした。");
+      setDirectCreating(false);
+    }
+  }, [directDraft, router]);
 
   const startScan = useCallback(async (inputUrl: string) => {
     const targetUrl = normalize(inputUrl);
@@ -176,13 +184,13 @@ export function ScanProgress() {
     if (socialInfo.isSocial) {
       setPhase("social_site");
       setMessage("Instagram等のSNS連携フロー");
-      setDetail("SNSアカウントからAI公式Web拠点を発行します");
+      setDetail("SNS入力を含む公開情報ページの下書きを作成します");
       return () => undefined;
     }
     if (inputKind === "product") {
       setPhase("product_site");
-      setMessage("商品・サービス専用の公式台帳フロー");
-      setDetail("商品名から直接AI推薦用台帳を発行します");
+      setMessage("商品・サービスの公開情報ページを準備します");
+      setDetail("入力された名称をもとに下書きを作成します");
       return () => undefined;
     }
     if (directUrl) {
@@ -207,8 +215,8 @@ export function ScanProgress() {
         const nextCandidates = Array.isArray(data.candidates) ? data.candidates.filter((candidate) => candidate?.url) : [];
         if (!nextCandidates.length) {
           setPhase("no_site");
-          setMessage("自社サイトがない企業様専用の発行フロー");
-          setDetail("会社名から直接公式Web拠点を発行できます");
+          setMessage("参照できる公開サイトがない場合の下書き作成");
+          setDetail("入力された名称から公開情報ページの下書きを作成します");
           return;
         }
         setCandidates(nextCandidates);
@@ -228,30 +236,38 @@ export function ScanProgress() {
 
   const targetHost = hostOf(selectedUrl || directUrl);
   const isDirectTarget = isUrlInput(rawInput);
+  const hasInput = Boolean(rawInput);
   const activeIndex = steps.findIndex((item) => item.stage === stage);
   const completedCount = stage === "complete" ? steps.length : Math.max(0, activeIndex);
 
-  if (phase === "social_site" || phase === "product_site" || phase === "no_site") {
+  if (phase === "social_site" || phase === "product_site" || phase === "no_site" || phase === "direct_preview") {
     const isSocial = phase === "social_site";
     const isProduct = phase === "product_site";
+    const isDirectPreview = phase === "direct_preview";
 
     const badgeText = isSocial
       ? (socialInfo.displayLabel || "Instagram連携")
       : isProduct
-      ? "商品・サービス専用台帳"
-      : "自社サイト未開設・直接登録";
+      ? "商品・サービス"
+      : isDirectPreview
+      ? "公開前の確認"
+      : "参照元サイト未指定";
 
     const titleText = isSocial
-      ? `Instagram「${displayInput(rawInput)}」からAI公式Web拠点を発行`
+      ? `Instagram「${displayInput(rawInput)}」の公開情報ページを確認`
       : isProduct
-      ? `商品「${displayInput(rawInput)}」のAI推薦用公式台帳を発行`
-      : `「${displayInput(rawInput)}」のAI公式Web拠点を無料発行`;
+      ? `商品「${displayInput(rawInput)}」の公開情報ページを確認`
+      : isDirectPreview
+      ? `「${displayInput(directBrandName || rawInput)}」の公開前確認`
+      : `「${displayInput(rawInput)}」の公開情報ページを下書き作成`;
 
     const descText = isSocial
-      ? "Instagramの写真や投稿は人間に魅力が伝わる一方、画像中心のため生成AI（ChatGPTやGemini等）は料金や詳細なサービス内容を正確に読み取れず、おすすめの候補からスルーされてしまいます。Rovanなら、SNSアカウントから主要AIが正確に認識できる公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。"
+      ? "入力されたSNS情報をもとに、公開情報ページの下書きを作成します。SNSの投稿内容を自動で事実として転載せず、公開する内容は確認後に決められます。"
       : isProduct
-      ? "生成AIは「おすすめの〇〇（商品ジャンル）」を聞かれた際、商品名と用途、独自の強みがWeb上で構造化されていないと他社製品を推薦候補に挙げてしまいます。商品名・サービス名単体から、AIが正確に参照・回答するための公式台帳を即座に無料発行します。"
-      : "自社サイトをお持ちでない場合でも、Rovanでは会社名（屋号）をもとに、AI専用の公式Web拠点（公的ナレッジ台帳）を即座に無料発行できます。高額なホームページ制作費用は不要です。";
+      ? "入力された商品・サービス名をもとに、公開情報ページの下書きを作成します。用途・価格・実績など、入力や参照元で確認できない内容は補いません。"
+      : isDirectPreview
+      ? "下書きの内容を確認してから公開できます。公開後も、AIの回答・推薦・順位や集客成果は保証されません。"
+      : "参照元サイトが見つからない場合も、入力された名称だけで公開情報ページの下書きを作成できます。内容は公開前に確認してください。";
 
     const brandLabel = isSocial
       ? "店舗名・屋号・ブランド名"
@@ -259,29 +275,13 @@ export function ScanProgress() {
       ? "商品名・サービス名（ブランド名）"
       : "会社名・屋号（表示名）";
 
-    const marketLabel = isSocial
-      ? "専門ジャンル・主な取扱メニュー"
-      : isProduct
-      ? "カテゴリー・主な用途"
-      : "専門分野・主な取扱品目";
-
-    const locationLabel = isSocial
-      ? "所在地・店舗エリア"
-      : isProduct
-      ? "提供形態・購入方法"
-      : "所在地・対応エリア";
-
-    const buttonText = isSocial
-      ? "Instagram連携のAI公式Web拠点を無料発行する"
-      : isProduct
-      ? "この商品のAI公式台帳を無料発行する"
-      : "この会社名でAI公式Web拠点を無料発行する";
+    const buttonText = isDirectPreview ? "内容を確認して公開する" : "公開情報ページの下書きを作成する";
 
     const noteText = isSocial
-      ? "※発行されたURLは、Instagramのプロフィール欄（リンク）に貼ることで、フォロワーにもAIにも伝わる公式Web拠点として機能します。"
+      ? "※公開する情報は事実確認後に決めてください。RovanはAIの回答・推薦・順位や成果を保証しません。"
       : isProduct
-      ? "※発行された商品台帳は、ChatGPTやGeminiなどのAIクローラーが「商品仕様・おすすめ理由」として直接引用・グラウンディングされます。"
-      : "※発行されたページは、名刺・SNS・Googleマップのウェブサイト欄にそのまま公式URLとしてご利用いただけます。";
+      ? "※価格・仕様・実績などの記載がない事項は補いません。公開後の内容変更は、参照元と確認状況を見直して行います。"
+      : "※これは公開情報を整理するためのページです。公式性・推薦結果・集客効果を保証するものではありません。";
 
     return (
       <main className="scan-page">
@@ -309,37 +309,17 @@ export function ScanProgress() {
               {descText}
             </p>
 
-            <div className="no-site-form-grid">
+            <div className="no-site-form-grid" style={{ gridTemplateColumns: "1fr" }}>
               <div className="no-site-input-group">
-                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{brandLabel}</label>
-                <input
-                  type="text"
-                  value={directBrandName}
-                  onChange={(e) => setDirectBrandName(e.target.value)}
-                  placeholder="例: サロン名、店舗名、農園名、商品名"
-                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
-                />
+                <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{isDirectPreview ? "公開する名称" : brandLabel}</span>
+                <p style={{ margin: 0, padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px", background: "#f8fafc", color: "#0f172a" }}>{directBrandName || rawInput}</p>
               </div>
-              <div className="no-site-input-group">
-                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{marketLabel}</label>
-                <input
-                  type="text"
-                  value={directMarket}
-                  onChange={(e) => setDirectMarket(e.target.value)}
-                  placeholder="例: オーガニックカフェ、精密板金、D2Cコスメ"
-                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
-                />
-              </div>
-              <div className="no-site-input-group">
-                <label style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>{locationLabel}</label>
-                <input
-                  type="text"
-                  value={directLocation}
-                  onChange={(e) => setDirectLocation(e.target.value)}
-                  placeholder="例: 東京都目黒区 / 自由が丘駅徒歩3分"
-                  style={{ width: "100%", padding: "10px 12px", fontSize: "0.9rem", border: "1.5px solid #cbd5e1", borderRadius: "6px" }}
-                />
-              </div>
+              {isDirectPreview ? (
+                <div className="no-site-input-group">
+                  <span style={{ fontSize: "0.78rem", fontWeight: 800, color: "#334155", marginBottom: "6px", display: "block" }}>下書きに含める情報</span>
+                  <p style={{ margin: 0, fontSize: "0.82rem", lineHeight: 1.7, color: "#475569" }}>入力された名称{extraSocial || socialInfo.isSocial ? "・SNS参照先" : ""}{extraProduct ? "・商品／サービス名" : ""}{extraUrl ? "・参照元URL" : ""}。未確認の業種・所在地・価格・実績は追加していません。</p>
+                </div>
+              ) : null}
             </div>
 
             <div className="no-site-action-row" style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid #e2e8f0", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
@@ -351,10 +331,10 @@ export function ScanProgress() {
                 className="button button-primary scan-resolve-start"
                 type="button"
                 disabled={directCreating}
-                onClick={() => void createDirectProfile()}
+                onClick={() => void (isDirectPreview ? publishDirectProfile() : createDirectProfile())}
                 style={{ padding: "12px 24px", fontSize: "0.95rem", fontWeight: 800 }}
               >
-                {directCreating ? "公式拠点を即時発行中…" : buttonText} <ArrowIcon />
+                {directCreating ? (isDirectPreview ? "公開処理中…" : "下書きを作成中…") : buttonText} <ArrowIcon />
               </button>
             </div>
             {error ? <p className="form-error" style={{ marginTop: "12px" }}>{error}</p> : null}
@@ -363,8 +343,16 @@ export function ScanProgress() {
             </small>
           </div>
           <div style={{ marginTop: "16px", textAlign: "center" }}>
-            <button className="button button-secondary" type="button" onClick={() => router.push("/")}>
-              ← 入力をやり直す
+            <button className="button button-secondary" type="button" aria-label={isDirectPreview ? "下書きに戻る" : "入力をやり直す"} onClick={() => {
+              if (isDirectPreview) {
+                setDirectDraft(null);
+                setPhase("no_site");
+                setError("");
+                return;
+              }
+              router.push("/");
+            }}>
+              ← {isDirectPreview ? "下書きに戻る" : "入力をやり直す"}
             </button>
           </div>
         </section>
@@ -383,12 +371,16 @@ export function ScanProgress() {
           <h1>
             {phase === "resolving"
               ? `「${displayInput(rawInput)}」の公開サイトを探しています。`
-              : `「${displayInput(rawInput)}」の公式サイトを確認してください`}
+              : hasInput
+              ? `「${displayInput(rawInput)}」の公開サイトを確認してください`
+              : "診断する会社名・店舗名・サービス名またはURLを入力してください。"}
           </h1>
           <p className="scan-message">
             {phase === "resolving"
               ? "会社名・商品名から、診断できる公開サイトを調べています。"
-              : "AIが同名の別会社と誤認しないよう、ドメインを確認して公式サイトを確定します。"}
+              : hasInput
+              ? "AIが同名の別会社と取り違えないよう、ドメインとページ内容を確認して診断先を確定します。"
+              : "ホーム画面で、診断したい対象の名称または公開URLを入力してください。"}
           </p>
           {phase === "resolving" ? <div className="scan-resolve-loading" role="status"><span className="scan-resolve-spinner" aria-hidden="true" />公開情報を検索しています…</div> : null}
           {phase === "choose" ? <>
@@ -412,19 +404,12 @@ export function ScanProgress() {
               <button className="button button-primary scan-resolve-start" type="button" disabled={!selectedUrl} onClick={() => void startScan(selectedUrl)}>このサイトを確定して診断する <span aria-hidden="true">→</span></button>
               <button className="button button-secondary" type="button" onClick={() => setPhase("no_site")} style={{ marginLeft: "12px" }}>自社サイトがない・候補にない（直接発行する）</button>
             </div>
-            <p className="scan-resolve-note">※ドメインとサイト内容を目視確認してから確定するため、同名他社との誤認を確実に防止します。</p>
+            <p className="scan-resolve-note">※ドメインとサイト内容を確認してから確定するため、同名他社との取り違えを避けやすくなります。</p>
           </> : null}
           {phase === "failed" ? <div className="scan-error" role="alert">
-            <strong>{isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong>
+            <strong>{!hasInput ? "診断対象が入力されていません。" : isDirectTarget ? "診断を開始できませんでした。" : "公開サイトを見つけられませんでした。"}</strong>
             <p>{error}</p>
             <div style={{ display: "flex", gap: "12px", marginTop: "16px", flexWrap: "wrap" }}>
-              <button
-                className="button button-primary"
-                type="button"
-                onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput)}`)}
-              >
-                「{displayInput(rawInput)}」の動的モック診断を見る →
-              </button>
               <button className="button button-secondary" type="button" onClick={() => router.push("/")}>入力をやり直す</button>
             </div>
           </div> : null}
@@ -461,13 +446,6 @@ export function ScanProgress() {
           <strong>診断を完了できませんでした。</strong>
           <p>{error}</p>
           <div style={{ display: "flex", gap: "12px", marginTop: "16px", flexWrap: "wrap" }}>
-            <button
-              className="button button-primary"
-              type="button"
-              onClick={() => router.push(`/result?sample=1&customBrand=${encodeURIComponent(rawInput || "自社")}`)}
-            >
-              「{displayInput(rawInput || "自社")}」の動的モック診断を見る →
-            </button>
             <button className="button button-secondary" type="button" onClick={() => window.location.reload()}>もう一度試す</button>
           </div>
         </div> : null}

@@ -8,7 +8,6 @@ import {
   revokePublicProfile,
 } from "@/lib/storage";
 import { getScan } from "@/lib/storage";
-import { env } from "@/lib/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,7 +33,7 @@ function objectBody(value: unknown): Record<string, unknown> | null {
 
 function safeError(error: unknown) {
   if (!(error instanceof Error)) return "公開ページを作成できませんでした。";
-  if (error.message === "診断結果が完成していません。" || error.message === "公開用の公式URLを確認できませんでした。") return error.message;
+  if (error.message === "診断結果が完成していません。" || error.message === "公開用のURLを確認できませんでした。") return error.message;
   if (error.message.startsWith("公開ページの期限は")) return error.message;
   return "公開ページを作成できませんでした。";
 }
@@ -64,18 +63,13 @@ export async function POST(request: Request) {
         ...(expiresInDays === undefined ? {} : { expiresInDays }),
       });
 
-      if (action === "deploy") {
-        const published = await publishPublicProfile(record.id, record.token);
-        const finalRecord = published || record;
-        return json({
-          profile: toPublicProfile(finalRecord),
-          token: finalRecord.token,
-          slug: finalRecord.slug,
-          url: `/ai/company/${encodeURIComponent(finalRecord.slug)}`,
-        }, 201);
-      }
-
-      return json({ profile: toPublicProfile(record), token: record.token }, 201);
+      return json({
+        profile: toPublicProfile(record),
+        token: record.token,
+        slug: record.slug,
+        url: `/ai/company/${encodeURIComponent(record.slug)}`,
+        status: "draft",
+      }, 201);
     }
 
     if (action === "create_direct") {
@@ -102,15 +96,12 @@ export async function POST(request: Request) {
         expiresInDays: 30,
       });
 
-      // 即時公開ステータスへ移行
-      const published = await publishPublicProfile(record.id, record.token);
-      const finalRecord = published || record;
-
       return json({
-        profile: toPublicProfile(finalRecord),
-        token: finalRecord.token,
-        slug: finalRecord.slug,
-        url: `/ai/company/${encodeURIComponent(finalRecord.slug)}`,
+        profile: toPublicProfile(record),
+        token: record.token,
+        slug: record.slug,
+        url: `/ai/company/${encodeURIComponent(record.slug)}`,
+        status: "draft",
       }, 201);
     }
 
@@ -125,10 +116,10 @@ export async function POST(request: Request) {
       return json({ profile: toPublicProfile(record) });
     }
 
-    return json({ error: "actionはpreview、create_direct、publish、revokeのいずれかです。" }, 400);
+    return json({ error: "actionはpreview、deploy、create_direct、publish、revokeのいずれかです。" }, 400);
   } catch (error) {
     console.error("AI PROFILE ERROR:", error);
-    return json({ error: error instanceof Error ? error.message : safeError(error) }, 400);
+    return json({ error: safeError(error) }, 400);
   }
 }
 

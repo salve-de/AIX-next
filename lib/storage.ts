@@ -11,6 +11,7 @@ import type {
   WatchRecord,
 } from "@/lib/types";
 import { buildPublicProfileDraft } from "@/lib/public-profile";
+import { publicProfileSlug } from "@/lib/public-profile-path";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -41,16 +42,6 @@ function profileDate(value?: Date | string) {
   const date = value instanceof Date ? new Date(value.getTime()) : new Date(value || Date.now());
   if (Number.isNaN(date.getTime())) throw new Error("公開レコードの日時が不正です。");
   return date;
-}
-
-function profileSlug(targetUrl: string) {
-  let host = "company";
-  try {
-    host = new URL(targetUrl).hostname.replace(/^www\./i, "").replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "").toLowerCase() || host;
-  } catch {
-    host = "company";
-  }
-  return host;
 }
 
 function clonePublicProfileDraft(draft: PublicProfileDraft): PublicProfileDraft {
@@ -239,7 +230,7 @@ export async function createPublicProfilePreview(draft: PublicProfileDraft, opti
   const record: PublicProfileRecord = {
     ...clonePublicProfileDraft(draft),
     id: id("profile"),
-    slug: profileSlug(draft.targetUrl),
+    slug: publicProfileSlug(draft.targetUrl),
     status: "draft",
     token: id("profile_token"),
     sourceScanId: options.sourceScanId || "unknown",
@@ -474,12 +465,12 @@ export async function updateWatch(token: string, patch: Partial<Pick<WatchRecord
 }
 
 /**
- * 週次Watch測定完了時に、最新のクロール・診断結果からAI公開台帳（Public Profile）を自動同期・更新する。
+ * 週次Watch測定完了時に、最新のクロール・診断結果から公開情報の下書きを生成する。
  * （P0-2: 台帳自動メンテナンスの完全自動化）
  */
 export async function refreshPublicProfileFromScan(targetUrl: string, scan: ScanResult, now?: Date | string) {
   const at = profileDate(now);
-  const slug = profileSlug(targetUrl);
+  const slug = publicProfileSlug(targetUrl);
   const existing = await getPublicProfileBySlug(slug, at);
   if (!existing || existing.status !== "published") return null;
 
@@ -515,11 +506,12 @@ export async function refreshPublicProfileFromScan(targetUrl: string, scan: Scan
 }
 
 /**
- * 競合の動きに対する自律対応（AutoAction）として、検証済みFactをAI参照インデックスに自動追加・同期する。
+ * 競合の動きに対する自律対応（AutoAction）として、検証済みFactを
+ * 公開前の確認案として記録する。公開プロフィールへの反映は承認後に限る。
  */
 export async function addFactToPublicProfile(targetUrl: string, fact: PublicProfileFact, now?: Date | string) {
   const at = profileDate(now);
-  const slug = profileSlug(targetUrl);
+  const slug = publicProfileSlug(targetUrl);
   const existing = await getPublicProfileBySlug(slug, at);
   if (!existing || existing.status !== "published") return null;
 

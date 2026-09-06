@@ -1,5 +1,7 @@
 # Rovan — Value Proposition Research (2026-09-02)
 
+> **資料の位置づけ:** 2026-09-02時点の調査スナップショット。現行のNorth Star、公開範囲、料金、実装状態は [`AGENTS.md`](../AGENTS.md) と [`docs/CORE_PRODUCT_STRATEGY.md`](CORE_PRODUCT_STRATEGY.md) を優先する。以下の提案や「implemented」は、この調査時点の記録であり、現在の動作を単独で証明しない。
+
 ## Executive conclusion
 
 Rovan should not be positioned as an "AI rank tracker" or a generic "AI SEO" dashboard.
@@ -122,7 +124,7 @@ Implication: first view needs large concrete nouns, a familiar input, a visible 
 ### FIND — reveal the invisible loss surface
 
 Output:
-- market position under the measured panel;
+- candidate coverage under the measured panel;
 - excluded Buyer Prompts;
 - shortlisted Buyer Prompts;
 - competitor selected instead.
@@ -215,7 +217,7 @@ Pricing should sell the loop, not quotas:
 
 - Free Scan = find the loss.
 - 14-day Watch = verify whether the first improvement moves.
-- Founder Watch = keep reranking and executing the next best improvement every week.
+- paid Weekly Watch = keep comparing the same panel and reviewing the next proposed improvement every week.
 
 Prompt counts/providers/repetitions are important proof and capacity details, but they are not the primary reason to buy.
 

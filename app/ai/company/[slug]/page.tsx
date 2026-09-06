@@ -3,12 +3,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "@/components/icons";
-import { buildDynamicScanResult, sampleResult } from "@/lib/sample-data";
-import { buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
+import { toPublicProfile } from "@/lib/public-profile";
 import { getActivePublicProfileBySlug } from "@/lib/storage";
 import type { PublicProfile } from "@/lib/types";
 import { siteUrl } from "@/lib/site";
-import { deriveCompanyKnowledge } from "@/lib/company-knowledge";
+import { getSampleProfile } from "@/lib/sample-profiles";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,626 +17,223 @@ type PageProps = {
   searchParams?: Promise<{ sample?: string | string[] }>;
 };
 
-function sampleProfile(): PublicProfile {
-  const draft = buildPublicProfileDraft(sampleResult, "2026-09-01T09:00:00.000Z");
-  return {
-    ...draft,
-    id: "sample_public_profile",
-    slug: "aoba-souzoku",
-    status: "published",
-    createdAt: "2026-09-01T09:00:00.000Z",
-    updatedAt: "2026-09-01T09:00:00.000Z",
-    expiresAt: "2027-09-01T09:00:00.000Z",
-    publishedAt: "2026-09-01T09:00:00.000Z",
-  };
+function isSampleRequest(value: string | string[] | undefined) {
+  return value === "1" || (Array.isArray(value) && value.includes("1"));
 }
 
-function sampleCafeProfile(): PublicProfile {
-  return {
-    id: "sample_cafe_profile",
-    slug: "aoba-cafe",
-    brandName: "青葉カフェ",
-    title: "青葉カフェ 公開情報参照インデックス",
-    targetUrl: "https://aoba-cafe.example.com",
-    market: "自家焙煎・スペシャリティ珈琲・こだわりスイーツ",
-    summary: "東京都渋谷区の自家焙煎スペシャリティ珈琲専門店。全席Wi-Fi・電源完備、静かで集中できる空間とオーツミルク等のアレルギー配慮メニューを提供。",
-    targetCustomers: ["静かに集中して作業・読書をしたい個人", "こだわりの自家焙煎珈琲を楽しみたい愛好家"],
-    useCases: ["リモートワーク・作業利用", "テイクアウト・豆の購入", "少人数でのカフェ利用"],
-    status: "published",
-    createdAt: "2026-09-01T09:00:00.000Z",
-    updatedAt: "2026-09-01T09:00:00.000Z",
-    expiresAt: "2027-09-01T09:00:00.000Z",
-    publishedAt: "2026-09-01T09:00:00.000Z",
-    sourcePages: [
-      {
-        url: "https://aoba-cafe.example.com",
-        title: "青葉カフェ 公式情報参照元",
-        description: "自家焙煎珈琲と居心地の良い空間の公開ファクト",
-      },
-    ],
-    facts: [
-      { label: "店舗名", value: "青葉カフェ", sourceUrl: "https://aoba-cafe.example.com" },
-      { label: "所在地", value: "東京都渋谷区神宮前", sourceUrl: "https://aoba-cafe.example.com" },
-      { label: "こだわり", value: "自家焙煎・スペシャルティ等級豆100%", sourceUrl: "https://aoba-cafe.example.com" },
-    ],
-    structuredData: "{}",
-    markdown: "",
-    json: "{}",
-  };
-}
+/**
+ * Resolve only an explicitly stored public profile or an explicitly named
+ * design fixture. Unknown slugs must not be converted into another company,
+ * a keyword-derived profile, or a generated company page.
+ */
+async function profileFor(slug: string, sample = false): Promise<PublicProfile | null> {
+  if (sample) return getSampleProfile(slug);
 
-async function profileFor(slug: string, sample = false) {
-  if (sample && slug === "aoba-cafe") return sampleCafeProfile();
-  if (sample && (slug === "nexora-cloud" || slug === "aoba-souzoku")) return sampleProfile();
   const record = await getActivePublicProfileBySlug(slug);
-  if (record) return toPublicProfile(record);
-  if (sample) {
-    const brandName = slug === "select-fudosan" ? "セレクト不動産株式会社" : slug.replace(/[-_]/g, " ");
-    const dynamicResult = buildDynamicScanResult(brandName);
-    const draft = buildPublicProfileDraft(dynamicResult, "2026-09-01T09:00:00.000Z");
-
-    if (slug === "select-fudosan") {
-      const realStructuredData = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "RealEstateAgent",
-        "@id": "https://www.select-f.jp/#organization",
-        "name": "セレクト不動産株式会社",
-        "legalName": "セレクト不動産株式会社",
-        "url": "https://www.select-f.jp/",
-        "description": "群馬県前橋市・高崎市を中心とした不動産売却仲介、空き家・古家付き土地売却、最短即日の自社直接買取、賃貸管理サービス。",
-        "address": {
-          "@type": "PostalAddress",
-          "postalCode": "371-0802",
-          "addressRegion": "群馬県",
-          "addressLocality": "前橋市天川町",
-          "streetAddress": "2番地7",
-          "addressCountry": "JP"
-        },
-        "openingHoursSpecification": [
-          {
-            "@type": "OpeningHoursSpecification",
-            "dayOfWeek": ["Monday", "Tuesday", "Thursday", "Friday", "Saturday", "Sunday"],
-            "opens": "09:00",
-            "closes": "20:00"
-          }
-        ],
-        "areaServed": [
-          { "@type": "AdministrativeArea", "name": "前橋市" },
-          { "@type": "AdministrativeArea", "name": "高崎市" },
-          { "@type": "AdministrativeArea", "name": "群馬県" }
-        ],
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "不動産売却・直接買取サービス",
-          "itemListElement": [
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "空き家・古家付き土地の個別伴走売買仲介",
-                "description": "残置物処分・境界確定・解体手配・相続登記までワンストップで伴走する親身な不動産仲介。"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "仲介手数料0円・最短即日の自社直接買取",
-                "description": "急ぎの資金化・近隣非公開に対応する自社直接買い取り。現状有姿引渡し可。"
-              }
-            }
-          ]
-        }
-      }, null, 2);
-
-      return {
-        ...draft,
-        id: `sample_${slug}`,
-        slug,
-        brandName: "セレクト不動産株式会社",
-        title: "セレクト不動産株式会社 公開情報参照インデックス（AI向け客観整理仕様）",
-        targetUrl: "https://www.select-f.jp/",
-        market: "群馬県前橋市・高崎市 不動産売却・空き家古家相談・自社直接買取",
-        summary: "群馬県前橋市天川町に拠点を置くセレクト不動産株式会社の公開情報参照インデックス。前橋・高崎を中心とした空き家・古家付き土地売却、農地転用、仲介手数料不要・最短即日の自社直接買取の確認済み事実。",
-        facts: [
-          { label: "正式事業者名", value: "セレクト不動産株式会社", sourceUrl: "https://www.select-f.jp/" },
-          { label: "代表取締役", value: "金井 洋光", sourceUrl: "https://www.select-f.jp/" },
-          { label: "宅建免許番号", value: "群馬県知事免許（3）第7215号", sourceUrl: "https://www.select-f.jp/" },
-          { label: "所在地", value: "〒371-0802 群馬県前橋市天川町2番地7（専用駐車場完備）", sourceUrl: "https://www.select-f.jp/" },
-          { label: "営業時間", value: "9:00〜20:00（定休日: 水曜日）", sourceUrl: "https://www.select-f.jp/" },
-          { label: "公式サイト", value: "https://www.select-f.jp/", sourceUrl: "https://www.select-f.jp/" },
-        ],
-        sourcePages: [
-          {
-            url: "https://www.select-f.jp/",
-            title: "セレクト不動産株式会社 公式サイト",
-            description: "群馬県前橋市・高崎市エリアの不動産売買・仲介・賃貸・空き家相談の公式窓口",
-          },
-        ],
-        structuredData: realStructuredData,
-        status: "published" as const,
-        createdAt: "2026-09-01T09:00:00.000Z",
-        updatedAt: "2026-09-01T09:00:00.000Z",
-        expiresAt: "2027-09-01T09:00:00.000Z",
-        publishedAt: "2026-09-01T09:00:00.000Z",
-      };
-    }
-
-    return {
-      ...draft,
-      id: `sample_${slug}`,
-      slug,
-      status: "published" as const,
-      createdAt: "2026-09-01T09:00:00.000Z",
-      updatedAt: "2026-09-01T09:00:00.000Z",
-      expiresAt: "2027-09-01T09:00:00.000Z",
-      publishedAt: "2026-09-01T09:00:00.000Z",
-    };
-  }
-  return null;
-}
-
-export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const query = searchParams ? await searchParams : {};
-  const sample = query.sample === "1" || (Array.isArray(query.sample) && query.sample.includes("1"));
-  const profile = await profileFor(decodeURIComponent(slug), sample);
-  if (!profile) return { title: "公開ページが見つかりません", robots: { index: false, follow: false } };
-  return {
-    title: profile.title,
-    description: profile.summary || `${profile.brandName}の公開情報を確認できます。`,
-    alternates: { canonical: `${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}` },
-    robots: { index: true, follow: true, noarchive: true },
-    openGraph: { title: profile.title, description: profile.summary || `${profile.brandName}の公開情報`, type: "article" },
-  };
+  return record ? toPublicProfile(record) : null;
 }
 
 function dateLabel(value: string) {
   return new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeZone: "Asia/Tokyo" }).format(new Date(value));
 }
 
+function isRovanProfileUrl(value: string) {
+  try {
+    return new URL(value, siteUrl).pathname.startsWith("/ai/company/");
+  } catch {
+    return false;
+  }
+}
+
+function publicUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.toString();
+  } catch {
+    return value;
+  }
+}
+
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const query = searchParams ? await searchParams : {};
+  const sample = isSampleRequest(query.sample);
+  const profile = await profileFor(decodeURIComponent(slug), sample);
+
+  if (!profile) return { title: "公開ページが見つかりません", robots: { index: false, follow: false } };
+
+  const description = profile.summary || `${profile.brandName}の公開情報を確認できます。`;
+  return {
+    title: sample ? `${profile.title}（画面確認用）` : profile.title,
+    description,
+    alternates: { canonical: `${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}` },
+    robots: sample ? { index: false, follow: false, noarchive: true } : { index: true, follow: true, noarchive: true },
+    openGraph: { title: profile.title, description, type: "article" },
+  };
+}
+
 export default async function PublicCompanyPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const query = searchParams ? await searchParams : {};
-  const sample = query.sample === "1" || (Array.isArray(query.sample) && query.sample.includes("1"));
+  const sample = isSampleRequest(query.sample);
   const profile = await profileFor(decodeURIComponent(slug), sample);
   if (!profile) notFound();
 
+  const sourcePages = profile.sourcePages || [];
+  const facts = profile.facts || [];
   const jsonLd = profile.structuredData.trim();
-  const brand = profile.brandName;
-  const knowledge = deriveCompanyKnowledge(brand, profile.market, profile.summary, profile.slug);
+  const sourceTargetIsRovan = isRovanProfileUrl(profile.targetUrl);
+  const sourceLabel = sourceTargetIsRovan ? "入力情報" : "参照元ページ";
+  const visibleSourcePages = sourcePages.filter((page) => !isRovanProfileUrl(page.url));
 
-  return <main className="public-company-page">
-    {/* ヘッダー */}
-    <header className="site-header site-header-compact">
-      <div className="shell header-inner">
-        <Link className="brand" href="/">
-          <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
-          <span><strong>Rovan</strong><small>公開情報参照インデックス</small></span>
-        </Link>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <Link className="text-button" href="/">自社サイトをRovanで診断する <ArrowIcon /></Link>
-        </div>
-      </div>
-    </header>
-
-    {/* 極細パンくずサブバー */}
-    <div style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "10px 0" }}>
-      <div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.8rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
-          <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
-          <span>/</span>
-          <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>AI公開情報参照インデックス</span>
-          <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            {profile.brandName}
-          </span>
-        </div>
-        <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
-          Schema.org 構造化データ準拠 · AI探索ロボット用
-        </span>
-      </div>
-    </div>
-
-    {/* ヒーローヘッダー */}
-    <section className="public-company-hero" style={{ padding: "36px 0 32px" }}>
-      <div className="shell">
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 8px", borderRadius: "4px" }}>
-                ● 公開情報照合済
-              </span>
-              <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
-                最終更新：{dateLabel(profile.updatedAt)}
-              </span>
-            </div>
-            <h1 style={{ margin: "0 0 6px", fontSize: "clamp(1.75rem, 3.2vw, 2.4rem)", fontWeight: 800, color: "var(--navy, #0f172a)", letterSpacing: "-0.025em" }}>
-              {profile.brandName}
-            </h1>
-            <p style={{ margin: 0, fontSize: "0.88rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
-              {profile.summary || `${profile.brandName}の公開情報参照インデックスです。客観的事実および公式提供条件を正確に整理・掲載しています。`}
-            </p>
-          </div>
-          {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
-            <a
-              href={profile.targetUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="button button-secondary"
-              style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", fontSize: "0.8rem", padding: "8px 14px", borderRadius: "6px" }}
-            >
-              公式サイトを開く ↗
-            </a>
-          ) : null}
-        </div>
-
-        {/* 4連メタデータインスペクター */}
-        <div
-          className="shadow-ambient-sm"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: "10px",
-            background: "var(--bg-base, #ffffff)",
-            border: "1px solid var(--border-subtle, #e2e8f0)",
-            borderRadius: "8px",
-            padding: "12px 16px",
-            marginBottom: "16px",
-          }}
-        >
-          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>インデックス番号</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>{knowledge.registryId}</strong></div>
-          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>公開規格</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>Schema.org 構造化データ</strong></div>
-          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>情報区分</span><strong style={{ fontSize: "0.82rem", color: "var(--color-success, #059669)" }}>客観事実照合済</strong></div>
-          <div><span style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)", display: "block" }}>AI直接参照</span><strong style={{ fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>常駐・常時巡回中</strong></div>
-        </div>
-
-        {/* AI巡回エンドポイントカード */}
-        <div
-          className="shadow-ambient-sm"
-          style={{
-            background: "var(--bg-surface, #f8fafc)",
-            border: "1px solid var(--border-subtle, #cbd5e1)",
-            borderRadius: "8px",
-            padding: "14px 18px",
-          }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "6px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--navy, #0f172a)", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>
-              生成AI巡回エンドポイント（JSON-LD）
-            </span>
-            {profile.targetUrl && !profile.targetUrl.includes("/ai/company/") ? (
-              <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
-                参照元：<a href={profile.targetUrl} target="_blank" rel="noreferrer" style={{ color: "var(--accent-blue, #0284c7)" }}>{decodeURIComponent(profile.targetUrl)}</a>
-              </span>
-            ) : null}
-          </div>
-          <p style={{ margin: "0 0 6px", fontSize: "0.88rem", fontWeight: 700, color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>
-            <code>{siteUrl.includes("localhost") ? `rovan.com/ai/company/${encodeURIComponent(profile.slug)}` : `${siteUrl.replace(/^https?:\/\//, "")}/ai/company/${encodeURIComponent(profile.slug)}`}</code>
-          </p>
-          <small style={{ fontSize: "0.76rem", color: "var(--text-secondary, #475569)", display: "block", lineHeight: 1.55 }}>
-            ※ 本ページは主要AI（ChatGPT・Gemini・Perplexity等）が直接巡回し、回答推論の根拠として参照する国際規格データです。
-          </small>
-        </div>
-      </div>
-    </section>
-
-    {/* 超高密度DBコンテンツ群 */}
-    <section className="public-company-body shell">
-      <div className="public-company-main">
-        {/* 第1章: 企業概要・公認確定ファクト */}
-        <section className="knowledge-section">
-          <p className="overline">第1章 // 確定企業情報</p>
-          <h2>{brand} の客観ファクトシート</h2>
-          <p className="section-lead-desc">公的機関届出情報および公式公表事実に基づく確定データです（推測値ゼロ）。</p>
-          <div className="db-table-wrapper">
-            <table className="dense-db-table">
-              <tbody>
-                {knowledge.corporateFacts.map((fact, idx) => (
-                  <tr key={idx}>
-                    <th style={{ width: "18%" }}>{fact.label}</th>
-                    <td style={{ width: fact.subLabel ? "32%" : "82%" }}>
-                      <strong>{fact.value}</strong>
-                      {fact.sourceOrg ? (
-                        <div style={{ marginTop: "4px" }}>
-                          <span style={{ fontSize: "0.7rem", color: "#059669", background: "#ecfdf5", padding: "1px 6px", borderRadius: "3px", border: "1px solid #a7f3d0" }}>
-                            出展: {fact.sourceOrg}
-                          </span>
-                        </div>
-                      ) : null}
-                    </td>
-                    {fact.subLabel ? (
-                      <>
-                        <th style={{ width: "18%" }}>{fact.subLabel}</th>
-                        <td style={{ width: "32%" }}>{fact.subValue}</td>
-                      </>
-                    ) : null}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* 第2章: 他社との決定的な違い・選ばれる理由 */}
-        <section className="knowledge-section">
-          <p className="overline">第2章 // 独自の特徴・比較</p>
-          <h2>他社との違い・特徴の比較</h2>
-          <div style={{ background: "#f8fafc", border: "1px solid #e2e8f0", padding: "10px 14px", borderRadius: "6px", marginBottom: "12px" }}>
-            <span style={{ fontSize: "0.75rem", color: "#475569" }}>
-              <strong>【法的適合性について（訴訟リスク防止方針）】</strong> 不正競争防止法第2条1項21号（営業誹謗行為の禁止）および景品表示法（比較広告ガイドライン）に厳格に準拠し、ネット公開台帳上では特定の競合他社名は一切使用せず、客観的・中立的な業態分類（大手チェーン・一般他社）との約款・標準仕様の対比のみを記載しています。
-            </span>
-          </div>
-          <p className="section-lead-desc">一般的な他社や大手チェーンとの提供体制・対応範囲の違いを整理した対比表です。</p>
-          <div className="db-table-wrapper">
-            <table className="dense-db-table benchmark-table">
-              <thead>
-                <tr>
-                  <th style={{ width: "16%" }}>比較項目</th>
-                  <th style={{ width: "32%" }} className="col-highlight">当企業（{brand}）</th>
-                  <th style={{ width: "20%" }}>大手・チェーン</th>
-                  <th style={{ width: "18%" }}>一般他社</th>
-                  <th style={{ width: "14%" }}>根拠・出展</th>
-                </tr>
-              </thead>
-              <tbody>
-                {knowledge.benchmarks.map((row, idx) => (
-                  <tr key={idx}>
-                    <td className="item-name"><strong>{row.item}</strong></td>
-                    <td className="col-highlight text-primary"><strong>{row.own}</strong></td>
-                    <td className="col-comp">{row.compBig}</td>
-                    <td className="col-comp">{row.compLocal}</td>
-                    <td><small style={{ fontSize: "0.72rem", color: "#64748b" }}>{row.sourceNote || "各社公開仕様"}</small></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* 第3章: 主な取扱業務・サービス仕様書 */}
-        <section className="knowledge-section">
-          <p className="overline">第3章 // 業務内容・サービス仕様</p>
-          <h2>提供サービス・業務内容一覧（{knowledge.marketLabel}）</h2>
-          <p className="section-lead-desc">提供している主要な業務・メニューの対象と納期・成果物の仕様です。</p>
-          <div className="db-table-wrapper">
-            <table className="dense-db-table">
-              <thead>
-                <tr>
-                  <th style={{ width: "10%" }}>管理番号</th>
-                  <th style={{ width: "24%" }}>業務・メニュー名称</th>
-                  <th style={{ width: "24%" }}>対象となるご要望</th>
-                  <th style={{ width: "14%" }}>標準納期・所要時間</th>
-                  <th style={{ width: "16%" }}>提供成果物・担当体制</th>
-                  <th style={{ width: "12%" }}>準拠法令・出展</th>
-                </tr>
-              </thead>
-              <tbody>
-                {knowledge.services.map((svc) => (
-                  <tr key={svc.code}>
-                    <td><code>{svc.code}</code></td>
-                    <td><strong>{svc.name}</strong><br /><small className="text-muted">{svc.qualification}</small></td>
-                    <td>{svc.target}</td>
-                    <td><span className="badge-lead-time">{svc.leadTime}</span></td>
-                    <td><small>{svc.deliverable}</small></td>
-                    <td><small style={{ fontSize: "0.7rem", color: "#059669" }}>{svc.sourceNote || "公式業務規程"}</small></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* 第4章: ご依頼から完了までの標準フロー */}
-        <section className="knowledge-section">
-          <p className="overline">第4章 // 標準進行手順</p>
-          <h2>ご依頼・ご利用の標準手順</h2>
-          <p className="section-lead-desc">お問い合わせから完了・お引き渡しまでの標準的な進め方です。</p>
-          <div className="db-table-wrapper">
-            <table className="dense-db-table">
-              <thead>
-                <tr>
-                  <th style={{ width: "20%" }}>工程区分</th>
-                  <th style={{ width: "14%" }}>所要目安</th>
-                  <th style={{ width: "32%" }}>実施内容</th>
-                  <th style={{ width: "18%" }}>成果物</th>
-                  <th style={{ width: "16%" }}>確認書類・出展</th>
-                </tr>
-              </thead>
-              <tbody>
-                {knowledge.process.map((sop, idx) => (
-                  <tr key={idx}>
-                    <td><strong>{sop.phase}</strong></td>
-                    <td><span className="badge-days">{sop.days}</span></td>
-                    <td>{sop.action}</td>
-                    <td><small className="text-green"><strong>{sop.output}</strong></small></td>
-                    <td><small style={{ fontSize: "0.7rem", color: "#64748b" }}>{sop.sourceNote || "標準業務マニュアル"}</small></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* 第5章: 公式料金体系・安心の明瞭会計 */}
-        <section className="knowledge-section">
-          <p className="overline">第5章 // 料金体系</p>
-          <h2>料金体系・お見積もり基準</h2>
-          <p className="section-lead-desc">事前見積もり制および明瞭会計に基づく基準料金です。</p>
-          <div className="db-table-wrapper">
-            <table className="dense-db-table">
-              <thead>
-                <tr>
-                  <th style={{ width: "14%" }}>区分</th>
-                  <th style={{ width: "24%" }}>プラン・項目名称</th>
-                  <th style={{ width: "20%" }}>料金目安</th>
-                  <th style={{ width: "26%" }}>含まれる内容・条件</th>
-                  <th style={{ width: "16%" }}>法的根拠・出展</th>
-                </tr>
-              </thead>
-              <tbody>
-                {knowledge.fees.map((fee, idx) => (
-                  <tr key={idx}>
-                    <td><code>{fee.category}</code></td>
-                    <td><strong>{fee.plan}</strong></td>
-                    <td><strong className="text-price">{fee.fee}</strong></td>
-                    <td><small>{fee.note}</small></td>
-                    <td><small style={{ fontSize: "0.7rem", color: "#059669" }}>{fee.sourceNote || "自社料金規程"}</small></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* 第6章: 代表的な解決実績・対応事例 */}
-        <section className="knowledge-section">
-          <p className="overline">第6章 // 実績・対応事例</p>
-          <h2>代表的な対応事例</h2>
-          <p className="section-lead-desc">過去の実際のご相談事例と対応内容の記録です（全件に出展・契約書類の照合証跡を明記）。</p>
-          <div className="case-studies-grid">
-            {knowledge.cases.map((cs) => (
-              <div className="case-study-card" key={cs.id} style={{ border: "1px solid #cbd5e1", borderRadius: "8px", overflow: "hidden", background: "#ffffff" }}>
-                <div className="case-study-head" style={{ background: "#f8fafc", padding: "12px 16px", borderBottom: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "2px 8px", borderRadius: "4px" }}>{cs.id}</span>
-                  <h4 style={{ margin: 0, fontSize: "0.95rem", color: "#0f172a", flex: 1, marginLeft: "12px" }}>{cs.title}</h4>
-                </div>
-                <div className="case-study-body" style={{ padding: "16px" }}>
-                  <div className="case-row" style={{ marginBottom: "10px" }}><span className="case-label" style={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem", display: "block" }}>ご相談時の課題:</span><p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "#1e293b" }}>{cs.issue}</p></div>
-                  <div className="case-row" style={{ marginBottom: "12px" }}><span className="case-label" style={{ fontWeight: 700, color: "#475569", fontSize: "0.8rem", display: "block" }}>対応内容:</span><p style={{ margin: "4px 0 0", fontSize: "0.85rem", color: "#1e293b" }}>{cs.approach}</p></div>
-                  <div className="case-row-bottom" style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", background: "#f1f5f9", borderRadius: "6px", fontSize: "0.82rem", marginBottom: "12px" }}>
-                    <div><span>所要期間:</span> <strong>{cs.leadTime}</strong></div>
-                    <div><span>結果:</span> <strong className="text-green" style={{ color: "#059669" }}>{cs.result}</strong></div>
-                  </div>
-
-                  {/* 出展・証跡（遡って確認できるエビデンス） */}
-                  <div className="case-evidence-box" style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "10px 12px", fontSize: "0.75rem", color: "#64748b" }}>
-                    <div style={{ fontWeight: 700, color: "#0f172a", marginBottom: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
-                      <span>出展・確認証跡（バックトレース監査情報）</span>
-                    </div>
-                    {cs.sourceRegistryId ? <div style={{ marginBottom: "3px" }}><strong>台帳番号:</strong> <code>{cs.sourceRegistryId}</code></div> : null}
-                    {cs.sourceDocument ? <div style={{ marginBottom: "3px" }}><strong>確認書類:</strong> {cs.sourceDocument}</div> : null}
-                    {cs.sourceAiVerification ? <div style={{ marginBottom: "3px" }}><strong>AI推論検証:</strong> {cs.sourceAiVerification}</div> : null}
-                    {cs.privacyNote ? <div style={{ color: "#94a3b8", marginTop: "4px" }}>{cs.privacyNote}</div> : null}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 第7章: よくあるご質問 */}
-        <section className="knowledge-section">
-          <p className="overline">第7章 // よくあるご質問</p>
-          <h2>よくあるご質問（公式回答）</h2>
-          <p className="section-lead-desc">
-            お客様からよくいただくご質問に対する公式の回答です（宅建業法等の法的基準に基づく確定回答）。
-          </p>
-          <div className="dense-faq-container">
-            {knowledge.faqs.map((faq) => (
-              <div className="dense-faq-card" key={faq.id}>
-                <div className="dense-faq-q">
-                  <span className="faq-id-badge">{faq.id}</span>
-                  <h4>{faq.q}</h4>
-                </div>
-                <div className="dense-faq-a">
-                  <span className="a-badge">回答</span>
-                  <p>{faq.canonicalGroundingAnswer}</p>
-                  {faq.sourceStandard ? (
-                    <div style={{ marginTop: "8px" }}>
-                      <span style={{ fontSize: "0.7rem", color: "#059669", background: "#ecfdf5", padding: "1px 6px", borderRadius: "3px", border: "1px solid #a7f3d0" }}>
-                        準拠基準: {faq.sourceStandard}
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-      </div>
-
-      {/* サイドバー（公開データ取得・出典情報） */}
-      <aside className="public-company-aside">
-        {/* データ取得（機械可読フォーマット） */}
-        <div className="registry-card">
-          <p className="overline">データ取得</p>
-          <h2>公開データ（API / 構造化）</h2>
-          <div className="endpoint-list">
-            <a className="endpoint-link" href={`/ai/company/${encodeURIComponent(profile.slug)}.json${sample ? "?sample=1" : ""}`}>
-              <div>
-                <strong>JSON-LD 構造化データ</strong>
-                <small>Schema.org 準拠データ</small>
-              </div>
-              <span>取得 ↗</span>
-            </a>
-            <a className="endpoint-link" href={`/ai/company/${encodeURIComponent(profile.slug)}.md${sample ? "?sample=1" : ""}`}>
-              <div>
-                <strong>テキストデータ（Markdown）</strong>
-                <small>標準テキスト形式</small>
-              </div>
-              <span>取得 ↗</span>
-            </a>
-          </div>
-        </div>
-
-        {/* 出典・公式ソース */}
-        <div className="registry-card">
-          <p className="overline">出典・公認エビデンス</p>
-          <h2>確認元ページ・公的機関</h2>
-          {knowledge.auditEvidence ? (
-            <div style={{ marginBottom: "12px", padding: "8px 10px", background: "#f8fafc", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
-              <div style={{ fontSize: "0.72rem", color: "#0f172a", fontWeight: 700 }}>公認情報監査エンジン照合済</div>
-              <div style={{ fontSize: "0.68rem", color: "#64748b" }}>確認日時: {knowledge.auditEvidence.verifiedAt}</div>
-            </div>
-          ) : null}
-          <div className="source-list-dense">
-            {knowledge.auditEvidence?.primarySources?.map((src) => (
-              <a key={src.url} href={src.url} target="_blank" rel="noreferrer">
-                <strong>{src.title}</strong>
-                <small style={{ color: "#059669", fontSize: "0.7rem", display: "block" }}>{src.authority}</small>
-                <span>{src.url}</span>
-              </a>
-            ))}
-            {profile.sourcePages.map((page) => (
-              <a key={page.url} href={page.url} target="_blank" rel="noreferrer">
-                <strong>{page.title}</strong>
-                <span>{decodeURIComponent(page.url)}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    {/* フッター */}
-    <footer className="public-company-footer">
-      <div className="shell">
-        <p>Rovan 公開情報参照インデックス · 登録番号: {knowledge.registryId} · 最終更新: {dateLabel(profile.updatedAt)}</p>
-        <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-          <span style={{ fontSize: "0.75rem", color: "#475569" }}>
-            主要生成AI（ChatGPT / Perplexity / Gemini等）向け構造化インデックス稼働中
-          </span>
-          <Link
-            href="/"
-            style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0284c7", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
-          >
-            貴社がAIに推薦されているか10秒で無料診断する <ArrowIcon />
+  return (
+    <main className="public-company-page">
+      <header className="site-header site-header-compact">
+        <div className="shell header-inner">
+          <Link className="brand" href="/">
+            <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
+            <span><strong>Rovan</strong><small>公開情報参照ページ</small></span>
+          </Link>
+          <Link className="text-button" href="/">
+            自社サイトの公開情報を確認する <ArrowIcon />
           </Link>
         </div>
-        <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
-          【免責事項および掲載照会・非公開申請】本ページは本人公認の公式台帳ではなく、確認時点（最終更新日）における公式サイトの公開事実に基づき、AIクローラー向けに客観的事実（Fact）を整理した参照用スナップショットです。手動による編集・改ざんは一切行われません。また、特定の生成AIによる推薦を保証するものではありません。掲載内容の確認・非公開（掲載停止）のご要望、最新情報への更新照会は{" "}
-          <a
-            href={seller.email ? `mailto:${seller.email}?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公開情報参照ページについて`)}` : "/support"}
-            style={{ color: "#0284c7", textDecoration: "underline" }}
-          >
-            お問い合わせ窓口{seller.email ? `（${seller.email}）` : ""}
-          </a>
-          {" "}までご連絡ください。速やかに確認・対応いたします。
-        </p>
-      </div>
-    </footer>
+      </header>
 
-    {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} /> : null}
-  </main>;
+      <div style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "10px 0" }}>
+        <div className="shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", fontSize: "0.8rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
+            <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
+            <span aria-hidden="true">/</span>
+            <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>公開情報参照ページ</span>
+          </div>
+          <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>Schema.org 構造化データ・Markdown</span>
+        </div>
+      </div>
+
+      <section className="public-company-hero" style={{ padding: "36px 0 32px" }}>
+        <div className="shell">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "16px" }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
+                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 8px", borderRadius: "4px" }}>
+                  公開情報参照ページ
+                </span>
+                {sample ? (
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#92400e", background: "#fffbeb", border: "1px solid #fcd34d", padding: "2px 8px", borderRadius: "4px" }}>
+                    設計見本（架空データ）
+                  </span>
+                ) : null}
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
+                  最終更新：{dateLabel(profile.updatedAt)}
+                </span>
+              </div>
+              <h1 style={{ margin: "0 0 8px", fontSize: "clamp(1.75rem, 3.2vw, 2.4rem)", fontWeight: 800, color: "var(--navy, #0f172a)", letterSpacing: "-0.025em" }}>
+                {profile.brandName}
+              </h1>
+              <p style={{ margin: 0, maxWidth: "70ch", fontSize: "0.9rem", color: "var(--text-secondary, #475569)", lineHeight: 1.7 }}>
+                {profile.summary || `${sourceLabel}から確認できた内容を掲載しています。記載のない事項は推測していません。`}
+              </p>
+            </div>
+            {!sourceTargetIsRovan && profile.targetUrl ? (
+              <a href={profile.targetUrl} target="_blank" rel="noreferrer" className="button button-secondary" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", fontSize: "0.8rem", padding: "8px 14px", borderRadius: "6px" }}>
+                参照元サイトを開く ↗
+              </a>
+            ) : null}
+          </div>
+
+          <dl className="public-profile-meta" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "10px", margin: 0, padding: "12px 16px", background: "var(--bg-base, #ffffff)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px" }}>
+            <div><dt style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)" }}>ページID</dt><dd style={{ margin: "3px 0 0", fontSize: "0.82rem", color: "var(--navy, #0f172a)", fontFamily: "var(--font-mono, monospace)" }}>{profile.id}</dd></div>
+            <div><dt style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)" }}>掲載内容</dt><dd style={{ margin: "3px 0 0", fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>確認できた公開情報</dd></div>
+            <div><dt style={{ fontSize: "0.7rem", color: "var(--text-muted, #64748b)" }}>形式</dt><dd style={{ margin: "3px 0 0", fontSize: "0.82rem", color: "var(--navy, #0f172a)" }}>HTML・JSON-LD・Markdown</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section className="public-company-body shell" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(260px, 320px)", gap: "24px" }}>
+        <div className="public-company-main">
+          <section className="knowledge-section" aria-labelledby="public-facts-heading">
+            <p className="overline">公開情報</p>
+            <h2 id="public-facts-heading">確認できた情報</h2>
+            <p className="section-lead-desc">{sourceLabel}で確認できる内容だけを掲載しています。資格・料金・実績など、記載のない事項は補っていません。</p>
+            {facts.length ? (
+              <div className="db-table-wrapper">
+                <table className="dense-db-table">
+                  <thead><tr><th scope="col">項目</th><th scope="col">内容</th><th scope="col">参照元</th></tr></thead>
+                  <tbody>
+                    {facts.map((fact, index) => (
+                      <tr key={`${fact.label}-${index}`}>
+                        <th scope="row">{fact.label}</th>
+                        <td>{fact.value}</td>
+                        <td>{fact.sourceUrl && !sourceTargetIsRovan ? <a href={fact.sourceUrl} target="_blank" rel="noreferrer">確認する ↗</a> : sourceTargetIsRovan ? "入力内容" : "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="empty-state">現在、表示できる公開情報はありません。</p>
+            )}
+          </section>
+
+          <section className="knowledge-section" aria-labelledby="about-page-heading">
+            <p className="overline">このページについて</p>
+            <h2 id="about-page-heading">公開情報参照ページの位置づけ</h2>
+            <p className="section-lead-desc">{sourceTargetIsRovan ? "入力された内容を整理したページです。掲載内容の正確性・最新性は、公開前に入力者が確認してください。" : "Rovanが確認時点の参照元ページを整理したスナップショットです。情報の正確性・最新性は参照元サイトでご確認ください。"}</p>
+            <ul style={{ margin: 0, paddingLeft: "1.2rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8 }}>
+              <li>{sourceTargetIsRovan ? "掲載内容は入力された情報に限ります。" : "掲載内容は参照元ページから確認できた情報に限ります。"}</li>
+              <li>AIの回答・推薦・掲載順位・問い合わせ数・売上は保証しません。</li>
+              <li>誤りや非公開のご希望は、ページ下部のお問い合わせ窓口からご連絡ください。</li>
+            </ul>
+          </section>
+        </div>
+
+        <aside className="public-company-aside">
+          <div className="registry-card">
+            <p className="overline">データ取得</p>
+            <h2>機械可読データ</h2>
+            <div className="endpoint-list">
+              <a className="endpoint-link" href={`/ai/company/${encodeURIComponent(profile.slug)}.json${sample ? "?sample=1" : ""}`}>
+                <div><strong>JSON-LD / JSON</strong><small>構造化データ</small></div><span>取得 ↗</span>
+              </a>
+              <a className="endpoint-link" href={`/ai/company/${encodeURIComponent(profile.slug)}.md${sample ? "?sample=1" : ""}`}>
+                <div><strong>Markdown</strong><small>テキスト形式</small></div><span>取得 ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="registry-card">
+            <p className="overline">{sourceTargetIsRovan ? "入力情報" : "参照元"}</p>
+            <h2>{sourceTargetIsRovan ? "入力内容" : "確認元ページ"}</h2>
+            {visibleSourcePages.length ? (
+              <div className="source-list-dense">
+                {visibleSourcePages.map((page) => (
+                  <a key={page.url} href={page.url} target="_blank" rel="noreferrer">
+                    <strong>{page.title}</strong>
+                    {page.description ? <small>{page.description}</small> : null}
+                    <span>{publicUrl(page.url)}</span>
+                  </a>
+                ))}
+              </div>
+            ) : <p className="empty-state">{sourceTargetIsRovan ? "外部の参照元ページはありません。入力された内容をもとに作成されたページです。" : "参照元ページは記録されていません。"}</p>}
+          </div>
+        </aside>
+      </section>
+
+      <footer className="public-company-footer">
+        <div className="shell">
+          <p>Rovan 公開情報参照ページ · 最終更新: {dateLabel(profile.updatedAt)}</p>
+          <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
+            【掲載照会・非公開申請】本ページは、{sourceTargetIsRovan ? "入力された内容を整理したページ" : "確認時点に参照元ページから整理した公開情報のスナップショット"}です。特定の生成AIによる回答・推薦・掲載順位、問い合わせ数、売上を保証するものではありません。掲載内容の確認・非公開（掲載停止）のご要望、最新情報への更新照会は{" "}
+            <a href={seller.email ? `mailto:${seller.email}?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公開情報参照ページについて`)}` : "/support"} style={{ color: "#0284c7", textDecoration: "underline" }}>
+              お問い合わせ窓口{seller.email ? `（${seller.email}）` : ""}
+            </a>
+            {" "}までご連絡ください。
+          </p>
+        </div>
+      </footer>
+
+      {jsonLd ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} /> : null}
+    </main>
+  );
 }

@@ -384,6 +384,14 @@ svg { width: 1.1em; height: 1.1em; }
   max-width: 880px;
   margin: 0 auto;
 }
+.split-demo-note,
+.chatgpt-demo-note {
+  margin: 0 0 10px;
+  color: #64748b;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  text-align: center;
+}
 .split-user-prompt-box {
   background: #f8fafc;
   border: 1px solid #cbd5e1;
@@ -3587,7 +3595,7 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 /* ==========================================================================
-   AI公式DBインタラクティブ登録 ＆ アップセル境界線 (IKEA Effect & Paywall)
+   公開情報の下書き確認・契約案内
    ========================================================================== */
 .public-profile-interactive-card {
   background: #ffffff;
@@ -3834,7 +3842,7 @@ svg { width: 1.1em; height: 1.1em; }
   gap: 12px;
 }
 
-/* 有料アップセルの壁 (Paywall Banner) */
+/* 有料プラン案内 */
 .upsell-paywall-banner {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -3923,7 +3931,7 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 /* ==========================================================================
-   AI公式認定ナレッジベース (超絶エンタープライズDBレジストリ)
+   公開情報参照ページ
    ========================================================================== */
 .ai-verified-pill {
   background: #0f172a;
@@ -4040,7 +4048,7 @@ svg { width: 1.1em; height: 1.1em; }
   line-height: 1.5;
 }
 
-/* ギチギチのDBテーブル共通スタイル */
+/* 公開情報テーブル共通スタイル */
 .db-table-wrapper {
   overflow-x: auto;
   border: 1.5px solid #cbd5e1;
@@ -4091,7 +4099,7 @@ svg { width: 1.1em; height: 1.1em; }
   font-weight: 700;
 }
 
-/* 競合ベンチマークテーブル */
+/* 比較候補テーブル */
 .benchmark-table th {
   background: #f1f5f9;
   font-size: 0.84rem;
@@ -4313,7 +4321,7 @@ svg { width: 1.1em; height: 1.1em; }
   line-height: 1.45;
 }
 
-/* 戦略分析・弱点とDB登録戦略 */
+/* 回答ログと公開情報の整理 */
 .strategic-audit-box {
   background: #fffaf5;
   border: 1px solid #fed7aa;
@@ -4626,7 +4634,7 @@ svg { width: 1.1em; height: 1.1em; }
   background: #1d4ed8;
 }
 
-/* 看板選択エリアの機能格差スペック表 */
+/* プラン比較表 */
 .plan-comparison-box {
   background: #ffffff;
   border: 1.5px solid #cbd5e1;
@@ -4861,7 +4869,7 @@ svg { width: 1.1em; height: 1.1em; }
   }
 }
 
-/* 直接編集モーダル・公式Web拠点スタイル */
+/* 公開情報ページの確認・編集スタイル */
 .public-company-url-box {
   background: #f8fafc;
   border: 1px solid #cbd5e1;
@@ -5395,7 +5403,7 @@ svg { width: 1.1em; height: 1.1em; }
 }
 
 /* ==========================================================================
-   公式台帳 開設企業の実例ギャラリー
+   公開情報整理の見本ギャラリー
    ========================================================================== */
 .verified-gallery-section {
   padding: 72px 0 80px;
@@ -5708,7 +5716,7 @@ svg { width: 1.1em; height: 1.1em; }
   color: #475569;
 }
 
-/* 推薦枠の獲得成果（生ログコンテナ） */
+/* 候補入り観測の履歴コンテナ */
 .watch-won-prompts-container {
   background: #ffffff;
   border: 1.5px solid #86efac;
@@ -5812,7 +5820,7 @@ svg { width: 1.1em; height: 1.1em; }
   line-height: 1.5;
 }
 
-/* 競合モニタリングテーブル */
+/* 比較候補の推移テーブル */
 .watch-competitor-monitor {
   padding-top: 0 !important;
 }
@@ -6324,6 +6332,3 @@ svg { width: 1.1em; height: 1.1em; }
   text-align: center;
   font-weight: 600;
 }
-
-
-

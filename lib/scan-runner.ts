@@ -41,7 +41,7 @@ export async function runScan(input: {
     onProgress: async (completed, total) => emit("measuring", 55 + Math.round((completed / total) * 25), `AIの回答を確認しています。${completed}/${total}`, `質問 ${completed}/${total}`),
   });
 
-  await emit("analyzing", 84, "AIが競合を先に勧めた理由を整理しています。");
+  await emit("analyzing", 84, "AI回答に先に含まれた候補と参照元を整理しています。");
   const result = await buildScanResult({ scanId: input.scanId, targetUrl: url, discovery, prompts, repetitions, panelKind, observations, pages: crawl.pages, crawlAudit: crawl.audit });
   await emit(result.successfulObservations === result.scheduledObservations ? "complete" : "partial", 100, result.successfulObservations ? "結果と、最初に直すことをまとめました。" : "市場の確認は終わりましたが、AIの回答を最後まで取得できませんでした。", discovery.brandName);
   return result;

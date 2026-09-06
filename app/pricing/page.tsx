@@ -1,123 +1,93 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { MarketingShell } from "@/components/marketing-shell";
 import { ArrowIcon, CheckIcon } from "@/components/icons";
+import { WATCH_MONTHLY_PRICE_LABEL, WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL, WATCH_MONTHLY_PRICE_TAX_INCLUSIVE } from "@/lib/pricing";
+
+export const metadata: Metadata = {
+  title: "料金プラン",
+  description: "無料診断と、同じ条件でAI回答を確認する週次見守りの料金・提供範囲。",
+};
 
 const free = [
-  "社名・URL 1件のAI推薦状況の実測調査",
-  "見込み客の相談質問 12問での勝敗比較",
-  "大手ライバルが優先された判定理由の特定",
-  "大手の隙間を突く「自社固有の強み」の選定",
-  "自社サイト改修ゼロでの自社専用 AI公式推薦データ発行",
+  "社名またはURL 1件の初回診断",
+  "公開情報をもとにした購入検討向け質問パネルでの比較",
+  "AI回答に自社が含まれた質問・含まれなかった質問の確認",
+  "回答で参照されたURLと公開情報の対応確認",
+  "自社サイトを改修せずに公開情報の整理案を確認",
 ];
+
 const paid = [
-  "自社専用「AI公式推薦データ」の常時公開・ホスティング維持（改修工事不要）",
-  "主要AIの推薦枠とライバル動向を毎週自動追跡・通知",
-  "競合の急浮上・推薦順位の変動アラート",
-  "AI公式推薦データ（強み仕様・FAQ）の定期自動メンテナンス",
-  "社長の手間ゼロ：URLを入力した後は完全放置で自走運用",
-  "契約期間の縛りなし：いつでも管理画面からワンクリック解約",
+  "承認済みの公開情報参照ページを維持（自社サイト改修不要）",
+  "同じ測定条件でAI回答を毎週記録・比較",
+  "AI回答に含まれる候補と参照URLの変化を通知",
+  "公開前の変更案と参照元の確認",
+  "URL入力後は、追加の質問票なしで継続測定",
+  "月単位で利用でき、管理画面から解約手続きが可能",
 ];
 
 export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
-    title="営業マンを雇う前に。AI新時代に取り残されないための投資。"
-    lead="月30万円以上の営業人件費や、成果の出ない高額SEOに頼る時代は終わりました。URLや社名を入れるだけで、あとは完全放置。自社サイト改修ゼロで、AIから推薦されやすい専属窓口を即座に自動配備・自動運用します。"
+    title="AI回答と公開情報を、同じ条件で確認する。"
+    lead="URLや社名を入力すると、指定した質問とAI回答、回答で参照されたURLを確認できます。公開情報の整理案は内容を確認してから公開します。AIの推薦・順位・売上の改善は保証しません。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
         <header>
           <p>無料診断</p>
           <strong>¥0</strong>
-          <span>まずは現状の推薦状況を確認</span>
+          <span>まずはAI回答の現状を確認</span>
         </header>
         <ul>{free.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul>
         <Link className="button button-secondary" href="/#scan">まずは無料で診断する <ArrowIcon /></Link>
       </div>
       <div className="pricing-plan pricing-paid">
         <header>
-          <p>AI推薦・自動見守りプラン</p>
-          <strong>¥10,780 <small>/月・税込</small></strong>
-          <span>（税別 ¥9,800）専属営業マン代わりとして</span>
+          <p>AI回答・週次見守りプラン</p>
+          <strong>¥{WATCH_MONTHLY_PRICE_TAX_INCLUSIVE.toLocaleString()} <small>/月・税込</small></strong>
+          <span>{WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL}</span>
         </header>
         <ul>{paid.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul>
         <Link className="button button-primary" href="/#scan">無料診断から始める <ArrowIcon /></Link>
-        <small className="pricing-plan-note">無料診断の結果画面から、いつでもワンクリックで開始できます。無理な自動課金はありません。</small>
+        <small className="pricing-plan-note">無料診断後、料金を確認してから開始します。開始しない限り有料契約にはなりません。</small>
       </div>
     </div>
-    <div className="pricing-value-strip" aria-label="使うと得られるもの">
+    <div className="pricing-value-strip" aria-label="サービスで確認できること">
       <article>
-        <small>いま</small>
-        <strong>AI新時代の機会損失と自社の強みが分かる</strong>
-        <span>ライバルが対応しきれない隙間を見つけ、AIが御社を推薦しやすくなる看板を確定します。</span>
+        <small>現在</small>
+        <strong>AI回答の現状を確認</strong>
+        <span>指定した質問とAI回答を記録し、自社が候補に含まれたか、どのURLが参照されたかを確認します。</span>
       </article>
       <article>
-        <small>次に</small>
-        <strong>改修ゼロで「AI公式推薦データ」をネット配備</strong>
-        <span>自社サイトの改修やブログ更新はゼロ。AIクローラーが直接読み込む客観構造化データを配備し、ChatGPTやPerplexityが迷わず御社をおすすめ候補として認識する環境を整えます。</span>
+        <small>整理</small>
+        <strong>公開情報を参照元付きで整理</strong>
+        <span>公開サイトで確認できる事実と参照元URLを整理し、公開前の下書きとして確認できます。</span>
       </article>
       <article>
-        <small>その後</small>
-        <strong>毎週の自動見守りで推薦状況を追跡</strong>
-        <span>AI回答の更新やライバルの動きを毎週自動で追跡し、自社がおすすめ候補に入り続けているかを監視します。</span>
+        <small>継続</small>
+        <strong>同じ条件で週次測定</strong>
+        <span>同じ質問・AI・条件で前回との差分を確認します。結果は将来の推薦や売上を保証しません。</span>
       </article>
-    </div>
-    {/* 公式特別優待制度（費用を抑えたい方へ） */}
-    <div className="pricing-special-offers" style={{ margin: "40px 0 20px", background: "var(--bg-base, #ffffff)", borderRadius: "var(--radius-card, 8px)", padding: "32px 28px", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-        <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "var(--radius-badge, 4px)" }}>
-          公式特別優待制度
-        </span>
-        <h3 style={{ fontSize: "1.2rem", margin: 0, color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>
-          月額費用を抑えたい方へ。成果報告や仲間紹介で大幅割引
-        </h3>
-      </div>
-      <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.65 }}>
-        Rovanは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下の優待をご利用いただくことで、定期見守りプランをお得に開始・継続いただけます。
-      </p>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-        <div style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 6px)", padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
-            <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>① X（旧Twitter）成果報告シェア割</strong>
-            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "var(--radius-badge, 4px)" }}>初月 50% OFF</span>
-          </div>
-          <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 12px" }}>
-            「AI公式推薦データ」の配備状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
-          </p>
-          <small style={{ color: "var(--text-muted, #64748b)", fontSize: "0.72rem" }}>※無料診断の結果画面からワンクリックで適用可能です。</small>
-        </div>
-
-        <div style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 6px)", padding: "20px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
-            <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>② 経営者仲間・同業への紹介割</strong>
-            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 6px", borderRadius: "var(--radius-badge, 4px)" }}>双方 ずっと割引</span>
-          </div>
-          <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 12px" }}>
-            お知り合いの経営者様や士業・店舗仲間に専用リンクを共有し、仲間がRovanをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
-          </p>
-          <small style={{ color: "var(--text-muted, #64748b)", fontSize: "0.72rem" }}>※診断結果画面および管理画面から専用リンクを発行できます。</small>
-        </div>
-      </div>
     </div>
 
     <section className="pricing-explanation">
-      <h2>なぜ営業マンを雇うより効果的なのか</h2>
+      <h2>無料診断と週次測定の違い</h2>
       <p>
-        顧客の購買行動は「Google検索で比べる」ことから「ChatGPT等のAIに直接相談する」ことへと急速に移行しています。<br />
-        営業マンが足で稼ぐよりも、顧客がAIに「おすすめの会社は？」と聞いた瞬間に御社が推薦候補に入る方が、確度の高い相談につながりやすくなります。<br />
-        月30万円以上の人件費をかけることなく、月額わずか9,800円（税別）で24時間働くAI営業窓口が手に入ります。
+        無料診断では、指定した質問・AI・日時の条件で、AI回答と参照URLを確認します。<br />
+        有料プランでは、同じ測定条件を毎週記録し、前回との差分を確認できます。料金は{WATCH_MONTHLY_PRICE_LABEL}です。<br />
+        Rovanは営業活動の代行サービスではなく、AIの推薦や回答を保証するサービスでもありません。
       </p>
       <div className="pricing-steps">
-        <div><strong>1</strong><span>URL・社名を入力</span><p>手入力はこれだけ。即時AI診断</p></div>
-        <div><strong>2</strong><span>公式データ即日配備</span><p>完全放置でAI専属窓口を配備</p></div>
-        <div><strong>3</strong><span>全自動見守り</span><p>気に入ったら継続。毎週自動追跡</p></div>
+        <div><strong>1</strong><span>URL・社名を入力</span><p>公開情報をもとに初回診断</p></div>
+        <div><strong>2</strong><span>公開情報の下書き</span><p>内容を確認してから公開</p></div>
+        <div><strong>3</strong><span>週次測定を開始</span><p>同じ条件で前回との差分を確認</p></div>
       </div>
     </section>
     <section className="pricing-note">
       <h2>ご契約について</h2>
-      <p>無料診断から勝手に有料課金されることは一切ありません。有料プランの開始前に料金と更新条件を明示し、解約や領収書の発行は世界標準の決済システム（Stripe）の管理画面からいつでもご自身でワンクリックで完了できます。</p>
-      <p>本サービスはAI上での絶対的な順位や推薦、売上を保証するものではありません。公開情報と客観的な観測データに基づき、誠実な比較結果と改善のアドバイスをお届けします。</p>
+      <p>無料診断を利用しただけで有料課金は発生しません。継続測定を開始するときに料金と更新条件を確認し、Stripe Customer Portalから解約手続きを行えます。</p>
+      <p>本サービスは、指定した条件でのAI回答と公開情報を確認・整理するものです。AIの推薦、引用、検索順位、問い合わせ、契約、売上は保証しません。対象会社のサイトを自動変更することもありません。</p>
     </section>
   </MarketingShell>;
 }

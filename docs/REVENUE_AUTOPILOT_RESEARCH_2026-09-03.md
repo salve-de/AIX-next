@@ -1,6 +1,6 @@
 # Rovan Revenue Autopilot — 事業成果までつなぐ調査と実装方針
 
-> **方針更新 (2026-09-03):** 顧客サイトへの実行代行・自動公開は商品にしない。この文書は「実行まで広げた場合に必要な条件」の調査資料として残し、現在の採用方針は [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md) を優先する。
+> **資料の位置づけ (2026-09-03):** 顧客サイトへの実行代行・自動公開は商品にしない。この文書は「実行まで広げた場合に必要な条件」の調査資料として残す。現在の採用方針は [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md) と [`docs/CORE_PRODUCT_STRATEGY.md`](CORE_PRODUCT_STRATEGY.md) を優先する。ここにある売上・受注・成果指標は調査上の候補であり、Rovanが現在取得できる実績ではない。
 
 調査日: 2026-09-03 (JST)\
 対象: 日本の高単価B2B企業が、AIや検索で候補に入り、サイト訪問、問い合わせ、商談、受注へ進むまでをRovanに委任できる方法\
@@ -358,16 +358,16 @@ Google Business Profileでは第三者が管理する場合も所有者の明示
 |---|---|---|---|
 | Free Scan | どの買い手質問で負けているか | FIND + EXPLAIN | 価値を実データで体験 |
 | 14-day Watch | 最初の変更後に同じ質問が動いたか | PROVE | 継続判断 |
-| Founder Watch（現行案） | 毎週どこを直すか分かる | ACT + PROVE、Change Pack | 月額プロダクト |
+| paid Weekly Watch（現行案） | 毎週どこを確認・改善するか分かる | ACT + PROVE、Change Pack | 月額プロダクト |
 | Managed Autopilot（追加案） | 公開・計測・改善まで任せられる | 接続、PR/CMS、承認運用、Outcome Ledger | セットアップ費 + 高単価月額を検証 |
 
 Managed Autopilotの価格は、プロンプト数ではなく、対象ドメイン数、実装量、接続数、レビュー責任、SLA、売上計測まで含めて見積もる。効果を保証する成功報酬だけに依存せず、固定費 + 明確な成果指標の組み合わせを検証する。
 
 ## 9. 成功判定と実験方法
 
-### 最低限のNorth Star
+### 調査時点でのNorth Star候補
 
-**AI接点を含む有望商談の創出と受注額**。プロンプトの候補入り率は先行指標として並べる。
+**AI接点を含む有望商談の創出と受注額**。これは事業成果を追う場合の候補であり、現在のRovanのNorth Starではない。プロンプトの候補入り率は先行指標として並べる。
 
 ### Change ID単位で記録する項目
 

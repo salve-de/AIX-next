@@ -1,5 +1,7 @@
 # Rovan — Value Proposition / Product Loop Handoff (2026-09-02)
 
+> **資料の位置づけ:** これは過去の引き継ぎ資料です。現行の名称、料金、North Star、公開範囲は [`AGENTS.md`](../AGENTS.md)、[`docs/CORE_PRODUCT_STRATEGY.md`](CORE_PRODUCT_STRATEGY.md)、[`docs/CONTINUOUS_VALUE_RETENTION.md`](CONTINUOUS_VALUE_RETENTION.md) を優先します。以下の価格・ブランチ・実装状態は現在の事実を示しません。
+
 ## This file supersedes the earlier 2026-09-02 handoff for product positioning and current implementation state
 
 Repository:

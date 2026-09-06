@@ -2,6 +2,7 @@ import { consumeFreeScan } from "@/lib/rate-limit";
 import { runScan } from "@/lib/scan-runner";
 import { createScan, getRecentCompletedScan, updateScan } from "@/lib/storage";
 import { normalizePublicUrl } from "@/lib/url-security";
+import { FREE_PANEL_SIZE } from "@/lib/prompt-panels";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
       const result = await runScan({
         scanId: scan.id,
         url: targetUrl,
-        promptCount: 12,
+        promptCount: FREE_PANEL_SIZE,
         repetitions: 1,
         panelKind: "free",
         onProgress: async (event) => {

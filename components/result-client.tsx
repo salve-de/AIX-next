@@ -1,7 +1,5 @@
 "use client";
 
-import { siteUrl } from "@/lib/site";
-
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -14,7 +12,8 @@ import { ReportActions } from "@/components/report-actions";
 import { PositioningPanel } from "@/components/positioning-panel";
 import { PublicProfileActions } from "@/components/public-profile-actions";
 import { ExecutiveDiagnosticSummary } from "@/components/executive-diagnostic-summary";
-import { buildDynamicScanResult, sampleResult } from "@/lib/sample-data";
+import { sampleResult } from "@/lib/sample-data";
+import { WATCH_MONTHLY_PRICE_LABEL } from "@/lib/pricing";
 import type { Observation, ProviderName, ScanRecord, ScanResult } from "@/lib/types";
 
 function providerLabel(provider: ProviderName) {
@@ -38,12 +37,9 @@ function userFacingWarning(value: string) {
 export function ResultClient() {
   const params = useSearchParams();
   const router = useRouter();
-  const customBrand = params.get("customBrand");
-  const sample = params.get("sample") === "1" || Boolean(customBrand);
+  const sample = params.get("sample") === "1";
   const scanId = params.get("id");
-  const [rawResult, setResult] = useState<ScanResult | null>(
-    sample ? (customBrand ? buildDynamicScanResult(customBrand) : sampleResult) : null
-  );
+  const [rawResult, setResult] = useState<ScanResult | null>(sample ? sampleResult : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
   const [openObservation, setOpenObservation] = useState("");
@@ -52,13 +48,7 @@ export function ResultClient() {
   const [showCorrectionForm, setShowCorrectionForm] = useState(false);
   const [correctionQuery, setCorrectionQuery] = useState("");
 
-  const result = useMemo(() => {
-    if (!rawResult) return null;
-    if (customBrand && rawResult.discovery.brandName !== customBrand) {
-      return buildDynamicScanResult(customBrand);
-    }
-    return rawResult;
-  }, [rawResult, customBrand]);
+  const result = useMemo(() => rawResult, [rawResult]);
 
   useEffect(() => {
     if (sample) return;
@@ -95,7 +85,7 @@ export function ResultClient() {
   const primaryLoss = result.lostPrompts[0];
   const primaryGap = result.evidenceGaps[0];
   const hasMeasurement = result.successfulObservations > 0;
-  const shortlistedPromptCount = Math.max(0, result.panel.promptCount - result.lostPrompts.length);
+  const ownPromptCount = new Set(result.observations.filter((item) => item.status === "success" && item.ownRecommended).map((item) => item.promptId)).size;
   const primaryWinner = primaryLoss?.winner || topCompetitor?.name || null;
   const citationCount = result.observations.reduce((total, item) => total + item.citations.length, 0);
   const host = (() => { try { return new URL(result.targetUrl).hostname.replace(/^www\./, ""); } catch { return result.targetUrl; } })();
@@ -117,7 +107,7 @@ export function ResultClient() {
           <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
             {result.discovery.brandName}
           </span>
-          {sample ? <span style={{ fontSize: "0.72rem", color: "var(--accent-blue, #0284c7)", background: "#e0f2fe", padding: "1px 6px", borderRadius: "3px", fontWeight: 600 }}>リアルモック</span> : null}
+            {sample ? <span style={{ fontSize: "0.72rem", color: "var(--accent-blue, #0284c7)", background: "#e0f2fe", padding: "1px 6px", borderRadius: "3px", fontWeight: 600 }}>設計見本（架空データ）</span> : null}
         </div>
 
         {/* 中央：スリムな3ステップ・ナビゲーション */}
@@ -126,7 +116,7 @@ export function ResultClient() {
             <span>① 現状を知る</span>
           </a>
           <a href="#step-2" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            <span>② 公式データを配備</span>
+            <span>② 公開情報を確認</span>
           </a>
           <a href="#step-3" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
             <span>③ 推移を追跡</span>
@@ -198,7 +188,7 @@ export function ResultClient() {
           <div className="report-header-top">
             <div>
               <p className="overline" style={{ color: "var(--text-muted, #64748b)", fontSize: "0.76rem", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "4px" }}>
-                自社専用 AI診断レポート
+                AI回答の測定レポート
               </p>
               <h1 style={{ fontSize: "clamp(1.65rem, 2.8vw, 2.2rem)", fontWeight: 800, color: "var(--navy, #0f172a)", margin: "0 0 6px", letterSpacing: "-0.025em" }}>
                 {result.discovery.brandName}
@@ -219,19 +209,19 @@ export function ResultClient() {
               <>
                 比較した<strong>{result.panel.promptCount}問</strong>中、
                 <span style={{ color: "var(--navy, #0f172a)" }}>
-                  <strong>{result.lostPrompts.length}問</strong>でライバルが先に選ばれました。
+                  <strong>{result.lostPrompts.length}問</strong>で他社候補が先に表示されました。
                 </span>
               </>
             ) : (
               <>
-                商品・市場は確認できました。AI回答の測定は未完了です。
+                公開ページの情報を確認しました。AI回答の測定は未完了です。
               </>
             )}
           </div>
 
           <div className="report-meta" style={{ display: "flex", flexWrap: "wrap", gap: "12px 18px", color: "var(--text-secondary, #475569)", fontSize: "0.78rem" }}>
-            <span>対象市場: {result.discovery.market}</span>
-            <span>主要AI（ChatGPT / Perplexity / Gemini）実測</span>
+            <span>対象分野: {result.discovery.market}</span>
+            <span>測定対象AI: ChatGPT / Perplexity / Gemini</span>
             <span>比較質問: 全{result.panel.promptCount}問</span>
           </div>
 
@@ -246,20 +236,20 @@ export function ResultClient() {
       {/* 現状の診断サマリー */}
       <section className="report-summary shell">
         <div className="summary-copy">
-          <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AIの検索結果" : "診断結果"}</p>
-          <h2>{primaryLoss ? <>AIは、<strong>{primaryWinner || "競合"}</strong>を<br />先に勧めました。</> : "AIの比較で、自社も選ばれています。"}</h2>
+          <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AI回答の測定結果" : "測定結果"}</p>
+          <h2>{primaryLoss ? <>AI回答では、<strong>{primaryWinner || "他社候補"}</strong>が<br />先に表示されました。</> : "測定した質問で、自社も候補に含まれました。"}</h2>
           <p>
             {primaryLoss
-              ? `自社の実績や実力に問題があるわけではありません。単に「AIが自社の強みを公式データとして認識していない」ため、見込み客がライバルへ流れてしまう機会損失が生じています。自社サイト改修ゼロで自社専用のAI公式推薦データを配備し、AI新時代において正しく推薦されやすい環境を整えましょう。`
-              : "測定した質問では、自社もしっかりおすすめに入っています。"}
+              ? "今回指定した質問・AI・測定時点では、自社が候補に含まれない回答でした。原因や顧客行動をこの結果だけで断定せず、参照元と質問条件を確認します。"
+              : "測定した質問では、自社が候補に含まれました。回答は質問・参照元・モデルの更新で変わるため、必要に応じて同じ条件で再測定します。"}
           </p>
 
           {primaryLoss ? (
             <div className="summary-loss-box shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", padding: "18px 22px", borderRadius: "10px", margin: "18px 0", border: "1px solid var(--border-subtle, #e2e8f0)", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)" }}>
-              <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--amber, #d97706)", display: "block", marginBottom: "6px" }}>ライバルが先に選ばれた相談質問の例</span>
+              <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--amber, #d97706)", display: "block", marginBottom: "6px" }}>他社候補が先に表示された質問の例</span>
               <p style={{ margin: "0 0 8px", fontSize: "0.95rem", fontWeight: 700, color: "var(--navy, #0f172a)" }}>「{primaryLoss.prompt}」</p>
               <p style={{ margin: 0, fontSize: "0.86rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
-                {primaryWinner ? `AIは${primaryWinner}を優先して回答しました。` : "AIは競合他社を優先して回答しました。"}
+                {primaryWinner ? `今回の回答では「${primaryWinner}」が先に候補に含まれました。` : "今回の回答では他社候補が先に含まれました。"}
                 {primaryLoss.summary ? ` （判定理由：${primaryLoss.summary}）` : ""}
               </p>
             </div>
@@ -267,69 +257,68 @@ export function ResultClient() {
         </div>
         <div>
           <div className="summary-stats">
-            <div><span>おすすめに入った質問</span><strong>{shortlistedPromptCount} / {result.panel.promptCount}問</strong></div>
-            <div><span>先に選ばれた競合</span><strong>{topCompetitor?.name || "—"}</strong></div>
+            <div><span>自社が候補に含まれた質問</span><strong>{ownPromptCount} / {result.panel.promptCount}問</strong></div>
+            <div><span>回答に多く含まれた他社候補</span><strong>{topCompetitor?.name || "—"}</strong></div>
             <div><span>確認した参考ページ</span><strong>{citationCount}件</strong></div>
-            <div><span>定期見守り</span><strong className="summary-unconnected">毎週自動確認</strong></div>
+            <div><span>継続確認</span><strong className="summary-unconnected">週次で再測定</strong></div>
           </div>
         </div>
       </section>
 
-      {/* エグゼクティブ要約：なぜ下位だったのか？ × 具体的にどう逆転・解決できるのか（解決策） */}
+      {/* 測定結果の要約と、次の確認方法 */}
       <ExecutiveDiagnosticSummary
         brandName={result.discovery.brandName}
-        rank={result.marketPosition || 9}
-        topCompetitor={topCompetitor?.name || "全国展開の大手チェーン"}
+        topCompetitor={topCompetitor?.name}
         lostCount={result.lostPrompts.length}
         totalCount={result.panel.promptCount}
       />
 
-      {/* AI観測プロトコル・全データ出展証跡ボックス */}
+      {/* AI測定条件・参照元の説明 */}
       <section className="shell" style={{ marginTop: "20px", marginBottom: "28px" }}>
         <div className="shadow-ambient-sm" style={{ background: "var(--bg-base, #ffffff)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "10px", padding: "18px 22px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "4px" }}>
-                AI実測データ ＆ 調査ログ
+                AI回答の測定ログ
               </span>
               <strong style={{ fontSize: "0.86rem", color: "var(--text-primary, #0f172a)" }}>
-                全データの引用元・判定の客観的証拠
+                測定条件と参照元
               </strong>
             </div>
             <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
-              実測日時: {formatDate(result.measuredAt)} JST · 判定完了
+              {sample ? "表示用の基準日時" : "測定日時"}: {formatDate(result.measuredAt)} JST · 判定完了
             </span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "var(--text-secondary, #334155)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "12px 16px", borderRadius: "8px" }}>
             <div><strong>調査対象AI:</strong> ChatGPT / Perplexity / Google Gemini</div>
-            <div><strong>調査母数:</strong> 顧客が相談する質問 {result.panel.promptCount}問 × 主要AI実測（計 {result.successfulObservations}件）</div>
-            <div><strong>調査方法:</strong> 各AIに同一条件で質問し、回答ログを直接収集・検証</div>
-            <div><strong>判定基準:</strong> AIが「おすすめ」として提示した会社名および紹介文の分析</div>
+              <div><strong>測定母数:</strong> 質問 {result.panel.promptCount}問 × AI回答（成功 {result.successfulObservations}件）</div>
+            <div><strong>調査方法:</strong> {sample ? "表示用に固定した設計見本" : "各AIに同一条件で質問し、取得できた回答を記録"}</div>
+              <div><strong>判定基準:</strong> 回答内で自社が候補に含まれたかを分析</div>
           </div>
           <div style={{ marginTop: "10px", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", lineHeight: 1.6, borderTop: "1px dashed var(--border-subtle, #e2e8f0)", paddingTop: "8px" }}>
-            <strong>【客観的観測事実に関する方針】</strong>
-            本レポートに記載された競合情報は、主要AIが実際に回答した客観的な記録データ（事実）を自社の経営改善用に集計したものです。他社への誹謗中傷は一切含みません。また、ネット上に公開配備される「AI公式推薦データ」上では他社の個別実名は記載されず、客観的な業態分類（大手チェーン・一般他社）として安全に処理されます。
+            <strong>【観測結果の扱い】</strong>
+            本レポートの候補名は、指定したAI回答に含まれた文字列を測定ログとして表示しています。他社の品質・市場全体の順位・顧客の流出を評価するものではありません。公開情報ページには測定ログや他社名を自動掲載しません。
           </div>
         </div>
       </section>
 
-      {/* 買い手がAIに聞く12問一覧 */}
+      {/* 買い手がAIに聞く質問一覧 */}
       <section className="report-section shell">
         <div className="section-heading-simple">
           <p className="overline">買い手がAIに聞く質問</p>
-          <h2>どの比較で、ライバルに流れているか。</h2>
-          <p>お客様がAIに質問する場面ごとに、先に選ばれた会社と自社の状況を確認できます。</p>
+          <h2>どの質問で、自社が候補に含まれなかったか。</h2>
+          <p>質問ごとに、今回のAI回答と自社の候補入り状況を確認できます。</p>
         </div>
         <QuestionList result={result} />
       </section>
 
-      {/* ライバル各社との比較グラフ */}
+      {/* 回答に含まれた候補の比較グラフ */}
       <section className="report-section report-compare">
         <div className="shell">
           <div className="section-heading-simple">
-            <p className="overline">ライバルとの比較</p>
-            <h2>各社がおすすめされた回数を比べる。</h2>
-            <p>今回のAI回答で、各社がおすすめ候補に入った割合を客観的に比較しています。</p>
+            <p className="overline">回答に含まれた候補</p>
+            <h2>回答に含まれた候補の件数を比べる。</h2>
+            <p>今回取得できたAI回答で、候補として抽出された回数を比較しています。顧客数や市場シェアではありません。</p>
           </div>
           <div className="compare-table">
             <div className="compare-table-head"><span>会社・商品名</span><span>選ばれた回答</span><span>割合</span></div>
@@ -341,7 +330,7 @@ export function ResultClient() {
               </div>
             ))}
             <div className="compare-row compare-own">
-              <strong><i>{result.marketPosition || "—"}</i>{result.discovery.brandName}</strong>
+              <strong><i>対象</i>{result.discovery.brandName}</strong>
               <div className="compare-bar"><span style={{ width: `${Math.max(3, result.recommendationCoverage)}%` }} /></div>
               <b>{result.ownRecommendationCount} / {result.successfulObservations}</b>
             </div>
@@ -352,15 +341,15 @@ export function ResultClient() {
       {/* 診断詳細：直すべきポイントと引用元証拠 */}
       <section className="report-section shell report-evidence">
         <div className="section-heading-simple">
-          <p className="overline">ホームページで直すべきポイント</p>
-          <h2>自社サイトに補足したい情報。</h2>
-          <p>ライバル各社の情報と比べ、自社のページに載せることでAIの信頼度が高まる情報を整理しました。</p>
+          <p className="overline">公開情報の確認ポイント</p>
+          <h2>参照元で確認したい情報。</h2>
+          <p>今回の質問で確認しにくかった項目を、公開できる事実と参照元に分けて整理しました。掲載や効果は保証しません。</p>
         </div>
         <div className="evidence-layout">
           <div className="evidence-main">
-            <h3>{primaryGap?.label || "選ぶ理由になる情報"}</h3>
-            <p>{primaryGap?.whyItMatters || "この情報が明記されることで、AIが自信を持って推薦できるようになります。"}</p>
-            {primaryGap?.competitorEvidence ? <p className="evidence-competitor">ライバル側で確認できた内容: {primaryGap.competitorEvidence}</p> : null}
+            <h3>{primaryGap?.label || "選ぶ前に確認したい情報"}</h3>
+            <p>{primaryGap?.whyItMatters || "この情報が参照元に記載されているか、未確認かを分けて表示します。"}</p>
+            {primaryGap?.competitorEvidence ? <p className="evidence-competitor">回答に含まれた参照情報: {primaryGap.competitorEvidence}</p> : null}
           </div>
           <div className="citation-box">
             <h3>AIが参考にしたページ</h3>
@@ -413,24 +402,24 @@ export function ResultClient() {
     </div>
 
     {/* ========================================================= */}
-    {/* 【ステップ 2：解決アクション（AI公式推薦データの配備）】 */}
+    {/* 【ステップ 2：公開情報の整理】 */}
     {/* ========================================================= */}
     <div id="step-2" style={{ background: "var(--bg-surface, #f8fafc)", padding: "48px 0", borderTop: "1px solid var(--border-subtle, #e2e8f0)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", margin: "40px 0" }}>
       <div className="shell">
         <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 36px" }}>
-          <span className="step-badge">【ステップ 2】今すぐできる解決アクション</span>
+          <span className="step-badge">【ステップ 2】公開情報の整理</span>
           <h2 style={{ fontSize: "1.8rem", margin: "12px 0 8px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>
-            自社サイト改修ゼロで、AI公式推薦データを配備する
+            自社サイトを改修せず、公開情報を整理する
           </h2>
           <p style={{ color: "var(--text-secondary, #475569)", lineHeight: 1.75 }}>
-            診断で判明した「ライバルが対応できない自社固有の強み」を選定し、主要AIが正確に参照・推薦するための公式データをネット上に即日常駐させます。
+            診断で確認した項目を、参照元付きの下書きに整理します。内容を確認してから公開でき、AIの回答・推薦・順位は保証しません。
           </p>
         </div>
 
-        {/* 競合の隙間を突く看板選定 */}
+        {/* 公開情報の整理案 */}
         <PositioningPanel positioning={result.positioning} />
 
-        {/* 配備実行カード（公式マスターデータ発行＆図解） */}
+        {/* 公開情報ページの下書き・確認カード */}
         <div style={{ marginTop: "24px" }}>
           <PublicProfileActions result={result} sample={sample} />
         </div>
@@ -438,25 +427,25 @@ export function ResultClient() {
     </div>
 
     {/* ========================================================= */}
-    {/* 【ステップ 3：推移を追跡する（週次自動見守りプラン ＆ 特別優待）】 */}
+    {/* 【ステップ 3：推移を追跡する（週次測定）】 */}
     {/* ========================================================= */}
     <div id="step-3">
       <section className="report-watch" id="watch-plan">
         <div className="shell report-watch-inner">
           <div>
             <span className="step-badge" style={{ marginBottom: "8px", display: "inline-block" }}>【ステップ 3】継続・品質維持</span>
-            <p className="overline">週次自動見守りプラン（14日間無料トライアル）</p>
-            <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
-            <p>ChatGPTなどのAI回答は日々更新されます。自社がちゃんとお勧めされ続けているか、ライバルが割り込んできていないかを毎週自動で追跡調査します。</p>
+            <p className="overline">週次AI回答測定プラン（14日間無料確認）</p>
+            <h2>AI回答の変化を、<br />同じ条件で毎週確認。</h2>
+            <p>AI回答は質問・参照元・モデルの更新で変わります。同じ質問パネルで、自社の候補入り状況と参照元の変化を記録します。</p>
             <ul style={{ margin: "16px 0", paddingLeft: "20px" }}>
-              <li style={{ marginBottom: "6px" }}>月額 10,780円（税込） / 専任営業マン代わりとして</li>
-              <li style={{ marginBottom: "6px" }}>いつでも管理画面からワンクリック解約可能・縛りなし</li>
-              <li style={{ marginBottom: "6px" }}>最初の14日間は完全無料（クレジットカード登録不要）</li>
+              <li style={{ marginBottom: "6px" }}>{WATCH_MONTHLY_PRICE_LABEL} / 週次の回答測定と差分確認</li>
+              <li style={{ marginBottom: "6px" }}>月単位で利用でき、管理画面から解約手続きが可能</li>
+              <li style={{ marginBottom: "6px" }}>最初の14日間は無料確認（開始時に有料化しません）</li>
             </ul>
           </div>
           <form onSubmit={startWatch}>
             <label htmlFor="watch-email">
-              速報通知メールアドレス <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "#64748b" }}>（任意・空欄のままでも開始できます）</span>
+              変化通知メールアドレス <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "#64748b" }}>（任意・空欄のままでも開始できます）</span>
             </label>
             <input
               id="watch-email"
@@ -466,91 +455,14 @@ export function ResultClient() {
               placeholder="通知を受け取る場合のみ入力（空欄でもOK）"
             />
             <button className="button button-primary" disabled={watchBusy} style={{ minHeight: "48px", borderRadius: "var(--radius-btn, 6px)" }}>
-              {watchBusy ? "準備しています…" : "14日間無料で試してみる（メール登録不要）"}
+              {watchBusy ? "準備しています…" : "14日間無料で週次測定を試す"}
               <ArrowIcon />
             </button>
-            <small>※ メール入力は完全任意です。空欄のままボタンを押せば、今すぐ定期見守りレポートを確認できます。</small>
+            <small>※ メール入力は任意です。空欄のままでも週次測定を開始できます。</small>
           </form>
         </div>
       </section>
 
-      {/* ★ここに配置！価格提示の直後だからこそ自然に刺さる「特別優待（費用を抑えたい方へ）」 */}
-      <section className="shell" style={{ margin: "36px auto" }}>
-        <div className="viral-share-container shadow-ambient-md" style={{ background: "var(--bg-base, #ffffff)", borderRadius: "12px", padding: "32px 28px", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "4px" }}>
-              公式特別優待制度
-            </span>
-            <strong style={{ fontSize: "1.05rem", color: "var(--text-primary, #0f172a)" }}>
-              月額費用を抑えたい方へ。成果報告や仲間紹介で大幅割引
-            </strong>
-          </div>
-          <p style={{ margin: "0 0 20px", fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
-            Rovanは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下のいずれかの方法で、定期見守りプランをお得に開始・継続いただけます。
-          </p>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
-            {/* 特典1: Xで成果報告シェア（初月半額） */}
-            <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "22px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
-                  <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>① X（旧Twitter）成果報告シェア割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
-                </div>
-                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
-                  「AI公式推薦データ」の配備状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
-                </p>
-              </div>
-              <button
-                type="button"
-                className="button-primary"
-                style={{ width: "100%", justifyContent: "center", minHeight: "44px", borderRadius: "6px", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
-                onClick={() => {
-                  const tweetText = encodeURIComponent(`【AI公式推薦データを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が正確に参照・引用されるための公式データを配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「Rovan」で診断できます。\n#Rovan #生成AI #中小企業DX\n`);
-                  const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : siteUrl}/result?sample=1`);
-                  if (typeof window !== "undefined") {
-                    window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
-                    alert("Xでの成果報告ウィンドウを開きました！\n投稿完了後、定期見守りプランのお申し込み時に初月50%割引が自動適用されます。");
-                  }
-                }}
-              >
-                成果をXで報告して半額適用 <ArrowIcon />
-              </button>
-            </div>
-
-            {/* 特典2: 経営者仲間へのご紹介（双方ずっと割引） */}
-            <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "22px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
-                  <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>② 経営者仲間・同業への紹介割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
-                </div>
-                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
-                  知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がRovanをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
-                </p>
-              </div>
-              <button
-                type="button"
-                className="button-secondary"
-                style={{ width: "100%", justifyContent: "center", minHeight: "44px", borderRadius: "6px", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
-                onClick={() => {
-                  if (typeof window !== "undefined") {
-                    const inviteUrl = `${window.location.origin}/?ref=${encodeURIComponent(result.discovery.brandName || "partner")}`;
-                    void navigator.clipboard.writeText(inviteUrl);
-                    alert(`仲間招待用のURLをコピーしました：\n${inviteUrl}\n\nこのリンクから知人経営者様が診断・ご利用されると、双方に永年紹介割引が自動適用されます。`);
-                  }
-                }}
-              >
-                仲間招待リンクをコピー
-              </button>
-            </div>
-          </div>
-
-          <small style={{ display: "block", marginTop: "16px", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", textAlign: "center" }}>
-            ※不正利用（自己紹介・架空アカウント・クーポンの無断転載等）はStripeカード指紋照合およびシステム監査により自動検知・除外されます。
-          </small>
-        </div>
-      </section>
     </div>
 
     {error ? <p className="floating-error" role="alert">{error}</p> : null}

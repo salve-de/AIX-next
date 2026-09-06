@@ -7,20 +7,20 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
       <div className="shell header-inner">
         <Brand />
         <nav className="header-nav" aria-label="主要ナビゲーション">
-          <Link href="/result?sample=1" title="自社専用 AI診断レポートの見本">
+          <Link href="/result?sample=1" title="AI診断レポートの設計見本">
             ① 診断レポート
           </Link>
-          <Link href="/ai/company/aoba-souzoku?sample=1" title="自社専用 AI公式推薦データの実物">
-            ② AI公式データ
+          <Link href="/ai/company/aoba-souzoku?sample=1" title="公開情報参照ページの設計見本">
+            ② 公開情報の見本
           </Link>
-          <Link href="/watch?sample=1" title="週次自動モニタリングの管理画面">
+          <Link href="/watch?sample=1" title="週次測定の管理画面の見本">
             ③ 週次見守り
           </Link>
-          <Link href="/pricing" title="料金プランと特別優待">
+          <Link href="/pricing" title="料金プラン">
             料金プラン
           </Link>
           <Link className="header-cta" href="/#scan">
-            無料でAI推薦を調べる
+            無料でAI回答を確認する
           </Link>
         </nav>
         <details className="mobile-menu">
@@ -28,13 +28,12 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
           <nav aria-label="モバイルナビゲーション">
             <Link href="/#scan">無料診断</Link>
             <Link href="/result?sample=1">① 診断レポート（見本）</Link>
-            <Link href="/ai/company/aoba-souzoku?sample=1">② AI公式データ（実物）</Link>
+            <Link href="/ai/company/aoba-souzoku?sample=1">② 公開情報の見本</Link>
             <Link href="/watch?sample=1">③ 週次見守り（見本）</Link>
-            <Link href="/pricing">料金プラン・特別優待</Link>
+            <Link href="/pricing">料金プラン</Link>
           </nav>
         </details>
       </div>
     </header>
   );
 }
-

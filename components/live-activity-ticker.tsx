@@ -13,38 +13,38 @@ type ActivityItem = {
 const ACTIVITIES: ActivityItem[] = [
   {
     id: "act-1",
-    time: "3分前",
-    badge: "企業情報登録",
-    text: "東京都大田区の試作板金・金属加工会社が",
-    highlight: "公式企業情報台帳を開設しました",
+    time: "表示例",
+    badge: "公開情報整理",
+    text: "参照元付きの公開情報ページを",
+    highlight: "下書きとして確認できます",
   },
   {
     id: "act-2",
-    time: "11分前",
-    badge: "店舗情報更新",
-    text: "大阪市中央区のスペシャリティカフェが",
-    highlight: "営業時間・メニュー仕様を更新しました",
+    time: "表示例",
+    badge: "AI回答測定",
+    text: "同じ質問パネルの回答を",
+    highlight: "前回と比較できます",
   },
   {
     id: "act-3",
-    time: "24分前",
-    badge: "月額自動同期",
-    text: "横浜市の相続・遺産分割専門法務事務所が",
-    highlight: "定期自動見守りプランを開始しました",
+    time: "表示例",
+    badge: "参照元確認",
+    text: "掲載する情報と参照元を",
+    highlight: "公開前に確認できます",
   },
   {
     id: "act-4",
-    time: "38分前",
-    badge: "公式台帳登録",
-    text: "愛知県名古屋市の精密金型部品メーカーが",
-    highlight: "公式企業Web拠点を開設しました",
+    time: "表示例",
+    badge: "差分確認",
+    text: "AI回答と参照元の変化を",
+    highlight: "測定ログで確認できます",
   },
   {
     id: "act-5",
-    time: "52分前",
-    badge: "構造化データ連携",
-    text: "福岡市博多区の法人向けクラウドシステム開発会社が",
-    highlight: "公式サービス仕様書の連携を完了しました",
+    time: "表示例",
+    badge: "公開後の確認",
+    text: "公開した情報の変化を",
+    highlight: "次回の測定で確認します",
   },
 ];
 
@@ -61,11 +61,11 @@ export function LiveActivityTicker() {
   const current = ACTIVITIES[currentIndex];
 
   return (
-    <div className="live-activity-bar" aria-label="リアルタイム導入速報">
+    <div className="live-activity-bar" aria-label="サービス画面の表示例">
       <div className="shell live-activity-inner">
         <div className="live-pulse-wrapper">
           <span className="live-pulse-dot" />
-          <span className="live-label">LIVE</span>
+          <span className="live-label">DEMO</span>
         </div>
         <div className="live-ticker-content" key={current.id}>
           <span className="live-time">{current.time}</span>
@@ -75,7 +75,7 @@ export function LiveActivityTicker() {
           </span>
         </div>
         <div className="live-stat-counter">
-          <span>全国導入数 <strong>1,480+</strong> 事業者</span>
+          <span>実際の導入数ではない表示例です</span>
         </div>
       </div>
     </div>

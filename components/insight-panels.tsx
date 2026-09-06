@@ -15,7 +15,7 @@ function fallbackDemand(result: ScanResult): DemandProxy {
   return {
     signals: [
       { label: "比較の質問", value: `${result.panel.promptCount}問`, detail: "購入前にAIへ聞かれる場面を確認", confidence: "observed" },
-      { label: "候補外の質問", value: `${result.lostPrompts.length}問`, detail: "競合が先に選ばれた今回の観測", confidence: "observed" },
+      { label: "候補外の質問", value: `${result.lostPrompts.length}問`, detail: "他社候補が先に含まれた今回の観測", confidence: "observed" },
       { label: "優先度", value: prompts[0]?.stage || "比較", detail: "質問の重要度・購入段階から整理", confidence: "inferred" },
     ],
     priorityPrompts: result.lostPrompts.slice(0, 3).map((item, index) => ({ promptId: item.promptId, label: item.prompt, score: Math.max(1, 5 - index) })),

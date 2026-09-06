@@ -65,12 +65,12 @@ function reportPayload(result: ScanResult) {
 function markdownReport(result: ScanResult) {
   const payload = reportPayload(result);
   const losses = payload.lostPrompts.length
-    ? payload.lostPrompts.map((loss, index) => `${index + 1}. **${loss.prompt}**\n   - 先に選ばれた競合: ${loss.winner || "特定できず"}\n   - ${loss.summary}`).join("\n")
+    ? payload.lostPrompts.map((loss, index) => `${index + 1}. **${loss.prompt}**\n   - 先に含まれた候補: ${loss.winner || "特定できず"}\n   - ${loss.summary}`).join("\n")
     : "候補外になった質問はありません。";
   const actions = result.actions.length
     ? result.actions.slice(0, 5).map((action, index) => `${index + 1}. **${action.title}**（${action.priority}）\n   - ${action.rationale}\n   - 確認する指標: ${action.successMetric || "同じ質問で自社が候補に入ったか"}`).join("\n")
     : "今回のActionはありません。";
-  return `# Rovan診断結果\n\n- 対象: ${result.discovery.brandName}\n- URL: ${result.targetUrl}\n- 測定日時: ${result.measuredAt}\n- 比較した質問: ${result.panel.promptCount}問\n- 測定できた回答: ${result.successfulObservations}/${result.scheduledObservations}\n- 自社が候補に入った割合: ${result.recommendationCoverage}%\n\n## 競合に流れた質問\n\n${losses}\n\n## 最初に確認すること\n\n${actions}\n\n## 注意\n\nこのレポートはRovanの観測パネルによるものです。AIの全会話における順位、推薦、問い合わせ、契約、売上を保証するものではありません。\n`;
+  return `# Rovan診断結果\n\n- 対象: ${result.discovery.brandName}\n- URL: ${result.targetUrl}\n- 測定日時: ${result.measuredAt}\n- 比較した質問: ${result.panel.promptCount}問\n- 測定できた回答: ${result.successfulObservations}/${result.scheduledObservations}\n- 自社が候補に入った割合: ${result.recommendationCoverage}%\n\n## 自社が候補外だった質問\n\n${losses}\n\n## 最初に確認すること\n\n${actions}\n\n## 注意\n\nこのレポートはRovanの観測パネルによるものです。AIの全会話における順位、推薦、問い合わせ、契約、売上を保証するものではありません。\n`;
 }
 
 function lostPromptCsv(result: ScanResult) {

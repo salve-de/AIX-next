@@ -76,7 +76,7 @@ export function buildAiReadableDraft(input: { result: ScanResult; pages: Crawled
   const lines = [
     `# ${name}`,
     description ? `\n> ${description}` : "",
-    "\n## 公式ページ",
+    "\n## 取得した公開ページ",
     ...publicPages.slice(0, 8).map((page) => `- [${page.title}](${page.url})${page.description ? ` — ${page.description}` : ""}`),
     "\n## 公開前に確認すること",
     "- 会社名・サービス名・説明が、実際の公開ページと一致しているか確認する。",

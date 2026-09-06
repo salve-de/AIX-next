@@ -5,7 +5,6 @@ import { FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowIcon, LockIcon } from "@/components/icons";
 import type { WatchRecord } from "@/lib/types";
-import { ExecutiveReferralCard } from "@/components/executive-referral-card";
 
 export function BillingClient() {
   const params = useSearchParams();
@@ -39,21 +38,13 @@ export function BillingClient() {
         画面種別：ご契約・お支払い管理
       </span>
       <h2>定期見守りプランのご契約管理</h2>
-      <p>お支払い方法の変更、請求書・領収書の発行、次回更新日の確認、解約手続きを世界水準（Stripe）の安全な画面で行えます。</p>
+      <p>お支払い方法の変更、請求書・領収書の発行、次回更新日の確認、解約手続きをStripeの管理画面で行えます。</p>
       <label>管理コード（Watch token）<input value={token} onChange={(event) => setToken(event.target.value)} placeholder="token_..." /></label>
       {watch ? <div className="billing-watch-summary"><span>対象企業</span><strong>{watch.latest.discovery.brandName}</strong><small>{watch.paid ? "有料見守り契約中" : "無料トライアル中"}</small></div> : null}
       <button className="button button-dark" type="submit" disabled={busy || !token || !watch?.paid}>{busy ? "準備中…" : watch?.paid ? <>契約・決済管理画面を開く <ArrowIcon /></> : "有料契約後にご利用いただけます"}</button>
       {message ? <p className="form-error" role="status">{message}</p> : null}
     </form>
-    <p className="billing-note">クレジットカード情報はすべて世界標準の決済機関（Stripe）が直接暗号化管理し、Rovanでは保持しません。</p>
-    {watch?.paid ? (
-      <div style={{ marginTop: "32px", textAlign: "left" }}>
-        <ExecutiveReferralCard
-          brandName={watch.latest.discovery.brandName}
-          watchToken={token || watch.token}
-        />
-      </div>
-    ) : null}
+    <p className="billing-note">クレジットカード情報はStripeが管理し、Rovanでは保持しません。</p>
     {watch ? <Link className="document-link" href={`/watch?token=${encodeURIComponent(token)}`}>← 見守りダッシュボードへ戻る</Link> : <Link className="document-link" href="/">← トップページへ戻る</Link>}
   </div>;
 }

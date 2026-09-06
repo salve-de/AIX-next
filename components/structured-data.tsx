@@ -12,7 +12,7 @@ const structuredData = {
       name: BRAND.name,
       alternateName: BRAND.nameJa,
       url: siteUrl,
-      description: "自社サイト改修ゼロで24時間働くAI専属営業窓口を配備し、AI新時代における生成AIからの正確な参照・推薦を支援するシステム。",
+      description: "AI回答と公開情報を同じ条件で確認し、参照元付きの情報整理を支援するサービス。",
     },
     {
       "@type": "WebSite",
@@ -20,7 +20,7 @@ const structuredData = {
       url: siteUrl,
       name: BRAND.name,
       alternateName: BRAND.nameJa,
-      description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロでChatGPTなどの主要AIに正確に認識・推薦される環境を整えるシステム。",
+      description: "指定した質問・AI・日時の観測結果と、公開情報の整理案を提供するサービス。",
       inLanguage: "ja-JP",
       publisher: { "@id": organizationId },
     },

@@ -1,9 +1,13 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowIcon, CheckIcon } from "@/components/icons";
+import { ArrowIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+
+export const metadata: Metadata = {
+  title: "パートナー制度",
+  description: "Web制作会社・士業・コンサルタント向けに、Rovanの現在の提供範囲を案内します。",
+};
 
 export default function PartnersPage() {
   return (
@@ -15,162 +19,118 @@ export default function PartnersPage() {
         <section className="partners-hero">
           <div className="shell">
             <span className="partners-kicker">
-              B2B PARTNER PROGRAM // Web制作会社・士業・コンサルタント様向け
+              PARTNER INFORMATION // Web制作会社・士業・コンサルタント向け
             </span>
             <h1>
-              クライアントのAI推薦対策を、<br />
-              御社の「永続ストック収益」へ。
+              AI回答の測定と公開情報の整理を、<br />
+              顧客への説明材料に。
             </h1>
             <p className="partners-lead">
-              ChatGPTやPerplexityの普及により、従来のGoogle SEOは効力を失いつつあります。
-              Rovan認定パートナー制度は、貴社のクライアントへ「自社サイト改修ゼロのAI公式推薦インフラ」を提供し、
-              月額費用の30%を生涯にわたり貴社へ還元する公認レベニューシェアプログラムです。
+              Rovanは、指定した質問に対するAI回答と参照URLを記録し、公開情報の整理案を確認できるサービスです。
+              パートナー制度の紹介料・招待コード・管理ポータルは現在提供していません。制度の提供範囲が確定するまで、
+              このページでは説明用の情報だけを公開します。
             </p>
 
             <div className="partners-cta-row">
               <a href="#partner-apply" className="button button-primary">
-                パートナー申請（登録無料） <ArrowIcon />
+                現在の提供範囲を見る <ArrowIcon />
               </a>
-              <Link href="/" className="button button-secondary">
-                自社・クライアントを無料診断してみる
+              <Link href="/result?sample=1" className="button button-secondary">
+                診断の設計見本を見る
               </Link>
             </div>
           </div>
         </section>
 
-        {/* 3大パートナーメリット */}
+        {/* パートナーが説明しやすい情報 */}
         <section className="partners-benefits shell">
           <div className="section-heading-simple">
-            <p className="overline">PARTNER ADVANTAGES</p>
-            <h2>なぜ全国のWeb制作会社・士業から選ばれるのか</h2>
-            <p>単なるツールの代理店ではありません。貴社の既存顧客との関係性を強固にし、安定した収益基盤を構築します。</p>
+            <p className="overline">WHAT PARTNERS CAN EXPLAIN</p>
+            <h2>現在、説明できるサービスの範囲</h2>
+            <p>結果の条件・参照元・未確認事項を分けて示し、顧客と同じ情報を確認できる状態をつくります。</p>
           </div>
 
           <div className="benefits-grid">
             <div className="benefit-card">
-              <div className="benefit-card-badge">収益性</div>
-              <h3>月額30%の永続ライフタイム還元</h3>
+              <div className="benefit-card-badge">測定条件</div>
+              <h3>質問・AI・日時を記録</h3>
               <p>
-                1件成約につき、月額9,800円の30%（約3,000円）が解約されない限り毎月貴社口座へ振り込まれます。
-                10社で月3万円、30社で月9万円、100社で月30万円の完全ストック収入が積み上がります。
+                どの質問、どのAI、いつの観測かを表示します。観測結果を全利用者に共通する順位や売上の指標として扱いません。
               </p>
             </div>
 
             <div className="benefit-card">
-              <div className="benefit-card-badge">提案力</div>
-              <h3>客先で使える「無料診断兵器」</h3>
+              <div className="benefit-card-badge">参照元</div>
+              <h3>回答と公開情報を分けて確認</h3>
               <p>
-                顧客のURLを入力するだけで、「競合大手に顧客を奪われている生々しいログカルテ」が即座に出力されます。
-                「御社、AIに無視されてますよ」と見せるだけで、リニューアル提案や最新AI対策の商談がスムーズに成立します。
+                AI回答に含まれた参照URLと、対象サイトから確認できた事実を別々に確認できます。根拠のない補足は表示しません。
               </p>
             </div>
 
             <div className="benefit-card">
-              <div className="benefit-card-badge">工数ゼロ</div>
-              <h3>貴社の実働・改修工事ゼロ</h3>
+              <div className="benefit-card-badge">公開前確認</div>
+              <h3>整理案は確認してから公開</h3>
               <p>
-                「AI公式推薦パス」の開設、毎週のAI回答巡回、データ更新はすべてRovanシステムが完全放置で自走します。
-                貴社のエンジニアやデザイナーが追加の制作作業に追われることは一切ありません。
+                公開情報の整理案は下書きとして扱い、事実と参照元を確認してから公開します。対象サイトを自動変更しません。
               </p>
             </div>
           </div>
         </section>
 
-        {/* ステルス両面優待の仕組み */}
+        {/* 現在の提供範囲 */}
         <section className="partners-mechanism shell">
           <div className="mechanism-card">
             <div className="mechanism-text">
-              <span className="mechanism-tag">成約率を最大化する設計</span>
-              <h2>クライアントに「教えてくれてありがとう」と感謝される両面優待</h2>
+              <span className="mechanism-tag">CURRENT SCOPE</span>
+              <h2>パートナー制度は準備中です</h2>
               <p>
-                パートナー専用の「特別招待コード」をクライアントへご案内いただくことで、
-                クライアントには【初月無料優待（9,800円 ➔ 0円）】が適用されます。
+                現時点では、紹介料、割引、専用招待コード、パートナー管理画面、申請後の自動案内を提供していません。
+                提供内容や契約条件が確定した場合は、料金・規約・問い合わせ窓口をこのページで更新します。
               </p>
               <p>
-                「紹介料を抜いている」という疑念を抱かれることなく、「弊社の特別提携枠で初月無料の権利をご用意しました」と
-                堂々と価値を提供できるため、高い成約率と良好な人間関係を両立します。
+                いま確認できる機能は、AI回答の観測、参照元URLの確認、公開情報の整理案、同じ条件での継続測定です。
               </p>
             </div>
             <div className="mechanism-box">
               <div className="spec-row">
-                <span>クライアント側</span>
-                <strong>初月利用料 100%免除（初月0円）</strong>
+                <span>確認できるもの</span>
+                <strong>AI回答・参照URL・公開情報の整理案</strong>
               </div>
               <div className="spec-row">
-                <span>貴社（パートナー）</span>
-                <strong className="text-green">毎月 30%（約3,000円/社）永続支給</strong>
+                <span>対象サイト</span>
+                <strong>自動変更なし</strong>
               </div>
               <div className="spec-row">
-                <span>初期登録費用</span>
-                <strong>完全無料（ノルマ・違約金なし）</strong>
+                <span>制度の状態</span>
+                <strong>準備中</strong>
               </div>
             </div>
           </div>
         </section>
 
-        {/* パートナー申請フォーム */}
+        {/* パートナー制度の案内 */}
         <section className="partners-apply shell" id="partner-apply">
           <div className="apply-container">
             <div className="apply-head">
-              <span className="overline">REGISTRATION</span>
-              <h2>Rovan 認定パートナーへのお申し込み</h2>
-              <p>以下のフォームより申請いただくと、専任担当より専用招待コードおよび管理ポータルのご案内を即日お送りいたします。</p>
+              <span className="overline">NEXT STEP</span>
+              <h2>まずは公開されている設計を確認してください</h2>
+              <p>申請フォームは、実際の受付・案内機能を用意できるまで公開しません。現在のサービス仕様は以下から確認できます。</p>
             </div>
-
-            <form
-              className="apply-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("パートナー申請を受け付けました。\nご入力いただいたメールアドレス宛に、専任窓口より即時ご案内をお送りいたします。");
-              }}
-            >
-              <div className="form-group">
-                <label htmlFor="p-company">貴社名 / 屋号 <span className="req">*</span></label>
-                <input id="p-company" type="text" required placeholder="例: 株式会社デジタルパートナーズ" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="p-name">ご担当者様氏名 <span className="req">*</span></label>
-                <input id="p-name" type="text" required placeholder="例: 山田 太郎" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="p-email">事業用メールアドレス <span className="req">*</span></label>
-                <input id="p-email" type="email" required placeholder="例: yamada@example.co.jp" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="p-type">貴社の主たる業態 <span className="req">*</span></label>
-                <select id="p-type" required defaultValue="web">
-                  <option value="web">Web制作・ホームページ制作会社</option>
-                  <option value="seo">SEO・Webマーケティング支援</option>
-                  <option value="ad">広告代理店・PR会社</option>
-                  <option value="tax">税理士・公認会計士・士業事務所</option>
-                  <option value="consult">経営コンサルタント・中小企業診断士</option>
-                  <option value="other">その他（個人事業主・エージェント等）</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="p-note">想定されるクライアント数やご相談事項（任意）</label>
-                <textarea id="p-note" rows={3} placeholder="例: 既存クライアント約20社への展開を検討中、など" />
-              </div>
-
-              <button type="submit" className="button button-primary apply-submit-btn">
-                認定パートナー申請を送信する（無料） <ArrowIcon />
-              </button>
-
-              <p className="privacy-notice">
-                ※ご送信いただいた情報はプライバシーポリシーに基づき厳重に管理し、パートナー制度のご案内のみに使用いたします。
-              </p>
-            </form>
+            <div className="partners-cta-row">
+              <Link href="/methodology" className="button button-primary">
+                測定方法を見る <ArrowIcon />
+              </Link>
+              <Link href="/pricing" className="button button-secondary">
+                料金と提供範囲を見る
+              </Link>
+            </div>
           </div>
         </section>
       </main>
 
       <SiteFooter />
 
-      <style jsx>{`
+      <style>{`
         .partners-main {
           padding-bottom: 80px;
         }

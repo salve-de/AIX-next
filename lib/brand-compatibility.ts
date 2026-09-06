@@ -6,11 +6,15 @@ export function isDataDeletionConfirmation(value: unknown): boolean {
   return value === DATA_DELETION_CONFIRMATION || value === "DELETE AIX DATA";
 }
 
-/** 企業名や本文中の文字を置換せず、サービスが付けた接尾辞だけを更新する。 */
+/** 企業名や本文中の文字を置換せず、サービスが付けた旧接尾辞だけを更新する。 */
 export function currentProfileTitle(title: string, subject: string): string {
-  return title === `${subject} | AIX公開情報` || title === `${subject} | AIX Next公開情報`
-    ? `${subject} | ${BRAND.name}公開情報`
-    : title;
+  const legacyTitles = new Set([
+    `${subject} | AIX公開情報`,
+    `${subject} | AIX Next公開情報`,
+    `${subject} | ${BRAND.name}公開情報`,
+    `${subject} 公開情報参照インデックス`,
+  ]);
+  return legacyTitles.has(title) ? `${subject} | ${BRAND.name}公開情報参照ページ` : title;
 }
 
 /** 保存済み原本には書き戻さず、配信用JSONの発行元だけを更新する。 */

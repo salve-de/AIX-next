@@ -38,7 +38,7 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
         <form className="scan-form-expanded" id="scan" onSubmit={submit} noValidate>
           <div className="expanded-header">
             <div className="expanded-title-row">
-              <strong className="expanded-title">AI推薦 高精度診断フォーム（全クリエイター・事業者対応）</strong>
+              <strong className="expanded-title">公開情報とAI回答の確認（追加情報は任意）</strong>
               <button
                 type="button"
                 className="expanded-close-btn"
@@ -47,7 +47,7 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
                 − 簡易入力に戻す
               </button>
             </div>
-            <p className="expanded-sub">会社・店舗はもちろん、インフルエンサーやクリエイター、個人事業主も、SNSや実績を連携するとAIの学習・推薦精度が最大化されます（空欄のままでも診断可能）。</p>
+            <p className="expanded-sub">会社・店舗・個人事業主など、URLまたは名称だけで確認できます。SNSや参照元URLを追加した場合は、入力された公開情報も確認対象に含めます（空欄のままでも診断できます）。</p>
           </div>
 
           {/* メイン入力 */}
@@ -89,11 +89,11 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
               />
             </div>
             <div className="expanded-field">
-              <label htmlFor="extra-product">専門分野・看板実績・主力サービス <span className="opt-tag">任意</span></label>
+              <label htmlFor="extra-product">商品名・サービス名・補足情報 <span className="opt-tag">任意</span></label>
               <input
                 id="extra-product"
                 type="text"
-                placeholder="例: コスメ紹介、特急試作板金、相続専門"
+                placeholder="例: 商品名、サービス名、確認したい分野"
                 value={extraProduct}
                 onChange={(e) => setExtraProduct(e.target.value)}
               />
@@ -104,9 +104,9 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
 
           {/* 一体化した送信フッター：入力欄の直下に配置 */}
           <div className="expanded-footer">
-            <span className="expanded-note">※ 営業電話・勝手な自動課金は一切ありません</span>
+              <span className="expanded-note">※ 無料診断から自動で課金されることはありません</span>
             <button type="submit" className="expanded-submit-btn">
-              <span>無料でAI推薦を調べる</span>
+              <span>無料でAI回答を確認する</span>
               <ArrowIcon />
             </button>
           </div>
@@ -134,7 +134,7 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
             onChange={(event) => setInput(event.target.value)}
           />
           <button type="submit">
-            <span>{compact ? "無料診断" : "無料でAI推薦を調べる"}</span>
+            <span>{compact ? "無料診断" : "無料でAI回答を確認する"}</span>
             <ArrowIcon />
           </button>
         </div>
@@ -147,10 +147,10 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
               type="button"
               className="scan-extra-toggle"
               onClick={() => setShowExtra(true)}
-              aria-expanded={false}
+              aria-expanded={showExtra}
             >
               <span className="toggle-icon">＋</span>
-              <span>X・Instagram・YouTube・自社サイトもまとめて連携して精度を上げる（任意）</span>
+              <span>SNS・参照元URL・商品名を追加する（任意）</span>
             </button>
           </div>
         ) : null}

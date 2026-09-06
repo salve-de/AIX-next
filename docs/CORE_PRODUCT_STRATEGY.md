@@ -1,1030 +1,206 @@
-# Rovan Core Product Strategy
+# Rovan 中核プロダクト戦略
 
-> この文書は、Rovanの「本質」「現状」「不足しているもの」「何を優先して実装するか」を一つにまとめた中核設計書です。
+> Rovanの現行仕様・提供価値・実装範囲・未実装範囲を一つにまとめる正本。
 >
-> 最終更新: 2026-09-05
-
----
+> 最終更新: 2026-09-06
 
 ## 0. 結論
 
-Rovanは単なる「AI SEO診断ツール」でも、「AIが読めるJSON/DBを生成するツール」でもない。
-
-Rovanが作るべきものは、次の閉ループ（完全放置の顧客奪還エンジン）である。
+Rovanは、AIの普遍的な順位や売上を約束するサービスではない。会社名またはURLを起点に、公開情報とAI回答を同じ条件で確認し、公開情報を参照元付きで整理する観測・改善支援サービスである。
 
 ```text
-企業URLまたは社名入力（10秒・作業完了）
+会社名 / URLを入力
   ↓
-市場・競合・重要50問Buyer Prompt Panelを自動選定
+診断対象を確認
   ↓
-ChatGPT / Gemini / Perplexity等で実際の推薦結果を覆面観測（ミステリーショッパー）
+購入前の質問パネルでAI回答を観測
   ↓
-競合大手がなぜ選ばれ、自社がなぜ落ちたかを事実（Evidence）単位で機械分解
+候補入り・候補外・参照元を表示
   ↓
-裏で蓄積したAI推薦ビッグデータを元に、大手との正面衝突（資本力・即日等）を完全回避
+不足している公開情報を整理
   ↓
-自社既存の公開情報から「地域密着・創業年数・自社施工等のニッチ事実」を自動抽出
+確認済みの下書きを作成
   ↓
-自社サイト改修ゼロで、AI公式確定データ（JSON-LD/構造化出島）を勝手に更新・再最適化
+明示承認後に公開
   ↓
-同じBuyer Promptで定期再測定
-  ↓
-絶対北極星『AI顧客奪還シェア』の改善・防衛を証明
-  ↓
-社長へ完了報告のみを送信（「大手と殴り合わずに勝てるよう調整しておいたぜ」）
+同じ条件で再測定
 ```
 
-Rovanの本当の商品は、DBそのものではない。
+Rovanの価値は、AIに選ばれると断定することではなく、次の判断を出典付きで短くできることにある。
 
-**「AIが企業を比較・推薦するために必要な事実を発見・構造化し、自社サイト改修ゼロ・社長作業ゼロで外部配備し、大手チェーンに奪われたAI推薦シェアを自動奪還し続けるシステム」**である。
+> どの質問で自社が候補に含まれなかったか。回答に含まれた候補と参照元は何か。次に確認する公開情報は何か。再測定で何が変わったか。
 
----
+## 1. 現行の北極星
 
-# 1. Rovanの本質
+### 候補回復率（測定質問ベース）
 
-## 1.1 顧客が欲しいもの
+初回に自社が候補外だった質問のうち、同じ質問パネル・AI提供元・モデル・地域・反復条件で再測定し、今回、自社が候補に含まれた質問の割合を示す。
 
-顧客は以下を欲しいわけではない。
+この指標は、顧客数、問い合わせ数、契約数、売上、市場シェア、AI Providerの内部順位ではない。比較条件が一致しない、または取得が不足する場合は数値を表示しない。
 
-- JSON-LD
-- llms.txt
-- FAQ生成
-- スコア
-- レポート
-- ダッシュボード
-- AI-readable database
+### 補助指標
 
-これらはすべて手段である。
+- 候補入り率: 成功したAI回答のうち、自社が候補に含まれた割合。
+- 第一候補率: 成功したAI回答のうち、自社が回答の先頭候補として抽出された割合。
+- 参照元確認率: 成功したAI回答のうち、自社ドメインのURLが参照元として含まれた割合。
+- 測定完全性: 予定したAI回答のうち、取得できた割合。
+- 反復一致度: 同じ質問とAI提供元で複数回取得した回答状態の一致度。
 
-顧客が本当に欲しいのは、
+すべての補助指標は、質問数・成功数・測定日時・AI・モデルと一緒に表示する。
 
-> **ChatGPT、Gemini、Perplexity等が購買判断をするとき、自社を正しく理解し、比較候補に入れ、適切な条件では推薦できる状態。**
+## 2. 顧客の基本フロー
 
-である。
+### 2.1 入力
 
-したがって、Rovanの価値は以下の順番で考える。
+最初は会社名、商品名、サービス名、またはURL一つで開始できる。名前から始めた場合は、検索で見つかった候補サイトを利用者が確認してから診断する。同名企業を自動で確定しない。
 
-```text
-AI-readable
-  ↓
-AI-understandable
-  ↓
-AI-comparable
-  ↓
-AI-trustable
-  ↓
-AI-recommendable
-```
+### 2.2 観測
 
-「読める」は最初の一段でしかない。
+会社サイトから確認できる情報を使い、購入前に確認される質問を作る。対応するAI提供元で同じ質問を実行し、回答本文、候補文字列、参照元URL、提供元、モデル、日時、成功・失敗状態を保存する。
 
----
+### 2.3 説明
 
-## 1.2 Rovanの中核概念
+候補外の質問には、回答に含まれた候補と参照元を表示する。候補名はその回答に含まれた文字列であり、他社の品質・優劣・市場順位を評価するものではない。
 
-Rovanは企業情報を、単なるページ集合ではなく、AIが比較判断に使える構造へ変換する。
+### 2.4 整理
 
-理想形:
+公開ページから確認できる事実と未確認項目を分け、次に確認する公開情報を整理する。事実がない箇所をAIの推測で埋めない。
 
-```text
-Entity
-  └─ Product
-      ├─ Audience
-      ├─ Use Case
-      ├─ Feature
-      ├─ Price
-      ├─ Implementation
-      ├─ Support
-      ├─ Security / Trust
-      └─ Claim
-          ├─ Evidence
-          ├─ Source
-          ├─ Validity / Updated At
-          ├─ Confidence
-          └─ Relevant Buyer Prompts
-```
+### 2.5 公開
 
-これを本書では **Claim Graph** と呼ぶ。
+公開情報参照ページとChange Packは下書きとして扱う。事実、参照元、掲載権限を利用者が確認し、明示的に承認した場合だけ公開する。対象会社のサイトへ自動で書き込まない。
 
----
+### 2.6 再測定
 
-# 2. 現在のRovanで既にできていること
+公開後は、同じ質問パネル・AI提供元・モデル・地域・反復条件で再測定する。条件が異なる結果は、前回の改善として結び付けない。
 
-現在の実装には、かなり多くの外殻が既に存在する。
+## 3. 画面と情報設計
 
-## 2.1 観測
+Rovanの画面は、数値を大きく飾ることよりも、数値の意味と根拠を同じ視界に置くことを優先する。
 
-`lib/scan-runner.ts`
+1. **今回の状態** — 候補入り率、質問数、成功数、測定日時。
+2. **変化** — 前回との差分と、比較可能かどうか。
+3. **根拠** — 質問、回答ログ、参照元URL。
+4. **次の確認** — 公開情報の整理案と、公開前チェック。
 
-- URLクロール
-- 企業 / ブランド / 市場 / 競合発見
-- Buyer Prompt生成
-- OpenAI / Gemini / Perplexity測定
-- Raw Answer保存
-- Citation保存
-- Recommendation Coverage
-- First Choice Rate
-- Citation Coverage
-- Repeat Agreement
-- Lost Prompt抽出
+カードは一つの主題に限定し、一覧は表または要約リストで比較できる形にする。長い説明、未使用の指標、実測でないカウンターを主要導線に置かない。
 
-つまり「AIが今どう答えているかを見る」機能はある。
+## 4. 公開情報参照ページ
 
-## 2.2 継続監視
+Rovanが公開するページは「公式台帳」「公認推薦」「評価ランキング」ではなく、参照元ページから整理した公開情報参照ページと呼ぶ。
 
-Rovan Watchとして、固定Panelによる再測定・履歴保存がある。
+掲載できるもの:
 
-これにより、単発診断ではなく時系列比較を行うための土台がある。
+- 会社名・ブランド名・商品名
+- 参照元ページから確認できた説明、分野、対象、用途、条件
+- 参照元URL、取得・更新日時
+- 利用者が確認・承認した事実
+- 人間と機械の双方が確認できるHTML、JSON-LD、Markdown
 
-## 2.3 Evidence
+掲載しないもの:
 
-企業からEvidenceを受け取り、URL / PDF / Image等を保存できる基盤がある。
+- AI回答の測定ログ、質問文、他社候補、競合分析
+- 未承認のEvidence、メールアドレス、トークン、原価
+- 参照元にない料金、実績、資格、レビュー、推薦文
+- 顧客数、売上、検索順位、AI順位への換算
 
-## 2.4 Change Pack
+未知のslugは別の会社や汎用プロフィールへフォールバックせず404にする。画面確認用のサンプルは、`sample=1`の明示ルートに限定し、架空データ・noindexを表示する。
 
-`lib/change-pack.ts`
+## 5. Change Pack
 
-- Heading
-- Body
-- FAQ
-- JSON-LD
-- Internal Link
-- Review Checklist
+Change Packは、AIが作った広告文ではなく、確認前の編集ドラフトである。
 
-まで生成できる。
+### 入力
 
-## 2.5 安全な反映
+- 対象の測定結果
+- 対象サイトから実際に取得できたページ
+- 利用者が入力し、根拠URLとともに確認した情報
+- 候補外の質問とEvidence Gap
 
-- GitHub Pull Request
-- WordPress Draft
-- Domain ownership verification
-- 人間の承認必須
-- mainへの直接書き込み禁止
+### 出力
 
-という安全設計がある。
+- 対象ページ
+- 見出し、リード、本文、FAQの案
+- 使用した事実と参照元URL
+- 関係する質問ID
+- 公開前チェック項目
 
-## 2.6 Public Profile / Market DB
+生成時のルール:
 
-`lib/public-profiles.ts`
-
-すでに以下を持つ公開プロフィール構造がある。
-
-- Company
-- Brand
-- Domain
-- Market
-- Measurement
-- Evidence
-- Competitors
-- Opportunities
-
-さらに、
-
-- `/companies/[slug]`
-- `/categories/[slug]`
-
-として企業ページ、市場比較ページを公開する仕組みもある。
-
-つまり、**Rovan自身がAIや検索エンジンに読まれる市場DBになるための土台も存在する。**
-
----
-
-# 3. 現在の最大の欠陥
-
-## 3.1 Evidence Gap判定が浅い
-
-現在の`defaultEvidenceGaps()`は、主に以下の固定項目を確認している。
-
-- 導入企業数・顧客数
-- 平均導入期間
-- 導入効果・ROI
-- 導入・運用サポート
-
-そして、公開ページ本文に特定キーワードが存在するかどうかで不足を推定している。
-
-これはMVPとしてはよいが、Rovanの最終価値としては弱い。
-
-今のロジックは大雑把に言うと、
-
-```text
-自社が推薦されなかった
-  ↓
-サイトに「導入期間」という語がない
-  ↓
-導入期間を公開しよう
-```
-
-になっている。
-
-本来必要なのは、
-
-```text
-Buyer Promptで自社が落ちた
-  ↓
-競合Aが勝った
-  ↓
-競合Aが回答内で選ばれた理由を抽出
-  ↓
-その理由を支えるCitationを読む
-  ↓
-比較軸をClaimとして分解
-  ↓
-自社に同等Claimが存在するか確認
-  ↓
-ClaimがあるならEvidenceが公開されているか確認
-  ↓
-不足している差分だけを特定
-```
-
-である。
-
----
-
-# 4. 最優先で作るもの: Competitive Evidence Engine
-
-## 4.1 目的
-
-各Buyer Promptについて、
-
-> **なぜ競合が勝ち、自社が負けたのかをEvidenceレベルまで説明する。**
-
-これをRovanの中核エンジンにする。
-
----
-
-## 4.2 例
-
-Buyer Prompt:
-
-> 従業員100人くらいで、導入しやすい勤怠管理サービスは？
-
-AI回答で競合Aが推薦されたとする。
-
-Rovanは回答とCitationから、競合Aについて次を抽出する。
-
-```text
-Audience fit
-- 50〜300名向け
-
-Implementation
-- 最短2週間
-- CSV移行対応
-
-Support
-- 専任導入担当
-
-Price
-- 初期費用0円
-```
-
-次に自社を同じ比較軸で評価する。
-
-```text
-50〜300名向け      → Evidenceあり
-最短2週間          → 不明
-CSV移行            → Evidenceあり
-専任導入担当       → 不明
-初期費用0円        → Evidenceあり
-```
-
-Rovanの出力:
-
-```text
-このPromptで負けている主要差分
-
-1. 導入期間
-   競合A: 最短2週間という比較可能なEvidenceあり
-   自社: 公開Evidenceを確認できず
-
-2. 導入支援体制
-   競合A: 専任担当を明記
-   自社: 支援内容はあるが担当体制が不明
-
-推奨対応:
-- /implementation に平均/最短導入期間を追加
-- /support に導入担当体制を追加
-
-関連Buyer Prompts:
-- P03
-- P08
-- P17
-```
-
-これがRovanの価値になる。
-
----
-
-## 4.3 Competitive Evidence Engineの処理
-
-```text
-Observation
-  ↓
-Winner detection
-  ↓
-Recommendation reason extraction
-  ↓
-Citation fetch / parse
-  ↓
-Decision factor extraction
-  ↓
-Competitor Claim generation
-  ↓
-Own Claim matching
-  ↓
-Evidence verification
-  ↓
-Gap classification
-  ↓
-Priority scoring
-```
-
----
-
-# 5. Claim Graph
-
-## 5.1 なぜ必要か
-
-現在のPublic Profileは、企業・Evidence・測定結果を保存できるが、比較判断に必要な関係がまだ弱い。
-
-Rovan内部では、最低限次の単位へ分ける。
-
-## 5.2 Proposed data model
-
-### Entity
-
-```ts
-Entity {
-  id
-  type: company | brand | product
-  name
-  aliases
-  domain
-}
-```
-
-### Claim
-
-```ts
-Claim {
-  id
-  entityId
-  dimension
-  subject
-  predicate
-  value
-  unit?
-  conditions?
-  sourceType
-  confidence
-  firstSeenAt
-  lastVerifiedAt
-}
-```
-
-`dimension`例:
-
-- audience
-- price
-- feature
-- integration
-- implementation
-- support
-- security
-- compliance
-- proof
-- roi
-- availability
-- geography
-- contract
-
-### Evidence
-
-```ts
-Evidence {
-  id
-  claimId
-  sourceUrl
-  sourceTitle
-  sourceOwner
-  quotedFact
-  retrievedAt
-  status
-}
-```
-
-### PromptClaimRelation
-
-```ts
-PromptClaimRelation {
-  promptId
-  claimId
-  relevance
-  observedInfluence
-  providerAgreement
-}
-```
-
-### CompetitiveGap
-
-```ts
-CompetitiveGap {
-  promptId
-  ownEntityId
-  competitorEntityId
-  dimension
-  competitorClaimId
-  ownClaimId?
-  gapType
-  confidence
-  priority
-}
-```
-
-`gapType`例:
-
-- missing_claim
-- missing_evidence
-- weak_specificity
-- stale_evidence
-- weaker_proof
-- missing_third_party_authority
-- contradictory_information
-- entity_ambiguity
-
----
-
-# 6. 自動Evidence収集
-
-ユーザーに大量入力させない。
-
-Rovanの原則は、
-
-> **公開情報から取れるものはRovanが勝手に取る。ユーザーに聞くのは、公開情報からどうしても分からない事実だけ。**
-
-とする。
-
-## 6.1 自動収集対象
-
-- 自社公式サイト
-- Pricing
-- Product pages
-- FAQ
-- Case studies
-- Security / Trust center
-- Help center
-- Docs
-- Changelog
-- 公開PDF
-- Structured data
-- Sitemap
-- robots.txt
-
-必要に応じて、正当な公開第三者Sourceも分析対象にする。
-
-## 6.2 ユーザーへの質問
-
-悪い例:
-
-```text
-会社情報を入力してください。
-価格を入力してください。
-導入期間を入力してください。
-サポート内容を入力してください。
-```
-
-良い例:
-
-```text
-Rovanが公開Webを確認しましたが、
-「平均導入期間」だけ確認できませんでした。
-
-この情報はBuyer Prompt 4 / 8 / 11に影響する可能性があります。
-
-平均導入期間は？
-[  ] 日 / 週間 / ヶ月
-```
-
-つまり、入力フォームではなく **Missing Fact Inbox** にする。
-
----
-
-# 7. Rovan自身をAIのSourceにする
-
-これは重要な第2軸である。
-
-Rovanは顧客サイトだけを改善するのではなく、Rovan自身にも企業・市場・比較情報を蓄積する。
-
-## 7.1 2つのSource
-
-```text
-顧客公式サイト
-+
-Rovan Public Profile / Market DB
-```
-
-企業情報が二つの独立した公開Sourceに存在する状態を作る。
-
-ただし、Rovan Profileは広告ページにしてはいけない。
-
-## 7.2 独立性
-
-以下を厳守する。
-
-- 有料契約の有無で測定順位を変えない
-- 有料契約の有無でComparison rankingを変えない
-- 企業提供EvidenceとRovan観測値を分離表示
-- Source / timestamp / confidenceを表示
-- 誤情報訂正手段を持つ
-- Unclaimed企業も掲載可能
-
-この独立性がないと、Rovan自身のSource価値が死ぬ。
-
----
-
-# 8. 非顧客企業もDB化する
-
-顧客だけをDBに入れてはいけない。
-
-市場単位で競合も構造化する。
-
-```text
-Market
-├─ Company A (Claimed)
-├─ Company B (Unclaimed)
-├─ Company C (Unclaimed)
-├─ Company D (Claimed)
-└─ Company E (Unclaimed)
-```
-
-## 8.1 Unclaimed Profile
-
-公開情報だけから生成する。
-
-- 会社
-- Product
-- Category
-- Target
-- Price
-- Features
-- Evidence
-- Citation
-- Last checked
-
-## 8.2 Claimed Profile
-
-ドメイン所有確認後、企業が追加Evidenceを提出できる。
-
-ただし企業提供情報には明確にラベルを付ける。
-
-これによりRovanは、単なる顧客向けSaaSから、**市場そのものの構造化DB**へ成長できる。
-
----
-
-# 9. Change Packを「作文」から「修正」に変える
-
-現在のChange Pack生成機構は活かす。
-
-ただし入力を強くする。
-
-現在:
-
-```text
-Evidence Gap
-  ↓
-LLM
-  ↓
-文章生成
-```
-
-目標:
-
-```text
-Lost Buyer Prompt
-  ↓
-Winner Reason
-  ↓
-Competitor Claim
-  ↓
-Competitor Evidence
-  ↓
-Own Claim / Evidence
-  ↓
-Competitive Gap
-  ↓
-Required Fact
-  ↓
-Exact Change Pack
-```
-
-Change Packには必ず以下を紐付ける。
-
-- 対象Buyer Prompt
-- 改善対象Dimension
-- 競合Evidence
-- 自社Evidence
-- Gap type
-- Expected affected prompts
-- 変更対象ページ
-- 公開すべきClaim
-- 根拠
-
-これでChange Packは「AIが作ったSEO文章」ではなく、**観測された競合差分を埋める修正パッチ**になる。
-
----
-
-# 10. 最大の継続価値: Change → Remeasure
-
-Rovanは変更を提案して終わってはいけない。
-
-## 10.1 必須ループ
-
-```text
-Baseline measurement
-  ↓
-Change Pack
-  ↓
-Approved publish
-  ↓
-Recrawl
-  ↓
-Same Core Buyer Prompt Panel
-  ↓
-Remeasure
-  ↓
-Before / After comparison
-```
-
-## 10.2 Change Impact
-
-例:
-
-```text
-Change Pack #CP-102
-公開日: 2026-09-05
-
-変更:
-- 導入期間を追加
-- 100〜300名導入事例を追加
-
-Affected Buyer Prompts: 7
-
-Before
-Recommendation Coverage: 31%
-
-After
-Recommendation Coverage: 53%
-
-Observed uplift: +22pt
-
-Prompt impact
-P03: 0% → 67%
-P08: 33% → 67%
-P17: unchanged
-```
-
-## 10.3 因果の扱い
-
-Rovanは「この変更が100%原因」と断定してはいけない。
-
-以下を分離する。
-
-- Observed uplift
-- Temporal association
-- Provider agreement
-- Prompt-level agreement
-- Causal confidence
-
-競合変更、AIモデル更新、Web index更新など外部要因があるため。
-
----
-
-# 11. 優先順位
-
-今後、UIの微調整より以下を優先する。
-
-| Priority | Work | Why |
-|---|---|---|
-| P0 | Competitive Evidence Engine | Rovanの頭脳。現状最大の弱点 |
-| P0 | Claim Graph | AI比較判断を構造化する基盤 |
-| P0 | Dynamic Evidence Gap | 固定4項目判定を廃止するため |
-| P1 | Automatic Evidence Extraction | ユーザー入力を減らす |
-| P1 | Change → Remeasure attribution | 継続課金の核心 |
-| P1 | Unclaimed competitor profiles | 市場DB化と比較精度 |
-| P2 | Rovan Market DB強化 | Rovan自身のSource価値 |
-| P2 | Missing Fact Inbox | 企業から必要事実だけ取得 |
-| P3 | UI polish | 上記が終わった後 |
-
----
-
-# 12. 具体的な実装順序
-
-## Phase 1 — Competitive Intelligence Core
-
-### 1. Observation reason extraction
-
-新規候補:
-
-```text
-lib/recommendation-reasons.ts
-```
-
-各Observationから以下を抽出。
-
-- recommended entity
-- reason
-- decision dimension
-- cited source
-- confidence
-
-### 2. Citation evidence parser
-
-新規候補:
-
-```text
-lib/citation-evidence.ts
-```
-
-Citation先から比較可能Factを抽出。
-
-### 3. Claim Graph storage
-
-新規候補:
-
-```text
-lib/claims.ts
-lib/claim-graph.ts
-```
-
-Supabase migrationを追加。
-
-### 4. Competitive Gap engine
-
-新規候補:
-
-```text
-lib/competitive-gaps.ts
-```
-
-固定`defaultEvidenceGaps()`を置き換える。
-
----
-
-## Phase 2 — Action Engine
-
-### 5. Missing Fact Inbox
-
-Competitive Gapのうち、公開Webで解決できないものだけユーザーへ質問。
-
-### 6. Change Pack v2
-
-`lib/change-pack.ts`をClaim/Gaps drivenへ変更。
-
-### 7. Change lineage
-
-各Change Packに以下を保存。
-
-- baseline scan id
-- prompt ids
-- gap ids
-- claim ids
-- publishedAt
-- deployment target
-
----
-
-## Phase 3 — Validation Loop
-
-### 8. Automatic post-change rerun
-
-公開から一定期間後、同一Panelを再測定。
-
-### 9. Change Impact
-
-Before/AfterをPrompt単位・Provider単位で比較。
-
-### 10. Next Action
-
-効いた場合:
-
-```text
-Keep / Expand
-```
-
-効かなかった場合:
-
-```text
-Try next gap
-Investigate third-party authority
-Investigate entity ambiguity
-Investigate citation weakness
-```
-
----
-
-## Phase 4 — Market Intelligence Network
-
-### 11. Unclaimed profiles
-
-Rovan非契約企業も公開情報から作成。
-
-### 12. Category claim schema
-
-市場ごとに比較軸を蓄積。
-
-例:
-
-```text
-勤怠管理
-- employee size
-- price
-- implementation time
-- integrations
-- payroll compatibility
-- support
-- security
-```
-
-市場が増えるほど、Rovanが「AIが購入比較に使う判断軸」を学習する。
-
-これ自体がデータ資産になる。
-
----
-
-# 13. Rovanが持つべきデータ資産
-
-長期的なMoatはUIでもLLMプロンプトでもない。
-
-蓄積すべきデータは以下。
-
-```text
-Buyer Prompt
-× Market
-× Provider
-× Time
-× Recommended Entity
-× Recommendation Reason
-× Claim
-× Evidence
-× Citation
-× Change
-× After Result
-```
-
-これが大量に蓄積すると、Rovanは、
-
-> 「どの市場で、どのAIが、どのようなEvidenceを持つ企業を推薦しやすいか」
-
-を実データで持つことになる。
-
-これは単純なAEO / GEOツールとの差別化になる。
-
----
-
-# 14. やらないこと
-
-中核が完成するまでは以下を優先しない。
-
-- ダッシュボード装飾の追加
-- 意味の薄い総合Score追加
-- 新しいチャートを増やす
-- 一般的なSEO監査機能
-- ブログ記事大量生成
-- 根拠のない「AI順位改善」保証
-- 単なるllms.txt生成機能
-- 単なるSchema生成機能
-
-これらは補助機能であり、RovanのMoatではない。
-
----
-
-# 15. 成功条件
-
-Rovanの中核機能が完成したと言える条件。
-
-## Test Case
-
-ある会社URLを入力する。
-
-Rovanが以下を自動で行えること。
-
-1. 市場を特定
-2. 主要競合を特定
-3. Buyer Promptを生成
-4. 複数AIで測定
-5. Lost Promptを特定
-6. 各Lost PromptでWinnerを特定
-7. Winnerが選ばれた理由を抽出
-8. CitationからClaim/Evidenceを抽出
-9. 自社に同じClaim/Evidenceがあるか照合
-10. 本当に欠けている差分を特定
-11. 公開Webで取れない事実だけ企業へ質問
-12. Exact Change Packを作る
-13. PRまたはDraftを作る
-14. 公開後に同じPanelで再測定
-15. Before/Afterを表示
-16. 次の最有力アクションを決める
-
-ここまで一つの流れで動いて、初めてRovanの中核が完成したとみなす。
-
----
-
-# 16. 商品としての説明
-
-内部実装の本質:
-
-> AI-readable企業DB + Claim Graph + Competitive Evidence Engine + Measurement Loop
-
-顧客向けの説明:
-
-> **AIが御社をどう比較しているかを調べ、競合に負けている理由を根拠まで特定し、必要な情報を追加し、その後本当に推薦が増えたかまで自動で確認する。**
-
-短く言うなら:
-
-> **Rovan makes companies understandable, comparable, and recommendable by AI.**
-
----
-
-# 17. 最終形
-
-Rovanの完成形は以下。
-
-```text
-                    ┌─────────────────┐
-                    │  Company Website │
-                    └────────┬────────┘
-                             │ crawl
-                             ▼
-                    ┌─────────────────┐
-                    │   Claim Graph    │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-           OpenAI          Gemini       Perplexity
-              │              │              │
-              └──────────────┼──────────────┘
-                             ▼
-                    Buyer Prompt Results
-                             │
-                             ▼
-                 Competitive Evidence Engine
-                             │
-                             ▼
-                     Competitive Gaps
-                             │
-                 ┌───────────┴───────────┐
-                 ▼                       ▼
-          Missing Fact Inbox        Auto-resolvable
-                 │                       │
-                 └───────────┬───────────┘
-                             ▼
-                       Change Pack
-                             │
-                  ┌──────────┴──────────┐
-                  ▼                     ▼
-              GitHub PR            WP Draft
-                  │                     │
-                  └──────────┬──────────┘
-                             ▼
-                           Publish
-                             │
-                             ▼
-                         Remeasure
-                             │
-                             ▼
-                       Change Impact
-                             │
-                             └──────→ next action
-```
-
-さらに並行して、Claim Graphの公開可能部分をRovan Public Profile / Category DBへ反映する。
-
-その結果、Rovanは、
-
-1. 顧客のAI推薦改善SaaS
-2. AIが参照可能な企業・市場データベース
-3. AI購買判断を観測する独自データネットワーク
-
-の3つを同時に持つことができる。
-
----
-
-# 18. 次にやること
-
-**次の開発はUIではなく、P0の3点から開始する。**
-
-```text
-1. Competitive Evidence Engine
-2. Claim Graph
-3. Dynamic Evidence Gap
-```
-
-特に、現在の固定`defaultEvidenceGaps()`を中核ロジックとして扱わない。
-
-Rovanが最初に強くすべき能力は、
-
-> **「なぜ競合が勝ったのかを、AI回答とCitationからEvidence単位で特定できること」**
-
-である。
-
-ここが強くなれば、既に存在するWatch、Change Pack、GitHub PR、WordPress Draft、Public Profile、Category DBがすべて一本の価値ループにつながる。
+- 未確認の数値・実績・資格・料金・効果を創作しない。
+- 参照元URLを許可リスト外へ差し替えない。
+- 他社の文章をコピーしない。
+- 自動公開・対象サイトへの自動変更を行わない。
+- 公開前に原典・権利・業界規制・社内承認を確認する。
+
+## 6. Watch
+
+Watchは、固定した質問パネルを週次で再測定し、前回との差分を確認する機能である。
+
+- 無料診断と有料Watchの質問パネルは区別する。
+- 有料Watchへ切り替える際は、コアパネルへ移行したことを明示する。
+- 取得失敗を候補外として数えない。
+- パネル、モデル、地域、反復条件が変わった場合は「比較不可」とする。
+- 競合Webの前後クロール差分が保存されていない限り、競合サイトの変更を表示しない。
+- 通知は実際に保存された観測・差分・確認案だけを送る。
+
+## 7. データの出所と境界
+
+| データ | 出所 | 利用者への表示 |
+| --- | --- | --- |
+| 会社名・分野・用途 | 対象サイト、検索で確認した公開情報 | 参照元付きで表示 |
+| AI回答・候補名 | 指定質問へのProvider回答 | 測定ログとして表示 |
+| Citation | 回答から取得したURL | URLと質問の対応を表示 |
+| Evidence | 利用者入力と根拠URL | 未承認のまま公開しない |
+| Change Pack | 上記を素材にした生成ドラフト | 公開前チェック付きで表示 |
+| サンプル | 固定の架空fixture | 見本・noindexとして表示 |
+
+公開プロフィールには、非公開の測定ログ、他社候補、顧客入力のEvidence、Watch token、メール、原価を混ぜない。
+
+## 8. 法務・編集上の境界
+
+1. Google Mapsの評価やレビューを転載しない。
+2. 事実と参照元を優先し、他社の文章・画像・評価をコピーしない。
+3. 本人確認や公的認証をしていないページを「公式」「公認」と呼ばない。
+4. AIの回答・推薦・引用・掲載順位、流入、問い合わせ、契約、売上を保証しない。
+5. 誤認・訂正・非公開申請の窓口を用意する。
+6. 医療、金融、法務など高リスクの判断を自動で代替しない。
+
+## 9. 実装状況
+
+| 項目 | 現状 |
+| --- | --- |
+| URL・社名入力 | 実装。名前入力時は候補確認を挟む |
+| 公開サイトの取得 | 実装。robots、URL安全性、取得上限を適用 |
+| AI回答の観測 | OpenAI・Gemini・Perplexityの設定済みProviderだけを実行 |
+| 無料診断 | 固定無料パネルで実行。未取得は欠損扱い |
+| 有料Watch | 固定コアパネル、履歴、差分、通知を実装 |
+| 公開プロフィール | 明示登録済みのプロフィールと明示サンプルだけを表示 |
+| Change Pack | 参照元・確認済み入力に制限した下書き生成 |
+| 競合Web変更 | 永続クロール差分がないため判定しない |
+| 自動公開 | 未実装・実施しない |
+
+## 10. 未実装・今後の検討
+
+以下は、証拠と運用条件を追加できるまで「実装済み」と扱わない。
+
+- 競合サイトの前後クロール差分を保存する変更監視。
+- ClaimとEvidenceの履歴・期限・訂正状態を管理するグラフ。
+- 公開承認、権限、監査ログを一貫して管理するワークフロー。
+- Providerごとの費用、レート制限、再試行、復旧を実測したジョブ運用。
+- 変更公開と再測定を結び付ける因果推論ではなく、比較可能な観測履歴。
+
+## 11. 受け入れ条件
+
+実装を完了と呼ぶには、少なくとも一つの実URLで次を確認できること。
+
+1. 入力から診断対象を確定できる。
+2. 同じ質問パネルでAI回答を取得できる。
+3. 成功数と未取得数を区別できる。
+4. 自社が候補に入った質問と候補外の質問を確認できる。
+5. 回答に含まれた候補と参照元URLをたどれる。
+6. 公開プロフィールが測定ログと分離されている。
+7. Change Packが承認前の下書きとして表示される。
+8. 同じ条件で再測定し、比較不可の場合は理由が表示される。
+9. 未知の公開プロフィールslugが別会社の内容へフォールバックしない。
+10. サンプル、実測、未確認、推定を画面上で区別できる。

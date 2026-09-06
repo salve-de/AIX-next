@@ -32,7 +32,7 @@ test("fictional baseline is internally consistent with the rank-first UI", () =>
   assert.equal(sampleResult.successfulObservations, 36);
 
   const leader = sampleResult.competitors[0];
-  assert.equal(leader.name, "弁護士法人ベリーベスト法律事務所");
+  assert.equal(leader.name, "サンプル候補A");
   assert.equal(entityPromptWins(sampleResult, leader.name), 7);
 });
 

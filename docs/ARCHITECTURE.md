@@ -89,9 +89,9 @@ A partial scan is a valid product state. Provider failures are shown, excluded f
 
 The customer draft is stored inside the existing Change Pack JSON and is never published automatically. It must be checked against the customer site before use.
 
-### Zero-Effort External Index (No Customer Site Modification)
+### Public-information page (No Customer Site Modification)
 
-Rovan never modifies the customer's website or WordPress server. Instead, it deploys and maintains an external AI-readable index (`/ai/company/[slug]`) backed by structured JSON-LD and verified facts. This ensures zero onboarding effort for the customer and zero liability for site outages.
+Rovan never modifies the customer's website or WordPress server. When the customer explicitly approves publication, it can expose a public-information page (`/ai/company/[slug]`) backed by structured JSON-LD and source-attributed facts. The page is a reference snapshot, not an official registry, ranking control, or guarantee of AI visibility.
 
 ## Data model
 
@@ -117,7 +117,7 @@ Core records:
 - Gemini API for grounded search;
 - Perplexity API for Sonar;
 - Supabase for durable storage and atomic claim leasing (`aix_next_claim_due_watches`);
-- Stripe for paid Watch (¥9,800/mo);
-- Google Cloud Run Jobs + Cloud Scheduler for 10,000-company scale autonomous weekly batch execution.
+- Stripe for paid Watch (¥10,780/mo including tax; ¥9,800 before tax; production price must be confirmed);
+- Google Cloud Run Jobs + Cloud Scheduler for long-running weekly batch execution when the production workload and quotas justify it. This repository does not prove a 10,000-company deployment.
 
 All features fail closed when their credential is absent. Sample pages remain available without credentials.

@@ -19,21 +19,21 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "町工場・中小製造",
     location: "東京都大田区",
     industry: "試作板金加工・精密機械",
-    featureNote: "自社サイト未開設から即日発行",
-    beforeProblem: "「急ぎの試作板金」の相談に対し、ネット広告量の多い大手量産工場へ顧客が誘導されていた。",
-    afterSolution: "「単品1個対応・最短即日試作」がAI公式データとして認知され、試作先を探す技術者への推薦候補へ定着。",
-    registeredSpecs: "単品1個対応 / 3D CAD直接入稿 / 最短即日試作",
-    href: "/ai/company/localhost-bb4053a36baa",
+    featureNote: "公開情報整理の見本",
+    beforeProblem: "公開情報が散在していると、試作先を探す人が比較しにくいことがあります。",
+    afterSolution: "「単品1個対応・短納期試作」という公開情報を参照元付きで整理し、比較できる状態にします。",
+    registeredSpecs: "対応範囲 / 入稿方法 / 納期の確認項目",
+    href: "/ai/company/yamada-bankin?sample=1",
   },
   {
     name: "青葉カフェ（設計見本）",
     category: "飲食・カフェ店舗",
     location: "東京都渋谷区",
     industry: "自家焙煎・スペシャリティ珈琲",
-    featureNote: "SNS運用中心・HPなし",
-    beforeProblem: "SNSを更新しても設備データがAIに伝わらず、「作業できるカフェ」の質問で候補から除外されていた。",
-    afterSolution: "「全席電源・高速Wi-Fi・作業利用歓迎」がAI公式データとなり、近隣で作業場所を探すビジネス客へ推薦候補として提示。",
-    registeredSpecs: "全席電源・高速Wi-Fi / 自家焙煎豆 / 作業利用歓迎",
+    featureNote: "公開情報整理の見本",
+    beforeProblem: "SNS中心の情報発信では、設備や利用条件を一覧で比較しにくいことがあります。",
+    afterSolution: "電源・Wi-Fi・作業利用など、確認できる公開情報を参照元付きで整理します。",
+    registeredSpecs: "設備 / 商品・サービス / 利用条件の確認項目",
     href: "/ai/company/aoba-cafe?sample=1",
   },
   {
@@ -41,10 +41,10 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "士業・コンサルティング",
     location: "東京都千代田区",
     industry: "相続・遺産分割・事業承継",
-    featureNote: "週次自動見守り運用",
-    beforeProblem: "親身な個別伴走を求める相談者が、AIのアルゴリズムによって大手全国チェーンへ送客されていた。",
-    afterSolution: "「親身な個別伴走・複雑案件の円満調停」がAI公式推薦データとなり、定型的な大手チェーンを避けたい相談者の推薦候補として選定。",
-    registeredSpecs: "初回対面相談無料 / 専任担当一貫対応 / 事前面談見積",
+    featureNote: "AI回答測定の設計見本",
+    beforeProblem: "相談内容や対応範囲が複数ページに分かれていると、相談先を比較しにくいことがあります。",
+    afterSolution: "参照元で確認できる対応範囲や相談方法を、比較しやすい項目に整理します。",
+    registeredSpecs: "対応範囲 / 相談方法 / 料金の確認項目",
     href: "/ai/company/aoba-souzoku?sample=1",
   },
   {
@@ -52,22 +52,22 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "農業・産直直売",
     location: "長野県安曇野市",
     industry: "特選果樹・産直ぶどう農家",
-    featureNote: "ホームページなしから開設",
-    beforeProblem: "産直のこだわりがAIに認識されず、量産通販モールに埋もれて大切な贈答用ギフト需要を逃していた。",
-    afterSolution: "「朝採れ当日直送・糖度18度選別」がAI公式データとして登録され、高品質ギフトを探す買い手への推薦候補に定着。",
-    registeredSpecs: "産地直送・当日発送 / 糖度18度選別 / 贈答用ギフト",
-    href: "/ai/company/aoba-cafe?sample=1",
+    featureNote: "公開情報整理の見本",
+    beforeProblem: "産地や注文条件が分散していると、購入前に確認すべき情報を比較しにくくなります。",
+    afterSolution: "産地直送やギフト対応など、確認できる公開情報を参照元付きで整理します。",
+    registeredSpecs: "提供地域 / 注文方法 / 商品条件の確認項目",
+    href: "/ai/company/azumino-sunshine?sample=1",
   },
 ];
 
 export function VerifiedCompaniesGallery() {
   return (
-    <section className="verified-gallery-section" aria-label="業種別のAI推薦 実例シミュレーション">
+    <section className="verified-gallery-section" aria-label="業種別の公開情報整理シミュレーション">
       <div className="shell">
         <div className="section-head-center">
-          <span className="pill-badge">業種別の実例シミュレーション</span>
-          <h2>町工場も、カフェも、士業も、農園も。<br />AIが客に「ここがおすすめ」と言い始める実例</h2>
-          <p>ホームページの改修も、新たな開設も不要。AI向け公式推薦データを配備することで、AIの回答が大手優先から自社おすすめへどう変化するかの実例見本です。</p>
+          <span className="pill-badge">業種別の設計見本</span>
+          <h2>町工場も、カフェも、士業も、農園も。<br />公開情報を比較しやすく整える例</h2>
+          <p>ここで示すのは画面確認用の架空データです。参照元付きで公開情報を整理し、AIと人が分野や用途を確認しやすくします。</p>
         </div>
 
         <div className="verified-cards-grid">
@@ -108,7 +108,7 @@ export function VerifiedCompaniesGallery() {
                       letterSpacing: "0.02em",
                     }}
                   >
-                    未対策時の課題（大手優先）
+                    情報が散在している場合
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#475569", lineHeight: 1.55 }}>
                     {company.beforeProblem}
@@ -126,7 +126,7 @@ export function VerifiedCompaniesGallery() {
                       letterSpacing: "0.02em",
                     }}
                   >
-                    公式データ配備後（強みで選定）
+                    公開情報を整理した場合
                   </span>
                   <p style={{ margin: 0, fontSize: "0.78rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
                     {company.afterSolution}
@@ -140,7 +140,7 @@ export function VerifiedCompaniesGallery() {
               </div>
 
               <Link className="card-view-btn" href={company.href} style={{ marginTop: "auto" }}>
-                <span>AI推薦データを見る</span>
+                <span>公開情報の見本を見る</span>
                 <ArrowIcon />
               </Link>
             </article>
@@ -149,11 +149,10 @@ export function VerifiedCompaniesGallery() {
 
         <div className="gallery-footer-note">
           <p>
-            ※上記は主要業種におけるシミュレーション見本です。会社名を入力して無料診断を行うと、御社専用の推薦データがその場で自動発行されます。
+            ※上記は主要業種における画面確認用の見本です。実在企業の掲載情報や、AIの推薦結果を示すものではありません。
           </p>
         </div>
       </div>
     </section>
   );
 }
-

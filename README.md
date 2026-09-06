@@ -2,42 +2,21 @@
 
 正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。名称と移行時の互換性は [改名記録](docs/ROVAN_BRAND_MIGRATION.md) を参照してください。
 
-> **生成AI時代の推薦獲得・競合分析システム（ChatGPT / Perplexity / Gemini 対策）**
+> **生成AIの回答と、公開情報の確認・改善を支援する測定サービス**
 
 ---
 
-## ⚡️ 【最重要】開発者・AIエージェントへの絶対勅命（最高憲法）
+## 現在のプロダクト契約
 
-本リポジトリで作業するすべての開発者およびAIエージェントは、以下の**3大絶対規範**を必ず頭に叩き込んでから作業せよ。
+Rovanは、会社・商品・サービス名またはURLを起点に、指定した質問パネルとAI面での回答を確認するサービスです。全ユーザーの会話やAI内部順位を取得するものではありません。
 
-### 1. このプロジェクトで達成すること（What We Achieve）
-* **大手に奪われた客の奪還**: Google検索の広告汚染・衰退に伴い、顧客はChatGPT等のAIに直接「おすすめ」を聞く購買行動へシフトした。しかし地域の中小企業（不動産、町工場、飲食店、専門士業等）はAI上で大手チェーン（カチタス等）に客を全件奪われ、スルーされている。この理不尽な機会損失を解決する。
-* **提供価値**: URLまたは社名を入れるだけで、自社サイト改修ゼロで、主要AIが1秒で理解できる「公開情報参照インデックス（構造化データ）」を外側に即時配備し、AIからの推薦シェアを奪還する。
+- 実測値は、質問・AI・モデル・地域・言語・測定時点と、成功した観測数を添えて表示する。
+- 会社名を入力した場合は、見つかった公開サイト候補を利用者が確認してから測定する。
+- 公開情報ページやChange Packは下書きとして提示し、明示的な確認・公開操作なしに外部サイトへ書き込まない。
+- 公開情報は、参照元で確認できる事実と入力者が確認した内容に限定する。AIの推薦・順位・問い合わせ・売上は保証しない。
+- Watchは同じ質問パネルの再測定と差分確認を提供する。候補入り率は測定質問に対する観測値であり、市場シェアではない。
 
-### 2. ユーザーの手間は「極限まで減らす（完全放置 / Zero Effort）」なぜなら
-* **なぜユーザーに作業をさせてはならないのか？**:
-  * 多忙な中小企業の社長やパン屋の店主に「自社サイトを直せ」「ファイルを置け」「ブログを書け」「質問票に答えろ」と強いた瞬間に、**100%離脱（やらない・使われない）**する。
-* **守るべき絶対仕様**:
-  * ユーザーの作業は「URLまたは社名を入れる最初の10秒」に限定する。
-  * 顧客への質問票送付や手動ヒアリングは**絶対禁止**。公開情報にある確定事実（Fact）だけでシステムが全自動で完結させる。
-
-### 3. 管理者も完全放置（無人自販機アーキテクチャ）
-* **受託・コンサル代行の絶対禁止**:
-  * 「他社サイトへの掲載申請代行」「個別口コミの同意取り」「ECの在庫同期裏方修正」といった**人間が裏で汗をかく労働集約型の代行業は1ミリも組み込んではならない**。
-  * Rovanは「完全自動の自動販売機（SaaS）」である。他社サイトへ頭を下げて申請せず、Rovan自体が客観的参照インデックスとなり、AI探索ロボットに直接読ませる。
-* **4大法的境界線**:
-  1. Google Maps評価の初版除外（規約違反リスクの切除）
-  2. 取扱項目の客観事実（Fact）限定（著作権リスク・許諾作業の切除）
-  3. 呼称の厳格適正化（「公式台帳」ではなく「公開情報参照インデックス」）
-  4. 推薦・手離れの断定排除と免責・非公開申請窓口の常設
-
----
-
-### 📖 プロジェクト公式設計白書 ＆ コンプライアンス憲法
-本リポジトリの全戦略、意思決定の歴史、法的防衛方針は以下のドキュメントに完全記録されています：
-- **[プロジェクト全戦略・意思決定マスター白書](docs/PROJECT_MASTER_HISTORY_AND_STRATEGY.md)**: なぜ93位だったのかの解明（本棚の占有率の差・確定仕様台帳の欠如）、完全放置（Zero Effort）のコア哲学、全決定年表。
-- **[オーナー哲学・要求・美意識マスター台帳](docs/OWNER_VISION_AND_PHILOSOPHY.md)**: 創業時からのプロダクトオーナーの生の発言、判断軸、許せないこと（逆鱗）の永続台帳。
-- **[プロジェクト共通最高ルール](PROJECT_RULES.md)**: プロジェクト固有の開発・法的境界線ルール。
+現行の開発ルールは [`AGENTS.md`](AGENTS.md)、現行のプロダクト方針は [`docs/CORE_PRODUCT_STRATEGY.md`](docs/CORE_PRODUCT_STRATEGY.md)、継続測定の定義は [`docs/CONTINUOUS_VALUE_RETENTION.md`](docs/CONTINUOUS_VALUE_RETENTION.md) を参照してください。履歴・旧案はマスター白書とオーナー台帳に保存しています。
 
 ---
 
@@ -90,7 +69,7 @@ Company / product name or URL
 - explicit bridge from diagnosis → Action → remeasurement;
 - 14-day free Watch conversion;
 - Watch focused on improvement verification rather than activity logging;
-- Founder Watch pricing and paid continuation;
+- paid Weekly Watch pricing and continuation;
 - responsive desktop and mobile UI;
 - pricing, methodology, privacy, terms and data-rights surfaces.
 
@@ -125,7 +104,7 @@ Company / product name or URL
 - on-demand paid Change Pack endpoint;
 - automatic Change Pack generation after paid Watch measurement when provider configuration is available;
 - AI-readable public-information draft generated from crawled pages, with `llms.txt` and JSON-LD downloads;
-- optional Rovan-hosted public company profile with preview, explicit publish/revoke, expiry, official-source links, HTML/JSON/Markdown output and a dedicated sitemap;
+- optional Rovan-hosted public company profile with preview, explicit publish/revoke, expiry, source links where available, HTML/JSON/Markdown output and a dedicated sitemap;
 - market relation map, purchase-question demand proxy and page-level content-quality checks derived from the same public scan;
 - AI visibility audit that checks crawler access, indexability, sitemap/canonical signals, page clarity, buyer facts, public proof and measurement completeness;
 - stale Change Pack invalidation after Evidence updates;
@@ -149,7 +128,7 @@ Free Scan:
 = up to 36 observations
 ```
 
-Founder Watch Core measurement:
+Paid Weekly Watch Core measurement:
 
 ```text
 50 fixed Core Prompts
@@ -192,7 +171,7 @@ The product can use:
 - OpenAI for discovery/search and Change Pack generation;
 - Gemini and Perplexity for additional AI observation surfaces;
 - Supabase for durable scan/Watch/rate-limit/run persistence;
-- Stripe for Founder Watch billing;
+- Stripe for paid Weekly Watch billing;
 - mail configuration for Watch notifications where configured;
 - `CRON_SECRET` for the protected Watch scheduler.
 
@@ -204,12 +183,12 @@ Current sequence includes `001_core.sql` through `010_public_profiles.sql`.
 
 Without Supabase, local development uses a single-process in-memory store. It is not suitable for multi-instance production.
 
-## Autonomous Watch Scheduler (10,000-Company Scale Standard)
+## Autonomous Watch Scheduler
 
-Production autonomous monitoring runs on **Google Cloud Run Jobs + Cloud Scheduler** to ensure unlimited execution time, atomic DB leasing, and up to 1,000 parallel distributed tasks.
+The repository includes a Cloud Run Jobs / Cloud Scheduler deployment path for long-running Watch measurements. Production deployment, quotas, parallelism and operating cost must be verified in the target Google Cloud project; the script alone is not deployment evidence.
 
 ```bash
-# One-click deployment to Google Cloud Run Jobs & Cloud Scheduler
+# Deploy after verifying the target project, secrets, quotas and IAM
 ./scripts/deploy-cloud-run-job.sh
 
 # Run locally or inside container:
@@ -241,6 +220,7 @@ A passing check is required before claiming a code change is release-ready.
 - [`docs/MEASUREMENT.md`](docs/MEASUREMENT.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - [`docs/CHAT_HANDOFF_2026-09-02.md`](docs/CHAT_HANDOFF_2026-09-02.md)
+- [`docs/CHANGELOG_2026-09-06_FULL_AUDIT.md`](docs/CHANGELOG_2026-09-06_FULL_AUDIT.md) — 2026-09-06全体監査・修正・検証記録
 
 ## Safety and truth boundaries
 

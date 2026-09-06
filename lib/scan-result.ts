@@ -5,6 +5,7 @@ import { analyzeEvidence } from "@/lib/discovery";
 import { buildMarketMap } from "@/lib/market-map";
 import { citationCoverage, competitorMetrics, firstChoiceRate, lostPrompts, marketPosition, mentionCoverage, recommendationCoverage, repeatAgreement, successful } from "@/lib/measurement";
 import { buildAiVisibilityAudit } from "@/lib/visibility-audit";
+import { panelVersion } from "@/lib/prompt-panels";
 import { derivePositioningAdvice } from "@/lib/positioning";
 import type { BuyerPrompt, CompanyDiscovery, CrawlAudit, CrawledPage, Observation, PromptPanelKind, ScanResult } from "@/lib/types";
 
@@ -34,7 +35,7 @@ export async function buildScanResult(input: {
     scanId: input.scanId,
     targetUrl: input.targetUrl,
     discovery: input.discovery,
-    panel: { kind: input.panelKind, version: 1, promptCount: input.prompts.length, repetitions: input.repetitions, locale: "ja-JP", country: "JP" },
+    panel: { kind: input.panelKind, version: panelVersion(input.panelKind), promptCount: input.prompts.length, repetitions: input.repetitions, locale: "ja-JP", country: "JP" },
     prompts: input.prompts,
     measuredAt: input.measuredAt || new Date().toISOString(),
     observations: input.observations,

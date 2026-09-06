@@ -3,16 +3,16 @@ import assert from "node:assert/strict";
 import { sampleResult } from "@/lib/sample-data";
 import { derivePositioningAdvice } from "@/lib/positioning";
 
-test("derivePositioningAdvice: 競合の弱点、自社の看板、全方位発信文を正常に導出する", () => {
+test("derivePositioningAdvice: 観測候補と確認可能な整理案を導出する", () => {
   const positioning = derivePositioningAdvice(sampleResult);
 
   assert.ok(positioning.winningAngle, "勝てる看板が存在すること");
   assert.ok(positioning.summary, "解説サマリーが存在すること");
 
-  assert.ok(positioning.competitorWeaknesses.length > 0, "競合の弱点が1件以上存在すること");
+  assert.ok(positioning.competitorWeaknesses.length > 0, "比較候補が1件以上存在すること");
   for (const item of positioning.competitorWeaknesses) {
     assert.ok(item.competitor, "競合名が存在すること");
-    assert.ok(item.weakness.length > 5, "弱点・隙間の説明が存在すること");
+    assert.ok(item.weakness.includes("候補に含まれた"), "観測された候補の説明が存在すること");
     assert.ok(item.rationale.length > 10, "選ばれる理由が存在すること");
   }
 
@@ -29,7 +29,7 @@ test("derivePositioningAdvice: 競合の弱点、自社の看板、全方位発�
 
   assert.equal(positioning.strategies?.length, 3, "戦略が3件生成されること");
   const strategy1 = positioning.strategies![0];
-  assert.equal(strategy1.code, "戦略 01");
+  assert.equal(strategy1.code, "整理 01");
   assert.ok(strategy1.name.length > 0);
   assert.ok(strategy1.coreThesis.length > 0);
   assert.ok(strategy1.deliverables.profile.text.includes(sampleResult.discovery.brandName));

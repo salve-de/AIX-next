@@ -5,7 +5,7 @@ export function ZeroEffortPromiseSection() {
     <section
       id="zero-effort-promise"
       className="zero-effort-promise-section shell"
-      aria-label="完全自動運用とユーザー作業ゼロの保証"
+      aria-label="入力の手間を抑えた公開情報整理"
       style={{
         margin: "36px auto 44px",
       }}
@@ -43,7 +43,7 @@ export function ZeroEffortPromiseSection() {
                 letterSpacing: "0.05em",
               }}
             >
-              完全自動運用の約束
+              入力の手間を抑えた確認フロー
             </span>
           </div>
           <h2
@@ -56,8 +56,8 @@ export function ZeroEffortPromiseSection() {
               color: "#0f172a",
             }}
           >
-            あなたの手は一切煩わせません。<br />
-            あなたがやることは、会社名を入れるだけ（10秒）です。
+            まずはURLまたは社名を入れるだけ。<br />
+            必要な確認を、短い流れで進められます。
           </h2>
           <p
             style={{
@@ -70,8 +70,8 @@ export function ZeroEffortPromiseSection() {
               marginRight: "auto",
             }}
           >
-            ホームページの改修も、サーバーの設定も、面倒なブログ更新も一切不要です。<br />
-            <strong>なぜ、社名を入力するだけでAI対策が完了するのか？</strong> その客観的な仕組みを3つの理由で説明します。
+            ホームページの改修やサーバー設定は不要です。<br />
+            <strong>入力だけで何を確認できるのか。</strong> その流れを3つの理由で説明します。
           </p>
         </div>
 
@@ -109,12 +109,12 @@ export function ZeroEffortPromiseSection() {
                 01
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                ネット上の公開情報から、AIが御社の強みを自動で抽出するから
+                公開ページから、確認できる情報を整理するから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              社名を入力いただくだけで、AIが自社サイトや公的データ、取引実績を自動解析します。<br />
-              ChatGPTが「おすすめの決め手」として引用する強み（短納期・親身な対応・個別特注など）をシステムが自動整理するため、資料を準備して提出する手間はありません。
+              URLまたは社名を入力すると、公開ページから名称・分野・条件など確認できる情報を整理します。<br />
+              参照元にない実績や強みを推測して追加することはありません。
             </p>
           </div>
 
@@ -143,12 +143,12 @@ export function ZeroEffortPromiseSection() {
                 02
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                自社サイトの改修は不要。外部に「AI公式推薦データ」を配備するから
+                自社サイトを改修せず、参照元付きのページを作れるから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              Web制作会社に改修を依頼したり、サーバーの設定を変更する必要はありません。<br />
-              ChatGPTなどのAI探索ロボットが常時読み込める「公式推薦データ」をRovan側が即日開設します。既存の自社サイトは1文字も触る必要がありません。
+              Web制作会社に改修を依頼したり、サーバー設定を変更したりする必要はありません。<br />
+              参照元付きの公開情報ページを下書きにまとめ、内容を確認してから公開できます。既存サイトには書き込みません。
             </p>
           </div>
 
@@ -177,12 +177,12 @@ export function ZeroEffortPromiseSection() {
                 03
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                競合の監視もAIの最新仕様対応も、すべて自動で自走するから
+                同じ条件で、AI回答の変化を確認できるから
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              AIの回答ルールの更新や、競合の順位変動も、システムが毎週自動で測定・監視します。<br />
-              推薦データの最新維持も全自動で回るため、管理画面にログインして定期的に作業する負担もありません。
+              AIの回答は質問・参照元・モデルの更新で変わります。<br />
+              週次プランでは同じ質問パネルで回答と参照元の差分を測定し、公開情報の見直し候補を記録します。
             </p>
           </div>
         </div>
@@ -217,8 +217,8 @@ export function ZeroEffortPromiseSection() {
               安心の約束
             </span>
             <span style={{ fontSize: "0.88rem", color: "#334155", lineHeight: 1.5 }}>
-              <strong>社長は、本業（接客・施工・製造・経営）に100%専念してください。</strong><br />
-              AI公式データの配備・最新維持・競合の監視は、すべてRovanが自動で自走させます。
+              <strong>まずはURLまたは社名の入力だけで、現状を確認できます。</strong><br />
+              公開情報の変更は自動公開せず、確認・承認した内容だけを反映します。
             </span>
           </div>
           <span
@@ -234,7 +234,7 @@ export function ZeroEffortPromiseSection() {
               letterSpacing: "0.04em",
             }}
           >
-            作業工数: 0分
+            入力: URLまたは社名
           </span>
         </div>
       </div>

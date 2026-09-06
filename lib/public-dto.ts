@@ -6,7 +6,9 @@ import type {
   ScanResult,
   WatchMeasurementRun,
   WatchRecord,
+  TakeBackShareMetric,
 } from "@/lib/types";
+import { takeBackShare } from "@/lib/measurement";
 
 /**
  * Fields needed by the Watch screen, without provider answers or operational
@@ -30,7 +32,15 @@ export type PublicObservation = Pick<
 
 export type PublicLostPrompt = Omit<LostPrompt, "observations">;
 
-export type PublicScanResult = Omit<ScanResult, "observations" | "lostPrompts" | "warnings" | "totalCostUsd"> & {
+export type PublicScanResult = Omit<
+  ScanResult,
+  | "observations"
+  | "lostPrompts"
+  | "warnings"
+  | "totalCostUsd"
+  | "marketPosition"
+  | "marketSize"
+> & {
   observations: PublicObservation[];
   lostPrompts: PublicLostPrompt[];
 };
@@ -53,11 +63,13 @@ export type PublicWatch = Omit<
   | "latest"
   | "history"
   | "changePack"
+  | "competitorEvents"
 > & {
   baseline: PublicScanResult;
   latest: PublicScanResult;
   history: PublicScanResult[];
   changePack?: PublicChangePack | null;
+  takeBackShare: TakeBackShareMetric;
   emailConfigured?: boolean;
   maskedEmail?: string | null;
 };
@@ -129,8 +141,6 @@ export function toPublicScanResult(result: ScanResult): PublicScanResult {
     citationCoverage: result.citationCoverage,
     repeatAgreement: result.repeatAgreement,
     ownRecommendationCount: result.ownRecommendationCount,
-    marketPosition: result.marketPosition,
-    marketSize: result.marketSize,
     competitors: result.competitors,
     lostPrompts: result.lostPrompts.map(publicLostPrompt),
     evidenceGaps: result.evidenceGaps,
@@ -181,12 +191,12 @@ export function toPublicWatch(watch: WatchRecord): PublicWatch {
     baseline: toPublicScanResult(watch.baseline),
     latest: toPublicScanResult(watch.latest),
     history: watch.history.map(toPublicScanResult),
+    takeBackShare: takeBackShare(watch.baseline, watch.latest),
     evidence: watch.evidence,
     changePack: watch.changePack ? toPublicChangePack(watch.changePack) : null,
     nextRunAt: watch.nextRunAt,
     createdAt: watch.createdAt,
     updatedAt: watch.updatedAt,
-    ...(watch.competitorEvents ? { competitorEvents: watch.competitorEvents } : {}),
     ...(watch.autoActions ? { autoActions: watch.autoActions } : {}),
     ...(watch.autoActionImpacts ? { autoActionImpacts: watch.autoActionImpacts } : {}),
   };

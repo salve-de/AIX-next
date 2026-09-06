@@ -1,5 +1,5 @@
 import { isOwnedCitation } from "@/lib/entity-extraction";
-import type { BuyerPrompt, CompanyDiscovery, CompetitorMetric, LostPrompt, Observation } from "@/lib/types";
+import type { BuyerPrompt, CompanyDiscovery, CompetitorMetric, LostPrompt, Observation, ScanResult, TakeBackShareMetric } from "@/lib/types";
 
 function percent(numerator: number, denominator: number) {
   return denominator ? Math.round((numerator / denominator) * 100) : 0;
@@ -80,7 +80,7 @@ export function lostPrompts(prompts: BuyerPrompt[], observations: Observation[],
       promptId: prompt.id,
       prompt: prompt.text,
       winner,
-      summary: winner ? `AIは${winner}を先に勧め、${discovery.brandName}はこの質問で候補外でした。` : `${discovery.brandName}はこの質問で候補に入りませんでした。`,
+      summary: winner ? `今回の回答では「${winner}」が先に候補に含まれ、${discovery.brandName}はこの質問で候補外でした。` : `${discovery.brandName}はこの質問で候補に入りませんでした。`,
       citations,
       observations: rows,
     }];
@@ -97,4 +97,65 @@ export function marketPosition(observations: Observation[], discovery: CompanyDi
   const all = [...competitorMetrics(observations, discovery).map((item) => ({ name: item.name, coverage: item.coverage })), own]
     .sort((a, b) => b.coverage - a.coverage || a.name.localeCompare(b.name, "ja"));
   return { position: Math.max(1, all.findIndex((item) => item.name === discovery.brandName) + 1), size: all.length };
+}
+
+function observationConditions(result: ScanResult) {
+  return new Set(
+    successful(result.observations).map((item) => `${item.provider}:${item.model}:${item.repetition}`),
+  );
+}
+
+function sameSet(left: Set<string>, right: Set<string>) {
+  return left.size === right.size && [...left].every((value) => right.has(value));
+}
+
+/**
+ * Measures recovery only for prompts that were lost in the baseline and were
+ * successfully measured again under the same panel and provider conditions.
+ * It intentionally does not use customer, sales, or search-volume language.
+ */
+export function takeBackShare(baseline: ScanResult | null | undefined, latest: ScanResult | null | undefined): TakeBackShareMetric {
+  const unavailable = (status: TakeBackShareMetric["status"], note: string): TakeBackShareMetric => ({
+    status,
+    value: null,
+    recoveredPromptCount: 0,
+    eligiblePromptCount: 0,
+    baselineLostPromptCount: baseline?.lostPrompts.length || 0,
+    note,
+  });
+
+  if (!baseline || !latest) return unavailable("not-comparable", "比較できる基準値がまだありません。");
+  const samePanel = baseline.panel.kind === latest.panel.kind
+    && baseline.panel.version === latest.panel.version
+    && baseline.panel.promptCount === latest.panel.promptCount
+    && baseline.panel.repetitions === latest.panel.repetitions;
+  if (!samePanel) return unavailable("not-comparable", "測定パネルまたは反復条件が変わったため、前回との比較を表示していません。");
+
+  const baselinePromptIds = new Set((baseline.prompts || []).map((prompt) => prompt.id));
+  const latestPromptIds = new Set((latest.prompts || []).map((prompt) => prompt.id));
+  if (!sameSet(baselinePromptIds, latestPromptIds)) return unavailable("not-comparable", "質問IDが一致しないため、前回との比較を表示していません。");
+  if (baseline.measurementCompleteness < 100 || latest.measurementCompleteness < 100) {
+    return unavailable("incomplete", "一部のAI回答が未取得のため、回復率を確定していません。");
+  }
+  if (!sameSet(observationConditions(baseline), observationConditions(latest))) {
+    return unavailable("not-comparable", "AI提供元・モデル・反復条件が一致しないため、前回との比較を表示していません。");
+  }
+
+  const baselineLostIds = new Set(baseline.lostPrompts.map((prompt) => prompt.promptId));
+  const latestLostIds = new Set(latest.lostPrompts.map((prompt) => prompt.promptId));
+  const latestSuccessfulPromptIds = new Set(successful(latest.observations).map((observation) => observation.promptId));
+  const eligiblePromptIds = [...baselineLostIds].filter((promptId) => latestSuccessfulPromptIds.has(promptId));
+  const recoveredPromptCount = eligiblePromptIds.filter((promptId) => !latestLostIds.has(promptId)).length;
+  const value = percent(recoveredPromptCount, eligiblePromptIds.length);
+
+  return {
+    status: "available",
+    value: eligiblePromptIds.length ? value : null,
+    recoveredPromptCount,
+    eligiblePromptCount: eligiblePromptIds.length,
+    baselineLostPromptCount: baselineLostIds.size,
+    note: eligiblePromptIds.length
+      ? "初回に他社候補が先に含まれた質問のうち、今回、自社が候補に入った割合です。実顧客数や売上のシェアではありません。"
+      : "初回に他社候補が先に含まれた質問を再測定できていないため、回復率は表示していません。",
+  };
 }

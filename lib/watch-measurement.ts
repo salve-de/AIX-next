@@ -5,9 +5,10 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { env } from "@/lib/env";
 import { runObservationPanel } from "@/lib/providers";
 import { buildScanResult } from "@/lib/scan-result";
-import { addFactToPublicProfile, refreshPublicProfileFromScan, updateWatch } from "@/lib/storage";
+import { updateWatch } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
 import { createWatchRun, finalizeWatchRun, getActiveWatchRun, mergeObservations, updateWatchRun } from "@/lib/watch-runs";
+import { CORE_PANEL_SIZE } from "@/lib/prompt-panels";
 import {
   buildMonthlyValueReport,
   detectCompetitorWebChanges,
@@ -41,7 +42,7 @@ async function ensureRun(watch: WatchRecord) {
   const active = await getActiveWatchRun(watch.id);
   if (active) return active;
   const switchToCore = watch.paid && watch.latest.panel.kind !== "core";
-  const prompts = switchToCore ? await generateBuyerPrompts(watch.latest.discovery, 50, "core") : exactPrompts(watch);
+  const prompts = switchToCore ? await generateBuyerPrompts(watch.latest.discovery, CORE_PANEL_SIZE, "core") : exactPrompts(watch);
   if (!prompts.length) throw new Error("再測定に使えるBuyer Promptがありません。");
   return createWatchRun({
     watchId: watch.id,
@@ -127,16 +128,12 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     ? await generateChangePack({ result, pages: crawl.pages, evidence: watch.evidence }).catch(() => null)
     : null;
 
-  // Phase 2: 最新のクロール結果から自社AI公開台帳を自動更新（P0-2）
-  if (watch.paid) {
-    await refreshPublicProfileFromScan(watch.latest.targetUrl || result.targetUrl, result).catch(() => null);
-  }
-
-  // Phase 3〜5: 競合Web監視、自律対応、再測定検証、月次レポート生成
+  // Phase 3〜5: 観測候補の差分、公開前確認案、再測定検証、月次レポート生成
   let competitorEvents = watch.competitorEvents;
   let autoActions = watch.autoActions;
   let autoActionImpacts = watch.autoActionImpacts;
   let monthlyReport = watch.monthlyReport;
+  const history = run.switchToCore ? [result] : [...watch.history, result].slice(-52);
 
   if (watch.paid) {
     const detectedEvents = detectCompetitorWebChanges(result, previous);
@@ -145,10 +142,6 @@ export async function processWatchMeasurement(watch: WatchRecord) {
       events: detectedEvents,
       crawledPages: crawl.pages,
     });
-
-    for (const fact of planned.factsToApply) {
-      await addFactToPublicProfile(result.targetUrl, fact).catch(() => null);
-    }
 
     const previousActions = watch.autoActions || [];
     const impacts = evaluateAutoActionImpact(previousActions, result, previous);
@@ -160,6 +153,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     monthlyReport = buildMonthlyValueReport({
       latest: result,
       previous,
+      history,
       competitorEvents,
       autoActions,
       impacts: autoActionImpacts,
@@ -167,7 +161,6 @@ export async function processWatchMeasurement(watch: WatchRecord) {
   }
 
   const expiresAfterRun = trialExpiredAfterThisRun(watch);
-  const history = run.switchToCore ? [result] : [...watch.history, result].slice(-52);
   const baseline = run.switchToCore ? result : watch.baseline;
   const status = expiresAfterRun ? "expired" as const : watch.status;
   const finalized = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });

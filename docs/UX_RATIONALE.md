@@ -12,14 +12,14 @@ Decorative UI or copy that does not answer one of those questions should be remo
 
 ## Understanding hierarchy
 
-### 0.1 second — visual gist
+### First visual impression — visual gist
 
 The visitor cannot fully understand a new B2B category in 100 ms. The realistic requirement is that the first visual impression reads as:
 
 ```text
 ChatGPT / AI
 + my company versus competitors
-+ concrete result
++ bounded result with its denominator
 + URL input
 ```
 
@@ -75,7 +75,7 @@ Required elements:
 - competitor-selection problem in the headline;
 - value promise: identify what to change to increase shortlist inclusion opportunities;
 - company, product, or service name / URL field;
-- a visible fictional result showing rank, excluded-prompt denominator, top competitor, one buyer question and one Action;
+- a visible fictional result showing the measurement denominator, observed candidate, one buyer question and one Action;
 - micro-flow: find loss → choose change → remeasure.
 
 The first viewport must not require the visitor to understand “Buyer Intelligence”, “Evidence OS”, “AEO”, “GEO” or “LLMO”.
@@ -114,7 +114,7 @@ Do not label an excluded Buyer Prompt as a lost customer.
 ### Product output preview
 
 The fictional preview proves what the scan actually returns:
-- market position;
+- candidate coverage under the declared panel;
 - shortlisted/excluded Buyer Prompt counts;
 - top competitor;
 - one exact buying question;
@@ -150,11 +150,11 @@ The result is one decision path, not a dashboard maze.
 ### 1. Verdict
 
 Lead with:
-- measured market position;
+- measured candidate coverage;
 - excluded Buyer Prompt count / total;
 - shortlist count / total where useful.
 
-The copy immediately explains that the next step is not staring at the rank; it is finding the reason and the first change.
+The copy immediately explains that the next step is not staring at a score; it is finding the reason and the first change.
 
 ### 2. Action bridge
 
@@ -206,7 +206,7 @@ Raw answers and citations remain available after the decision path for auditabil
 Watch is an **improvement-verification surface**.
 
 The first questions are:
-- Did rank move under a comparable panel?
+- Did candidate coverage move under a comparable panel?
 - How many buying questions newly entered the shortlist?
 - How many newly fell out?
 - Which citation sources changed?

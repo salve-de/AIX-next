@@ -37,7 +37,7 @@ The codebase can run locally and the fictional product experience requires no cr
 
 ## 4. Billing
 
-- [ ] Create a monthly Stripe Product and Price for ¥9,800 before tax (Zero-Effort Autonomous Watch Plan).
+- [ ] Create and verify the monthly Stripe Product and Price for Watch: ¥10,780 including tax (¥9,800 before tax). Do not sell until the production price and tax display match the legal page and Checkout.
 - [ ] Set `STRIPE_PRICE_ID`.
 - [ ] Configure the Checkout domain and business information.
 - [ ] Configure `/api/billing/webhook`.
@@ -46,9 +46,9 @@ The codebase can run locally and the fictional product experience requires no cr
 - [ ] Test checkout success, cancellation, failed payment and subscription deletion.
 - [ ] Confirm invoice/tax behavior with accounting support.
 
-## 5. Scheduler and operations (Cloud Run Jobs Standard)
+## 5. Scheduler and operations (Cloud Run Jobs when production load requires it)
 
-- [ ] Run `./scripts/deploy-cloud-run-job.sh` to configure Cloud Run Jobs & Cloud Scheduler (every Monday at 09:00 JST).
+- [ ] Review and, after production approval, run `./scripts/deploy-cloud-run-job.sh` to configure Cloud Run Jobs & Cloud Scheduler. Record the actual schedule, region, quotas and rollback path; the script itself is not deployment proof.
 - [ ] Verify atomic DB leasing (`claimDueWatches`) prevents duplicated runs across distributed tasks.
 - [ ] Configure provider outage alerts in Cloud Logging.
 - [ ] Configure cost anomaly alerts in GCP Billing.
