@@ -14,61 +14,61 @@ export function HeroChatDiagnosticCard() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "12px 18px",
+          padding: "10px 16px",
           background: "#f8fafc",
           borderBottom: "1px solid #e2e8f0",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#0f172a", display: "inline-block" }} />
-          <strong style={{ fontSize: "0.8rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>
+          <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#0f172a", display: "inline-block" }} />
+          <strong style={{ fontSize: "0.78rem", color: "#0f172a", fontFamily: "var(--font-mono, monospace)", letterSpacing: "-0.01em" }}>
             ChatGPT (GPT-4o) での実況シミュレーション
           </strong>
         </div>
-        <span style={{ fontSize: "0.7rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px", fontWeight: 600 }}>
+        <span style={{ fontSize: "0.68rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 7px", borderRadius: "4px", fontWeight: 600 }}>
           回答観測
         </span>
       </div>
 
       {/* チャット対話エリア */}
-      <div className="direct-card-body" style={{ padding: "18px", display: "flex", flexDirection: "column", gap: "14px", background: "#ffffff" }}>
+      <div className="direct-card-body" style={{ padding: "14px 16px", display: "flex", flexDirection: "column", gap: "10px", background: "#ffffff" }}>
         
         {/* 見込み客の相談 */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "4px" }}>
-          <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingRight: "4px" }}>客がAIにした相談</span>
-          <div style={{ background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "12px 12px 2px 12px", padding: "10px 14px", maxWidth: "92%", color: "#0f172a", fontSize: "0.85rem", lineHeight: 1.5, fontWeight: 500 }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "3px" }}>
+          <span style={{ fontSize: "0.66rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", paddingRight: "4px" }}>客がAIにした相談</span>
+          <div style={{ background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "10px 10px 2px 10px", padding: "8px 12px", maxWidth: "94%", color: "#0f172a", fontSize: "0.82rem", lineHeight: 1.48, fontWeight: 500 }}>
             「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
           </div>
         </div>
 
         {/* 未対策時：大手優先の回答 */}
-        <div style={{ border: "1px solid #e2e8f0", borderRadius: "8px", padding: "14px 16px", background: "#f8fafc" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 8px", borderRadius: "4px" }}>
+        <div style={{ border: "1px solid #e2e8f0", borderRadius: "7px", padding: "10px 13px", background: "#f8fafc" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "2px 7px", borderRadius: "4px" }}>
               未対策時のAI回答（大手優先）
             </span>
-            <span style={{ fontSize: "0.68rem", color: "#64748b", fontWeight: 600 }}>自社は選定外</span>
+            <span style={{ fontSize: "0.66rem", color: "#64748b", fontWeight: 600 }}>自社は選定外</span>
           </div>
-          <p style={{ margin: "0 0 8px", fontSize: "0.82rem", color: "#475569", lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 6px", fontSize: "0.8rem", color: "#475569", lineHeight: 1.5 }}>
             ChatGPT「東京都内でしたら、大手量産メーカーの〇〇社や、広告で知名度の高い〇〇社が候補になります。」
           </p>
-          <div style={{ fontSize: "0.72rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+          <div style={{ fontSize: "0.7rem", color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "5px 8px", borderRadius: "4px", lineHeight: 1.45 }}>
             ※ AI向けデータがない場合、AIは知名度や広告量の多い大手を機械的に提案します。
           </div>
         </div>
 
         {/* 推薦データ配備後：自社が指名推薦される回答 */}
-        <div style={{ border: "1.5px solid #0f172a", borderRadius: "8px", padding: "14px 16px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 8px", borderRadius: "4px" }}>
+        <div style={{ border: "1.5px solid #0f172a", borderRadius: "7px", padding: "11px 13px", background: "#ffffff", boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+            <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#ffffff", background: "#0f172a", padding: "2px 7px", borderRadius: "4px" }}>
               公式データ配備後のAI回答（自社を推薦）
             </span>
-            <span style={{ fontSize: "0.68rem", color: "#0f172a", fontWeight: 700 }}>強みに合致して選定</span>
+            <span style={{ fontSize: "0.66rem", color: "#0f172a", fontWeight: 700 }}>強みに合致して選定</span>
           </div>
-          <p style={{ margin: "0 0 8px", fontSize: "0.84rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.55 }}>
+          <p style={{ margin: "0 0 6px", fontSize: "0.82rem", color: "#0f172a", fontWeight: 600, lineHeight: 1.5 }}>
             ChatGPT「1点からの特急試作なら、<strong>御社（山田板金製作所）</strong>が適しています。最短即日対応と個別特注を強みとしています。」
           </p>
-          <div style={{ fontSize: "0.72rem", color: "#0f172a", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "6px 10px", borderRadius: "4px", lineHeight: 1.5 }}>
+          <div style={{ fontSize: "0.7rem", color: "#0f172a", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "5px 8px", borderRadius: "4px", lineHeight: 1.45 }}>
             ※ AIが自社の公式強みデータを直接参照できるため、相談にぴったり合う推薦先として提示されます。
           </div>
         </div>
@@ -76,7 +76,7 @@ export function HeroChatDiagnosticCard() {
       </div>
 
       {/* カードフッター */}
-      <div style={{ padding: "10px 18px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.74rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ padding: "9px 16px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", fontSize: "0.72rem", color: "#64748b", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span>自社サイトの改修：不要</span>
         <span style={{ fontWeight: 700, color: "#0f172a" }}>所要10秒で無料診断</span>
       </div>
