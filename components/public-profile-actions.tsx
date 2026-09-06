@@ -31,7 +31,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   const [profile, setProfile] = useState<ProfileShape | null>(null);
   const [busy, setBusy] = useState<"deploy" | "">("");
   const [error, setError] = useState("");
-  const [selectedWeapon, setSelectedWeapon] = useState<number>(0);
+  const [selectedStrategy, setSelectedStrategy] = useState<number>(0);
   const [customHighlight, setCustomHighlight] = useState<string>("");
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
@@ -90,13 +90,13 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       {/* 3つの強み選択ラジオカード（無料プランは1枠のみ選択可能） */}
       <div className="weapon-selector-grid">
         {strategies.map((strat, index) => {
-          const isSelected = selectedWeapon === index;
+          const isSelected = selectedStrategy === index;
           const isRec = strat.isRecommended ?? index === 0;
           return (
             <div
               key={strat.code}
               className={`weapon-card ${isSelected ? "selected" : ""} ${isRec ? "recommended-card" : ""}`}
-              onClick={() => setSelectedWeapon(index)}
+              onClick={() => setSelectedStrategy(index)}
               role="button"
               tabIndex={0}
             >
@@ -141,7 +141,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
           style={{ width: "100%", padding: "8px 12px", fontSize: "0.85rem", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", boxSizing: "border-box" }}
         />
         <p style={{ fontSize: "0.72rem", color: "#64748b", margin: "4px 0 0" }}>
-          ※ 空欄の場合は上記で選択した「{strategies[selectedWeapon]?.name || "看板"}」がそのままAI公式台帳に登録されます。
+          ※ 空欄の場合は上記で選択した「{strategies[selectedStrategy]?.name || "看板"}」がそのままAI公式台帳に登録されます。
         </p>
       </div>
 
@@ -149,10 +149,10 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="rovan-hot-advice-card">
         <div className="hot-advice-header">
           <span className="hot-advice-tag">戦略分析所見：看板選定の論理的根拠</span>
-          <h4>大手が対応できない「{strategies[selectedWeapon]?.name || "固有の強み"}」こそが、{result.discovery.brandName || "御社"}の収益性を最大化する決定打です</h4>
+          <h4>大手が対応できない「{strategies[selectedStrategy]?.name || "固有の強み"}」こそが、{result.discovery.brandName || "御社"}の収益性を最大化する決定打です</h4>
         </div>
         <p className="hot-advice-body">
-          {strategies[selectedWeapon]?.passionateReason ||
+          {strategies[selectedStrategy]?.passionateReason ||
             `大手全国チェーンはマニュアル対応に依存しており、個別事情への柔軟な対応力に構造的な弱点を抱えています。一方、${result.discovery.brandName || "御社"}はここに明確な優位性と実績を持っています。この高付加価値な相談者がAIの認識不足によって大手に流出している現状は重大な機会損失です。AI公式データ基盤へ本看板を反映することを推奨します。`}
         </p>
       </div>
@@ -227,7 +227,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       <div className="weapon-action-box">
         <div className="weapon-action-status">
           <p>
-            現在配備する看板：<strong>{customHighlight.trim() || strategies[selectedWeapon]?.name}</strong>
+            現在配備する看板：<strong>{customHighlight.trim() || strategies[selectedStrategy]?.name}</strong>
           </p>
           <small>自社サイトの改修ゼロ。主要生成AIが直接巡回・引用できる「公式構造化データ規格」で即日ネット上に常駐します。</small>
         </div>

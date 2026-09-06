@@ -381,13 +381,13 @@ export function WatchClient() {
         </div>
       </section>
 
-      {/* 今週の自律防衛タイムライン（THIS WEEK: 競合監視 → 自動対処 → 再測定） */}
+      {/* 今週の週次モニタリングタイムライン（THIS WEEK: 競合監視 → 自動対処 → 再測定） */}
       <section className="watch-section shell" style={{ marginBottom: "24px" }}>
         <div style={{ background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 10px)", padding: "24px 28px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "20px" }}>
             <div>
               <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0f172a", color: "#ffffff", padding: "3px 8px", borderRadius: "4px", letterSpacing: "0.06em" }}>
-                THIS WEEK / 自律防衛レポート
+                THIS WEEK / 週次モニタリングレポート
               </span>
               <h3 style={{ margin: "8px 0 0", fontSize: "1.2rem", color: "#0f172a", fontWeight: 800, letterSpacing: "-0.02em" }}>
                 今週、競合が動き、Rovanが裏側で自動対処を完了しました
@@ -432,16 +432,16 @@ export function WatchClient() {
         </div>
       </section>
 
-      {/* 月次防衛価値レポート（MONTHLY VALUE REPORT: 過去30日間の実績総括） */}
+      {/* 月次レポート総括（MONTHLY VALUE REPORT: 過去30日間の実績総括） */}
       <section className="watch-section shell" style={{ marginBottom: "36px" }}>
         <div style={{ background: "#ffffff", border: "1px solid #cbd5e1", borderRadius: "12px", padding: "24px 28px", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "20px" }}>
             <div>
               <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0f172a", color: "#ffffff", padding: "3px 8px", borderRadius: "4px", letterSpacing: "0.06em" }}>
-                MONTHLY VALUE REPORT / 月次防衛総括
+                MONTHLY VALUE REPORT / 月次レポート総括
               </span>
               <h3 style={{ margin: "8px 0 0", fontSize: "1.25rem", color: "#0f172a" }}>
-                過去30日間のAI推薦死守 ＆ 競合迎撃の実績
+                過去30日間のAI推薦維持 ＆ 自動対処の実績
               </h3>
             </div>
             <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
@@ -475,7 +475,7 @@ export function WatchClient() {
               </strong>
             </div>
             <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "8px", border: "1px solid #e2e8f0", textAlign: "center" }}>
-              <span style={{ fontSize: "0.72rem", color: "#64748b" }}>自律迎撃数</span>
+              <span style={{ fontSize: "0.72rem", color: "#64748b" }}>自動対処数</span>
               <strong style={{ display: "block", fontSize: "1.4rem", color: "#0f172a", marginTop: "4px" }}>
                 {watch.monthlyReport?.autoActionCount ?? (watch.autoActions?.length || 1)}件
               </strong>
@@ -492,7 +492,7 @@ export function WatchClient() {
             <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
               <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0f172a" }}>検知された競合リスク ＆ 今後Rovanが追跡するもの</span>
               <ul style={{ margin: "6px 0 0", paddingLeft: "18px", fontSize: "0.8rem", color: "#334155", lineHeight: 1.6 }}>
-                {(watch.monthlyReport?.topRisks || ["競合による特急対応訴求の強化を検知（Rovanが迎撃対応済）"]).map((risk, i) => (
+                {(watch.monthlyReport?.topRisks || ["競合による特急対応訴求の強化を検知（Rovanが自動対応・台帳同期済）"]).map((risk, i) => (
                   <li key={`risk-${i}`}>{risk}</li>
                 ))}
                 {(watch.monthlyReport?.upcomingTracking || ["同一プロンプト群のAI推薦率を次週も定点再測定"]).map((item, i) => (

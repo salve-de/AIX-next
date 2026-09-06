@@ -99,15 +99,15 @@ export default function HomePage() {
       <GoogleDeclineProblemSection />
 
       {/* ================================================================= */}
-      {/* 3. このサービスで手に入るもの（社名を入れるだけで届く「2つの武器」） */}
+      {/* 3. このサービスで手に入るもの（社名を入れるだけで届く「2大成果物」） */}
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
           <span className="pill-badge">手に入る2つの確定成果物</span>
-          <h2>社名を入力するだけで、<br />手元に届く「2つの武器」</h2>
+          <h2>社名を入力するだけで、<br />手元に届く「2大成果物」</h2>
           <p>
             今のホームページの改修も、専門知識も一切不要。<br />
-            社名を入れるだけで、「自社の現状を暴く診断レポート」と「大手を逆転するAI公式データ」がその場で手に入ります。
+            社名を入れるだけで、「自社の現状がわかる診断レポート」と「AIから正確に推薦される公式データ」がその場で手に入ります。
           </p>
         </div>
 
