@@ -124,17 +124,28 @@ export function ResultClient() {
     </div>
 
     {/* 同名店舗・別会社誤爆防止の緊急安全弁（一発やり直しバー） */}
-    <aside aria-label="店舗・対象の確認" style={{ background: "#fef9c3", borderBottom: "1px solid #fde047", padding: "8px 0" }}>
-      <div className="shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#854d0e" }}>
-          <span style={{ fontWeight: 800 }}>⚠️ 店舗・対象の確認：</span>
-          <span>もし同名の別店舗や、意図しない地域・法人が表示されている場合はこちら</span>
+    <aside aria-label="店舗・対象の確認" style={{ background: "#f8fafc", borderBottom: "1px solid #e2e8f0", padding: "10px 0" }}>
+      <div className="shell" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px", fontSize: "0.8rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#334155" }}>
+          <span style={{ fontWeight: 700, background: "#fef3c7", border: "1px solid #fde68a", color: "#b45309", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem" }}>対象確認</span>
+          <span>同名の別店舗や、意図しない地域・法人が表示されている場合はこちら</span>
         </div>
         {!showCorrectionForm ? (
           <button
             type="button"
             onClick={() => setShowCorrectionForm(true)}
-            style={{ background: "#ffffff", border: "1px solid #ca8a04", color: "#854d0e", padding: "4px 10px", borderRadius: "var(--radius-badge, 4px)", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer" }}
+            style={{
+              background: "#ffffff",
+              border: "1px solid #cbd5e1",
+              color: "#0f172a",
+              padding: "5px 12px",
+              borderRadius: "6px",
+              fontSize: "0.76rem",
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)",
+              transition: "all 0.15s ease",
+            }}
           >
             別の地域・店舗を指定して再診断する ➔
           </button>
@@ -146,26 +157,26 @@ export function ResultClient() {
                 router.push(`/scan?input=${encodeURIComponent(correctionQuery.trim())}`);
               }
             }}
-            style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", width: "100%", marginTop: "4px" }}
+            style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", width: "100%", marginTop: "6px" }}
           >
             <input
               type="text"
               placeholder="例: 青葉ベーカリー 高崎、山田板金 大田区、または正確なURL"
               value={correctionQuery}
               onChange={(e) => setCorrectionQuery(e.target.value)}
-              style={{ flex: "1 1 280px", padding: "6px 10px", fontSize: "0.8rem", border: "1px solid #ca8a04", borderRadius: "4px", background: "#ffffff" }}
+              style={{ flex: "1 1 300px", padding: "8px 12px", fontSize: "0.82rem", border: "1px solid #cbd5e1", borderRadius: "6px", background: "#ffffff", outline: "none" }}
               autoFocus
             />
             <button
               type="submit"
-              style={{ background: "#854d0e", color: "#ffffff", border: "none", padding: "6px 14px", borderRadius: "4px", fontSize: "0.78rem", fontWeight: 700, cursor: "pointer" }}
+              style={{ background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)", color: "#ffffff", border: "none", padding: "8px 16px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", boxShadow: "0 1px 2px rgba(15, 23, 42, 0.16)" }}
             >
               再診断する
             </button>
             <button
               type="button"
               onClick={() => setShowCorrectionForm(false)}
-              style={{ background: "transparent", border: "none", color: "#854d0e", fontSize: "0.75rem", cursor: "pointer", textDecoration: "underline" }}
+              style={{ background: "transparent", border: "none", color: "#64748b", fontSize: "0.78rem", cursor: "pointer", textDecoration: "underline" }}
             >
               キャンセル
             </button>
@@ -178,25 +189,25 @@ export function ResultClient() {
     <div className="step-stepper-bar" style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "14px 0" }}>
       <div className="shell">
         <nav aria-label="診断と対策の手順" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
-          <a href="#step-1" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "var(--radius-card, 8px)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--color-brand, #0f172a)", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>1</span>
+          <a href="#step-1" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#ffffff", border: "1.5px solid #0f172a", transition: "all 0.15s ease" }}>
+            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#0f172a", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>1</span>
             <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "var(--text-primary, #0f172a)", display: "block" }}>ステップ 1：現状を知る</strong>
-              <small style={{ fontSize: "0.72rem", color: "var(--text-muted, #64748b)" }}>AI診断レポート・客観比較</small>
+              <strong style={{ fontSize: "0.84rem", color: "#0f172a", display: "block" }}>ステップ 1：現状を知る</strong>
+              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>AI診断レポート・客観比較</small>
             </div>
           </a>
-          <a href="#step-2" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "var(--radius-card, 8px)", background: "#ffffff", border: "1.5px solid var(--color-brand, #0f172a)" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--color-accent-blue, #0284c7)", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>2</span>
+          <a href="#step-2" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0", transition: "all 0.15s ease" }}>
+            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#0284c7", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>2</span>
             <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "var(--color-accent-blue, #0284c7)", display: "block" }}>ステップ 2：武器を配備する</strong>
-              <small style={{ fontSize: "0.72rem", color: "var(--text-muted, #64748b)" }}>AI公式推薦データ（改修ゼロ）</small>
+              <strong style={{ fontSize: "0.84rem", color: "#0284c7", display: "block" }}>ステップ 2：武器を配備する</strong>
+              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>AI公式推薦データ（改修ゼロ）</small>
             </div>
           </a>
-          <a href="#step-3" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "var(--radius-card, 8px)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "var(--text-muted, #64748b)", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>3</span>
+          <a href="#step-3" className="shadow-ambient-sm" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", color: "inherit", padding: "10px 14px", borderRadius: "8px", background: "#f8fafc", border: "1px solid #e2e8f0", transition: "all 0.15s ease" }}>
+            <span style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#64748b", color: "#ffffff", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 800 }}>3</span>
             <div style={{ lineHeight: 1.25 }}>
-              <strong style={{ fontSize: "0.84rem", color: "var(--text-primary, #0f172a)", display: "block" }}>ステップ 3：推移を追跡する</strong>
-              <small style={{ fontSize: "0.72rem", color: "var(--text-muted, #64748b)" }}>週次自動見守り ＆ 特別優待</small>
+              <strong style={{ fontSize: "0.84rem", color: "#0f172a", display: "block" }}>ステップ 3：推移を追跡する</strong>
+              <small style={{ fontSize: "0.72rem", color: "#64748b" }}>週次自動見守り ＆ 特別優待</small>
             </div>
           </a>
         </nav>
@@ -274,11 +285,11 @@ export function ResultClient() {
       />
 
       {/* AI観測プロトコル・全データ出展証跡ボックス */}
-      <section className="shell" style={{ marginTop: "16px", marginBottom: "24px" }}>
-        <div style={{ background: "var(--bg-base, #ffffff)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 8px)", padding: "16px 20px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
+      <section className="shell" style={{ marginTop: "20px", marginBottom: "28px" }}>
+        <div className="shadow-ambient-sm" style={{ background: "var(--bg-base, #ffffff)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "10px", padding: "18px 22px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "var(--radius-badge, 4px)" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "4px" }}>
                 AI実測データ ＆ 調査ログ
               </span>
               <strong style={{ fontSize: "0.86rem", color: "var(--text-primary, #0f172a)" }}>
@@ -289,7 +300,7 @@ export function ResultClient() {
               実測日時: {formatDate(result.measuredAt)} JST · 判定完了
             </span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "var(--text-secondary, #334155)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "12px 16px", borderRadius: "var(--radius-card, 6px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "var(--text-secondary, #334155)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "12px 16px", borderRadius: "8px" }}>
             <div><strong>調査対象AI:</strong> ChatGPT / Perplexity / Google Gemini</div>
             <div><strong>調査母数:</strong> 顧客が相談する質問 {result.panel.promptCount}問 × 主要AI実測（計 {result.successfulObservations}件）</div>
             <div><strong>調査方法:</strong> 各AIに同一条件で質問し、回答ログを直接収集・検証</div>
@@ -464,10 +475,10 @@ export function ResultClient() {
       </section>
 
       {/* ★ここに配置！価格提示の直後だからこそ自然に刺さる「特別優待（費用を抑えたい方へ）」 */}
-      <section className="shell" style={{ margin: "32px auto" }}>
-        <div className="viral-share-container" style={{ background: "var(--bg-base, #ffffff)", borderRadius: "var(--radius-card, 8px)", padding: "28px 24px", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)" }}>
+      <section className="shell" style={{ margin: "36px auto" }}>
+        <div className="viral-share-container shadow-ambient-md" style={{ background: "var(--bg-base, #ffffff)", borderRadius: "12px", padding: "32px 28px", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "var(--radius-badge, 4px)" }}>
+            <span style={{ fontSize: "0.72rem", fontWeight: 700, background: "var(--bg-surface, #f1f5f9)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 8px", borderRadius: "4px" }}>
               公式特別優待制度
             </span>
             <strong style={{ fontSize: "1.05rem", color: "var(--text-primary, #0f172a)" }}>
@@ -480,19 +491,20 @@ export function ResultClient() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
             {/* 特典1: Xで成果報告シェア（初月半額） */}
-            <div style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 6px)", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "22px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
                   <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>① X（旧Twitter）成果報告シェア割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "var(--radius-badge, 4px)" }}>初月 50% OFF</span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 6px", borderRadius: "4px" }}>初月 50% OFF</span>
                 </div>
-                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
+                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
                   「AI公式推薦データ」の配備状況をXでご報告いただくと、定期見守りプランの初月料金が半額（10,780円 ➔ 5,390円）になります。
                 </p>
               </div>
               <button
                 type="button"
-                style={{ width: "100%", justifyContent: "center", background: "var(--color-brand, #0f172a)", color: "#ffffff", border: "1px solid var(--color-brand, #0f172a)", padding: "10px 16px", borderRadius: "var(--radius-btn, 6px)", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                className="button-primary"
+                style={{ width: "100%", justifyContent: "center", minHeight: "44px", borderRadius: "6px", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
                   const tweetText = encodeURIComponent(`【AI公式推薦データを配備完了】\nChatGPT・Perplexity等の主要生成AIにおいて、自社（${result.discovery.brandName}）が正確に参照・引用されるための公式データを配備しました。\n\n自社サイト改修ゼロでAI営業窓口を整備できる「Rovan」で診断できます。\n#Rovan #生成AI #中小企業DX\n`);
                   const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : siteUrl}/result?sample=1`);
@@ -507,19 +519,20 @@ export function ResultClient() {
             </div>
 
             {/* 特典2: 経営者仲間へのご紹介（双方ずっと割引） */}
-            <div style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 6px)", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div className="shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "8px", padding: "22px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "8px" }}>
                   <strong style={{ fontSize: "0.95rem", color: "var(--text-primary, #0f172a)" }}>② 経営者仲間・同業への紹介割</strong>
-                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 6px", borderRadius: "var(--radius-badge, 4px)" }}>双方 ずっと割引</span>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-primary, #0f172a)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "2px 6px", borderRadius: "4px" }}>双方 ずっと割引</span>
                 </div>
-                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
+                <p style={{ fontSize: "0.82rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: "0 0 16px" }}>
                   知り合いの社長や士業・店舗仲間に専用URLを共有し、仲間がRovanをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
                 </p>
               </div>
               <button
                 type="button"
-                style={{ width: "100%", justifyContent: "center", background: "#ffffff", borderColor: "var(--border-subtle, #cbd5e1)", color: "var(--text-primary, #0f172a)", border: "1px solid var(--border-subtle, #cbd5e1)", padding: "10px 16px", borderRadius: "var(--radius-btn, 6px)", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                className="button-secondary"
+                style={{ width: "100%", justifyContent: "center", minHeight: "44px", borderRadius: "6px", fontWeight: 700, fontSize: "0.84rem", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px" }}
                 onClick={() => {
                   if (typeof window !== "undefined") {
                     const inviteUrl = `${window.location.origin}/?ref=${encodeURIComponent(result.discovery.brandName || "partner")}`;

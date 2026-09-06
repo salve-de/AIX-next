@@ -13,12 +13,12 @@ export function GoogleDeclineProblemSection() {
       }}
     >
       <div
+        className="shadow-ambient-md"
         style={{
           background: "#ffffff",
-          borderRadius: "8px",
+          borderRadius: "12px",
           border: "1px solid #e2e8f0",
-          padding: "clamp(28px, 4vw, 40px) clamp(20px, 3.5vw, 36px)",
-          boxShadow: "0 1px 3px rgba(15, 23, 42, 0.05)",
+          padding: "clamp(28px, 4vw, 44px) clamp(20px, 3.5vw, 36px)",
         }}
       >
         {/* セクションヘッダー */}
@@ -63,20 +63,21 @@ export function GoogleDeclineProblemSection() {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(min(280px, 100%), 1fr))",
-            gap: "18px",
+            gap: "20px",
             marginBottom: "16px",
           }}
         >
           {/* 理由 01 */}
           <div
+            className="shadow-ambient-sm shadow-ambient-hover"
             style={{
-              background: "#f8fafc",
+              background: "#ffffff",
               border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              padding: "22px 20px",
+              borderRadius: "10px",
+              padding: "24px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "10px",
+              gap: "12px",
             }}
           >
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
@@ -86,9 +87,10 @@ export function GoogleDeclineProblemSection() {
                   fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
-                  background: "#e2e8f0",
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
                   padding: "2px 7px",
-                  borderRadius: "3px",
+                  borderRadius: "4px",
                   letterSpacing: "0.05em",
                 }}
               >
@@ -98,24 +100,25 @@ export function GoogleDeclineProblemSection() {
                 検索が広告だらけになり、客がAIへ逃げた
               </strong>
             </div>
-            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
               広告や比較サイトにうんざりした客は、忖度のないAIに直接おすすめを聞くようになりました。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
               <strong>損失:</strong> 従来の検索経由の問い合わせが、静かに激減しています。
             </div>
           </div>
 
           {/* 理由 02 */}
           <div
+            className="shadow-ambient-sm shadow-ambient-hover"
             style={{
-              background: "#f8fafc",
+              background: "#ffffff",
               border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              padding: "22px 20px",
+              borderRadius: "10px",
+              padding: "24px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "10px",
+              gap: "12px",
             }}
           >
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
@@ -125,9 +128,10 @@ export function GoogleDeclineProblemSection() {
                   fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
-                  background: "#e2e8f0",
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
                   padding: "2px 7px",
-                  borderRadius: "3px",
+                  borderRadius: "4px",
                   letterSpacing: "0.05em",
                 }}
               >
@@ -137,24 +141,25 @@ export function GoogleDeclineProblemSection() {
                 綺麗なホームページほど、AIには読めない
               </strong>
             </div>
-            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
               写真やデザイン中心のサイトは、文章を解析するAIロボットには強みが1文字も伝わりません。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
               <strong>損失:</strong> 優れた実績があっても、AIからは「存在しない」扱いになります。
             </div>
           </div>
 
           {/* 理由 03 */}
           <div
+            className="shadow-ambient-sm shadow-ambient-hover"
             style={{
-              background: "#f8fafc",
+              background: "#ffffff",
               border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              padding: "22px 20px",
+              borderRadius: "10px",
+              padding: "24px 20px",
               display: "flex",
               flexDirection: "column",
-              gap: "10px",
+              gap: "12px",
             }}
           >
             <div style={{ display: "flex", alignItems: "baseline", gap: "8px" }}>
@@ -164,9 +169,10 @@ export function GoogleDeclineProblemSection() {
                   fontSize: "0.72rem",
                   fontWeight: 800,
                   color: "#0f172a",
-                  background: "#e2e8f0",
+                  background: "#f1f5f9",
+                  border: "1px solid #cbd5e1",
                   padding: "2px 7px",
-                  borderRadius: "3px",
+                  borderRadius: "4px",
                   letterSpacing: "0.05em",
                 }}
               >
@@ -176,10 +182,10 @@ export function GoogleDeclineProblemSection() {
                 気付かないうちに、客が大手チェーンへ全員流出
               </strong>
             </div>
-            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
               AIは知名度のある大手ばかりを紹介するため、自社は比較される前に除外されます。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "8px 10px", borderRadius: "4px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.45 }}>
+            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
               <strong>損失:</strong> 問い合わせが来ないため、客を奪われた事実にすら気付けません。
             </div>
           </div>
