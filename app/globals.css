@@ -5569,4 +5569,314 @@ svg { width: 1.1em; height: 1.1em; }
   }
 }
 
+/* ==========================================================================
+   2大成果物プレミアムショーケース（The Dual Deliverables Showcase）
+   ========================================================================== */
+.deliverables-dual-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 960px) {
+  .deliverables-dual-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.deliverable-showcase-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.deliverable-showcase-card:hover {
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.09);
+  border-color: #cbd5e1;
+}
+
+.deliv-card-head {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.deliv-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.deliv-step-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.05em;
+}
+
+.badge-blue {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.badge-green {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+
+.deliv-speed-badge {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.deliv-card-title {
+  margin: 0 0 8px;
+  font-size: 1.16rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.02em;
+}
+
+.deliv-card-desc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.deliv-card-body {
+  padding: 20px 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fafbfc;
+}
+
+.deliv-metric-strip {
+  padding: 10px 14px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.strip-danger {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.strip-danger .deliv-metric-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #991b1b;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.03em;
+}
+
+.strip-danger .deliv-metric-value {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #b91c1c;
+}
+
+.strip-active {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+.strip-active .deliv-metric-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #166534;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.03em;
+}
+
+.strip-active .deliv-metric-value {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #15803d;
+}
+
+.deliv-mock-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.03);
+}
+
+.deliv-mock-label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #64748b;
+  font-family: var(--font-mono, monospace);
+  margin-bottom: 6px;
+}
+
+.deliv-mock-query {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.deliv-mock-result-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.deliv-mock-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.deliv-tag-ai {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #475569;
+  background: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-mono, monospace);
+}
+
+.deliv-text-loss {
+  font-size: 0.78rem;
+  color: #991b1b;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.deliv-specs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deliv-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.spec-key {
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #64748b;
+  font-family: var(--font-mono, monospace);
+}
+
+.spec-val {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.deliv-features-list {
+  padding-top: 4px;
+}
+
+.deliv-features-heading {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.deliv-check-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.deliv-check-items li {
+  font-size: 0.76rem;
+  color: #475569;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  line-height: 1.45;
+}
+
+.deliv-check-items li::before {
+  content: "✓";
+  color: #0284c7;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+
+.deliv-card-foot {
+  padding: 18px 24px;
+  background: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.deliv-action-btn {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.btn-navy {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.btn-navy:hover {
+  background: #1e293b;
+}
+
+.btn-green {
+  background: #047857;
+  color: #ffffff;
+}
+
+.btn-green:hover {
+  background: #065f46;
+}
+
+.deliv-guarantee-note {
+  font-size: 0.7rem;
+  color: #64748b;
+  text-align: center;
+  font-weight: 600;
+}
+
+
 

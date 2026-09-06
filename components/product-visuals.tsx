@@ -151,226 +151,138 @@ export function ChatGptComparisonVisual() {
 
 export function ProductOutputPreview() {
   return (
-    <figure
-      className="deliverable-card-preview"
-      style={{
-        margin: 0,
-        background: "#ffffff",
-        border: "1px solid #cbd5e1",
-        borderRadius: "8px",
-        boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
-        overflow: "hidden",
-      }}
-      aria-label="手に入るもの 01：AI推薦診断レポートの見本"
-    >
-      {/* 成果物ラベルヘッダー */}
-      <div
-        style={{
-          background: "#0f172a",
-          color: "#ffffff",
-          padding: "12px 20px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "8px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span
-            style={{
-              background: "#1e293b",
-              border: "1px solid #475569",
-              color: "#ffffff",
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              padding: "2px 7px",
-              borderRadius: "3px",
-              fontFamily: "var(--font-mono, monospace)",
-              letterSpacing: "0.05em",
-            }}
-          >
-            手に入るもの 01
-          </span>
-          <strong style={{ fontSize: "0.88rem", letterSpacing: "-0.01em" }}>
-            自社専用 AI推薦診断レポート（10秒で即時発行）
-          </strong>
-        </div>
-        <span style={{ fontSize: "0.7rem", color: "#94a3b8" }}>
-          ※ 社名入力後、約10秒で画面に届く診断レポートです
-        </span>
-      </div>
-
-      {/* 対象企業と診断サマリー */}
-      <div
-        style={{
-          padding: "18px 22px",
-          borderBottom: "1px solid #e2e8f0",
-          background: "#f8fafc",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "14px",
-        }}
-      >
-        <div>
-          <span style={{ display: "block", fontSize: "0.7rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)", marginBottom: "2px" }}>
-            診断対象（見本例）
-          </span>
-          <strong style={{ fontSize: "1.15rem", color: "#0f172a", letterSpacing: "-0.02em" }}>
-            あおば相続法務事務所
-          </strong>
-          <span style={{ marginLeft: "12px", fontSize: "0.76rem", color: "#64748b" }}>
-            （見込み客がAIにする相談 12問を実際に検証）
-          </span>
+    <div className="deliverables-dual-grid" aria-label="手に入る2つの成果物実物見本">
+      {/* ============================================================= */}
+      {/* 成果物 01：自社専用 AI診断レポート（10秒で即時発行） */}
+      {/* ============================================================= */}
+      <div className="deliverable-showcase-card card-report">
+        {/* カードヘッダー */}
+        <div className="deliv-card-head">
+          <div className="deliv-badge-row">
+            <span className="deliv-step-badge badge-blue">手に入るもの 01</span>
+            <span className="deliv-speed-badge">10秒で即時発行・無料</span>
+          </div>
+          <h4 className="deliv-card-title">自社専用 AI診断レポート</h4>
+          <p className="deliv-card-desc">
+            社名を入力するだけ。ChatGPTやGeminiが見込み客の相談にどう答えているかを12問で徹底検証。
+          </p>
         </div>
 
-        {/* 端正なメトリクス */}
-        <div
-          style={{
-            background: "#ffffff",
-            border: "1px solid #cbd5e1",
-            padding: "6px 14px",
-            borderRadius: "6px",
-            display: "flex",
-            alignItems: "baseline",
-            gap: "8px",
-          }}
-        >
-          <span style={{ fontSize: "0.72rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>
-            診断結果:
-          </span>
-          <span style={{ fontSize: "0.92rem", fontWeight: 700, color: "#991b1b" }}>
-            12問中 10問で大手チェーンが優先推薦（自社は選定外）
-          </span>
-        </div>
-      </div>
+        {/* カード本体：実物プレビューモック */}
+        <div className="deliv-card-body">
+          {/* 検証結果アラート */}
+          <div className="deliv-metric-strip strip-danger">
+            <span className="deliv-metric-label">12問の実地検証結果（見本例：あおば相続法務事務所）</span>
+            <strong className="deliv-metric-value">12問中 10問で大手チェーンが優先推薦（自社は選定外）</strong>
+          </div>
 
-      {/* 実測例 */}
-      <div style={{ padding: "22px" }}>
-        <div style={{ marginBottom: "14px" }}>
-          <span
-            style={{
-              display: "inline-block",
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              color: "#64748b",
-              fontFamily: "var(--font-mono, monospace)",
-              letterSpacing: "0.02em",
-              marginBottom: "4px",
-            }}
-          >
-            相談内容の例（見込み客がAIに聞いた相談）
-          </span>
-          <h4
-            style={{
-              margin: 0,
-              fontSize: "1.02rem",
-              fontWeight: 700,
-              color: "#0f172a",
-              lineHeight: 1.45,
-            }}
-          >
-            「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」
-          </h4>
-        </div>
-
-        {/* AIの回答対比 */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "12px",
-            marginBottom: "16px",
-          }}
-        >
-          {/* 優先選定 */}
-          <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "6px",
-              padding: "14px",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>AI推薦候補</span>
-              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#0f172a", background: "#f1f5f9", padding: "1px 6px", borderRadius: "3px" }}>大手優先</span>
+          {/* 実際のAI相談プレビュー */}
+          <div className="deliv-mock-card">
+            <span className="deliv-mock-label">見込み客がAIにする相談の例</span>
+            <div className="deliv-mock-query">
+              「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」
             </div>
-            <strong style={{ fontSize: "0.94rem", color: "#0f172a", display: "block", marginBottom: "4px" }}>
-              大手全国展開グループ
-            </strong>
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-              選定要因：一般的な知名度やネット上の露出量により、AIが機械的に選定。
-            </p>
+            <div className="deliv-mock-result-box">
+              <div className="deliv-mock-row">
+                <span className="deliv-tag-ai">AIの回答</span>
+                <span className="deliv-text-loss">大手全国展開グループを優先推薦（御社はデータ不足により選定外）</span>
+              </div>
+            </div>
           </div>
 
-          {/* 自社 */}
-          <div
-            style={{
-              background: "#f8fafc",
-              border: "1px solid #e2e8f0",
-              borderRadius: "6px",
-              padding: "14px",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-              <span style={{ fontSize: "0.68rem", color: "#64748b", fontFamily: "var(--font-mono, monospace)" }}>自社の現状</span>
-              <span style={{ fontSize: "0.68rem", fontWeight: 600, color: "#64748b", background: "#ffffff", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px" }}>選定外</span>
-            </div>
-            <strong style={{ fontSize: "0.94rem", color: "#475569", display: "block", marginBottom: "4px" }}>
-              あおば相続法務事務所
-            </strong>
-            <p style={{ margin: 0, fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-              選定外の要因：親身な個別対応の実績や特徴が、AI向けデータとして未整備のため。
-            </p>
+          {/* レポートに含まれる内容 */}
+          <div className="deliv-features-list">
+            <span className="deliv-features-heading">レポートで判明する3大分析</span>
+            <ul className="deliv-check-items">
+              <li>主要5大AI（ChatGPT / Gemini / Perplexity等）の回答状況</li>
+              <li>大手チェーンへ奪われている推薦客の損失分析</li>
+              <li>AIに選ばれるための自社専用の改善方針</li>
+            </ul>
           </div>
         </div>
 
-        {/* 改善提案 */}
-        <div
-          style={{
-            background: "#f8fafc",
-            border: "1px solid #0f172a",
-            borderRadius: "6px",
-            padding: "12px 16px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "12px",
-          }}
-        >
-          <div>
-            <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0f172a", fontFamily: "var(--font-mono, monospace)", display: "block", marginBottom: "2px" }}>
-              改善方針
-            </span>
-            <strong style={{ fontSize: "0.85rem", color: "#0f172a", fontWeight: 600 }}>
-              「親身な個別相談」の強みをAI向け公式データとして登録することで、推薦枠への定着が見込めます
-            </strong>
-          </div>
-          <Link
-            href="/result?sample=1"
-            style={{
-              fontSize: "0.78rem",
-              fontWeight: 700,
-              color: "#ffffff",
-              background: "#0f172a",
-              padding: "7px 14px",
-              borderRadius: "4px",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "4px",
-            }}
-          >
-            <span>診断レポートの実物を見る</span>
+        {/* カードフッター */}
+        <div className="deliv-card-foot">
+          <Link href="/result?sample=1" className="deliv-action-btn btn-navy">
+            <span>診断レポートの実例を見る</span>
             <ArrowIcon />
           </Link>
+          <div className="deliv-guarantee-note">
+            ✓ 社名入力で10秒 • ✓ 完全無料 • ✓ 登録不要
+          </div>
         </div>
       </div>
-    </figure>
+
+      {/* ============================================================= */}
+      {/* 成果物 02：自社専用 AI公式推薦データ（即日開設） */}
+      {/* ============================================================= */}
+      <div className="deliverable-showcase-card card-data">
+        {/* カードヘッダー */}
+        <div className="deliv-card-head">
+          <div className="deliv-badge-row">
+            <span className="deliv-step-badge badge-green">手に入るもの 02</span>
+            <span className="deliv-speed-badge">即日配備・作業ゼロ</span>
+          </div>
+          <h4 className="deliv-card-title">自社専用 AI公式推薦データ</h4>
+          <p className="deliv-card-desc">
+            今のホームページはいじらず、AI探索ロボットが最も読みやすい形式で御社の強みをネット上に自動公開。
+          </p>
+        </div>
+
+        {/* カード本体：実物プレビューモック */}
+        <div className="deliv-card-body">
+          {/* 配備ステータス */}
+          <div className="deliv-metric-strip strip-active">
+            <span className="deliv-metric-label">配備ステータス</span>
+            <strong className="deliv-metric-value">ネット上に常時公開中（主要AIが常時自動参照）</strong>
+          </div>
+
+          {/* AIが読み込む御社の確定データ */}
+          <div className="deliv-mock-card">
+            <span className="deliv-mock-label">AIが参照する御社の確定仕様（例）</span>
+            <div className="deliv-specs-grid">
+              <div className="deliv-spec-item">
+                <span className="spec-key">屋号・企業名</span>
+                <span className="spec-val">あおば相続法務事務所</span>
+              </div>
+              <div className="deliv-spec-item">
+                <span className="spec-key">AI向け公式データ</span>
+                <span className="spec-val">親身な個別対応・複雑トラブル専門・最短即日着手</span>
+              </div>
+              <div className="deliv-spec-item">
+                <span className="spec-key">安心の裏付け</span>
+                <span className="spec-val">国家資格・実務実績・相談実績などの公的データ</span>
+              </div>
+              <div className="deliv-spec-item">
+                <span className="spec-key">常時参照するAI</span>
+                <span className="spec-val">ChatGPT • Google Gemini • Perplexity • Claude • Copilot</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 配備によって得られる効果 */}
+          <div className="deliv-features-list">
+            <span className="deliv-features-heading">配備によって得られる3大成果</span>
+            <ul className="deliv-check-items">
+              <li>今の自社ホームページの改修・開設作業は一切不要</li>
+              <li>AI探索ロボットが御社の強みを正しく認識・インデックス</li>
+              <li>相談内容に合致した有力候補としてAI推薦枠へ堂々参入</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* カードフッター */}
+        <div className="deliv-card-foot">
+          <Link href="/ai/company/aoba-souzoku?sample=1" className="deliv-action-btn btn-green">
+            <span>公式推薦データの実例を見る</span>
+            <ArrowIcon />
+          </Link>
+          <div className="deliv-guarantee-note">
+            ✓ HP改修不要 • ✓ 1文字も作業なし • ✓ 全自動運用
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
