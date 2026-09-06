@@ -275,7 +275,7 @@ export function ResultClient() {
         </div>
       </section>
 
-      {/* エグゼクティブ要約：なぜ下位だったのか？ × 具体的にどう逆転・解決できるのか（処方箋） */}
+      {/* エグゼクティブ要約：なぜ下位だったのか？ × 具体的にどう逆転・解決できるのか（解決策） */}
       <ExecutiveDiagnosticSummary
         brandName={result.discovery.brandName}
         rank={result.marketPosition || 9}
@@ -418,7 +418,7 @@ export function ResultClient() {
     <div id="step-2" style={{ background: "var(--bg-surface, #f8fafc)", padding: "48px 0", borderTop: "1px solid var(--border-subtle, #e2e8f0)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", margin: "40px 0" }}>
       <div className="shell">
         <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 36px" }}>
-          <span className="step-badge">【ステップ 2】処方箋・即効アクション</span>
+          <span className="step-badge">【ステップ 2】今すぐできる解決アクション</span>
           <h2 style={{ fontSize: "1.8rem", margin: "12px 0 8px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>
             自社サイト改修ゼロで、AI公式推薦データを配備する
           </h2>

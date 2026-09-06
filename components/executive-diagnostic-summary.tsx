@@ -205,7 +205,7 @@ export function ExecutiveDiagnosticSummary({
                 Action
               </span>
               <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>
-                【解決の処方箋】社長の作業は「社名を入力しただけ」。あとは自走システムで公式窓口を即座に配備
+                【具体的な解決策】社長の作業は「社名を入力しただけ」。あとは自走システムで公式窓口を即座に配備
               </strong>
             </div>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary, #475569)", fontFamily: "var(--font-mono, monospace)", background: "var(--bg-surface, #f1f5f9)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "3px 10px", borderRadius: "4px" }}>
