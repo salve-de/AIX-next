@@ -216,7 +216,7 @@ export async function crawlCompanySite(input: string, maxPages = 24) {
     visited.add(next);
     const requestedUrl = new URL(next);
     const requestedRobots = await robotsFor(requestedUrl, robotsCache, allowedOrigin);
-    if (requestedRobots && !isAllowedByRobots(requestedRobots, requestedUrl.pathname, "aixnextbot")) {
+    if (requestedRobots && !isAllowedByRobots(requestedRobots, requestedUrl.pathname, "rovanbot")) {
       pagesBlockedByRobots += 1;
       continue;
     }
@@ -226,7 +226,7 @@ export async function crawlCompanySite(input: string, maxPages = 24) {
       if (!/html|xhtml/i.test(type)) continue;
       const effectiveUrl = new URL(response.url || requestedUrl.toString());
       const effectiveRobots = await robotsFor(effectiveUrl, robotsCache, allowedOrigin);
-      if (effectiveRobots && !isAllowedByRobots(effectiveRobots, effectiveUrl.pathname, "aixnextbot")) {
+      if (effectiveRobots && !isAllowedByRobots(effectiveRobots, effectiveUrl.pathname, "rovanbot")) {
         pagesBlockedByRobots += 1;
         continue;
       }

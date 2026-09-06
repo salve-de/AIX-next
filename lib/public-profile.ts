@@ -1,3 +1,4 @@
+import { currentProfileJson, currentProfileMarkdown, currentProfileTitle } from "./brand-compatibility";
 
 import type {
   PublicProfile,
@@ -13,7 +14,7 @@ const MAX_LIST_ITEMS = 8;
 const MAX_LIST_ITEM_LENGTH = 180;
 
 /**
- * Text that belongs to the private measurement layer rather than an AIX
+ * Text that belongs to the private measurement layer rather than an Rovan
  * public record. The source fields are discovery summaries, but keeping this
  * guard here prevents accidental publication when a future prompt changes
  * the discovery wording.
@@ -157,7 +158,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
   const market = publicText(discovery.market, MAX_LIST_ITEM_LENGTH);
   const targetCustomers = uniquePublicList(Array.isArray(discovery.targetCustomers) ? discovery.targetCustomers : []);
   const useCases = uniquePublicList(Array.isArray(discovery.useCases) ? discovery.useCases : []);
-  const title = `${brandName} | AIX公開情報`;
+  const title = `${brandName} | Rovan公開情報`;
   const facts: PublicProfileDraft["facts"] = [];
 
   const addFact = (label: string, value: string) => {
@@ -213,7 +214,7 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
 
   const json = JSON.stringify({
     recordVersion: "1",
-    publisher: "AIX",
+    publisher: "Rovan",
     subject: {
       name: brandName,
       officialUrl: targetUrl,
@@ -245,11 +246,12 @@ export function buildPublicProfileDraft(input: ScanResult | ScanRecord, generate
 
 /** Removes bearer credentials and internal source identifiers from responses. */
 export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
+  const title = currentProfileTitle(record.title, record.brandName);
   return {
     id: record.id,
     slug: record.slug,
     status: record.status,
-    title: record.title,
+    title,
     brandName: record.brandName,
     targetUrl: record.targetUrl,
     summary: record.summary,
@@ -259,8 +261,8 @@ export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
     facts: record.facts.map((fact) => ({ ...fact })),
     sourcePages: record.sourcePages.map((page) => ({ ...page })),
     structuredData: record.structuredData,
-    markdown: record.markdown,
-    json: record.json,
+    markdown: currentProfileMarkdown(record.markdown, record.title, title),
+    json: currentProfileJson(record.json),
     createdAt: record.createdAt,
     updatedAt: record.updatedAt,
     expiresAt: record.expiresAt,
@@ -288,7 +290,7 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   const brandName = publicText(input.brandName, 180);
   if (!brandName) throw new Error("会社名または屋号を入力してください。");
 
-  // 自社サイトがない場合、このAIX参照インデックスそのものがWeb参照拠点URLとなる
+  // 自社サイトがない場合、このRovan参照インデックスそのものがWeb参照拠点URLとなる
   const slug = brandName.toLowerCase().replace(/[^a-z0-9\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf-]+/gi, "-").replace(/^-+|-+$/g, "") || "company";
   const targetUrl = `${env.siteUrl}/ai/company/${encodeURIComponent(slug)}`;
   const title = `${brandName} 公開情報参照インデックス`;
@@ -316,7 +318,7 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   }
 
   const sourcePages: PublicProfileDraft["sourcePages"] = [
-    { url: targetUrl, title: `${brandName} AIX登録公式ナレッジ台帳`, description: "AI巡回・推論用公式データ台帳" },
+    { url: targetUrl, title: `${brandName} Rovan登録公式ナレッジ台帳`, description: "AI巡回・推論用公式データ台帳" },
   ];
 
   const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();
@@ -335,7 +337,7 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
 
   const json = JSON.stringify({
     recordVersion: "1",
-    publisher: "AIX",
+    publisher: "Rovan",
     subject: {
       name: brandName,
       officialUrl: targetUrl,

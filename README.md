@@ -1,4 +1,6 @@
-# AIX Next
+# Rovan（ロヴァン）
+
+正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。名称と移行時の互換性は [改名記録](docs/ROVAN_BRAND_MIGRATION.md) を参照してください。
 
 > **生成AI時代の推薦獲得・競合分析システム（ChatGPT / Perplexity / Gemini 対策）**
 
@@ -22,7 +24,7 @@
 ### 3. 管理者も完全放置（無人自販機アーキテクチャ）
 * **受託・コンサル代行の絶対禁止**:
   * 「他社サイトへの掲載申請代行」「個別口コミの同意取り」「ECの在庫同期裏方修正」といった**人間が裏で汗をかく労働集約型の代行業は1ミリも組み込んではならない**。
-  * AIXは「完全自動の自動販売機（SaaS）」である。他社サイトへ頭を下げて申請せず、AIX自体が客観的参照インデックスとなり、AI探索ロボットに直接読ませる。
+  * Rovanは「完全自動の自動販売機（SaaS）」である。他社サイトへ頭を下げて申請せず、Rovan自体が客観的参照インデックスとなり、AI探索ロボットに直接読ませる。
 * **4大法的境界線**:
   1. Google Maps評価の初版除外（規約違反リスクの切除）
   2. 取扱項目の客観事実（Fact）限定（著作権リスク・許諾作業の切除）
@@ -39,7 +41,7 @@
 
 ---
 
-AIX Next is an AI buyer-consideration improvement product for Japanese B2B companies.
+Rovan is an AI buyer-consideration improvement product for Japanese B2B companies.
 
 It starts with a company, service, product name, or URL and answers the commercial question that matters before a buyer contacts sales:
 
@@ -54,7 +56,7 @@ FIND where the company is excluded
 → PROVE what moved under comparable remeasurement
 ```
 
-AIX does not treat Buyer Prompt counts as customers or revenue and does not claim a universal ChatGPT rank.
+Rovan does not treat Buyer Prompt counts as customers or revenue and does not claim a universal ChatGPT rank.
 
 ## Product flow
 
@@ -123,7 +125,7 @@ Company / product name or URL
 - on-demand paid Change Pack endpoint;
 - automatic Change Pack generation after paid Watch measurement when provider configuration is available;
 - AI-readable public-information draft generated from crawled pages, with `llms.txt` and JSON-LD downloads;
-- optional AIX-hosted public company profile with preview, explicit publish/revoke, expiry, official-source links, HTML/JSON/Markdown output and a dedicated sitemap;
+- optional Rovan-hosted public company profile with preview, explicit publish/revoke, expiry, official-source links, HTML/JSON/Markdown output and a dedicated sitemap;
 - market relation map, purchase-question demand proxy and page-level content-quality checks derived from the same public scan;
 - AI visibility audit that checks crawler access, indexability, sitemap/canonical signals, page clarity, buyer facts, public proof and measurement completeness;
 - stale Change Pack invalidation after Evidence updates;
@@ -132,11 +134,11 @@ Company / product name or URL
 - signed Stripe lifecycle webhook;
 - Supabase persistence with local in-memory fallback.
 
-Change Packs are drafts for human approval. AIX does not directly publish to the customer site.
+Change Packs are drafts for human approval. Rovan does not directly publish to the customer site.
 
 ## Measurement boundary
 
-AIX reports an explicit observation panel. It does not claim an absolute position across every private AI conversation.
+Rovan reports an explicit observation panel. It does not claim an absolute position across every private AI conversation.
 
 Free Scan:
 
@@ -163,8 +165,8 @@ Failed and unconfigured provider calls reduce Measurement Completeness. They are
 The active implementation is on `feature/positioning-autopilot`, not `main`.
 
 ```bash
-git clone https://github.com/salve-de/AIX-next.git
-cd AIX-next
+git clone https://github.com/salve-de/AIX-next.git rovan
+cd rovan
 git checkout feature/positioning-autopilot
 npm ci
 cp .env.example .env.local

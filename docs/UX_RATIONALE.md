@@ -1,4 +1,4 @@
-# AIX Next — UX Rationale
+# Rovan — UX Rationale
 
 Every screen must reduce one of five uncertainties:
 
@@ -99,7 +99,7 @@ The final stated objective is not a higher AI score. It is more chances to enter
 
 ### Buyer journey
 
-Show where AIX sits in the commercial process:
+Show where Rovan sits in the commercial process:
 
 ```text
 Buyer asks AI
@@ -107,7 +107,7 @@ Buyer asks AI
 → deeper evaluation / website / sales contact
 ```
 
-AIX observes the shortlist stage that ordinary post-visit analytics may not reveal when the buyer never visits a vendor.
+Rovan observes the shortlist stage that ordinary post-visit analytics may not reveal when the buyer never visits a vendor.
 
 Do not label an excluded Buyer Prompt as a lost customer.
 
@@ -212,7 +212,7 @@ The first questions are:
 - Which citation sources changed?
 - Which evidence gap remains most important?
 
-AIX activity logs are secondary.
+Rovan activity logs are secondary.
 
 ### Evidence input
 
@@ -242,7 +242,7 @@ It turns the Action into:
 The UX must make three boundaries obvious:
 - only public or company-asserted facts are used;
 - unverified figures are not invented;
-- AIX does not publish to the customer site automatically.
+- Rovan does not publish to the customer site automatically.
 
 A fictional Change Pack is visible in the public Watch sample so the paid value can be understood before purchase.
 

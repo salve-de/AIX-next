@@ -21,6 +21,6 @@ export default function CommercePage() {
   return <MarketingShell eyebrow="COMMERCIAL DISCLOSURE" title="特定商取引法に基づく表記。" lead="有料Watchの販売者、価格、提供内容、更新、解約、返金条件を表示します。">
     {!sellerReady() ? <p className="document-note">販売開始前設定が未完了です。SELLER_REPRESENTATIVE、SELLER_ADDRESS、SELLER_EMAILを本番環境へ設定するまで決済を一般公開しないでください。</p> : null}
     <dl className="definition-list">{rows.map(([label, content]) => <div key={label}><dt>{label}</dt><dd>{content}</dd></div>)}</dl>
-    <h2>サービスの性質</h2><p>AIX Nextは、外部AIの回答を観測し、競合との差を分析し、改善候補と人間確認用Change Packを生成して再測定するサービスです。特定の順位、推薦、Citation、Buyer Promptの候補入り、問い合わせ、契約、売上を保証しません。Change Packは自動公開されません。</p>
+    <h2>サービスの性質</h2><p>Rovanは、外部AIの回答を観測し、競合との差を分析し、改善候補と人間確認用Change Packを生成して再測定するサービスです。特定の順位、推薦、Citation、Buyer Promptの候補入り、問い合わせ、契約、売上を保証しません。Change Packは自動公開されません。</p>
   </MarketingShell>;
 }

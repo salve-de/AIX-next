@@ -1,5 +1,7 @@
 "use client";
 
+import { siteUrl } from "@/lib/site";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -382,7 +384,7 @@ export function WatchClient() {
                 THIS WEEK / 自律防衛レポート
               </span>
               <h3 style={{ margin: "8px 0 0", fontSize: "1.25rem", color: "#0f172a" }}>
-                今週、競合が動き、AIXが裏側で自動対処を完了しました
+                今週、競合が動き、Rovanが裏側で自動対処を完了しました
               </h3>
             </div>
             <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#16a34a", background: "#f0fdf4", border: "1px solid #bbf7d0", padding: "4px 10px", borderRadius: "6px" }}>
@@ -402,7 +404,7 @@ export function WatchClient() {
             </div>
 
             <div style={{ background: "#f0f9ff", padding: "16px", borderRadius: "8px", border: "1px solid #bae6fd" }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. AIXの自動対処</span>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. Rovanの自動対処</span>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "#0369a1", margin: "6px 0 4px" }}>
                 {watch.autoActions?.[0]?.summary || `自社サイトより「迅速な初期相談体制」の確認済み事実を抽出し台帳へ自動反映`}
               </strong>
@@ -482,9 +484,9 @@ export function WatchClient() {
               </p>
             </div>
             <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0f172a" }}>検知された競合リスク ＆ 今後AIXが追跡するもの</span>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0f172a" }}>検知された競合リスク ＆ 今後Rovanが追跡するもの</span>
               <ul style={{ margin: "6px 0 0", paddingLeft: "18px", fontSize: "0.8rem", color: "#334155", lineHeight: 1.6 }}>
-                {(watch.monthlyReport?.topRisks || ["競合による特急対応訴求の強化を検知（AIXが迎撃対応済）"]).map((risk, i) => (
+                {(watch.monthlyReport?.topRisks || ["競合による特急対応訴求の強化を検知（Rovanが迎撃対応済）"]).map((risk, i) => (
                   <li key={`risk-${i}`}>{risk}</li>
                 ))}
                 {(watch.monthlyReport?.upcomingTracking || ["同一プロンプト群のAI推薦率を次週も定点再測定"]).map((item, i) => (
@@ -583,8 +585,8 @@ export function WatchClient() {
               className="button button-primary"
               style={{ fontSize: "0.75rem", padding: "6px 12px", background: "#0284c7" }}
               onClick={() => {
-                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI参照インデックスで客観強みを構造化する「AIX」を活用しています。\n#AIX #生成AI #中小企業DX\n`);
-                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}`);
+                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI参照インデックスで客観強みを構造化する「Rovan」を活用しています。\n#Rovan #生成AI #中小企業DX\n`);
+                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : siteUrl}`);
                 if (typeof window !== "undefined") {
                   window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
                 }
@@ -690,9 +692,9 @@ export function WatchClient() {
       <section className="watch-section watch-evidence">
         <div className="shell">
           <div className="section-heading-simple">
-            <p className="overline">AIXによる自動情報補強</p>
+            <p className="overline">Rovanによる自動情報補強</p>
             <h2>競合に負けている質問を、<br />次回取り返すための情報補強。</h2>
-            <p>AIXが自社公式サイトから以下の重要事実を自動収集・照合し、次回巡回時にAI参照インデックスへ反映して推薦枠の奪還を図ります（御社の作業は不要です）。</p>
+            <p>Rovanが自社公式サイトから以下の重要事実を自動収集・照合し、次回巡回時にAI参照インデックスへ反映して推薦枠の奪還を図ります（御社の作業は不要です）。</p>
           </div>
           
           <div className="watch-input-grid">
@@ -707,13 +709,13 @@ export function WatchClient() {
                   </div>
                   {answer ? (
                     <div className="saved-answer-box">
-                      <span className="saved-tag">AIX自動反映済</span>
+                      <span className="saved-tag">Rovan自動反映済</span>
                       <p>{answer.value}</p>
                     </div>
                   ) : (
                     <div className="auto-inspect-box" style={{ padding: "14px", background: "#f8fafc", borderRadius: "8px", border: "1px dashed #cbd5e1" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "6px" }}>
-                        <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0369a1", background: "#e0f2fe", padding: "2px 6px", borderRadius: "3px" }}>AIXが次回自動確認</span>
+                        <span style={{ fontSize: "0.68rem", fontWeight: 700, color: "#0369a1", background: "#e0f2fe", padding: "2px 6px", borderRadius: "3px" }}>Rovanが次回自動確認</span>
                         <span style={{ fontSize: "0.75rem", color: "#64748b" }}>御社の作業は不要です</span>
                       </div>
                       <p style={{ margin: 0, fontSize: "0.76rem", color: "#475569", lineHeight: 1.5 }}>

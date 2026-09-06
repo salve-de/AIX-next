@@ -7,18 +7,18 @@ User-agent: *
 Disallow: /private/
 Allow: /private/public/
 
-User-agent: AIXNextBot
+User-agent: RovanBot
 Disallow: /blocked/
 Allow: /blocked/ok/
 `;
 
-test("specific AIX group overrides wildcard group", () => {
-  assert.equal(isAllowedByRobots(source, "/private/page", "aixnextbot"), true);
-  assert.equal(isAllowedByRobots(source, "/blocked/page", "aixnextbot"), false);
+test("specific Rovan group overrides wildcard group", () => {
+  assert.equal(isAllowedByRobots(source, "/private/page", "rovanbot"), true);
+  assert.equal(isAllowedByRobots(source, "/blocked/page", "rovanbot"), false);
 });
 
 test("longest matching allow rule wins", () => {
-  assert.equal(isAllowedByRobots(source, "/blocked/ok/page", "aixnextbot"), true);
+  assert.equal(isAllowedByRobots(source, "/blocked/ok/page", "rovanbot"), true);
 });
 
 test("wildcard group applies to other agents", () => {

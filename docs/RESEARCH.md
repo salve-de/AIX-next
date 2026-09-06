@@ -1,23 +1,23 @@
-# AIX Next — Research Basis
+# Rovan — Research Basis
 
 Research date: 2026-09-02
 
-This document records the external evidence used to make the clean-room product decisions. Product design is not based on copying a prior AIX interface.
+This document records the external evidence used to make the clean-room product decisions. Product design is not based on copying a prior Rovan interface.
 
 ## 1. AI-assisted B2B buying is a real decision surface
 
 Official and primary research used:
 
-- Gartner, B2B buyer preference for rep-free buying and use of generative AI:  
+- Gartner, B2B buyer preference for rep-free buying and use of generative AI:\
   https://www.gartner.com/en/newsroom/press-releases/2026-03-09-gartner-sales-survey-finds-67-percent-of-b2b-buyers-prefer-a-rep-free-experience
-- Forrester, State of Business Buying:  
+- Forrester, State of Business Buying:\
   https://www.forrester.com/press-newsroom/forrester-2026-the-state-of-business-buying/
-- HubSpot, AI-search use in CRM evaluation:  
+- HubSpot, AI-search use in CRM evaluation:\
   https://www.hubspot.com/company-news/aeo-data-buyers-using-ai-search-more-likely-to-purchase
 
 Product implication:
 
-AIX Next is positioned around the pre-sales shortlist event, not around technical SEO terminology. The headline asks whether the company enters an AI-generated set of vendors.
+Rovan is positioned around the pre-sales shortlist event, not around technical SEO terminology. The headline asks whether the company enters an AI-generated set of vendors.
 
 ## 2. Measurement alone is already crowded
 
@@ -35,7 +35,7 @@ Official product pages reviewed:
 
 Product implication:
 
-AIX Next does not differentiate by displaying mentions, adding another 0–100 score, or supporting the largest number of AI surfaces. The initial wedge is:
+Rovan does not differentiate by displaying mentions, adding another 0–100 score, or supporting the largest number of AI surfaces. The initial wedge is:
 
 1. one URL instead of manual Prompt/competitor setup;
 2. Buyer Prompt-level shortlist losses;
@@ -47,18 +47,18 @@ AIX Next does not differentiate by displaying mentions, adding another 0–100 s
 
 Primary platform guidance reviewed:
 
-- OpenAI Web Search tool:  
+- OpenAI Web Search tool:\
   https://developers.openai.com/api/docs/guides/tools-web-search
-- Google Gemini grounding with Google Search:  
+- Google Gemini grounding with Google Search:\
   https://ai.google.dev/gemini-api/docs/google-search
-- Perplexity Sonar API:  
+- Perplexity Sonar API:\
   https://docs.perplexity.ai/guides/getting-started
-- Bing Webmaster Tools AI Performance:  
+- Bing Webmaster Tools AI Performance:\
   https://www.bing.com/webmasters/help/ai-performance-9f8e7d6c
 
 Product implication:
 
-- The UI says “AIX observation panel,” not universal ChatGPT rank.
+- The UI says “Rovan observation panel,” not universal ChatGPT rank.
 - Failed/unconfigured calls reduce Measurement Completeness and do not count as brand losses.
 - Exact Prompt, surface, model, time, raw response, Citation and repetition are retained.
 - One before/after movement is not presented as causal proof.
@@ -67,18 +67,18 @@ Product implication:
 
 Primary search documentation reviewed:
 
-- Google Search, AI features and website guidance:  
+- Google Search, AI features and website guidance:\
   https://developers.google.com/search/docs/appearance/ai-features
-- Google Search spam policies:  
+- Google Search spam policies:\
   https://developers.google.com/search/docs/essentials/spam-policies
-- OpenAI publisher and developer FAQ / OAI-SearchBot:  
+- OpenAI publisher and developer FAQ / OAI-SearchBot:\
   https://help.openai.com/en/articles/12627856-publishers-and-developers-faq
 
 Product implication:
 
-AIX Next does not sell `llms.txt`, Schema, a public AIX listing, or crawler access as a guaranteed rank increase. AIX now exposes its own public service description through JSON-LD, a small machine-readable index and `llms.txt`, and can create the same kind of public-information draft for a measured company inside a human-reviewed Change Pack. These are accessibility aids, not ranking controls. Owned evidence, third-party evidence, reputation, product fit and freshness are separate classes.
+Rovan does not sell `llms.txt`, Schema, a public Rovan listing, or crawler access as a guaranteed rank increase. Rovan now exposes its own public service description through JSON-LD, a small machine-readable index and `llms.txt`, and can create the same kind of public-information draft for a measured company inside a human-reviewed Change Pack. These are accessibility aids, not ranking controls. Owned evidence, third-party evidence, reputation, product fit and freshness are separate classes.
 
-AIX Next also avoids:
+Rovan also avoids:
 
 - cloaking;
 - AI-only factual claims;
@@ -90,9 +90,9 @@ AIX Next also avoids:
 
 Research and benchmarks reviewed:
 
-- ChartMogul / ProductLed SaaS Conversion Report:  
+- ChartMogul / ProductLed SaaS Conversion Report:\
   https://chartmogul.com/reports/saas-conversion-report/
-- Forrester business-buying research:  
+- Forrester business-buying research:\
   https://www.forrester.com/press-newsroom/forrester-2026-the-state-of-business-buying/
 
 Product implication:
@@ -106,7 +106,7 @@ ungated URL scan
 → paid continuation
 ```
 
-AIX Next does not ask for a sales call, email or card before showing a company-specific result. The paid CTA is continuous monitoring, not a one-time PDF unlock.
+Rovan does not ask for a sales call, email or card before showing a company-specific result. The paid CTA is continuous monitoring, not a one-time PDF unlock.
 
 ## 6. Official provider APIs are the canonical MVP sources
 
@@ -124,13 +124,13 @@ The MVP uses official APIs for the canonical measurement panel. Consumer-interfa
 
 Primary guidance reviewed:
 
-- GitHub App permissions:  
+- GitHub App permissions:\
   https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/choosing-permissions-for-a-github-app
-- WordPress Application Passwords / REST authentication:  
+- WordPress Application Passwords / REST authentication:\
   https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/
-- Japan Personal Information Protection Commission FAQ:  
+- Japan Personal Information Protection Commission FAQ:\
   https://www.ppc.go.jp/all_faq_index/faq2-q2-6/
-- Agency for Cultural Affairs, AI and copyright:  
+- Agency for Cultural Affairs, AI and copyright:\
   https://www.bunka.go.jp/seisaku/chosakuken/aiandcopyright.html
 
 Product implication:
@@ -163,7 +163,7 @@ Do not build as the launch wedge:
 
 The broader review is recorded in [`docs/AI_VISIBILITY_RESEARCH_2026-09-03.md`](AI_VISIBILITY_RESEARCH_2026-09-03.md). The conclusion is narrower than the marketing promise often attached to “AEO/GEO”: there is no public switch that makes every AI recommend a company. The controllable work is to keep important pages crawlable and indexable, make buyer-relevant facts clear and useful, support claims with legitimate evidence, and measure citations and referral outcomes after publication.
 
-The business-outcome research is recorded in [`docs/REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md`](REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md). The current product decision is documented in [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md): AIX does not execute changes on customer sites. It sells an AISEO and sales-improvement advisory outcome, with an optional, owner-consented AIX public-profile experiment only if its effect is measured first.
+The business-outcome research is recorded in [`docs/REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md`](REVENUE_AUTOPILOT_RESEARCH_2026-09-03.md). The current product decision is documented in [`docs/AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md`](AISEO_ADVISOR_NO_EXECUTION_2026-09-03.md): Rovan does not execute changes on customer sites. It sells an AISEO and sales-improvement advisory outcome, with an optional, owner-consented Rovan public-profile experiment only if its effect is measured first.
 
 This review adds a non-scoring `visibilityAudit` to each live Scan and Watch result. It checks OAI-SearchBot, Googlebot, Bingbot, PerplexityBot and Claude-User access, noindex, sitemap, canonical signals, JSON-LD presence, page basics, buyer facts, public proof and measurement completeness. It does not treat `llms.txt`, structured data, a citation count or a before/after movement as a ranking guarantee. Google explicitly says that `llms.txt` is not used for its generative search, and OpenAI distinguishes OAI-SearchBot access from GPTBot training controls.
 

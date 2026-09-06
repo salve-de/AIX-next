@@ -346,7 +346,7 @@ export type ScanRecord = {
 };
 
 /**
- * AIX's optional public company record. This is intentionally a small,
+ * Rovan's optional public company record. This is intentionally a small,
  * public-information-only surface. It is not a copy of a ScanResult: prompt
  * answers, provider details, competitors, raw crawl text, billing data, and
  * company-entered evidence stay outside this type.

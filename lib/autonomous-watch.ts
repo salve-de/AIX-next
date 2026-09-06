@@ -181,7 +181,7 @@ export function evaluateAutoActionImpact(
 
 /**
  * 月次経営防衛レポート（Monthly Value Report）を生成する（Issue 4 セクション 6）
- * ※ ユーザーに作業を要求するCTAは置かず、AIXが自動防衛した実績を1目で証明
+ * ※ ユーザーに作業を要求するCTAは置かず、Rovanが自動防衛した実績を1目で証明
  */
 export function buildMonthlyValueReport(options: {
   latest: { observations?: Array<{ promptId: string; ownRecommended?: boolean }>; citations?: Array<{ domain: string }> };
@@ -218,7 +218,7 @@ export function buildMonthlyValueReport(options: {
     : "主要AI推薦枠の現状水準を安定記録（競合の侵食なし）";
 
   const topRisks = competitorEvents.slice(0, 2).map((evt) =>
-    `競合「${evt.competitorName}」が${evt.dimensions.join("・")}の訴求を強化（AIXが継続追跡中）`
+    `競合「${evt.competitorName}」が${evt.dimensions.join("・")}の訴求を強化（Rovanが継続追跡中）`
   );
   if (!topRisks.length) {
     topRisks.push("主要競合によるAIシェア急変の兆候は現在検出されていません");

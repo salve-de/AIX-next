@@ -1,3 +1,4 @@
+import { seller } from "@/lib/legal";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -212,10 +213,10 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
       <div className="shell header-inner">
         <Link className="brand" href="/">
           <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
-          <span><strong>AIX</strong><small>公開情報参照インデックス</small></span>
+          <span><strong>Rovan</strong><small>公開情報参照インデックス</small></span>
         </Link>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <Link className="text-button" href="/">自社サイトをAIXで診断する <ArrowIcon /></Link>
+          <Link className="text-button" href="/">自社サイトをRovanで診断する <ArrowIcon /></Link>
         </div>
       </div>
     </header>
@@ -580,7 +581,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
     {/* フッター */}
     <footer className="public-company-footer">
       <div className="shell">
-        <p>AIX 公開情報参照インデックス · 登録番号: {knowledge.registryId} · 最終更新: {dateLabel(profile.updatedAt)}</p>
+        <p>Rovan 公開情報参照インデックス · 登録番号: {knowledge.registryId} · 最終更新: {dateLabel(profile.updatedAt)}</p>
         <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
           <span style={{ fontSize: "0.75rem", color: "#475569" }}>
             主要生成AI（ChatGPT / Perplexity / Gemini等）向け構造化インデックス稼働中
@@ -595,10 +596,10 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
         <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
           【免責事項および掲載照会・非公開申請】本ページは本人公認の公式台帳ではなく、確認時点（最終更新日）における公式サイトの公開事実に基づき、AIクローラー向けに客観的事実（Fact）を整理した参照用スナップショットです。手動による編集・改ざんは一切行われません。また、特定の生成AIによる推薦を保証するものではありません。掲載内容の確認・非公開（掲載停止）のご要望、最新情報への更新照会は{" "}
           <a
-            href={`mailto:info@aix.jp?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公開情報参照ページについて`)}`}
+            href={seller.email ? `mailto:${seller.email}?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公開情報参照ページについて`)}` : "/support"}
             style={{ color: "#0284c7", textDecoration: "underline" }}
           >
-            公式窓口（info@aix.jp）
+            お問い合わせ窓口{seller.email ? `（${seller.email}）` : ""}
           </a>
           {" "}までご連絡ください。速やかに確認・対応いたします。
         </p>

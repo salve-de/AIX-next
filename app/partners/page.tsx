@@ -23,7 +23,7 @@ export default function PartnersPage() {
             </h1>
             <p className="partners-lead">
               ChatGPTやPerplexityの普及により、従来のGoogle SEOは効力を失いつつあります。
-              AIX認定パートナー制度は、貴社のクライアントへ「自社サイト改修ゼロのAI公式推薦インフラ」を提供し、
+              Rovan認定パートナー制度は、貴社のクライアントへ「自社サイト改修ゼロのAI公式推薦インフラ」を提供し、
               月額費用の30%を生涯にわたり貴社へ還元する公認レベニューシェアプログラムです。
             </p>
 
@@ -69,7 +69,7 @@ export default function PartnersPage() {
               <div className="benefit-card-badge">工数ゼロ</div>
               <h3>貴社の実働・改修工事ゼロ</h3>
               <p>
-                「AI公式推薦パス」の開設、毎週のAI回答巡回、データ更新はすべてAIXシステムが完全放置で自走します。
+                「AI公式推薦パス」の開設、毎週のAI回答巡回、データ更新はすべてRovanシステムが完全放置で自走します。
                 貴社のエンジニアやデザイナーが追加の制作作業に追われることは一切ありません。
               </p>
             </div>
@@ -113,7 +113,7 @@ export default function PartnersPage() {
           <div className="apply-container">
             <div className="apply-head">
               <span className="overline">REGISTRATION</span>
-              <h2>AIX 認定パートナーへのお申し込み</h2>
+              <h2>Rovan 認定パートナーへのお申し込み</h2>
               <p>以下のフォームより申請いただくと、専任担当より専用招待コードおよび管理ポータルのご案内を即日お送りいたします。</p>
             </div>
 

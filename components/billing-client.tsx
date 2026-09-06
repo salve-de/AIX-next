@@ -45,7 +45,7 @@ export function BillingClient() {
       <button className="button button-dark" type="submit" disabled={busy || !token || !watch?.paid}>{busy ? "準備中…" : watch?.paid ? <>契約・決済管理画面を開く <ArrowIcon /></> : "有料契約後にご利用いただけます"}</button>
       {message ? <p className="form-error" role="status">{message}</p> : null}
     </form>
-    <p className="billing-note">クレジットカード情報はすべて世界標準の決済機関（Stripe）が直接暗号化管理し、AIXでは保持しません。</p>
+    <p className="billing-note">クレジットカード情報はすべて世界標準の決済機関（Stripe）が直接暗号化管理し、Rovanでは保持しません。</p>
     {watch?.paid ? (
       <div style={{ marginTop: "32px", textAlign: "left" }}>
         <ExecutiveReferralCard

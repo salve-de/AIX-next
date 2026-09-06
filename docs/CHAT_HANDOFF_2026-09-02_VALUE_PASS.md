@@ -1,4 +1,4 @@
-# AIX Next — Value Proposition / Product Loop Handoff (2026-09-02)
+# Rovan — Value Proposition / Product Loop Handoff (2026-09-02)
 
 ## This file supersedes the earlier 2026-09-02 handoff for product positioning and current implementation state
 
@@ -30,7 +30,7 @@ Do **not** switch to `main` for current product work. The active implementation 
 
 The most important product decision from the value-proposition research is:
 
-> AIX is not primarily a dashboard for measuring AI rank.
+> Rovan is not primarily a dashboard for measuring AI rank.
 
 The external job is:
 
@@ -57,7 +57,7 @@ Strict boundary:
 - a lost Buyer Prompt is **not** a lost customer;
 - prompt counts must never be converted into leads or revenue without first-party attribution evidence;
 - before/after movement does not prove causality;
-- AIX does not guarantee rank, recommendation, Citation, inquiry, contract or revenue.
+- Rovan does not guarantee rank, recommendation, Citation, inquiry, contract or revenue.
 
 ---
 
@@ -77,7 +77,7 @@ It includes:
 
 - G2 2026 Answer Economy research: 51% of surveyed B2B software buyers said they start research with an AI chatbot more often than Google; 71% use AI chatbots somewhere in research; GenAI chatbots were the leading reported shortlist influence in that study.
 - Gartner May 2026: 45% of surveyed B2B buyers used GenAI, primarily for vendor/product information; 69% preferred validating AI-generated insights with sales reps.
-- McKinsey 2026 Global B2B Pulse: buyers use many channels across the journey, so AIX must improve real, consistent evidence rather than optimize for AI in isolation.
+- McKinsey 2026 Global B2B Pulse: buyers use many channels across the journey, so Rovan must improve real, consistent evidence rather than optimize for AI in isolation.
 
 These percentages are market evidence, not customer-specific ROI assumptions.
 
@@ -98,7 +98,7 @@ Relevant products/adjacent categories include:
 - Klue;
 - Crayon.
 
-The category already proves there is willingness to pay for AI visibility / prompt tracking / competitive monitoring. AIX should not try to win on prompt volume alone. The stronger differentiation is:
+The category already proves there is willingness to pay for AI visibility / prompt tracking / competitive monitoring. Rovan should not try to win on prompt volume alone. The stronger differentiation is:
 
 ```text
 lost buying question
@@ -329,7 +329,7 @@ Current protections include:
 - public `factsUsed` are retained only when `sourceUrl` is one of the actual crawled page URLs;
 - invalid `factsUsed` are dropped;
 - every pack gets a mandatory publish check to compare facts/numbers with the original source;
-- AIX does not automatically publish Change Pack content.
+- Rovan does not automatically publish Change Pack content.
 
 Remaining limitation:
 
@@ -500,7 +500,7 @@ Keep these separate from Buyer Prompt counts.
 
 ### P1 — prompt business-intent weighting
 
-AIX already has prompt importance and clusters. High-intent comparison/vendor-selection questions should eventually matter more than generic mentions. Do not simply maximize raw prompt count.
+Rovan already has prompt importance and clusters. High-intent comparison/vendor-selection questions should eventually matter more than generic mentions. Do not simply maximize raw prompt count.
 
 ### P1 — claim-level Change Pack verifier
 

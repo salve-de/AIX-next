@@ -1,16 +1,37 @@
 {
-  "name": "AIX",
+  "name": "Rovan",
   "description": "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロでChatGPTなどの主要AIに正確に認識・推薦される環境を整えるシステム。",
   "language": "ja-JP",
   "url": "/",
   "publicPages": [
-    { "path": "/", "purpose": "サービス概要と結果の例" },
-    { "path": "/methodology", "purpose": "測定条件と結果の読み方" },
-    { "path": "/pricing", "purpose": "料金と利用範囲" },
-    { "path": "/support", "purpose": "問い合わせ窓口" },
-    { "path": "/privacy", "purpose": "情報の取り扱い" },
-    { "path": "/terms", "purpose": "利用条件" },
-    { "path": "/commerce", "purpose": "販売条件" }
+    {
+      "path": "/",
+      "purpose": "サービス概要と結果の例"
+    },
+    {
+      "path": "/methodology",
+      "purpose": "測定条件と結果の読み方"
+    },
+    {
+      "path": "/pricing",
+      "purpose": "料金と利用範囲"
+    },
+    {
+      "path": "/support",
+      "purpose": "問い合わせ窓口"
+    },
+    {
+      "path": "/privacy",
+      "purpose": "情報の取り扱い"
+    },
+    {
+      "path": "/terms",
+      "purpose": "利用条件"
+    },
+    {
+      "path": "/commerce",
+      "purpose": "販売条件"
+    }
   ],
   "capabilities": [
     "公開サイトから購入前の質問を作る",
@@ -22,5 +43,6 @@
     "測定結果は指定したAI・質問・日時の観測であり、普遍的な順位ではない",
     "AIの推薦、引用、検索順位、問い合わせ、契約、売上を保証しない",
     "対象会社のサイトを自動変更しない"
-  ]
+  ],
+  "alternateName": "ロヴァン"
 }

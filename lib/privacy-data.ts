@@ -35,7 +35,7 @@ async function cancelStripeSubscription(subscriptionId: string) {
 export async function exportWatchData(token: string, email: string) {
   const watch = await getWatch(token);
   if (!watch || watch.email !== email.trim().toLowerCase()) throw new Error("Watch tokenと登録メールが一致しません。");
-  return { product: "AIX Next", exportedAt: new Date().toISOString(), watch };
+  return { product: "Rovan", exportedAt: new Date().toISOString(), watch };
 }
 
 export async function deleteWatchData(token: string, email: string) {

@@ -210,7 +210,7 @@ export function ExecutiveDiagnosticSummary({
           </div>
           <p style={{ fontSize: "0.86rem", color: "#475569", lineHeight: 1.7, margin: "0 0 14px" }}>
             ITの専門知識も、ホームページの改修工事も不要です。<br />
-            AIXが自社サイトの公開情報と公的データベースを解析し、ChatGPTやPerplexity等のAI探索ロボットが1秒で読める<strong>「AI公式確定仕様台帳（国際規格JSON-LD・出展証跡完備）」を自社サイトの外側に全自動配備</strong>しました。<br />
+            Rovanが自社サイトの公開情報と公的データベースを解析し、ChatGPTやPerplexity等のAI探索ロボットが1秒で読める<strong>「AI公式確定仕様台帳（国際規格JSON-LD・出展証跡完備）」を自社サイトの外側に全自動配備</strong>しました。<br />
             「大手が断るような空き家・古家の売却条件」や「即日個別対応の強み」が、AIのナレッジベースに直接登録されています。
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", fontSize: "0.76rem" }}>
