@@ -383,13 +383,13 @@ export function WatchClient() {
 
       {/* 今週の自律防衛タイムライン（THIS WEEK: 競合監視 → 自動対処 → 再測定） */}
       <section className="watch-section shell" style={{ marginBottom: "24px" }}>
-        <div style={{ background: "#ffffff", border: "2px solid #0284c7", borderRadius: "12px", padding: "24px 28px", boxShadow: "0 4px 12px rgba(2,132,199,0.06)" }}>
+        <div style={{ background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", borderRadius: "var(--radius-card, 10px)", padding: "24px 28px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "16px", marginBottom: "20px" }}>
             <div>
-              <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0284c7", color: "#ffffff", padding: "3px 8px", borderRadius: "4px", letterSpacing: "0.06em" }}>
+              <span style={{ fontSize: "0.72rem", fontWeight: 800, background: "#0f172a", color: "#ffffff", padding: "3px 8px", borderRadius: "4px", letterSpacing: "0.06em" }}>
                 THIS WEEK / 自律防衛レポート
               </span>
-              <h3 style={{ margin: "8px 0 0", fontSize: "1.25rem", color: "#0f172a" }}>
+              <h3 style={{ margin: "8px 0 0", fontSize: "1.2rem", color: "#0f172a", fontWeight: 800, letterSpacing: "-0.02em" }}>
                 今週、競合が動き、Rovanが裏側で自動対処を完了しました
               </h3>
             </div>
