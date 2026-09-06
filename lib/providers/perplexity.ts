@@ -11,6 +11,7 @@ export const perplexityProvider: AiSearchProvider = {
     if (!env.perplexityKey) throw new Error("PERPLEXITY_API_KEYが未設定です。");
     const response = await fetch("https://api.perplexity.ai/v1/sonar", {
       method: "POST",
+      signal: input.signal,
       headers: { authorization: `Bearer ${env.perplexityKey}`, "content-type": "application/json" },
       body: JSON.stringify({
         model: env.perplexityModel,

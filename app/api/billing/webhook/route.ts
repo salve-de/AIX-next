@@ -1,6 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "@/lib/env";
 import { getWatch, updateWatch } from "@/lib/storage";
+import { stripe, stripeId, terminalSubscription, validToken } from "../_shared";
 
 export const runtime = "nodejs";
 
@@ -20,53 +21,52 @@ function validSignature(payload: string, header: string) {
   });
 }
 
-function stripeId(value: unknown) {
-  if (typeof value === "string") return value;
-  if (value && typeof value === "object" && "id" in value && typeof (value as { id?: unknown }).id === "string") return (value as { id: string }).id;
-  return undefined;
-}
-
 export async function POST(request: Request) {
   const payload = await request.text();
   if (!validSignature(payload, request.headers.get("stripe-signature") || "")) return new Response("Invalid signature", { status: 400 });
   let event: any;
   try { event = JSON.parse(payload); } catch { return new Response("Invalid payload", { status: 400 }); }
 
+  if (!event || typeof event !== "object") return new Response("Invalid payload", { status: 400 });
+  if (!["checkout.session.completed", "checkout.session.async_payment_succeeded", "customer.subscription.created", "customer.subscription.updated", "customer.subscription.deleted"].includes(event.type)) return Response.json({ received: true });
   const object = event.data?.object || {};
   const metadata = { ...(object.subscription_details?.metadata || {}), ...(object.metadata || {}) };
   const token = metadata.watch_token;
-  if (!token) return Response.json({ received: true, ignored: "watch_token missing" });
+  if (!validToken(token)) return Response.json({ received: true, ignored: "watch_token missing" });
+  try {
   const current = await getWatch(token);
   if (!current) return Response.json({ received: true, ignored: "watch not found" });
 
-  if (event.type === "checkout.session.completed") {
-    const paid = ["paid", "no_payment_required"].includes(object.payment_status || "");
-    await updateWatch(token, {
-      paid,
-      status: paid ? "active" : current.status,
-      stripeCustomerId: stripeId(object.customer),
-      stripeSubscriptionId: stripeId(object.subscription),
-      ...(paid && !current.paid ? { nextRunAt: new Date().toISOString() } : {}),
-    });
-  } else if (["customer.subscription.created", "customer.subscription.updated"].includes(event.type)) {
-    const base = {
-      stripeCustomerId: stripeId(object.customer),
-      stripeSubscriptionId: stripeId(object.id),
-    };
-    if (["active", "trialing"].includes(object.status)) {
-      const newlyActive = !current.paid || current.status !== "active";
-      await updateWatch(token, { ...base, paid: true, status: "active", ...(newlyActive ? { nextRunAt: new Date().toISOString() } : {}) });
-    } else if (object.status === "past_due") await updateWatch(token, { ...base, paid: true, status: "past_due" });
-    else if (["canceled", "unpaid", "incomplete_expired"].includes(object.status)) await updateWatch(token, { ...base, paid: false, status: "cancelled" });
-    else await updateWatch(token, base);
-  } else if (event.type === "customer.subscription.deleted") {
-    await updateWatch(token, {
-      paid: false,
-      status: "cancelled",
-      stripeCustomerId: stripeId(object.customer),
-      stripeSubscriptionId: stripeId(object.id),
-    });
+  const checkout = event.type.startsWith("checkout.session.");
+  const subscriptionId = stripeId(checkout ? object.subscription : object.id);
+  if (!subscriptionId || (checkout && object.mode !== "subscription")) return Response.json({ received: true, ignored: "subscription missing" });
+  if (current.stripeSubscriptionId && current.stripeSubscriptionId !== subscriptionId) {
+    // A delayed event from a previous subscription must never replace the current one.
+    if (!checkout) return Response.json({ received: true, ignored: "different subscription" });
+    const previous = await stripe(`/subscriptions/${encodeURIComponent(current.stripeSubscriptionId)}`);
+    if (!terminalSubscription(previous.status)) return new Response("Conflicting subscription", { status: 409 });
   }
-
+  // Stripe does not guarantee event order. Reconcile from the current resource,
+  // including for Checkout completion, instead of granting access from old payloads.
+  const subscription = await stripe(`/subscriptions/${encodeURIComponent(subscriptionId)}`);
+  const customerId = stripeId(subscription.customer);
+  if (subscription.id !== subscriptionId || subscription.metadata?.watch_token !== token || !customerId ||
+      (stripeId(object.customer) && stripeId(object.customer) !== customerId) ||
+      (current.stripeCustomerId && current.stripeCustomerId !== customerId)) {
+    return new Response("Subscription binding mismatch", { status: 400 });
+  }
+  const active = ["active", "trialing"].includes(subscription.status);
+  const pastDue = subscription.status === "past_due";
+  const updated = await updateWatch(token, {
+    stripeCustomerId: customerId,
+    stripeSubscriptionId: subscriptionId,
+    paid: active || pastDue,
+    status: active ? "active" : pastDue ? "past_due" : "cancelled",
+    ...(active && (!current.paid || current.status !== "active") ? { nextRunAt: new Date().toISOString() } : {}),
+  });
+  if (!updated) throw new Error("Watch update failed");
   return Response.json({ received: true });
+  } catch {
+    return new Response("Billing reconciliation failed; retry required", { status: 503 });
+  }
 }

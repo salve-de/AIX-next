@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { MarketingShell } from "@/components/marketing-shell";
 import { seller } from "@/lib/legal";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = { title: "お問い合わせ", description: "診断結果、公開情報、請求、データ削除に関するお問い合わせ窓口。" };
 

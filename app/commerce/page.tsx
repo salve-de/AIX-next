@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { MarketingShell } from "@/components/marketing-shell";
 import { seller, sellerReady } from "@/lib/legal";
+export const dynamic = "force-dynamic";
 import { WATCH_MONTHLY_PRICE_LABEL, WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL } from "@/lib/pricing";
 
 export const metadata: Metadata = { title: "特定商取引法に基づく表記", description: "Rovanの有料Watchに関する販売者、価格、提供、解約、返金条件。" };

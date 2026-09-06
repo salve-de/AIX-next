@@ -2,6 +2,8 @@
 
 正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。名称と移行時の互換性は [改名記録](docs/ROVAN_BRAND_MIGRATION.md) を参照してください。
 
+公開準備の修正・Safari実操作・未完了項目は [2026-09-07 リリース作業記録](docs/RELEASE_2026-09-07.md) を参照してください。コードの検証と本番公開は別です。現時点で本番公開・一般販売の完了を示す記録ではありません。
+
 > **生成AIの回答と、公開情報の確認・改善を支援する測定サービス**
 
 ---
@@ -179,7 +181,7 @@ The product can use:
 
 Apply every migration in `supabase/migrations/` in numeric order. Do not stop at the original core migrations; later migrations add Watch idempotency, Stripe identifiers, claim leases, durable measurement runs, finalize semantics and persisted Change Packs.
 
-Current sequence includes `001_core.sql` through `010_public_profiles.sql`.
+Current sequence includes `001_core.sql` through `011_privacy_delete.sql`.
 
 Without Supabase, local development uses a single-process in-memory store. It is not suitable for multi-instance production.
 

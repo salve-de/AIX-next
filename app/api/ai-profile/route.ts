@@ -8,6 +8,7 @@ import {
   revokePublicProfile,
 } from "@/lib/storage";
 import { getScan } from "@/lib/storage";
+import { consumeProfileCreation } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,6 +50,10 @@ export async function POST(request: Request) {
 
   const action = stringField(body, "action");
   try {
+    if (["preview", "deploy", "create_direct"].includes(action)) {
+      const limit = await consumeProfileCreation(request);
+      if (!limit.allowed) return Response.json({ error: "作成回数の上限に達しました。時間を置いて再度お試しください。" }, { status: 429, headers: { ...responseHeaders, "retry-after": String(limit.retryAfter) } });
+    }
     if (action === "preview" || action === "deploy") {
       const scanId = stringField(body, "scanId");
       if (!scanId) return json({ error: "scanIdが必要です。" }, 400);
@@ -75,6 +80,7 @@ export async function POST(request: Request) {
     if (action === "create_direct") {
       const brandName = stringField(body, "brandName");
       if (!brandName) return json({ error: "会社名または屋号を入力してください。" }, 400);
+      if (brandName.length > 200 || ["market", "summary", "location", "hours", "pricingInfo"].some((key) => stringField(body, key).length > 3000)) return json({ error: "入力内容が長すぎます。名称は200文字、その他の項目は3000文字以内で入力してください。" }, 400);
 
       const market = stringField(body, "market");
       const summary = stringField(body, "summary");

@@ -69,10 +69,13 @@ function nextResume() {
 }
 
 function chunkSize(watch: WatchRecord, run: WatchMeasurementRun) {
-  return watch.paid && run.repetitions > 1 ? env.watchPromptBatchSize : run.prompts.length;
+  return Math.min(run.prompts.length, env.watchPromptBatchSize);
 }
 
 export async function processWatchMeasurement(watch: WatchRecord) {
+  if (process.env.NODE_ENV === "production" && !(env.supabaseUrl && env.supabaseServiceKey)) {
+    throw new Error("Watch requires durable storage in production.");
+  }
   let run = await ensureRun(watch);
   const previous = watch.latest;
 
@@ -83,6 +86,12 @@ export async function processWatchMeasurement(watch: WatchRecord) {
       prompts,
       discovery: run.discovery,
       repetitions: run.repetitions,
+      existingObservations: run.observations,
+      onCheckpoint: async (rows) => {
+        const saved = await updateWatchRun(run.id, { status: "running", observations: mergeObservations(run.observations, rows) });
+        if (!saved) throw new Error("Watch測定の途中状態を保存できませんでした。");
+        run = saved;
+      },
       concurrency: watch.paid ? env.watchObservationConcurrency : Math.min(6, env.watchObservationConcurrency),
     });
     const merged = mergeObservations(run.observations, observations);
@@ -163,17 +172,23 @@ export async function processWatchMeasurement(watch: WatchRecord) {
   const expiresAfterRun = trialExpiredAfterThisRun(watch);
   const baseline = run.switchToCore ? result : watch.baseline;
   const status = expiresAfterRun ? "expired" as const : watch.status;
-  const finalized = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });
-
-  const updated = (await updateWatch(watch.token, {
+  const enriched = await updateWatch(watch.token, {
     changePack,
     competitorEvents,
     autoActions,
     autoActionImpacts,
     monthlyReport,
-  })) || finalized;
+  });
+  if (!enriched) throw new Error("Watchの分析結果を保存できませんでした。");
+  const updated = await finalizeWatchRun({ run, latest: result, baseline, history, status, nextRunAt: nextWeeklyRun() });
 
-  await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
+  // Notification failure must not reschedule and charge for an already committed measurement.
+  let notificationFailed = false;
+  try {
+    await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
+  } catch {
+    notificationFailed = true;
+  }
   return {
     status: expiresAfterRun ? "completed_and_expired" as const : run.switchToCore ? "core_baseline_created" as const : "completed" as const,
     runId: run.id,
@@ -181,5 +196,6 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     totalPrompts: run.prompts.length,
     observations: run.observations.length,
     changePackItems: updated.changePack?.items.length || 0,
+    notificationFailed,
   };
 }

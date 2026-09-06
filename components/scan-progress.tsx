@@ -48,7 +48,6 @@ export function ScanProgress() {
   const socialInfo = useMemo(() => parseSocialInput(rawInput || extraSocial || ""), [extraSocial, rawInput]);
   const directUrl = useMemo(() => isUrlInput(rawInput) ? normalize(rawInput) : extraUrl && isUrlInput(extraUrl) ? normalize(extraUrl) : "", [extraUrl, rawInput]);
   const controller = useRef<AbortController | null>(null);
-  const startedScan = useRef("");
   const resolvedInput = useRef("");
   const [phase, setPhase] = useState<"resolving" | "choose" | "scanning" | "failed" | "no_site" | "social_site" | "product_site" | "direct_preview">("resolving");
   const [candidates, setCandidates] = useState<InputResolutionCandidate[]>([]);
@@ -123,7 +122,6 @@ export function ScanProgress() {
       setError("診断する公開サイトがありません。");
       return;
     }
-    startedScan.current = targetUrl;
     controller.current?.abort();
     const abort = new AbortController();
     controller.current = abort;
@@ -145,7 +143,7 @@ export function ScanProgress() {
       let buffer = "";
       while (true) {
         const { value, done } = await reader.read();
-        if (done) break;
+        if (done) throw new Error("診断の接続が完了前に切れました。もう一度お試しください。");
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
@@ -194,7 +192,9 @@ export function ScanProgress() {
       return () => undefined;
     }
     if (directUrl) {
-      if (startedScan.current !== directUrl) void startScan(directUrl);
+      // Each effect owns a request; React may clean up and restart the effect.
+      // A remembered URL must not suppress the replacement for an aborted request.
+      void startScan(directUrl);
       return () => controller.current?.abort();
     }
     if (resolvedInput.current === rawInput && candidates.length) return () => controller.current?.abort();
@@ -366,10 +366,10 @@ export function ScanProgress() {
       <section className="scan-stage shell scan-resolve-stage">
         <div className="scan-stage-main scan-resolve-main">
           <p className="overline">
-            {phase === "resolving" ? "診断先を検索中" : "診断先の同定確認"}
+            {phase === "failed" ? "診断を開始できませんでした" : phase === "resolving" ? "診断先を検索中" : "診断先の確認"}
           </p>
           <h1>
-            {phase === "resolving"
+            {phase === "failed" ? "時間を置いて、もう一度お試しください。" : phase === "resolving"
               ? `「${displayInput(rawInput)}」の公開サイトを探しています。`
               : hasInput
               ? `「${displayInput(rawInput)}」の公開サイトを確認してください`

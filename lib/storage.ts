@@ -12,6 +12,7 @@ import type {
 } from "@/lib/types";
 import { buildPublicProfileDraft } from "@/lib/public-profile";
 import { publicProfileSlug } from "@/lib/public-profile-path";
+import { durableStorageAvailable } from "@/lib/runtime-readiness";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -71,11 +72,12 @@ function markExpired(record: PublicProfileRecord, now: Date) {
 }
 
 function durable() {
-  return Boolean(env.supabaseUrl && env.supabaseServiceKey);
+  return durableStorageAvailable();
 }
 
 async function supabase<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(`${env.supabaseUrl}/rest/v1/${path}`, {
+    signal: AbortSignal.timeout(15_000),
     ...options,
     headers: {
       apikey: env.supabaseServiceKey,
@@ -85,8 +87,7 @@ async function supabase<T>(path: string, options: RequestInit = {}): Promise<T> 
     },
   });
   if (!response.ok) {
-    const message = await response.text().catch(() => "");
-    throw new Error(`Supabase operation failed: ${response.status} ${message}`);
+    throw new Error(`保存処理を完了できませんでした (${response.status})。`);
   }
   return response.json() as Promise<T>;
 }
@@ -230,7 +231,7 @@ export async function createPublicProfilePreview(draft: PublicProfileDraft, opti
   const record: PublicProfileRecord = {
     ...clonePublicProfileDraft(draft),
     id: id("profile"),
-    slug: publicProfileSlug(draft.targetUrl),
+    slug: `${publicProfileSlug(draft.targetUrl)}-${id("page").slice(-12)}`,
     status: "draft",
     token: id("profile_token"),
     sourceScanId: options.sourceScanId || "unknown",
@@ -317,6 +318,15 @@ export async function listActivePublicProfiles(now?: Date | string) {
 }
 
 export const getActivePublicProfiles = listActivePublicProfiles;
+
+export async function getPublishedProfileForScan(scanId: string) {
+  const now = new Date().toISOString();
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?source_scan_id=eq.${encodeURIComponent(scanId)}&status=eq.published&expires_at=gt.${encodeURIComponent(now)}&order=published_at.desc&limit=1`);
+    return rows[0] ? publicProfileFromRow(rows[0]) : null;
+  }
+  return [...publicProfiles.values()].filter((record) => record.sourceScanId === scanId && record.status === "published" && record.expiresAt > now).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0] || null;
+}
 
 /** Publish requires both the profile id and the unguessable preview token. */
 export async function publishPublicProfile(profileId: string, token: string, now?: Date | string) {
@@ -428,10 +438,18 @@ export async function getWatch(token: string) {
  * storage maps directly.
  */
 export function deleteMemoryWatchData(token: string, scanId: string) {
+  const current = watches.get(token);
+  if (!current || current.scanId !== scanId) return false;
+  const runs = (globalThis as { aixNextWatchRuns?: Map<string, { watchId: string }> }).aixNextWatchRuns;
+  for (const [runId, run] of runs || []) {
+    if (run.watchId === current.id) runs!.delete(runId);
+  }
   const removed = watches.delete(token);
   if (!removed) return false;
   const scanStillReferenced = [...watches.values()].some((watch) => watch.scanId === scanId);
-  if (!scanStillReferenced) scans.delete(scanId);
+  // A shared source scan is not proof that the Watch owns a public profile.
+  const profileStillReferencesScan = [...publicProfiles.values()].some(profile => profile.sourceScanId === scanId);
+  if (!scanStillReferenced && !profileStillReferencesScan) scans.delete(scanId);
   return true;
 }
 

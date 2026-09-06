@@ -4,6 +4,7 @@ export type ProviderInput = {
   prompt: BuyerPrompt;
   discovery: CompanyDiscovery;
   repetition: number;
+  signal?: AbortSignal;
 };
 
 export type ProviderOutput = {
@@ -20,6 +21,26 @@ export interface AiSearchProvider {
   name: ProviderName;
   configured(): boolean;
   run(input: ProviderInput): Promise<ProviderOutput>;
+}
+
+/** Bound the whole response, including body reads, and cancel the network request. */
+export async function runWithTimeout<T>(run: (signal: AbortSignal) => Promise<T>, timeoutMs: number): Promise<T> {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      run(controller.signal),
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => {
+          const error = new Error("AI Provider request timeout");
+          controller.abort(error);
+          reject(error);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 export function observationFromFailure(input: ProviderInput, provider: ProviderName, model: string, error: unknown, status: Observation["status"] = "failed"): Observation {

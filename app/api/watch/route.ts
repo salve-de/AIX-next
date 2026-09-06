@@ -1,4 +1,4 @@
-import { createWatch, getScan, getWatch, updateWatch } from "@/lib/storage";
+import { createWatch, getScan, getWatch, updateWatch, getPublishedProfileForScan } from "@/lib/storage";
 import { toPublicWatch, toPublicWatchMeasurementRun } from "@/lib/public-dto";
 import { sendWatchStarted } from "@/lib/watch-email";
 import { getActiveWatchRun } from "@/lib/watch-runs";
@@ -47,10 +47,12 @@ export async function GET(request: Request) {
   if (!token) return Response.json({ error: "Watch tokenが必要です。" }, { status: 400 });
   const watch = await getWatch(token);
   if (!watch) return Response.json({ error: "Watchが見つかりません。" }, { status: 404 });
-  const run = await getActiveWatchRun(watch.id);
+  const [run, profile] = await Promise.all([getActiveWatchRun(watch.id), getPublishedProfileForScan(watch.scanId)]);
   const publicWatch = toPublicWatch(watch);
   return Response.json({
     ...publicWatch,
+    publicProfileUrl: profile ? `/ai/company/${encodeURIComponent(profile.slug)}` : null,
+    resultUrl: `/result?id=${encodeURIComponent(watch.scanId)}`,
     measurementRun: run ? toPublicWatchMeasurementRun(run) : null,
   }, { headers: { "cache-control": "private, no-store", "referrer-policy": "no-referrer" } });
 }

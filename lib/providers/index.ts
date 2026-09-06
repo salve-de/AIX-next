@@ -3,7 +3,8 @@ import { id } from "@/lib/ids";
 import { extractRecommendedEntities } from "@/lib/entity-extraction";
 import type { BuyerPrompt, CompanyDiscovery, Observation } from "@/lib/types";
 import type { AiSearchProvider } from "@/lib/providers/common";
-import { observationFromFailure } from "@/lib/providers/common";
+import { observationFromFailure, runWithTimeout } from "@/lib/providers/common";
+import { env } from "@/lib/env";
 import { openAiProvider } from "@/lib/providers/openai";
 import { geminiProvider } from "@/lib/providers/gemini";
 import { perplexityProvider } from "@/lib/providers/perplexity";
@@ -11,9 +12,9 @@ import { perplexityProvider } from "@/lib/providers/perplexity";
 export const providers: AiSearchProvider[] = [openAiProvider, geminiProvider, perplexityProvider];
 
 function providerModelName(provider: string) {
-  if (provider === "openai") return "gpt-4o (Search Grounding)";
-  if (provider === "gemini") return "gemini-1.5-pro (Google Grounding)";
-  if (provider === "perplexity") return "sonar (Online Web Grounding)";
+  if (provider === "openai") return env.openAiSearchModel;
+  if (provider === "gemini") return env.geminiModel;
+  if (provider === "perplexity") return env.perplexityModel;
   return `${provider}-search`;
 }
 
@@ -22,9 +23,13 @@ export async function runObservationPanel(input: {
   discovery: CompanyDiscovery;
   repetitions: number;
   concurrency?: number;
+  existingObservations?: Observation[];
+  onCheckpoint?: (observations: Observation[]) => Promise<void>;
   onProgress?: (completed: number, total: number, detail: string) => Promise<void> | void;
 }) {
-  const tasks = input.prompts.flatMap((prompt) =>
+  const key = (row: Pick<Observation, "promptId" | "provider" | "repetition">) => `${row.promptId}:${row.provider}:${row.repetition}`;
+  const existing = new Map((input.existingObservations || []).map((row) => [key(row), row]));
+  const allTasks = input.prompts.flatMap((prompt) =>
     providers.flatMap((provider) =>
       Array.from({ length: input.repetitions }, (_, index) => ({
         prompt,
@@ -34,8 +39,12 @@ export async function runObservationPanel(input: {
     )
   );
 
-  const observations: Observation[] = [];
-  let completed = 0;
+  const tasks = allTasks.filter(({ prompt, provider, repetition }) => !existing.has(key({ promptId: prompt.id, provider: provider.name, repetition })));
+  const observations: Observation[] = allTasks.flatMap(({ prompt, provider, repetition }) => {
+    const row = existing.get(key({ promptId: prompt.id, provider: provider.name, repetition }));
+    return row ? [row] : [];
+  });
+  let completed = observations.length;
   const concurrency = Math.min(12, Math.max(1, Math.floor(input.concurrency || 6)));
 
   for (let offset = 0; offset < tasks.length; offset += concurrency) {
@@ -51,11 +60,8 @@ export async function runObservationPanel(input: {
         }
 
         try {
-          // 外部通信は最大5秒でタイムアウトさせ、Vercelの停止を絶対防御
-          const timeoutPromise = new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("AI Provider request timeout")), 5000)
-          );
-          const output = await Promise.race([provider.run(providerInput), timeoutPromise]);
+          const output = await runWithTimeout((signal) => provider.run({ ...providerInput, signal }), 30_000);
+          if (!output.rawText.trim()) throw new Error("AI Provider returned an empty answer");
           const recommendedEntities = extractRecommendedEntities(output.rawText, input.discovery);
           const ownPositionIndex = recommendedEntities.indexOf(input.discovery.brandName);
 
@@ -88,8 +94,9 @@ export async function runObservationPanel(input: {
     );
 
     observations.push(...rows);
+    await input.onCheckpoint?.([...observations]);
     completed += rows.length;
-    await input.onProgress?.(completed, tasks.length, rows.map((row) => row.provider).join(" / "));
+    await input.onProgress?.(completed, allTasks.length, rows.map((row) => row.provider).join(" / "));
   }
 
   return observations;

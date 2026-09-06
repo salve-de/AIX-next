@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowIcon } from "@/components/icons";
 import type { PublicProfile, ScanResult } from "@/lib/types";
 
@@ -37,6 +37,24 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   const strategies = result.positioning?.strategies || derivePositioningAdvice(result).strategies || [];
   const isPublished = sample || profile?.status === "published";
 
+  useEffect(() => {
+    if (sample) return;
+    const controller = new AbortController();
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(`rovan:profile:${result.scanId}`) || "null") as { id?: string; token?: string } | null;
+      if (saved?.id && saved.token) {
+        const token = saved.token;
+        void fetch(`/api/ai-profile?profileId=${encodeURIComponent(saved.id)}&token=${encodeURIComponent(token)}`, { signal: controller.signal, cache: "no-store" })
+          .then(async (response) => {
+            if (!response.ok) throw new Error("下書きを復元できませんでした。");
+            const restored = profileFromPayload(await response.json());
+            if (restored) { setProfile(restored); setProfileToken(token); setIsSaved(true); }
+          }).catch(() => { if (!controller.signal.aborted) setError("保存済みの下書きを復元できませんでした。再読み込みしてお試しください。"); });
+      }
+    } catch { /* Storage may be unavailable in private browsing. */ }
+    return () => controller.abort();
+  }, [result.scanId, sample]);
+
   async function deployProfile() {
     if (sample) {
       setIsSaved(true);
@@ -56,6 +74,8 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       if (!next || !payload.token) throw new Error("公開前の下書きを取得できませんでした。");
       setProfile(next);
       setProfileToken(payload.token);
+      try { sessionStorage.setItem(`rovan:profile:${result.scanId}`, JSON.stringify({ id: next.id, token: payload.token })); }
+      catch { setError("このブラウザーでは管理情報を保存できません。このページを閉じる前に公開内容を確認してください。"); }
       setIsSaved(true);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "公開情報の下書きを作成できませんでした。");
@@ -64,7 +84,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
     }
   }
 
-  async function publishProfile() {
+  async function publishProfile(action: "publish" | "revoke" = "publish") {
     if (sample || !profile || !profileToken) return;
     setBusy("deploy");
     setError("");
@@ -72,7 +92,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       const response = await fetch("/api/ai-profile", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action: "publish", profileId: profile.id, token: profileToken }),
+        body: JSON.stringify({ action, profileId: profile.id, token: profileToken }),
       });
       const payload = await response.json() as { error?: string; profile?: ProfileShape };
       if (!response.ok || !payload.profile) throw new Error(payload.error || "公開できませんでした。");
@@ -245,8 +265,14 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             </button>
           ) : (
             <div className="saved-success-box">
+              {profile ? <div className="document-note">
+                <h4>{profile.brandName}</h4><p>{profile.summary}</p>
+                <ul>{profile.facts.map((fact, index) => <li key={index}>{fact.label}：{fact.value}</li>)}</ul>
+                <p>参照元：</p><ul>{profile.sourcePages.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title || source.url}</a></li>)}</ul>
+                <p>公開状態：{profile.status === "published" ? "公開中" : profile.status === "revoked" ? "非公開" : "下書き"}。管理情報はこのタブに保存されます。タブを閉じた後の掲載停止はお問い合わせ窓口をご利用ください。</p>
+              </div> : null}
               <span className="saved-badge">
-                {isPublished ? "公開済み：公開情報参照ページを確認できます" : "下書きを作成しました。公開前に内容を確認してください"}
+                {sample ? "設計見本の公開ページを確認できます（実際の公開操作は行っていません）" : isPublished ? "公開済み：公開情報参照ページを確認できます" : "下書きを作成しました。公開前に内容を確認してください"}
               </span>
               <div className="saved-links">
                 {isPublished ? (
@@ -273,13 +299,14 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     >
                       公開ページのURLをコピー
                     </button>
+                    {!sample ? <button type="button" className="button button-secondary" disabled={busy !== ""} onClick={() => void publishProfile("revoke")}>公開を停止する</button> : null}
                   </>
                 ) : (
                   <button
                     type="button"
                     className="button button-primary"
                     onClick={() => void publishProfile()}
-                    disabled={busy !== ""}
+                    disabled={busy !== "" || profile?.status === "revoked" || profile?.status === "expired"}
                   >
                     {busy === "deploy" ? "公開処理中…" : "内容を確認して公開する"} <ArrowIcon />
                   </button>
@@ -287,6 +314,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                 <button
                   type="button"
                   className="text-button"
+                  disabled={busy !== "" || (!sample && profile?.status === "published")}
                   onClick={() => setIsSaved(false)}
                 >
                   下書きを作り直す

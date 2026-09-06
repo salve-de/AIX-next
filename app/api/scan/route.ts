@@ -3,6 +3,7 @@ import { runScan } from "@/lib/scan-runner";
 import { createScan, getRecentCompletedScan, updateScan } from "@/lib/storage";
 import { normalizePublicUrl } from "@/lib/url-security";
 import { FREE_PANEL_SIZE } from "@/lib/prompt-panels";
+import { env } from "@/lib/env";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
@@ -10,16 +11,28 @@ export const dynamic = "force-dynamic";
 
 function ndjsonResponse(run: (emit: (payload: unknown) => void, close: () => void) => void | Promise<void>) {
   const encoder = new TextEncoder();
+  let closed = false;
   const stream = new ReadableStream({
     async start(controller) {
-      const emit = (payload: unknown) => controller.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
-      await run(emit, () => controller.close());
+      const emit = (payload: unknown) => {
+        if (!closed) controller.enqueue(encoder.encode(`${JSON.stringify(payload)}\n`));
+      };
+      await run(emit, () => {
+        if (!closed) { closed = true; controller.close(); }
+      });
     },
+    cancel() { closed = true; },
   });
   return new Response(stream, { headers: { "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store", "x-accel-buffering": "no", "referrer-policy": "no-referrer" } });
 }
 
 export async function POST(request: Request) {
+  if (process.env.NODE_ENV === "production" && !(env.supabaseUrl && env.supabaseServiceKey)) {
+    return Response.json({ error: "診断の保存先を準備中です。時間を置いてお試しください。" }, { status: 503 });
+  }
+  if (!env.openAiKey) {
+    return Response.json({ error: "診断に必要なAI接続を準備中です。時間を置いてお試しください。" }, { status: 503 });
+  }
   let targetUrl: string;
   try {
     const body = await request.json() as { url?: string };
@@ -52,16 +65,18 @@ export async function POST(request: Request) {
         repetitions: 1,
         panelKind: "free",
         onProgress: async (event) => {
-          await updateScan(scan.id, { stage: event.stage, progress: event.progress, message: event.message });
+          const saved = await updateScan(scan.id, { stage: event.stage, progress: event.progress, message: event.message });
+          if (!saved) throw new Error("診断の進行状況を保存できませんでした。");
           emit({ type: "progress", scanId: scan.id, ...event });
         },
       });
-      const stage = result.successfulObservations === result.scheduledObservations ? "complete" : "partial";
-      await updateScan(scan.id, { stage, progress: 100, message: "結果と、最初に直すことをまとめました。", result, error: null });
+      const stage = result.successfulObservations > 0 && result.successfulObservations === result.scheduledObservations ? "complete" : "partial";
+      const saved = await updateScan(scan.id, { stage, progress: 100, message: "結果と、最初に直すことをまとめました。", result, error: null });
+      if (!saved?.result) throw new Error("診断結果を保存できませんでした。");
       emit({ type: "complete", scanId: scan.id });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "診断に失敗しました。";
-      await updateScan(scan.id, { stage: "failed", message, error: message });
+    } catch {
+      const message = "診断を完了できませんでした。時間を置いて再度お試しください。";
+      await updateScan(scan.id, { stage: "failed", message, error: message }).catch(() => null);
       emit({ type: "error", scanId: scan.id, error: message });
     } finally {
       close();

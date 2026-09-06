@@ -11,6 +11,7 @@ export const geminiProvider: AiSearchProvider = {
     if (!env.geminiKey) throw new Error("GEMINI_API_KEYが未設定です。");
     const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
       method: "POST",
+      signal: input.signal,
       headers: { "content-type": "application/json", "x-goog-api-key": env.geminiKey },
       body: JSON.stringify({
         model: env.geminiModel,

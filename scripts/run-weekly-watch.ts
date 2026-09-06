@@ -14,6 +14,9 @@ async function main() {
   const taskCount = Number(process.env.CLOUD_RUN_TASK_COUNT ?? 1);
   const batchLimit = Number(process.env.WATCH_BATCH_LIMIT ?? 50);
   const leaseSeconds = Number(process.env.WATCH_LEASE_SECONDS ?? 1800); // 30分リース
+  if (![taskCount, batchLimit, leaseSeconds].every((value) => Number.isSafeInteger(value) && value > 0) || !Number.isSafeInteger(taskIndex) || taskIndex < 0 || taskIndex >= taskCount) {
+    throw new Error("Invalid Watch job limits");
+  }
 
   console.log(JSON.stringify({
     level: "INFO",
@@ -28,11 +31,11 @@ async function main() {
   let totalProcessed = 0;
   let totalSuccess = 0;
   let totalFailed = 0;
-  const errors: Array<{ token: string; error: string }> = [];
 
   // 1タスクあたり、未処理の監視対象が尽きるまで、または安全リミットまでループ処理
   while (true) {
-    const due = await claimDueWatches(Math.min(10, batchLimit), leaseSeconds);
+    // Claim only the watch that can start now; queued claims can outlive their lease.
+    const due = await claimDueWatches(1, leaseSeconds);
     if (!due || due.length === 0) {
       console.log(JSON.stringify({
         level: "INFO",
@@ -46,7 +49,7 @@ async function main() {
       level: "INFO",
       message: `Claimed ${due.length} watches for processing`,
       taskIndex,
-      companies: due.map((w) => ({ token: w.token, url: w.latest.targetUrl })),
+      watchIds: due.map((w) => w.id),
     }));
 
     for (const watch of due) {
@@ -59,7 +62,7 @@ async function main() {
           level: "INFO",
           message: "Successfully processed watch measurement",
           taskIndex,
-          token: watch.token,
+          watchId: watch.id,
           durationMs: Date.now() - startTime,
           result: {
             status: result.status,
@@ -67,12 +70,12 @@ async function main() {
             totalPrompts: result.totalPrompts,
             observations: result.observations,
             changePackItems: result.changePackItems,
+            notificationFailed: "notificationFailed" in result ? result.notificationFailed : false,
           },
         }));
-      } catch (error) {
+      } catch {
         totalFailed++;
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        errors.push({ token: watch.token, error: errorMessage });
+        const errorMessage = "Watch measurement failed";
 
         // 失敗時は1時間後に再試行
         const retryAt = new Date(Date.now() + 60 * 60_000).toISOString();
@@ -82,7 +85,7 @@ async function main() {
           level: "ERROR",
           message: "Failed to process watch measurement",
           taskIndex,
-          token: watch.token,
+          watchId: watch.id,
           error: errorMessage,
           retryAt,
         }));

@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+.env
+.env.*
+!.env.example
+.vercel
+coverage
+*.log
+*.tsbuildinfo
+.agents
+.codex

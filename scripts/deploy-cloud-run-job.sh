@@ -3,18 +3,20 @@ set -euo pipefail
 
 # ==============================================================================
 # Rovan: Cloud Run Jobs + Cloud Scheduler 一撃デプロイスクリプト
-# 10,000社スケール対応・完全放置型週次定期観測インフラの自動構築
+# 週次測定の期日と分割処理の再開はDBで管理。規模別の負荷試験は別途必要。
 # ==============================================================================
 
 REGION="${GCP_REGION:-asia-northeast1}"
 JOB_NAME="aix-weekly-watch"
 SCHEDULER_JOB_NAME="aix-weekly-watch-trigger"
 REPO_NAME="aix-jobs"
-CRON_SCHEDULE="0 9 * * 1" # 毎週月曜 09:00 (JST)
+CRON_SCHEDULE="${WATCH_CRON_SCHEDULE:-*/15 * * * *}" # 期日到来・分割再開のみをclaimする
 TIMEZONE="Asia/Tokyo"
 
 # GCP プロジェクトIDの検証
-PROJECT_ID="${GCP_PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || echo "")}"
+PROJECT_ID="${GCP_PROJECT_ID:?Set the Rovan project ID explicitly}"
+: "${ROVAN_RUNTIME_SERVICE_ACCOUNT:?Set the Rovan runtime service account}"
+: "${ROVAN_SECRETS:?Set ENV_VAR=secret-name:version mappings}"
 if [ -z "$PROJECT_ID" ]; then
   echo "【エラー】GCPプロジェクトが設定されていません。"
   echo "export GCP_PROJECT_ID=\"your-project-id\" を実行するか、gcloud config set project を実行してください。"
@@ -48,19 +50,21 @@ if ! gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" --
     --project="$PROJECT_ID"
 fi
 
-IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$JOB_NAME:latest"
+IMAGE_URI="$REGION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/$JOB_NAME:$(git rev-parse --short=12 HEAD)"
 
 # 3. コンテナイメージのビルドとプッシュ（Cloud Build利用）
 echo "▶ Cloud Buildでコンテナイメージをビルド＆プッシュしています..."
 gcloud builds submit \
-  --tag="$IMAGE_URI" \
-  --dockerfile=Dockerfile.job \
+  --config=cloudbuild.job.yaml \
+  --substitutions="_IMAGE=$IMAGE_URI" \
   --project="$PROJECT_ID"
 
 # 4. Cloud Run Job の作成または更新
 echo "▶ Cloud Run Job を作成・更新しています: $JOB_NAME..."
 if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" &>/dev/null; then
   gcloud run jobs update "$JOB_NAME" \
+    --service-account="$ROVAN_RUNTIME_SERVICE_ACCOUNT" \
+    --update-secrets="$ROVAN_SECRETS" \
     --image="$IMAGE_URI" \
     --region="$REGION" \
     --tasks=1 \
@@ -71,6 +75,8 @@ if gcloud run jobs describe "$JOB_NAME" --region="$REGION" --project="$PROJECT_I
     --project="$PROJECT_ID"
 else
   gcloud run jobs create "$JOB_NAME" \
+    --service-account="$ROVAN_RUNTIME_SERVICE_ACCOUNT" \
+    --set-secrets="$ROVAN_SECRETS" \
     --image="$IMAGE_URI" \
     --region="$REGION" \
     --tasks=1 \
@@ -97,10 +103,9 @@ if ! gcloud iam service-accounts describe "$SERVICE_ACCOUNT_EMAIL" --project="$P
 fi
 
 # Cloud Run 起動権限の付与
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+gcloud run jobs add-iam-policy-binding "$JOB_NAME" --region="$REGION" --project="$PROJECT_ID" \
   --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
-  --role="roles/run.invoker" \
-  --condition=None >/dev/null
+  --role="roles/run.invoker" >/dev/null
 
 if gcloud scheduler jobs describe "$SCHEDULER_JOB_NAME" --location="$REGION" --project="$PROJECT_ID" &>/dev/null; then
   gcloud scheduler jobs update http "$SCHEDULER_JOB_NAME" \
@@ -125,6 +130,6 @@ fi
 echo "=================================================="
 echo "✅ Cloud Run Jobs ＋ Cloud Scheduler デプロイ完了！"
 echo "ジョブ名:    $JOB_NAME"
-echo "次回発火:    毎週月曜 09:00 ($TIMEZONE)"
+echo "起動間隔:    $CRON_SCHEDULE ($TIMEZONE); 測定期日はDBで管理"
 echo "手動テスト実行: gcloud run jobs execute $JOB_NAME --region=$REGION --project=$PROJECT_ID"
 echo "=================================================="

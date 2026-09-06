@@ -49,7 +49,8 @@ test("削除確認は新旧の完全一致だけを許可し認証条件を維�
   for (const value of ["DELETE", "", undefined, null, 123, "delete rovan data", "DELETE ROVAN DATA "]) {
     assert.equal(isDataDeletionConfirmation(value), false);
   }
-  assert.match(read("app/api/privacy/delete/route.ts"), /!body\.token \|\| !body\.email/);
+  assert.match(read("app/api/privacy/delete/route.ts"), /!validToken\(body\?\.token\)/);
+  assert.match(read("app/api/privacy/delete/route.ts"), /typeof body\?\.email !== "string"/);
 });
 
 test("RovanBotと旧クローラーの明示的拒否を両方尊重する", () => {

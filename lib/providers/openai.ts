@@ -11,6 +11,7 @@ export const openAiProvider: AiSearchProvider = {
     if (!env.openAiKey) throw new Error("OPENAI_API_KEYが未設定です。");
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
+      signal: input.signal,
       headers: { authorization: `Bearer ${env.openAiKey}`, "content-type": "application/json" },
       body: JSON.stringify({
         model: env.openAiSearchModel,

@@ -10,9 +10,8 @@ import { toPublicWatch } from "@/lib/public-dto";
 import type { PublicWatch, PublicWatchMeasurementRun } from "@/lib/public-dto";
 import { sampleWatch } from "@/lib/sample-data";
 import type { PromptPanelKind } from "@/lib/types";
-import { publicProfileHref } from "@/lib/public-profile-path";
 
-type WatchView = PublicWatch & { measurementRun?: PublicWatchMeasurementRun | null };
+type WatchView = PublicWatch & { measurementRun?: PublicWatchMeasurementRun | null; publicProfileUrl?: string | null; resultUrl?: string };
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Tokyo" }).format(new Date(value));
@@ -34,6 +33,8 @@ export function WatchClient() {
   const [savingEmail, setSavingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const profileUrl = sample ? "/ai/company/aoba-souzoku?sample=1" : watch?.publicProfileUrl;
+  const profileDestination = profileUrl || watch?.resultUrl || "/";
 
   useEffect(() => {
     if (sample) return;
@@ -221,11 +222,11 @@ export function WatchClient() {
             <div className="watch-header-actions">
               <Link
                 className="button button-secondary"
-                href={publicProfileHref(watch.latest.targetUrl, sample)}
+                href={profileDestination}
                 target="_blank"
                 rel="noreferrer"
               >
-                公開情報参照ページを確認 ↗
+                {profileUrl ? "公開情報参照ページを確認 ↗" : "診断結果から公開情報を確認 ↗"}
               </Link>
               {stopped ? (
                 <span className="watch-status stopped"><i />停止中</span>
@@ -537,12 +538,12 @@ export function WatchClient() {
                 <p className="trend-desc">AI回答に含まれた参照元URLの件数です。Rovanページの採用や推薦を示すものではありません。</p>
                 <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e2e8f0" }}>
                   <Link
-                    href={publicProfileHref(watch.latest.targetUrl, sample)}
+                    href={profileDestination}
                     target="_blank"
                     rel="noreferrer"
                     style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
                   >
-                    公開情報参照ページを確認 ↗
+                    {profileUrl ? "公開情報参照ページを確認 ↗" : "診断結果から公開情報を確認 ↗"}
                   </Link>
                 </div>
               </div>
@@ -619,15 +620,15 @@ export function WatchClient() {
                   <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
                     <strong>【対象企業】 {watch.latest.discovery.brandName}（自社）</strong>
                     <Link
-                      href={publicProfileHref(watch.latest.targetUrl, sample)}
+                      href={profileDestination}
                       target="_blank"
                       rel="noreferrer"
                       style={{ fontSize: "0.72rem", color: "#0284c7", fontWeight: 700, textDecoration: "none" }}
                     >
-                      [公開情報ページ ↗]
+                      {profileUrl ? "[公開情報ページ ↗]" : "[診断結果 ↗]"}
                     </Link>
                   </div>
-                  <small>公開情報ページの内容を参照できます</small>
+                  <small>{profileUrl ? "公開情報ページの内容を参照できます" : "公開中の情報ページはありません"}</small>
                 </td>
                 <td>{watch.baseline.recommendationCoverage}%</td>
                 <td><strong>{watch.latest.recommendationCoverage}%</strong></td>

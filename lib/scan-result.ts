@@ -7,6 +7,7 @@ import { citationCoverage, competitorMetrics, firstChoiceRate, lostPrompts, mark
 import { buildAiVisibilityAudit } from "@/lib/visibility-audit";
 import { panelVersion } from "@/lib/prompt-panels";
 import { derivePositioningAdvice } from "@/lib/positioning";
+import { providers } from "@/lib/providers";
 import type { BuyerPrompt, CompanyDiscovery, CrawlAudit, CrawledPage, Observation, PromptPanelKind, ScanResult } from "@/lib/types";
 
 export async function buildScanResult(input: {
@@ -22,12 +23,13 @@ export async function buildScanResult(input: {
   measuredAt?: string;
 }) {
   const eligible = successful(input.observations);
+  const scheduledObservations = input.prompts.length * input.repetitions * providers.length;
   const lost = lostPrompts(input.prompts, input.observations, input.discovery);
   const analysis = await analyzeEvidence({ discovery: input.discovery, pages: input.pages, lostPrompts: lost });
   const position = marketPosition(input.observations, input.discovery);
   const warnings: string[] = [];
   if (input.discovery.confidence < .65) warnings.push("会社や市場の情報が少ないため、競合との比較は参考値です。");
-  if (eligible.length < input.observations.length) warnings.push("一部のAI回答を取得できなかったため、取得できた回答だけで結果を表示しています。");
+  if (eligible.length < scheduledObservations) warnings.push("一部のAI回答を取得できなかったため、取得できた回答だけで結果を表示しています。");
   if (!eligible.length) warnings.push("AIの回答を取得できなかったため、今回の比較結果は表示できません。時間を置いてもう一度お試しください。");
   if (!input.discovery.competitors.length) warnings.push("比較できる会社を十分に見つけられませんでした。市場を確認してからもう一度お試しください。");
 
@@ -39,9 +41,9 @@ export async function buildScanResult(input: {
     prompts: input.prompts,
     measuredAt: input.measuredAt || new Date().toISOString(),
     observations: input.observations,
-    scheduledObservations: input.observations.length,
+    scheduledObservations,
     successfulObservations: eligible.length,
-    measurementCompleteness: input.observations.length ? Math.round((eligible.length / input.observations.length) * 100) : 0,
+    measurementCompleteness: scheduledObservations ? Math.round((eligible.length / scheduledObservations) * 100) : 0,
     recommendationCoverage: recommendationCoverage(input.observations),
     firstChoiceRate: firstChoiceRate(input.observations, input.discovery.brandName),
     mentionCoverage: mentionCoverage(input.observations, input.discovery.aliases),

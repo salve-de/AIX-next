@@ -1,6 +1,7 @@
 import "server-only";
 import { env } from "@/lib/env";
 import { id } from "@/lib/ids";
+import { durableStorageAvailable } from "@/lib/runtime-readiness";
 import { getWatch, updateWatch } from "@/lib/storage";
 import type { BuyerPrompt, CompanyDiscovery, Observation, PromptPanelKind, ScanResult, WatchMeasurementRun, WatchStatus } from "@/lib/types";
 
@@ -9,11 +10,12 @@ const memoryRuns = globalRuns.aixNextWatchRuns ?? new Map<string, WatchMeasureme
 globalRuns.aixNextWatchRuns = memoryRuns;
 
 function durable() {
-  return Boolean(env.supabaseUrl && env.supabaseServiceKey);
+  return durableStorageAvailable();
 }
 
 async function supabase<T>(path: string, init: RequestInit = {}) {
   const response = await fetch(`${env.supabaseUrl}/rest/v1/${path}`, {
+    signal: AbortSignal.timeout(15_000),
     ...init,
     headers: {
       apikey: env.supabaseServiceKey,
@@ -22,7 +24,7 @@ async function supabase<T>(path: string, init: RequestInit = {}) {
       ...(init.headers || {}),
     },
   });
-  if (!response.ok) throw new Error(`Watch run storage ${response.status}: ${(await response.text()).slice(0, 300)}`);
+  if (!response.ok) throw new Error(`測定履歴を保存できませんでした (${response.status})。`);
   const text = await response.text();
   return (text ? JSON.parse(text) : null) as T;
 }

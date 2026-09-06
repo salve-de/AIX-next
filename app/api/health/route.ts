@@ -1,4 +1,6 @@
 import { env, providerReadiness } from "@/lib/env";
+import { sellerReady } from "@/lib/legal";
+import { configurationFailures, isProductionRuntime } from "@/lib/runtime-readiness";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,18 +16,20 @@ export async function GET() {
     persistence: Boolean(env.supabaseUrl && env.supabaseServiceKey),
     watchEmail: Boolean(env.resendApiKey && env.watchFromEmail),
     billing: Boolean(env.stripeSecretKey && env.stripePriceId && env.stripeWebhookSecret),
+    seller: sellerReady(),
     scheduler: Boolean(env.cronSecret),
-    productionUrl: !env.siteUrl.includes("localhost"),
-    abuseProtection: Boolean(env.rateLimitSalt && env.rateLimitSalt !== "development-only"),
+    productionUrl: !configurationFailures().some((key) => key.startsWith("NEXT_PUBLIC_SITE_URL")),
+    abuseProtection: env.rateLimitSalt.length >= 32 && env.rateLimitSalt !== "development-only",
   };
-  const scanReady = readiness.discovery && readiness.aiMeasurement;
+  const scanReady = readiness.discovery && readiness.aiMeasurement && readiness.persistence && readiness.productionUrl && readiness.abuseProtection;
   const watchReady = scanReady && readiness.persistence && readiness.scheduler;
-  const paidReady = watchReady && readiness.billing;
+  const paidReady = watchReady && readiness.billing && readiness.seller;
   return Response.json({
     product: "Rovan",
     version: "0.1.0",
-    status: paidReady ? "paid-watch-ready" : watchReady ? "watch-ready" : scanReady ? "scan-ready" : liveProviders ? "partially-configured" : "sample-only",
+    status: paidReady ? "paid-watch-configured" : watchReady ? "watch-configured" : scanReady ? "scan-configured" : liveProviders ? "partially-configured" : "sample-only",
+    verification: "configuration-only",
     generatedAt: new Date().toISOString(),
     readiness,
-  }, { headers: { "cache-control": "no-store" } });
+  }, { status: isProductionRuntime() && configurationFailures().length ? 503 : 200, headers: { "cache-control": "no-store" } });
 }

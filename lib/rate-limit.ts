@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { env } from "@/lib/env";
+import { durableStorageAvailable } from "@/lib/runtime-readiness";
 
 const globalLimits = globalThis as unknown as { aixNextLimits?: Map<string, { count: number; resetAt: number }> };
 const memory = globalLimits.aixNextLimits ?? new Map<string, { count: number; resetAt: number }>();
@@ -17,6 +18,7 @@ function clientIp(request: Request) {
 async function consumeSupabase(key: string, limit: number, windowSeconds: number) {
   if (!env.supabaseUrl || !env.supabaseServiceKey) return null;
   const response = await fetch(`${env.supabaseUrl}/rest/v1/rpc/aix_next_consume_rate_limit`, {
+    signal: AbortSignal.timeout(10_000),
     method: "POST",
     headers: { apikey: env.supabaseServiceKey, authorization: `Bearer ${env.supabaseServiceKey}`, "content-type": "application/json" },
     body: JSON.stringify({ p_key: key, p_limit: limit, p_window_seconds: windowSeconds }),
@@ -34,11 +36,20 @@ function consumeMemory(key: string, limit: number, windowSeconds: number) {
 }
 
 async function consume(key: string, limit: number, windowSeconds: number) {
-  if (env.supabaseUrl && env.supabaseServiceKey) {
+  if (durableStorageAvailable()) {
     const value = await consumeSupabase(key, limit, windowSeconds);
     if (value) return value;
   }
   return consumeMemory(key, limit, windowSeconds);
+}
+
+/** Bound public-profile creation independently of paid scans. */
+export async function consumeProfileCreation(request: Request) {
+  try {
+    return result(await consume(`ip-profile:${hash(clientIp(request))}`, 10, 3600));
+  } catch {
+    return { allowed: false, retryAfter: 60 };
+  }
 }
 
 function result(value: { allowed: boolean; reset_at: string }) {
