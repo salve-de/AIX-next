@@ -99,122 +99,19 @@ export default function HomePage() {
       <GoogleDeclineProblemSection />
 
       {/* ================================================================= */}
-      {/* 3. このサービスで何が起きるのか？（社名を入れるだけで起きる3つの変化） */}
+      {/* 3. このサービスで手に入るもの（社名を入れるだけで届く「2つの武器」） */}
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">このサービスで起きること</span>
-          <h2>社名を入力するだけで、<br />御社に起きる「3つの変化」</h2>
+          <span className="pill-badge">手に入る2つの確定成果物</span>
+          <h2>社名を入力するだけで、<br />手元に届く「2つの武器」</h2>
           <p>
-            ホームページの改修も、専門知識も一切不要。<br />
-            社名を入れた瞬間から、AIが御社を正しく推薦できる環境へと自動で切り替わります。
+            今のホームページの改修も、専門知識も一切不要。<br />
+            社名を入れるだけで、「自社の現状を暴く診断レポート」と「大手を逆転するAI公式データ」がその場で手に入ります。
           </p>
         </div>
 
-        {/* 3ステップの直感ストーリーカード（何がどうなるかが0.1秒でわかる） */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(260px, 100%), 1fr))",
-            gap: "16px",
-            marginBottom: "36px",
-          }}
-        >
-          {/* Step 1 */}
-          <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "8px",
-              padding: "22px 20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-              <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "#475569", background: "#f1f5f9", padding: "2px 8px", borderRadius: "3px", fontFamily: "var(--font-mono, monospace)" }}>
-                STEP 01
-              </span>
-              <span style={{ fontSize: "0.72rem", color: "#64748b" }}>所要10秒・無料</span>
-            </div>
-            <strong style={{ fontSize: "1.02rem", color: "#0f172a", lineHeight: 1.4, marginBottom: "8px" }}>
-              10秒で「自社の現状」が判明
-            </strong>
-            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: "0 0 14px" }}>
-              主要AIで御社を実際に検索し、「客を他社に奪われていないか」を客観的に白黒判定します。
-            </p>
-            <div style={{ marginTop: "auto", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "8px 10px", borderRadius: "4px", fontSize: "0.74rem", color: "#334155", fontWeight: 600 }}>
-              届くもの：自社専用 AI診断レポート
-            </div>
-          </div>
-
-          {/* Step 2 */}
-          <div
-            style={{
-              background: "#ffffff",
-              border: "1px solid #cbd5e1",
-              borderRadius: "8px",
-              padding: "22px 20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-              <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "#0f172a", background: "#e2e8f0", padding: "2px 8px", borderRadius: "3px", fontFamily: "var(--font-mono, monospace)" }}>
-                STEP 02
-              </span>
-              <span style={{ fontSize: "0.72rem", color: "#0284c7", fontWeight: 600 }}>作業ゼロ・即日開設</span>
-            </div>
-            <strong style={{ fontSize: "1.02rem", color: "#0f172a", lineHeight: 1.4, marginBottom: "8px" }}>
-              専用データをネット上に即日配備
-            </strong>
-            <p style={{ fontSize: "0.82rem", color: "#475569", lineHeight: 1.6, margin: "0 0 14px" }}>
-              自社サイトはいじらず、AIが一番読み取りやすい「御社の本当の強み」を自動公開します。
-            </p>
-            <div style={{ marginTop: "auto", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "8px 10px", borderRadius: "4px", fontSize: "0.74rem", color: "#334155", fontWeight: 600 }}>
-              配備されるもの：自社専用 AI公式推薦データ
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div
-            style={{
-              background: "#0f172a",
-              color: "#ffffff",
-              border: "1px solid #0f172a",
-              borderRadius: "8px",
-              padding: "22px 20px",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 4px 14px rgba(15, 23, 42, 0.12)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
-              <span style={{ fontSize: "0.68rem", fontWeight: 800, color: "#38bdf8", background: "#1e293b", padding: "2px 8px", borderRadius: "3px", fontFamily: "var(--font-mono, monospace)" }}>
-                STEP 03
-              </span>
-              <span style={{ fontSize: "0.72rem", color: "#38bdf8", fontWeight: 600 }}>最終ゴール</span>
-            </div>
-            <strong style={{ fontSize: "1.02rem", color: "#ffffff", lineHeight: 1.4, marginBottom: "8px" }}>
-              明日から「AI推薦の有力候補」へ堂々浮上
-            </strong>
-            <p style={{ fontSize: "0.82rem", color: "#cbd5e1", lineHeight: 1.6, margin: "0 0 14px" }}>
-              お客さんがAIに相談した際、大手に埋もれることなく、御社ならではの強みに基づいて推薦候補として提示される体制が整います。
-            </p>
-            <div style={{ marginTop: "auto", background: "#1e293b", border: "1px solid #334155", padding: "8px 10px", borderRadius: "4px", fontSize: "0.74rem", color: "#38bdf8", fontWeight: 700 }}>
-              得られる成果：大手に独占されていた推薦枠へ堂々参入
-            </div>
-          </div>
-        </div>
-
-        {/* 診断で手に入る2つの実物見本プレビュー */}
-        <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <span style={{ fontSize: "0.76rem", color: "#64748b", fontWeight: 700, letterSpacing: "0.04em" }}>
-            ▼ 実際に手元に届く「2つの実物見本」
-          </span>
-        </div>
+        {/* 左右2大成果物プレミアムショーケース */}
         <div style={{ marginBottom: "32px" }}>
           <ProductOutputPreview />
         </div>
