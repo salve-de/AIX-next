@@ -139,11 +139,7 @@ export function ScanForm({ compact = false }: { compact?: boolean }) {
           </button>
         </div>
         {error ? <p className="form-error" role="alert">{error}</p> : null}
-        {!compact ? (
-          <p className="scan-form-note" style={{ color: "#64748b", fontSize: "0.72rem", marginTop: "6px" }}>
-            ※ 同名店舗・他社との混同を防ぐため「店名 ＋ 地域（例: さくらベーカリー 世田谷）」の入力も可能です
-          </p>
-        ) : null}
+
 
         {!compact ? (
           <div className="scan-extra-section">
