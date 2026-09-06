@@ -1,4 +1,4 @@
-name: Clean temporary AIX Next promotion automation
+name: Clean temporary Rovan promotion automation
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
         run: |
           rm -f .github/workflows/promote-clean-room.yml
           rm -f .github/workflows/cleanup-promotion.yml
-          git config user.name "AIX Next Release Bot"
+          git config user.name "Rovan Release Bot"
           git config user.email "actions@github.com"
           git add -A
           if ! git diff --cached --quiet; then

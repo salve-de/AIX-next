@@ -1,4 +1,4 @@
-name: Validate and promote clean-room AIX Next
+name: Validate and promote clean-room Rovan
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: aix-next-clean-room-promotion
+  group: rovan-clean-room-promotion
   cancel-in-progress: true
 
 jobs:
@@ -32,10 +32,10 @@ jobs:
         shell: bash
         run: |
           set +e
-          : > /tmp/aix-ci.log
+          : > /tmp/rovan-ci.log
           for command in "npm run lint" "npm test" "npm run typecheck" "npm run build" "npm audit --omit=dev --audit-level=high"; do
-            echo "\n## $command" | tee -a /tmp/aix-ci.log
-            bash -lc "$command" 2>&1 | tee -a /tmp/aix-ci.log
+            echo "\n## $command" | tee -a /tmp/rovan-ci.log
+            bash -lc "$command" 2>&1 | tee -a /tmp/rovan-ci.log
             status=${PIPESTATUS[0]}
             if [ "$status" -ne 0 ]; then
               echo "FAILED_COMMAND=$command" >> "$GITHUB_ENV"
@@ -48,7 +48,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          git config user.name "AIX Next Quality Bot"
+          git config user.name "Rovan Quality Bot"
           git config user.email "actions@github.com"
           if [ "${{ steps.quality.outputs.quality_status }}" = "failed" ]; then
             {
@@ -57,7 +57,7 @@ jobs:
               echo "Failed command: \`${FAILED_COMMAND}\`"
               echo
               echo '```text'
-              tail -n 500 /tmp/aix-ci.log
+              tail -n 500 /tmp/rovan-ci.log
               echo '```'
             } > docs/CI_FAILURE.md
           else
