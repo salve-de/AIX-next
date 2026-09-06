@@ -8,6 +8,7 @@ import {
 } from "../lib/autonomous-watch";
 import type { AutoAction, CrawledPage, ScanResult } from "../lib/types";
 import { sampleResult } from "../lib/sample-data";
+import { extractCompetitorTextDiff } from "../lib/competitor-diff";
 
 test("detectCompetitorWebChanges detects meaningful competitor uplift and creates CompetitorEvent", () => {
   const previous: ScanResult = {
@@ -215,7 +216,6 @@ test("buildMonthlyValueReport generates complete executive monthly summary witho
 });
 
 test("extractCompetitorTextDiff extracts objective diff snippets without hallucinated text", () => {
-  const { extractCompetitorTextDiff } = require("../lib/competitor-diff");
   const previousText = "当社は地域密着の不動産会社です。仲介業務を行っています。";
   const currentText = "当社は地域密着の不動産会社です。仲介業務を行っています。最短即日での直接買取に対応を開始しました。買取手数料無料・仲介手数料0円です。";
 

@@ -202,13 +202,16 @@ Current sequence includes `001_core.sql` through `010_public_profiles.sql`.
 
 Without Supabase, local development uses a single-process in-memory store. It is not suitable for multi-instance production.
 
-## Scheduler
+## Autonomous Watch Scheduler (10,000-Company Scale Standard)
 
-Call the protected Watch route according to the intended scheduler configuration. It selects only due Watch records and resumes chunked paid measurements when required.
+Production autonomous monitoring runs on **Google Cloud Run Jobs + Cloud Scheduler** to ensure unlimited execution time, atomic DB leasing, and up to 1,000 parallel distributed tasks.
 
-```http
-GET /api/cron/watch
-Authorization: Bearer $CRON_SECRET
+```bash
+# One-click deployment to Google Cloud Run Jobs & Cloud Scheduler
+./scripts/deploy-cloud-run-job.sh
+
+# Run locally or inside container:
+npm run watch:job
 ```
 
 ## Validation

@@ -6,6 +6,11 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 export const dynamic = "force-dynamic";
 
+/**
+ * 【注意】本エンドポイントは開発検証・手動単発トリガー用の軽量フォールバックです。
+ * 本番の10,000社スケール定期バッチ実行は、タイムアウト制限がなく並列分散処理可能な
+ * Google Cloud Run Jobs（`scripts/run-weekly-watch.ts` ＋ Cloud Scheduler）が公式正統規格です。
+ */
 function authorized(request: Request) {
   const header = request.headers.get("authorization") || "";
   return Boolean(env.cronSecret) && header === `Bearer ${env.cronSecret}`;

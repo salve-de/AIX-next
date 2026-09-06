@@ -89,17 +89,9 @@ A partial scan is a valid product state. Provider failures are shown, excluded f
 
 The customer draft is stored inside the existing Change Pack JSON and is never published automatically. It must be checked against the customer site before use.
 
-### External writes
+### Zero-Effort External Index (No Customer Site Modification)
 
-MVP does not write to a customer site. A later execution layer must require:
-
-1. verified domain ownership;
-2. an approved change pack;
-3. least-privilege connector scopes;
-4. preview and audit log;
-5. rollback path.
-
-GitHub execution creates a branch and pull request, never a direct main write. WordPress execution creates a Draft, never an automatic Publish.
+AIX never modifies the customer's website or WordPress server. Instead, it deploys and maintains an external AI-readable index (`/ai/company/[slug]`) backed by structured JSON-LD and verified facts. This ensures zero onboarding effort for the customer and zero liability for site outages.
 
 ## Data model
 
@@ -116,15 +108,16 @@ Core records:
 - actions;
 - Watch history;
 - evidence answers;
-- subscription state.
+- subscription state;
+- public profile facts & versions.
 
 ## Production dependencies
 
 - OpenAI API for company discovery and one AI search surface;
 - Gemini API for grounded search;
 - Perplexity API for Sonar;
-- Supabase for durable storage;
-- Stripe for paid Watch;
-- a scheduler that calls the protected Watch cron route.
+- Supabase for durable storage and atomic claim leasing (`aix_next_claim_due_watches`);
+- Stripe for paid Watch (¥9,800/mo);
+- Google Cloud Run Jobs + Cloud Scheduler for 10,000-company scale autonomous weekly batch execution.
 
 All features fail closed when their credential is absent. Sample pages remain available without credentials.

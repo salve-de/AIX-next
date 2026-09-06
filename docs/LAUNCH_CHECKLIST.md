@@ -37,7 +37,7 @@ The codebase can run locally and the fictional product experience requires no cr
 
 ## 4. Billing
 
-- [ ] Create a monthly Stripe Product and Price for ¥29,800 before tax.
+- [ ] Create a monthly Stripe Product and Price for ¥9,800 before tax (Zero-Effort Autonomous Watch Plan).
 - [ ] Set `STRIPE_PRICE_ID`.
 - [ ] Configure the Checkout domain and business information.
 - [ ] Configure `/api/billing/webhook`.
@@ -46,13 +46,12 @@ The codebase can run locally and the fictional product experience requires no cr
 - [ ] Test checkout success, cancellation, failed payment and subscription deletion.
 - [ ] Confirm invoice/tax behavior with accounting support.
 
-## 5. Scheduler and operations
+## 5. Scheduler and operations (Cloud Run Jobs Standard)
 
-- [ ] Generate a strong `CRON_SECRET`.
-- [ ] Call `/api/cron/watch` daily with the Bearer secret.
-- [ ] Confirm a due Watch is selected only once.
-- [ ] Configure provider outage alerts.
-- [ ] Configure cost anomaly alerts.
+- [ ] Run `./scripts/deploy-cloud-run-job.sh` to configure Cloud Run Jobs & Cloud Scheduler (every Monday at 09:00 JST).
+- [ ] Verify atomic DB leasing (`claimDueWatches`) prevents duplicated runs across distributed tasks.
+- [ ] Configure provider outage alerts in Cloud Logging.
+- [ ] Configure cost anomaly alerts in GCP Billing.
 - [ ] Set `RATE_LIMIT_SALT` to a random production secret.
 - [ ] Verify per-IP and per-domain scan limits.
 - [ ] Publish the final AIXNextBot URL and support contact.
