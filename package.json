@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/**/*.test.ts",
+    "watch:job": "tsx scripts/run-weekly-watch.ts",
     "check": "npm run lint && npm test && npm run typecheck && npm run build"
   },
   "dependencies": {
