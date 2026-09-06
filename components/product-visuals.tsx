@@ -6,12 +6,12 @@ import { ArrowIcon, EvidenceIcon, TrendIcon } from "@/components/icons";
 
 export function HeroChatDiagnosticCard() {
   return (
-    <div className="hero-chat-split-container" aria-label="ChatGPTでの推薦ビフォーアフター実況">
+    <div className="hero-chat-split-container" aria-label="AIでの推薦ビフォーアフター実況">
       {/* 共通の起点：買い手（見込み客）の生々しい相談 */}
       <div className="split-user-prompt-box">
         <div className="split-prompt-header">
           <span className="split-prompt-dot" aria-hidden="true" />
-          <span className="split-prompt-label">買い手（見込み客）がChatGPTにした相談</span>
+          <span className="split-prompt-label">買い手（見込み客）がAIにした相談</span>
         </div>
         <p className="split-prompt-text">
           「大手が断るような急ぎの小ロット試作、親身に対応してくれる町工場はある？」
@@ -29,7 +29,7 @@ export function HeroChatDiagnosticCard() {
           </div>
           <div className="split-card-body">
             <div className="ai-speaker-bar">
-              <span className="ai-name">ChatGPT (GPT-4o) の回答</span>
+              <span className="ai-name">AIの回答</span>
               <span className="ai-status">大手優先</span>
             </div>
             <p className="ai-dialogue-text">
@@ -64,7 +64,7 @@ export function HeroChatDiagnosticCard() {
           </div>
           <div className="split-card-body">
             <div className="ai-speaker-bar">
-              <span className="ai-name">ChatGPT (GPT-4o) の回答</span>
+              <span className="ai-name">AIの回答</span>
               <span className="ai-status status-won">強みに合致して選定</span>
             </div>
             <p className="ai-dialogue-text ai-dialogue-won">
@@ -81,7 +81,7 @@ export function HeroChatDiagnosticCard() {
       {/* カード下部の安心注記 */}
       <div className="split-footer-bar">
         <span>※ ホームページの改修・新たな開設は不要（所要10秒）</span>
-        <span className="split-footer-tag">ChatGPT / Perplexity / Gemini 全対応</span>
+        <span className="split-footer-tag">主要AIすべてに対応</span>
       </div>
     </div>
   );

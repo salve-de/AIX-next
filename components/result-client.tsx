@@ -290,7 +290,7 @@ export function ResultClient() {
             </span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "#334155", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "10px 14px", borderRadius: "6px" }}>
-            <div><strong>調査対象AI:</strong> ChatGPT (GPT-4o) / Perplexity / Google Gemini</div>
+            <div><strong>調査対象AI:</strong> ChatGPT / Perplexity / Google Gemini</div>
             <div><strong>調査母数:</strong> 顧客が相談する質問 {result.panel.promptCount}問 × 主要AI実測（計 {result.successfulObservations}件）</div>
             <div><strong>調査方法:</strong> 各AIに同一条件で質問し、回答ログを直接収集・検証</div>
             <div><strong>判定基準:</strong> AIが「おすすめ」として提示した会社名および紹介文の分析</div>

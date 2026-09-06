@@ -60,12 +60,6 @@ export default function HomePage() {
               </span>
             </div>
 
-            {/* 実地調査する主要AI（丸ボタンを排した品格ある表示） */}
-            <div className="hero-ai-targets-clean" aria-label="実地調査する主要生成AI">
-              <span className="ai-clean-caption">実地調査する主要AI:</span>
-              <span className="ai-clean-names">ChatGPT / Perplexity / Google Gemini / Claude</span>
-            </div>
-
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
               <Link className="hero-sample-link" href="/result?sample=1">
@@ -84,7 +78,7 @@ export default function HomePage() {
           <span className="pill-badge">AI対話の劇的ビフォーアフター</span>
           <h2>お客さんがAIに聞いた時、<br />回答はどう変わるのか？（実況対比）</h2>
           <p>
-            ChatGPTやPerplexityなどの主要AIで、買い手が相談した際の回答を実際に調査。<br />
+            買い手がAIに相談した際、回答がどう変わるのかを実際にシミュレーション。<br />
             AI向け公式データがない状態では知名度の高い大手が選ばれ、公式データを配備すると御社が指名推薦されます。
           </p>
         </div>
