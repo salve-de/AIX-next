@@ -32,9 +32,15 @@ function providerLabel(provider: string) {
 export function QuestionList({ result }: { result: ScanResult }) {
   const [stage, setStage] = useState<Stage>("すべて");
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+  const [showAllQuestions, setShowAllQuestions] = useState(false);
 
   const filtered = useMemo(() => result.lostPrompts.filter((loss) => stage === "すべて" || stageFor(result, loss) === stage), [result, stage]);
-  const counts = useMemo(() => ( ["認知", "比較", "検討", "導入"] as const).map((item) => ({ stage: item, count: result.lostPrompts.filter((loss) => stageFor(result, loss) === item).length })), [result]);
+  const counts = useMemo(() => (["認知", "比較", "検討", "導入"] as const).map((item) => ({ stage: item, count: result.lostPrompts.filter((loss) => stageFor(result, loss) === item).length })), [result]);
+
+  const displayedList = useMemo(() => {
+    if (showAllQuestions || stage !== "すべて") return filtered.slice(0, 12);
+    return filtered.slice(0, 3);
+  }, [filtered, showAllQuestions, stage]);
 
   function toggleExpand(id: string) {
     setExpandedIds((prev) => {
@@ -55,14 +61,52 @@ export function QuestionList({ result }: { result: ScanResult }) {
 
   return (
     <div className="question-list-wrap">
-      <div className="question-list-toolbar" aria-label="質問を絞り込む" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label htmlFor="question-stage">購入段階</label>
-          <select id="question-stage" value={stage} onChange={(event) => setStage(event.target.value as Stage)}>
+      {/* 絞り込みツールバー */}
+      <div
+        className="question-list-toolbar shadow-ambient-sm"
+        aria-label="質問を絞り込む"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "12px",
+          background: "var(--bg-base, #ffffff)",
+          border: "1px solid var(--border-subtle, #e2e8f0)",
+          borderRadius: "10px",
+          padding: "12px 18px",
+          marginBottom: "16px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+          <label htmlFor="question-stage" style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--navy, #0f172a)" }}>
+            購入段階で絞り込み:
+          </label>
+          <select
+            id="question-stage"
+            value={stage}
+            onChange={(event) => setStage(event.target.value as Stage)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: "6px",
+              border: "1px solid var(--border-subtle, #cbd5e1)",
+              background: "#ffffff",
+              fontSize: "0.82rem",
+              fontWeight: 600,
+              color: "var(--navy, #0f172a)",
+              outline: "none",
+            }}
+          >
             <option value="すべて">すべて（{result.lostPrompts.length}問）</option>
-            {counts.map((item) => <option value={item.stage} key={item.stage}>{item.stage}（{item.count}問）</option>)}
+            {counts.map((item) => (
+              <option value={item.stage} key={item.stage}>
+                {item.stage}（{item.count}問）
+              </option>
+            ))}
           </select>
-          <span>{filtered.length}問を表示</span>
+          <span style={{ fontSize: "0.78rem", color: "var(--text-muted, #64748b)" }}>
+            {filtered.length}問中 {displayedList.length}問を表示
+          </span>
         </div>
 
         <button
@@ -70,63 +114,141 @@ export function QuestionList({ result }: { result: ScanResult }) {
           onClick={toggleAll}
           style={{
             fontSize: "0.78rem",
-            padding: "4px 12px",
-            background: "#f1f5f9",
-            border: "1px solid #cbd5e1",
+            padding: "6px 14px",
+            background: "var(--bg-surface, #f8fafc)",
+            border: "1px solid var(--border-subtle, #cbd5e1)",
             borderRadius: "6px",
             cursor: "pointer",
-            fontWeight: 600,
-            color: "#334155",
+            fontWeight: 700,
+            color: "var(--navy, #0f172a)",
+            boxShadow: "0 1px 2px rgba(15, 23, 42, 0.04)",
+            transition: "all 0.15s ease",
           }}
         >
-          {expandedIds.size === filtered.length ? "全問の出展・AI推論根拠を閉じる" : "全問の出展・AI推論根拠を一括展開（検証）"}
+          {expandedIds.size === filtered.length ? "全問のAI推論根拠を閉じる" : "全問のAI推論根拠を一括展開（検証ログ）"}
         </button>
       </div>
 
-      <div className="question-list">
-        {filtered.slice(0, 12).map((loss, index) => {
+      {/* 質問カード一覧 */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        {displayedList.map((loss, index) => {
           const stageName = stageFor(result, loss);
           const isExpanded = expandedIds.has(loss.promptId);
 
           return (
-            <article key={loss.promptId} style={{ display: "block", marginBottom: "16px" }}>
-              <div style={{ display: "flex", alignItems: "flex-start", gap: "14px", width: "100%" }}>
-                <div className="question-number">{String(index + 1).padStart(2, "0")}</div>
-                <div className="question-main" style={{ flex: 1 }}>
-                  <small className="question-context">{stageLabel(stageName)}</small>
-                  <h3>「{loss.prompt}」</h3>
-                  <p>{loss.summary}</p>
+            <article
+              key={loss.promptId}
+              className="shadow-ambient-sm"
+              style={{
+                display: "block",
+                background: "var(--bg-base, #ffffff)",
+                border: "1px solid var(--border-subtle, #e2e8f0)",
+                borderRadius: "12px",
+                padding: "20px 24px",
+                transition: "all 0.2s ease",
+                boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", flexWrap: "wrap" }}>
+                {/* 番号 */}
+                <div
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    background: "var(--bg-surface, #f1f5f9)",
+                    border: "1px solid var(--border-subtle, #e2e8f0)",
+                    color: "var(--navy, #0f172a)",
+                    display: "grid",
+                    placeItems: "center",
+                    fontSize: "0.85rem",
+                    fontWeight: 800,
+                    fontFamily: "var(--font-mono, monospace)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {String(index + 1).padStart(2, "0")}
                 </div>
-                <div className="question-outcome" style={{ flexShrink: 0 }}>
-                  <span>先に選ばれた競合<strong>{loss.winner || "特定できず"}</strong></span>
-                  <span>自社<strong className="lost-text">候補外</strong></span>
+
+                {/* 質問本文と要約 */}
+                <div style={{ flex: "1 1 400px", minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        background: "var(--bg-surface, #f1f5f9)",
+                        color: "var(--text-secondary, #475569)",
+                        padding: "2px 8px",
+                        borderRadius: "4px",
+                        border: "1px solid var(--border-subtle, #e2e8f0)",
+                      }}
+                    >
+                      {stageLabel(stageName)}
+                    </span>
+                  </div>
+                  <h3 style={{ margin: "0 0 8px", fontSize: "1.02rem", fontWeight: 700, color: "var(--navy, #0f172a)", lineHeight: 1.45 }}>
+                    「{loss.prompt}」
+                  </h3>
+                  <p style={{ margin: 0, fontSize: "0.86rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
+                    {loss.summary}
+                  </p>
+                </div>
+
+                {/* 勝敗判定バッジ */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                    flexShrink: 0,
+                    background: "var(--bg-surface, #f8fafc)",
+                    border: "1px solid var(--border-subtle, #e2e8f0)",
+                    borderRadius: "8px",
+                    padding: "10px 14px",
+                    minWidth: "180px",
+                  }}
+                >
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
+                    先に選ばれた競合:
+                    <strong style={{ display: "block", fontSize: "0.86rem", color: "var(--navy, #0f172a)", fontWeight: 700, marginTop: "2px" }}>
+                      {loss.winner || "特定できず"}
+                    </strong>
+                  </div>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)", borderTop: "1px solid #e2e8f0", paddingTop: "4px" }}>
+                    自社:
+                    <strong style={{ display: "block", fontSize: "0.86rem", color: "var(--orange, #dc2626)", fontWeight: 800, marginTop: "2px" }}>
+                      候補外（選出されず）
+                    </strong>
+                  </div>
                 </div>
               </div>
 
               {/* 出展・AI推論検証トグルボタン */}
-              <div style={{ marginTop: "10px", paddingTop: "8px", borderTop: "1px dashed #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ marginTop: "14px", paddingTop: "12px", borderTop: "1px solid var(--border-subtle, #f1f5f9)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
                 <button
                   type="button"
                   onClick={() => toggleExpand(loss.promptId)}
                   style={{
-                    background: isExpanded ? "#e0f2fe" : "#f8fafc",
-                    border: isExpanded ? "1px solid #7dd3fc" : "1px solid #e2e8f0",
-                    color: isExpanded ? "#0369a1" : "#475569",
-                    padding: "4px 10px",
-                    borderRadius: "4px",
-                    fontSize: "0.75rem",
+                    background: isExpanded ? "#e0f2fe" : "var(--bg-surface, #f8fafc)",
+                    border: isExpanded ? "1px solid #7dd3fc" : "1px solid var(--border-subtle, #e2e8f0)",
+                    color: isExpanded ? "#0369a1" : "var(--navy, #0f172a)",
+                    padding: "6px 12px",
+                    borderRadius: "6px",
+                    fontSize: "0.76rem",
                     fontWeight: 700,
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "6px",
+                    transition: "all 0.15s ease",
                   }}
                   aria-expanded={isExpanded}
                 >
                   <span>{isExpanded ? "▲" : "▼"}</span>
                   <span>{isExpanded ? "AI推論根拠・出展ソースを閉じる" : "AI推論根拠・出展ソースを検証する（バックトレース証跡ログ）"}</span>
                 </button>
-                <span style={{ fontSize: "0.7rem", color: "#94a3b8", fontFamily: "var(--font-mono, monospace)" }}>
+                <span style={{ fontSize: "0.72rem", color: "var(--text-muted, #94a3b8)", fontFamily: "var(--font-mono, monospace)" }}>
                   AUDIT: {loss.observations.length} MODELS OBSERVED
                 </span>
               </div>
@@ -136,19 +258,19 @@ export function QuestionList({ result }: { result: ScanResult }) {
                 <div
                   className="question-evidence-panel"
                   style={{
-                    marginTop: "10px",
-                    padding: "14px",
-                    background: "#f8fafc",
-                    border: "1px solid #cbd5e1",
-                    borderRadius: "8px",
-                    fontSize: "0.8rem",
+                    marginTop: "12px",
+                    padding: "16px 18px",
+                    background: "var(--bg-surface, #f8fafc)",
+                    border: "1px solid var(--border-subtle, #cbd5e1)",
+                    borderRadius: "10px",
+                    fontSize: "0.82rem",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px", borderBottom: "1px solid #e2e8f0", paddingBottom: "6px" }}>
-                    <strong style={{ color: "#0f172a", fontSize: "0.82rem" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
+                    <strong style={{ color: "var(--navy, #0f172a)", fontSize: "0.84rem" }}>
                       AI観測生ログ ＆ 一次情報出展リスト（バックトレース監査）
                     </strong>
-                    <span style={{ fontSize: "0.72rem", color: "#64748b" }}>
+                    <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
                       入力質問: 「{loss.prompt}」
                     </span>
                   </div>
@@ -160,12 +282,13 @@ export function QuestionList({ result }: { result: ScanResult }) {
                         key={obs.id}
                         style={{
                           background: "#ffffff",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "6px",
-                          padding: "10px 12px",
+                          border: "1px solid var(--border-subtle, #e2e8f0)",
+                          borderRadius: "8px",
+                          padding: "12px 14px",
+                          boxShadow: "0 1px 2px rgba(15, 23, 42, 0.02)",
                         }}
                       >
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px", flexWrap: "wrap", gap: "6px" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "6px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                             <span
                               style={{
@@ -173,39 +296,39 @@ export function QuestionList({ result }: { result: ScanResult }) {
                                 fontWeight: 800,
                                 background: obs.provider === "openai" ? "#10a37f" : obs.provider === "perplexity" ? "#20808d" : "#4285f4",
                                 color: "#ffffff",
-                                padding: "2px 6px",
+                                padding: "2px 8px",
                                 borderRadius: "4px",
                               }}
                             >
                               {providerLabel(obs.provider)}
                             </span>
-                            <code style={{ fontSize: "0.72rem", color: "#475569" }}>{obs.model}</code>
+                            <code style={{ fontSize: "0.74rem", color: "var(--text-secondary, #475569)" }}>{obs.model}</code>
                           </div>
-                          <div style={{ fontSize: "0.7rem", color: "#64748b" }}>
+                          <div style={{ fontSize: "0.72rem", color: "var(--text-muted, #64748b)" }}>
                             観測日時: {new Date(obs.startedAt).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })} · 応答: {obs.latencyMs}ms
                           </div>
                         </div>
 
                         {/* AIの生回答抜粋 */}
-                        <div style={{ background: "#f1f5f9", padding: "8px 10px", borderRadius: "4px", marginBottom: "8px", fontSize: "0.78rem", color: "#1e293b", lineHeight: 1.5 }}>
-                          <strong style={{ display: "block", fontSize: "0.72rem", color: "#64748b", marginBottom: "2px" }}>AIの推論回答（抜粋）:</strong>
+                        <div style={{ background: "var(--bg-surface, #f1f5f9)", padding: "10px 12px", borderRadius: "6px", marginBottom: "10px", fontSize: "0.8rem", color: "#1e293b", lineHeight: 1.6 }}>
+                          <strong style={{ display: "block", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", marginBottom: "4px" }}>AIの推論回答（抜粋）:</strong>
                           {obs.rawText}
                         </div>
 
                         {/* AIが参照した一次情報ソース（出展URL） */}
                         {obs.citations && obs.citations.length > 0 ? (
                           <div>
-                            <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#475569", display: "block", marginBottom: "4px" }}>
+                            <span style={{ fontSize: "0.74rem", fontWeight: 700, color: "var(--text-secondary, #475569)", display: "block", marginBottom: "4px" }}>
                               AIが推論根拠として参照・引用した一次情報出展（Web Search Sources）:
                             </span>
-                            <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "0.75rem" }}>
+                            <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "0.76rem" }}>
                               {obs.citations.map((cite: Citation, cIdx: number) => (
-                                <li key={cIdx} style={{ marginBottom: "2px" }}>
+                                <li key={cIdx} style={{ marginBottom: "3px" }}>
                                   <a
                                     href={cite.url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    style={{ color: "#0284c7", textDecoration: "underline", wordBreak: "break-all" }}
+                                    style={{ color: "var(--accent-blue, #0284c7)", textDecoration: "underline", wordBreak: "break-all" }}
                                   >
                                     {cite.title || cite.domain} ({cite.domain}) ↗
                                   </a>
@@ -214,7 +337,7 @@ export function QuestionList({ result }: { result: ScanResult }) {
                             </ul>
                           </div>
                         ) : (
-                          <span style={{ fontSize: "0.72rem", color: "#94a3b8" }}>
+                          <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #94a3b8)" }}>
                             ※ 本クエリではAIの事前知識ベースおよび公的学習データから推論されました。
                           </span>
                         )}
@@ -226,8 +349,38 @@ export function QuestionList({ result }: { result: ScanResult }) {
             </article>
           );
         })}
-        {!filtered.length ? <p className="empty-inline">この購入段階では候補外になった質問はありません。</p> : null}
-        {filtered.length > 12 ? <p className="question-list-limit">重要度の高い12問を表示しています。全件はCSVで取得できます。</p> : null}
+
+        {!filtered.length ? (
+          <p className="empty-inline" style={{ textAlign: "center", padding: "32px 0", color: "var(--text-muted, #64748b)" }}>
+            この購入段階では候補外になった質問はありません。
+          </p>
+        ) : null}
+
+        {/* 13,000pxスクロール地獄を解消する「残り質問の一括展開」ボタン */}
+        {filtered.length > 3 && stage === "すべて" ? (
+          <div style={{ textAlign: "center", marginTop: "12px", marginBottom: "8px" }}>
+            <button
+              type="button"
+              onClick={() => setShowAllQuestions(!showAllQuestions)}
+              style={{
+                background: showAllQuestions ? "var(--bg-surface, #f1f5f9)" : "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
+                color: showAllQuestions ? "var(--navy, #0f172a)" : "#ffffff",
+                border: "1px solid var(--border-subtle, #cbd5e1)",
+                borderRadius: "8px",
+                padding: "12px 28px",
+                fontSize: "0.86rem",
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: showAllQuestions ? "none" : "0 2px 6px rgba(15, 23, 42, 0.16)",
+                transition: "all 0.15s ease",
+              }}
+            >
+              {showAllQuestions
+                ? "▲ 上位3問の要約表示に戻す"
+                : `▼ 残り ${filtered.length - 3}問の全AI判定ログを表示する（計 ${filtered.length}問）`}
+            </button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

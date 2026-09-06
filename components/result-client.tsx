@@ -255,10 +255,10 @@ export function ResultClient() {
           </p>
 
           {primaryLoss ? (
-            <div className="summary-loss-box" style={{ background: "var(--bg-surface, #f8fafc)", padding: "16px 20px", borderRadius: "var(--radius-card, 8px)", margin: "16px 0", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
+            <div className="summary-loss-box shadow-ambient-sm" style={{ background: "var(--bg-surface, #f8fafc)", padding: "18px 22px", borderRadius: "10px", margin: "18px 0", border: "1px solid var(--border-subtle, #e2e8f0)", boxShadow: "0 1px 3px rgba(15, 23, 42, 0.04)" }}>
               <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "var(--amber, #d97706)", display: "block", marginBottom: "6px" }}>ライバルが先に選ばれた相談質問の例</span>
-              <p style={{ margin: "0 0 8px", fontSize: "0.95rem", fontWeight: 600, color: "var(--navy, #0f172a)" }}>「{primaryLoss.prompt}」</p>
-              <p style={{ margin: 0, fontSize: "0.85rem", color: "var(--ink-soft, #64748b)" }}>
+              <p style={{ margin: "0 0 8px", fontSize: "0.95rem", fontWeight: 700, color: "var(--navy, #0f172a)" }}>「{primaryLoss.prompt}」</p>
+              <p style={{ margin: 0, fontSize: "0.86rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6 }}>
                 {primaryWinner ? `AIは${primaryWinner}を優先して回答しました。` : "AIは競合他社を優先して回答しました。"}
                 {primaryLoss.summary ? ` （判定理由：${primaryLoss.summary}）` : ""}
               </p>
@@ -279,7 +279,7 @@ export function ResultClient() {
       <ExecutiveDiagnosticSummary
         brandName={result.discovery.brandName}
         rank={93}
-        topCompetitor={topCompetitor?.name || "全国展開の大手買取企業"}
+        topCompetitor={topCompetitor?.name || "全国展開の大手チェーン"}
         lostCount={result.lostPrompts.length}
         totalCount={result.panel.promptCount}
       />
