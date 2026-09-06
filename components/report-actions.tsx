@@ -9,7 +9,7 @@ type ReportActionsProps = {
 };
 
 function safeFilename(value: string) {
-  return value.replace(/[^a-z0-9\u3040-\u30ff\u3400-\u9fff._-]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "aix-report";
+  return value.replace(/[^a-z0-9\u3040-\u30ff\u3400-\u9fff._-]+/gi, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "rovan-report";
 }
 
 function download(filename: string, content: string, type: string) {
@@ -28,7 +28,7 @@ function csvCell(value: unknown) {
 
 function reportPayload(result: ScanResult) {
   return {
-    reportType: "AIX診断結果",
+    reportType: "Rovan診断結果",
     measuredAt: result.measuredAt,
     targetUrl: result.targetUrl,
     discovery: result.discovery,
@@ -70,7 +70,7 @@ function markdownReport(result: ScanResult) {
   const actions = result.actions.length
     ? result.actions.slice(0, 5).map((action, index) => `${index + 1}. **${action.title}**（${action.priority}）\n   - ${action.rationale}\n   - 確認する指標: ${action.successMetric || "同じ質問で自社が候補に入ったか"}`).join("\n")
     : "今回のActionはありません。";
-  return `# AIX診断結果\n\n- 対象: ${result.discovery.brandName}\n- URL: ${result.targetUrl}\n- 測定日時: ${result.measuredAt}\n- 比較した質問: ${result.panel.promptCount}問\n- 測定できた回答: ${result.successfulObservations}/${result.scheduledObservations}\n- 自社が候補に入った割合: ${result.recommendationCoverage}%\n\n## 競合に流れた質問\n\n${losses}\n\n## 最初に確認すること\n\n${actions}\n\n## 注意\n\nこのレポートはAIXの観測パネルによるものです。AIの全会話における順位、推薦、問い合わせ、契約、売上を保証するものではありません。\n`;
+  return `# Rovan診断結果\n\n- 対象: ${result.discovery.brandName}\n- URL: ${result.targetUrl}\n- 測定日時: ${result.measuredAt}\n- 比較した質問: ${result.panel.promptCount}問\n- 測定できた回答: ${result.successfulObservations}/${result.scheduledObservations}\n- 自社が候補に入った割合: ${result.recommendationCoverage}%\n\n## 競合に流れた質問\n\n${losses}\n\n## 最初に確認すること\n\n${actions}\n\n## 注意\n\nこのレポートはRovanの観測パネルによるものです。AIの全会話における順位、推薦、問い合わせ、契約、売上を保証するものではありません。\n`;
 }
 
 function lostPromptCsv(result: ScanResult) {
@@ -85,7 +85,7 @@ function lostPromptCsv(result: ScanResult) {
 
 export function ReportActions({ result, sample = false }: ReportActionsProps) {
   const [copied, setCopied] = useState(false);
-  const filename = safeFilename(`aix-${result.discovery.brandName}`);
+  const filename = safeFilename(`rovan-${result.discovery.brandName}`);
 
   async function copyLink() {
     try {

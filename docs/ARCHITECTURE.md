@@ -1,4 +1,4 @@
-# AIX Next — Architecture
+# Rovan — Architecture
 
 ## Goals
 
@@ -83,7 +83,7 @@ A partial scan is a valid product state. Provider failures are shown, excluded f
 
 - `robots.txt` allows public pages to OpenAI search crawlers while excluding private routes;
 - `sitemap.xml` lists only substantive public pages;
-- root JSON-LD, `ai-index.json` and `llms.txt` describe AIX itself;
+- root JSON-LD, `ai-index.json` and `llms.txt` describe Rovan itself;
 - paid Watch Change Packs may contain a human-reviewed AI-readable draft built only from crawled public pages.
 - every live Scan records a non-scoring visibility audit covering crawler access, indexability, sitemap/canonical signals, page clarity, buyer facts, public proof and measurement completeness.
 

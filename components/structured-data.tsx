@@ -1,3 +1,4 @@
+import { BRAND } from "@/lib/brand";
 import { siteUrl } from "@/lib/site";
 
 const organizationId = `${siteUrl}/#organization`;
@@ -8,7 +9,8 @@ const structuredData = {
     {
       "@type": "Organization",
       "@id": organizationId,
-      name: "AIX",
+      name: BRAND.name,
+      alternateName: BRAND.nameJa,
       url: siteUrl,
       description: "自社サイト改修ゼロで24時間働くAI専属営業窓口を配備し、AI新時代における生成AIからの優先推薦を支援するサービス。",
     },
@@ -16,7 +18,8 @@ const structuredData = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: siteUrl,
-      name: "AIX",
+      name: BRAND.name,
+      alternateName: BRAND.nameJa,
       description: "もう、新しい営業マンを雇う必要はありません。自社サイト改修ゼロ・ブログ更新ゼロでChatGPTなどの生成AIから優先推薦されやすい環境を整えるシステム。",
       inLanguage: "ja-JP",
       publisher: { "@id": organizationId },
@@ -30,5 +33,5 @@ function serialize(value: unknown) {
 }
 
 export function StructuredData() {
-  return <script id="aix-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: serialize(structuredData) }} />;
+  return <script id="rovan-structured-data" type="application/ld+json" dangerouslySetInnerHTML={{ __html: serialize(structuredData) }} />;
 }

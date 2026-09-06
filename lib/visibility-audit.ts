@@ -73,7 +73,7 @@ function check(input: Omit<AiVisibilityCheck, "status"> & { status: AiVisibility
 
 /**
  * Turns a crawl and the observed AI result into a short, non-scoring action list.
- * It describes conditions AIX can observe; it does not claim to know an AI
+ * It describes conditions Rovan can observe; it does not claim to know an AI
  * provider's ranking formula or promise a recommendation outcome.
  */
 export function buildAiVisibilityAudit(input: { result: ScanResult; pages: CrawledPage[]; crawl?: CrawlAudit; generatedAt?: string }): AiVisibilityAudit {

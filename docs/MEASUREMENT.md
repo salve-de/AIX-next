@@ -1,8 +1,8 @@
-# AIX Next — Measurement Methodology
+# Rovan — Measurement Methodology
 
 ## Measurement boundary
 
-AIX Next measures a declared observation panel. It does not measure every private consumer conversation and does not call an API result a universal ChatGPT rank.
+Rovan measures a declared observation panel. It does not measure every private consumer conversation and does not call an API result a universal ChatGPT rank.
 
 Each result states:
 
@@ -90,7 +90,7 @@ For a named competitor, eligible observations where that competitor is recommend
 
 ### Repeat Agreement
 
-For each Prompt × AI surface group, AIX compares the signatures of repeated outcomes: company recommended, company position and first candidate. The group score is the share represented by the modal signature. The final metric is the average across eligible groups.
+For each Prompt × AI surface group, Rovan compares the signatures of repeated outcomes: company recommended, company position and first candidate. The group score is the share represented by the modal signature. The final metric is the average across eligible groups.
 
 ### Measurement Completeness
 
@@ -130,7 +130,7 @@ extraction version
 
 An Evidence Gap is generated when a material fact cannot be verified in the company’s public sources while the same fact appears in a competitor recommendation rationale or a relevant Buyer Prompt cluster.
 
-AIX says:
+Rovan says:
 
 > This missing evidence is related to 11 tracked prompts.
 

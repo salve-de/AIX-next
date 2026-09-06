@@ -85,7 +85,7 @@ export function buildAiReadableDraft(input: { result: ScanResult; pages: Crawled
     "- JSON-LDやこのファイルの内容を、ページ上で見える説明と一致させる。",
     "- robots.txtで、AI検索クローラーを意図せず拒否していないか確認する。",
     "\n## この下書きについて",
-    "AIXが実際に取得できた公開ページをもとにした下書きです。公開前に内容を確認してください。AIの推薦、引用、検索順位、問い合わせ、契約、売上は保証しません。",
+    "Rovanが実際に取得できた公開ページをもとにした下書きです。公開前に内容を確認してください。AIの推薦、引用、検索順位、問い合わせ、契約、売上は保証しません。",
   ].filter(Boolean);
   return {
     generatedAt: input.generatedAt || new Date().toISOString(),

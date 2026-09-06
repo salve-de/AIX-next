@@ -77,8 +77,8 @@ export function AiReadableClient() {
   const backHref = sample ? "/result?sample=1" : token ? `/watch?token=${encodeURIComponent(token)}` : "/";
 
   return <main className="document-page ai-info-page">
-    <header className="site-header site-header-compact"><div className="shell header-inner"><Link className="brand" href={backHref}><span className="brand-mark" aria-hidden="true"><i /><i /><i /></span><span><strong>AIX</strong><small>AI競合診断</small></span></Link><Link className="text-button" href={backHref}>戻る <ArrowIcon /></Link></div></header>
-    <section className="document-hero ai-info-hero"><div className="shell"><p className="overline">AI向け公開情報 / {resolvedDomain}</p><h1>AIが比較しやすい、<br />会社の事実を整える。</h1><p>公開ページから確認できた対象・用途・実績・導入条件を、AIにも人にも読みやすい下書きにまとめます。推薦や順位を買うページではありません。</p><div className="ai-info-boundary"><LockIcon /><span><strong>公開前に確認します。</strong> AIXがサイトを勝手に変更したり、外部の評価を装ったりすることはありません。</span></div></div></section>
+    <header className="site-header site-header-compact"><div className="shell header-inner"><Link className="brand" href={backHref}><span className="brand-mark" aria-hidden="true"><i /><i /><i /></span><span><strong>Rovan</strong><small>AI競合診断</small></span></Link><Link className="text-button" href={backHref}>戻る <ArrowIcon /></Link></div></header>
+    <section className="document-hero ai-info-hero"><div className="shell"><p className="overline">AI向け公開情報 / {resolvedDomain}</p><h1>AIが比較しやすい、<br />会社の事実を整える。</h1><p>公開ページから確認できた対象・用途・実績・導入条件を、AIにも人にも読みやすい下書きにまとめます。推薦や順位を買うページではありません。</p><div className="ai-info-boundary"><LockIcon /><span><strong>公開前に確認します。</strong> Rovanがサイトを勝手に変更したり、外部の評価を装ったりすることはありません。</span></div></div></section>
 
     <section className="document-body shell ai-info-body">
       {error ? <div className="document-callout ai-info-error"><strong>下書きを表示できません。</strong><p>{error}</p></div> : null}
@@ -88,10 +88,10 @@ export function AiReadableClient() {
           <section className="ai-info-panel"><header><div><p className="overline">1 / 確認できるページ</p><h3>どのページを使ったか。</h3></div><span>{draft.sourcePages.length}ページ</span></header><ul className="ai-info-page-list">{draft.sourcePages.map((page) => <li key={page.url}><strong>{page.title}</strong><span>{page.description || "説明を確認中"}</span><small>{page.url}</small></li>)}</ul></section>
           <section className="ai-info-panel"><header><div><p className="overline">2 / 取得するファイル</p><h3>使う前に、内容を確認する。</h3></div><span>2種類</span></header><div className="ai-info-downloads"><button className="button button-secondary" type="button" onClick={() => downloadText(`${draft.suggestedFileName}.txt`, draft.llmsTxt, "text/plain;charset=utf-8")}>公開情報のテキストを取得 <ArrowIcon /></button><button className="button button-secondary" type="button" onClick={() => downloadText(`${draft.suggestedFileName}.jsonld`, draft.jsonLd, "application/ld+json;charset=utf-8")}>構造化データを取得 <ArrowIcon /></button></div><details className="ai-info-code"><summary>ファイルの内容を見る</summary><pre>{draft.llmsTxt}</pre></details></section>
         </div>
-        <section className="ai-info-review"><div><p className="overline">3 / 公開前チェック</p><h2>確認してから、自社のページで使う。</h2><p>内容が事実と一致し、掲載する権限があることを確認してください。AIXから自社サイトへ直接公開することはありません。</p></div><ul>{draft.publishChecks.map((check) => <li key={check}><CheckIcon />{check}</li>)}</ul></section>
+        <section className="ai-info-review"><div><p className="overline">3 / 公開前チェック</p><h2>確認してから、自社のページで使う。</h2><p>内容が事実と一致し、掲載する権限があることを確認してください。Rovanから自社サイトへ直接公開することはありません。</p></div><ul>{draft.publishChecks.map((check) => <li key={check}><CheckIcon />{check}</li>)}</ul></section>
         <section className="ai-info-next"><div><p className="overline">次にすること</p><h2>公開したあと、同じ質問で測り直す。</h2><p>AIがこの情報を参照したか、候補に入る質問が増えたかを、前回と同じ条件で確認します。</p></div><Link className="button button-primary" href={token ? `/watch?token=${encodeURIComponent(token)}` : "/watch?sample=1"}>変化を確認する <ArrowIcon /></Link></section>
       </>}
     </section>
-    <footer className="site-footer"><div className="shell"><p className="footer-meta">AIX / 公開情報から、比較される根拠を整える。</p></div></footer>
+    <footer className="site-footer"><div className="shell"><p className="footer-meta">Rovan / 公開情報から、比較される根拠を整える。</p></div></footer>
   </main>;
 }

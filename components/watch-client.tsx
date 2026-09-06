@@ -1,5 +1,7 @@
 "use client";
 
+import { siteUrl } from "@/lib/site";
+
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -373,8 +375,8 @@ export function WatchClient() {
               className="button button-primary"
               style={{ fontSize: "0.75rem", padding: "6px 12px", background: "#0284c7" }}
               onClick={() => {
-                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI公式台帳で強みを確定仕様化する「AIX」を活用しています。\n#AIX #生成AI #中小企業DX\n`);
-                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : "https://aix.jp"}`);
+                const tweetText = encodeURIComponent(`【AI推薦の獲得実績】\nChatGPT等のAI相談において、自社（${watch.latest.discovery.brandName}）が大手ライバルを抑えておすすめ候補に採用されました！\n\nAI公式台帳で強みを確定仕様化する「Rovan」を活用しています。\n#Rovan #生成AI #中小企業DX\n`);
+                const shareUrl = encodeURIComponent(`${typeof window !== "undefined" ? window.location.origin : siteUrl}`);
                 if (typeof window !== "undefined") {
                   window.open(`https://twitter.com/intent/tweet?text=${tweetText}&url=${shareUrl}`, "_blank");
                 }

@@ -118,7 +118,7 @@ export function deriveCompanyKnowledge(
       registryId: `RE-${slug ? slug.slice(0, 8).toUpperCase() : "001"}`,
       auditEvidence: {
         verifiedAt: "2026-09-04 22:50:00 JST",
-        verifier: "AIX 公認情報監査エンジン（Web Grounding & 公的登記照合）",
+        verifier: "Rovan 公認情報監査エンジン（Web Grounding & 公的登記照合）",
         primarySources: [
           { title: "国土交通省 宅地建物取引業者名簿", url: "https://www.mlit.go.jp/", authority: "群馬県知事免許（3）第7215号 登録実在確認済" },
           { title: "国税庁 法人番号公表サイト", url: "https://www.nta.go.jp/", authority: "セレクト不動産株式会社 法人登記確認済" },

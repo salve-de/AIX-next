@@ -73,7 +73,7 @@ export default function PricingPage() {
         </h3>
       </div>
       <p style={{ margin: "0 0 24px", fontSize: "0.85rem", color: "#475569", lineHeight: 1.6 }}>
-        AIXは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下の優待をご利用いただくことで、定期見守りプランをお得に開始・継続いただけます。
+        Rovanは営業マンを雇わずに、ユーザーの皆様の口コミと推薦実績で広がっています。以下の優待をご利用いただくことで、定期見守りプランをお得に開始・継続いただけます。
       </p>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px" }}>
@@ -94,7 +94,7 @@ export default function PricingPage() {
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a", background: "#f1f5f9", border: "1px solid #e2e8f0", padding: "2px 6px", borderRadius: "3px" }}>双方 ずっと割引</span>
           </div>
           <p style={{ fontSize: "0.8rem", color: "#475569", lineHeight: 1.6, margin: "0 0 12px" }}>
-            お知り合いの経営者様や士業・店舗仲間に専用リンクを共有し、仲間がAIXをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
+            お知り合いの経営者様や士業・店舗仲間に専用リンクを共有し、仲間がRovanをご利用されると、双方の月額利用料が永年割引（毎月2,000円引き）となります。
           </p>
           <small style={{ color: "#64748b", fontSize: "0.72rem" }}>※診断結果画面および管理画面から専用リンクを発行できます。</small>
         </div>

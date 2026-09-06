@@ -1,5 +1,7 @@
 "use client";
 
+import { siteUrl } from "@/lib/site";
+
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowIcon } from "@/components/icons";
@@ -23,7 +25,7 @@ function profileFromPayload(payload: unknown) {
 
 /**
  * Publishing is deliberately a second, explicit action. A scan never writes
- * to the customer's site and never creates an AIX public page by itself.
+ * to the customer's site and never creates an Rovan public page by itself.
  */
 export function PublicProfileActions({ result, sample = false }: PublicProfileActionsProps) {
   const [profile, setProfile] = useState<ProfileShape | null>(null);
@@ -96,7 +98,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             >
               {isRec ? (
                 <div className="card-top-recommend-badge">
-                  AIX分析推奨：最優先選定
+                  Rovan分析推奨：最優先選定
                 </div>
               ) : null}
               <div className="weapon-card-header">
@@ -139,8 +141,8 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         </p>
       </div>
 
-      {/* AIXからの戦略コンサルティング分析所見 */}
-      <div className="aix-hot-advice-card">
+      {/* Rovanからの戦略コンサルティング分析所見 */}
+      <div className="rovan-hot-advice-card">
         <div className="hot-advice-header">
           <span className="hot-advice-tag">戦略分析所見：看板選定の論理的根拠</span>
           <h4>大手が対応できない「{strategies[selectedWeapon]?.name || "固有の強み"}」こそが、{result.discovery.brandName || "御社"}の収益性を最大化する決定打です</h4>
@@ -212,7 +214,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
         <div className="no-website-benefit-note">
           <span className="benefit-badge">自社サイトをお持ちでない企業様へ</span>
           <p>
-            初期制作費用をかけずに、発行された公式ページ（<code>https://aix.jp/ai/company/...</code>）をGoogleマップや名刺・SNSに記載するだけで、<strong>主要AIとユーザーの双方が正確に確認できる「公式Web拠点」</strong>としてそのままご活用いただけます。
+            初期制作費用をかけずに、発行された公式ページ（<code>{`${siteUrl}/ai/company/...`}</code>）をGoogleマップや名刺・SNSに記載するだけで、<strong>主要AIとユーザーの双方が正確に確認できる「公式Web拠点」</strong>としてそのままご活用いただけます。
           </p>
         </div>
       </div>
@@ -296,7 +298,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                   </div>
                 </div>
                 <p style={{ margin: "14px 0 0", fontSize: "0.76rem", color: "#64748b", lineHeight: 1.5 }}>
-                  ※AIXが主要生成AIクローラーへ直接インデックスを促すため、お客様側で特別な設定やサーバー操作を行う必要は一切ありません。
+                  ※Rovanが主要生成AIクローラーへ直接インデックスを促すため、お客様側で特別な設定やサーバー操作を行う必要は一切ありません。
                 </p>
               </div>
             </div>

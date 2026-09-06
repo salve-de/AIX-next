@@ -1,6 +1,6 @@
-# AIX Core Product Strategy
+# Rovan Core Product Strategy
 
-> この文書は、AIXの「本質」「現状」「不足しているもの」「何を優先して実装するか」を一つにまとめた中核設計書です。
+> この文書は、Rovanの「本質」「現状」「不足しているもの」「何を優先して実装するか」を一つにまとめた中核設計書です。
 >
 > 最終更新: 2026-09-05
 
@@ -8,9 +8,9 @@
 
 ## 0. 結論
 
-AIXは単なる「AI SEO診断ツール」でも、「AIが読めるJSON/DBを生成するツール」でもない。
+Rovanは単なる「AI SEO診断ツール」でも、「AIが読めるJSON/DBを生成するツール」でもない。
 
-AIXが作るべきものは、次の閉ループである。
+Rovanが作るべきものは、次の閉ループである。
 
 ```text
 企業URL
@@ -27,7 +27,7 @@ OpenAI / Gemini / Perplexity等で実際の推薦結果を観測
   ↓
 必要なら企業に最小限だけ質問
   ↓
-Webページ / FAQ / JSON-LD / AI-readable profile / AIX DBを更新
+Webページ / FAQ / JSON-LD / AI-readable profile / Rovan DBを更新
   ↓
 GitHub PR / WordPress Draftとして安全に反映
   ↓
@@ -38,13 +38,13 @@ GitHub PR / WordPress Draftとして安全に反映
 効かなければ次の施策
 ```
 
-AIXの本当の商品は、DBそのものではない。
+Rovanの本当の商品は、DBそのものではない。
 
 **「AIが企業を比較・推薦するために必要な情報を発見し、構造化し、公開し、その結果本当に選ばれるようになったかまで継続検証するシステム」**である。
 
 ---
 
-# 1. AIXの本質
+# 1. Rovanの本質
 
 ## 1.1 顧客が欲しいもの
 
@@ -66,7 +66,7 @@ AIXの本当の商品は、DBそのものではない。
 
 である。
 
-したがって、AIXの価値は以下の順番で考える。
+したがって、Rovanの価値は以下の順番で考える。
 
 ```text
 AI-readable
@@ -84,9 +84,9 @@ AI-recommendable
 
 ---
 
-## 1.2 AIXの中核概念
+## 1.2 Rovanの中核概念
 
-AIXは企業情報を、単なるページ集合ではなく、AIが比較判断に使える構造へ変換する。
+Rovanは企業情報を、単なるページ集合ではなく、AIが比較判断に使える構造へ変換する。
 
 理想形:
 
@@ -112,7 +112,7 @@ Entity
 
 ---
 
-# 2. 現在のAIXで既にできていること
+# 2. 現在のRovanで既にできていること
 
 現在の実装には、かなり多くの外殻が既に存在する。
 
@@ -136,7 +136,7 @@ Entity
 
 ## 2.2 継続監視
 
-AIX Watchとして、固定Panelによる再測定・履歴保存がある。
+Rovan Watchとして、固定Panelによる再測定・履歴保存がある。
 
 これにより、単発診断ではなく時系列比較を行うための土台がある。
 
@@ -189,7 +189,7 @@ AIX Watchとして、固定Panelによる再測定・履歴保存がある。
 
 として企業ページ、市場比較ページを公開する仕組みもある。
 
-つまり、**AIX自身がAIや検索エンジンに読まれる市場DBになるための土台も存在する。**
+つまり、**Rovan自身がAIや検索エンジンに読まれる市場DBになるための土台も存在する。**
 
 ---
 
@@ -206,7 +206,7 @@ AIX Watchとして、固定Panelによる再測定・履歴保存がある。
 
 そして、公開ページ本文に特定キーワードが存在するかどうかで不足を推定している。
 
-これはMVPとしてはよいが、AIXの最終価値としては弱い。
+これはMVPとしてはよいが、Rovanの最終価値としては弱い。
 
 今のロジックは大雑把に言うと、
 
@@ -252,7 +252,7 @@ ClaimがあるならEvidenceが公開されているか確認
 
 > **なぜ競合が勝ち、自社が負けたのかをEvidenceレベルまで説明する。**
 
-これをAIXの中核エンジンにする。
+これをRovanの中核エンジンにする。
 
 ---
 
@@ -264,7 +264,7 @@ Buyer Prompt:
 
 AI回答で競合Aが推薦されたとする。
 
-AIXは回答とCitationから、競合Aについて次を抽出する。
+Rovanは回答とCitationから、競合Aについて次を抽出する。
 
 ```text
 Audience fit
@@ -291,7 +291,7 @@ CSV移行            → Evidenceあり
 初期費用0円        → Evidenceあり
 ```
 
-AIXの出力:
+Rovanの出力:
 
 ```text
 このPromptで負けている主要差分
@@ -314,7 +314,7 @@ AIXの出力:
 - P17
 ```
 
-これがAIXの価値になる。
+これがRovanの価値になる。
 
 ---
 
@@ -350,7 +350,7 @@ Priority scoring
 
 現在のPublic Profileは、企業・Evidence・測定結果を保存できるが、比較判断に必要な関係がまだ弱い。
 
-AIX内部では、最低限次の単位へ分ける。
+Rovan内部では、最低限次の単位へ分ける。
 
 ## 5.2 Proposed data model
 
@@ -461,9 +461,9 @@ CompetitiveGap {
 
 ユーザーに大量入力させない。
 
-AIXの原則は、
+Rovanの原則は、
 
-> **公開情報から取れるものはAIXが勝手に取る。ユーザーに聞くのは、公開情報からどうしても分からない事実だけ。**
+> **公開情報から取れるものはRovanが勝手に取る。ユーザーに聞くのは、公開情報からどうしても分からない事実だけ。**
 
 とする。
 
@@ -499,7 +499,7 @@ AIXの原則は、
 良い例:
 
 ```text
-AIXが公開Webを確認しましたが、
+Rovanが公開Webを確認しましたが、
 「平均導入期間」だけ確認できませんでした。
 
 この情報はBuyer Prompt 4 / 8 / 11に影響する可能性があります。
@@ -512,23 +512,23 @@ AIXが公開Webを確認しましたが、
 
 ---
 
-# 7. AIX自身をAIのSourceにする
+# 7. Rovan自身をAIのSourceにする
 
 これは重要な第2軸である。
 
-AIXは顧客サイトだけを改善するのではなく、AIX自身にも企業・市場・比較情報を蓄積する。
+Rovanは顧客サイトだけを改善するのではなく、Rovan自身にも企業・市場・比較情報を蓄積する。
 
 ## 7.1 2つのSource
 
 ```text
 顧客公式サイト
 +
-AIX Public Profile / Market DB
+Rovan Public Profile / Market DB
 ```
 
 企業情報が二つの独立した公開Sourceに存在する状態を作る。
 
-ただし、AIX Profileは広告ページにしてはいけない。
+ただし、Rovan Profileは広告ページにしてはいけない。
 
 ## 7.2 独立性
 
@@ -536,12 +536,12 @@ AIX Public Profile / Market DB
 
 - 有料契約の有無で測定順位を変えない
 - 有料契約の有無でComparison rankingを変えない
-- 企業提供EvidenceとAIX観測値を分離表示
+- 企業提供EvidenceとRovan観測値を分離表示
 - Source / timestamp / confidenceを表示
 - 誤情報訂正手段を持つ
 - Unclaimed企業も掲載可能
 
-この独立性がないと、AIX自身のSource価値が死ぬ。
+この独立性がないと、Rovan自身のSource価値が死ぬ。
 
 ---
 
@@ -580,7 +580,7 @@ Market
 
 ただし企業提供情報には明確にラベルを付ける。
 
-これによりAIXは、単なる顧客向けSaaSから、**市場そのものの構造化DB**へ成長できる。
+これによりRovanは、単なる顧客向けSaaSから、**市場そのものの構造化DB**へ成長できる。
 
 ---
 
@@ -638,7 +638,7 @@ Change Packには必ず以下を紐付ける。
 
 # 10. 最大の継続価値: Change → Remeasure
 
-AIXは変更を提案して終わってはいけない。
+Rovanは変更を提案して終わってはいけない。
 
 ## 10.1 必須ループ
 
@@ -688,7 +688,7 @@ P17: unchanged
 
 ## 10.3 因果の扱い
 
-AIXは「この変更が100%原因」と断定してはいけない。
+Rovanは「この変更が100%原因」と断定してはいけない。
 
 以下を分離する。
 
@@ -708,13 +708,13 @@ AIXは「この変更が100%原因」と断定してはいけない。
 
 | Priority | Work | Why |
 |---|---|---|
-| P0 | Competitive Evidence Engine | AIXの頭脳。現状最大の弱点 |
+| P0 | Competitive Evidence Engine | Rovanの頭脳。現状最大の弱点 |
 | P0 | Claim Graph | AI比較判断を構造化する基盤 |
 | P0 | Dynamic Evidence Gap | 固定4項目判定を廃止するため |
 | P1 | Automatic Evidence Extraction | ユーザー入力を減らす |
 | P1 | Change → Remeasure attribution | 継続課金の核心 |
 | P1 | Unclaimed competitor profiles | 市場DB化と比較精度 |
-| P2 | AIX Market DB強化 | AIX自身のSource価値 |
+| P2 | Rovan Market DB強化 | Rovan自身のSource価値 |
 | P2 | Missing Fact Inbox | 企業から必要事実だけ取得 |
 | P3 | UI polish | 上記が終わった後 |
 
@@ -829,7 +829,7 @@ Investigate citation weakness
 
 ### 11. Unclaimed profiles
 
-AIX非契約企業も公開情報から作成。
+Rovan非契約企業も公開情報から作成。
 
 ### 12. Category claim schema
 
@@ -848,13 +848,13 @@ AIX非契約企業も公開情報から作成。
 - security
 ```
 
-市場が増えるほど、AIXが「AIが購入比較に使う判断軸」を学習する。
+市場が増えるほど、Rovanが「AIが購入比較に使う判断軸」を学習する。
 
 これ自体がデータ資産になる。
 
 ---
 
-# 13. AIXが持つべきデータ資産
+# 13. Rovanが持つべきデータ資産
 
 長期的なMoatはUIでもLLMプロンプトでもない。
 
@@ -874,7 +874,7 @@ Buyer Prompt
 × After Result
 ```
 
-これが大量に蓄積すると、AIXは、
+これが大量に蓄積すると、Rovanは、
 
 > 「どの市場で、どのAIが、どのようなEvidenceを持つ企業を推薦しやすいか」
 
@@ -897,19 +897,19 @@ Buyer Prompt
 - 単なるllms.txt生成機能
 - 単なるSchema生成機能
 
-これらは補助機能であり、AIXのMoatではない。
+これらは補助機能であり、RovanのMoatではない。
 
 ---
 
 # 15. 成功条件
 
-AIXの中核機能が完成したと言える条件。
+Rovanの中核機能が完成したと言える条件。
 
 ## Test Case
 
 ある会社URLを入力する。
 
-AIXが以下を自動で行えること。
+Rovanが以下を自動で行えること。
 
 1. 市場を特定
 2. 主要競合を特定
@@ -928,7 +928,7 @@ AIXが以下を自動で行えること。
 15. Before/Afterを表示
 16. 次の最有力アクションを決める
 
-ここまで一つの流れで動いて、初めてAIXの中核が完成したとみなす。
+ここまで一つの流れで動いて、初めてRovanの中核が完成したとみなす。
 
 ---
 
@@ -944,13 +944,13 @@ AIXが以下を自動で行えること。
 
 短く言うなら:
 
-> **AIX makes companies understandable, comparable, and recommendable by AI.**
+> **Rovan makes companies understandable, comparable, and recommendable by AI.**
 
 ---
 
 # 17. 最終形
 
-AIXの完成形は以下。
+Rovanの完成形は以下。
 
 ```text
                     ┌─────────────────┐
@@ -1001,9 +1001,9 @@ AIXの完成形は以下。
                              └──────→ next action
 ```
 
-さらに並行して、Claim Graphの公開可能部分をAIX Public Profile / Category DBへ反映する。
+さらに並行して、Claim Graphの公開可能部分をRovan Public Profile / Category DBへ反映する。
 
-その結果、AIXは、
+その結果、Rovanは、
 
 1. 顧客のAI推薦改善SaaS
 2. AIが参照可能な企業・市場データベース
@@ -1025,7 +1025,7 @@ AIXの完成形は以下。
 
 特に、現在の固定`defaultEvidenceGaps()`を中核ロジックとして扱わない。
 
-AIXが最初に強くすべき能力は、
+Rovanが最初に強くすべき能力は、
 
 > **「なぜ競合が勝ったのかを、AI回答とCitationからEvidence単位で特定できること」**
 
