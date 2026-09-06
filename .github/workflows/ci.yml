@@ -2,7 +2,7 @@ name: Rovan Quality
 
 on:
   push:
-    branches: [main, build/clean-room-v2, feature/positioning-autopilot]
+    branches: [main, build/clean-room-v2, feature/positioning-autopilot, chore/rovan-main-ready, chore/rovan-feature-ready]
   pull_request:
     branches: [main, feature/positioning-autopilot]
 
@@ -26,8 +26,47 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run lint
-      - run: npm test
-      - run: npm run typecheck
-      - run: npm run build
+      - name: Complete quality checks
+        run: |
+          set -o pipefail
+          mkdir -p /tmp/rovan-quality
+          git rev-parse HEAD > /tmp/rovan-quality/commit.txt
+          npm run check 2>&1 | tee /tmp/rovan-quality/check.log
       - run: npm audit --omit=dev --audit-level=high
+      - name: Verify renamed surfaces without paid provider calls
+        if: startsWith(github.ref_name, 'chore/rovan-')
+        run: |
+          set -o pipefail
+          npm start -- --port 3000 > /tmp/rovan-quality/server.log 2>&1 &
+          for n in $(seq 1 30); do curl -fsS http://localhost:3000/ >/dev/null && break || sleep 1; done
+          node --input-type=module <<'JS' | tee /tmp/rovan-quality/http.log
+          import assert from 'node:assert/strict';
+          const routes = ['/', '/pricing', '/terms', '/privacy', '/support', '/commerce', '/partners', '/billing', '/data-rights', '/result?sample=1', '/watch?sample=1', '/ai/company/aoba-souzoku?sample=1', '/llms.txt', '/ai-index.json', '/api/health', '/ai/company/aoba-souzoku/json?sample=1', '/ai/company/aoba-souzoku/md?sample=1'];
+          for (const route of routes) {
+            const response = await fetch('http://localhost:3000' + route);
+            assert.equal(response.status, 200, route);
+            const text = await response.text();
+            assert.match(text, /Rovan/, route);
+            assert.doesNotMatch(text, /\bAIX\b|aix\.jp|aix-next\.com/, route);
+            console.log('PASS', route);
+          }
+          JS
+      - name: Record responsive wordmark verification
+        if: github.ref_name == 'chore/rovan-feature-ready'
+        run: |
+          npm install --prefix /tmp/rovan-browser --no-package-lock agent-browser
+          AB=/tmp/rovan-browser/node_modules/.bin/agent-browser
+          "$AB" install --with-deps
+          "$AB" open http://localhost:3000
+          "$AB" wait --load networkidle
+          "$AB" screenshot /tmp/rovan-quality/desktop.png
+          "$AB" set viewport 390 844
+          "$AB" screenshot /tmp/rovan-quality/mobile.png
+          "$AB" snapshot -i > /tmp/rovan-quality/browser.txt
+          "$AB" close
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rovan-quality-${{ github.sha }}
+          path: /tmp/rovan-quality
+          retention-days: 7
