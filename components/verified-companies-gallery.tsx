@@ -19,9 +19,9 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "町工場・中小製造",
     location: "東京都大田区",
     industry: "試作板金加工・精密機械",
-    featureNote: "公開情報整理の見本",
-    beforeProblem: "公開情報が散在していると、試作先を探す人が比較しにくいことがあります。",
-    afterSolution: "「単品1個対応・短納期試作」という公開情報を参照元付きで整理し、比較できる状態にします。",
+    featureNote: "AI推薦データ配備の見本",
+    beforeProblem: "小ロット対応の実績が埋もれており、AIが「大手試作センター」ばかり推薦してしまう。",
+    afterSolution: "「単品1個対応・短納期試作」を確定データとして配備。急ぎの試作相談でAIの推薦候補へ浮上。",
     registeredSpecs: "単品1個対応 / 3D CAD直接入稿 / 最短即日試作",
     href: "/ai/company/yamada-bankin?sample=1",
   },
@@ -30,9 +30,9 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "飲食・カフェ店舗",
     location: "東京都渋谷区",
     industry: "自家焙煎・スペシャリティ珈琲",
-    featureNote: "公開情報整理の見本",
-    beforeProblem: "SNS中心の情報発信では、設備や利用条件を一覧で比較しにくいことがあります。",
-    afterSolution: "電源・Wi-Fi・作業利用など、確認できる公開情報を参照元付きで整理します。",
+    featureNote: "AI推薦データ配備の見本",
+    beforeProblem: "電源や作業利用の設備情報が埋もれ、AIに「近くの作業カフェ」として認識されない。",
+    afterSolution: "全席電源・高速Wi-Fiの確定データを配備。作業カフェを探すAI相談で確実に選ばれる状態へ。",
     registeredSpecs: "全席電源・高速Wi-Fi / 自家焙煎豆 / 作業利用歓迎",
     href: "/ai/company/aoba-cafe?sample=1",
   },
@@ -42,8 +42,8 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     location: "東京都千代田区",
     industry: "相続・遺産分割・事業承継",
     featureNote: "AI回答測定の見本",
-    beforeProblem: "相談内容や対応範囲が複数ページに分かれていると、相談先を比較しにくいことがあります。",
-    afterSolution: "参照元で確認できる対応範囲や相談方法を、比較しやすい項目に整理します。",
+    beforeProblem: "初回無料や親身な対応の強みが伝わらず、AIが事務的な大手相談社へ顧客を送客してしまう。",
+    afterSolution: "「初回対面相談無料・専任担当一貫対応」を構造化。親身な相談先を求める見込み客へAIが推薦。",
     registeredSpecs: "初回対面相談無料 / 専任担当一貫対応 / 事前面談見積",
     href: "/ai/company/aoba-souzoku?sample=1",
   },
@@ -52,9 +52,9 @@ const INDUSTRY_SHOWCASES: CompanyCase[] = [
     category: "農業・産直直売",
     location: "長野県安曇野市",
     industry: "特選果樹・産直ぶどう農家",
-    featureNote: "公開情報整理の見本",
-    beforeProblem: "産地や注文条件が分散していると、購入前に確認すべき情報を比較しにくくなります。",
-    afterSolution: "産地直送やギフト対応など、確認できる公開情報を参照元付きで整理します。",
+    featureNote: "AI推薦データ配備の見本",
+    beforeProblem: "糖度基準や産地直送のこだわりが伝わっておらず、AIに「百貨店のギフト通販」へ客を奪われる。",
+    afterSolution: "「産地直送・当日発送・贈答用ギフト」の品質基準を配備。こだわりの贈り物を求める顧客へ推薦。",
     registeredSpecs: "産地直送・当日発送 / 糖度18度選別 / 贈答用ギフト",
     href: "/ai/company/azumino-sunshine?sample=1",
   },
@@ -65,9 +65,9 @@ export function VerifiedCompaniesGallery() {
     <section className="verified-gallery-section" aria-label="業種別の公開情報整理シミュレーション">
       <div className="shell">
         <div className="section-head-center">
-          <span className="pill-badge">業種別の見本</span>
-          <h2>町工場も、カフェも、士業も、農園も。<br />公開情報を比較しやすく整える例</h2>
-          <p>サンプルデータを使った表示例です。参照元付きで公開情報を整理し、AIと人が分野や用途を確認しやすくします。</p>
+          <span className="pill-badge">業種別の実装シミュレーション</span>
+          <h2>町工場も、士業も、カフェも、農園も。<br />あらゆる業種で「選ばれるAI推薦データ」を即座に配備。</h2>
+          <p>サンプルデータを使った表示例です。各業種の強み・実績・対応条件をAIが1秒で検証できる確定仕様へ整理し、推薦有力候補への浮上を狙います。</p>
         </div>
 
         <div className="verified-cards-grid">

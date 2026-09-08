@@ -43,7 +43,7 @@ export function ZeroEffortPromiseSection() {
                 letterSpacing: "0.05em",
               }}
             >
-              AI推薦への取り組みを、少ない手間で
+              社長の作業ゼロ：完全放置（Zero Effort）の仕組み
             </span>
           </div>
           <h2
@@ -56,8 +56,8 @@ export function ZeroEffortPromiseSection() {
               color: "#0f172a",
             }}
           >
-            まずはURLまたは社名を入れるだけ。<br />
-            情報の整備と毎週の追跡を、Rovanに任せて本業へ。
+            URLまたは社名を入力するだけで、準備は完了。<br />
+            情報の整備と毎週の追跡を、すべてRovanに任せて本業へ。
           </h2>
           <p
             style={{
@@ -71,7 +71,7 @@ export function ZeroEffortPromiseSection() {
             }}
           >
             ホームページの改修も、サーバーの設定も、面倒なブログ更新も一切不要です。<br />
-            <strong>専門知識や追加の質問票は不要。</strong> 初回に対象サイト・公開内容を確認し、継続更新を許可します。
+            <strong>専門知識や面倒なアンケート回答は不要。</strong> 公開情報からAI推薦データを自動構築し、初回確認だけで配備完了。
           </p>
         </div>
 
@@ -109,12 +109,11 @@ export function ZeroEffortPromiseSection() {
                 01
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                公開情報から、選ばれる理由の材料を集めるから
+                既存の公開情報から、選ばれる理由を自動抽出
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              URLまたは社名を起点に、専門分野・対応地域・利用条件など、御社がどんな相談に応えられるかを公開ページから整理します。<br />
-              参照元にない実績や強みを推測して追加することはありません。
+              URLまたは社名を起点に、専門分野・対応地域・利用条件など、御社がどんな相談に応えられるかを公開情報から自動整理。参照元にない架空の実績を追加することはありません。
             </p>
           </div>
 
@@ -143,12 +142,12 @@ export function ZeroEffortPromiseSection() {
                 02
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                自社サイトの改修なしで、専門性を伝えるページを作れるから
+                自社サイトの改修は1文字も不要。AI専用ページを開設
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
               既存の自社サイトは1文字も触る必要がありません。<br />
-              参照元付きの公開情報ページをRovan上に用意し、初回確認後に公開できます。
+              AIが1秒で検証できる確定仕様ページをRovan上に用意し、初回確認後にすぐ公開できます。
             </p>
           </div>
 
@@ -177,12 +176,11 @@ export function ZeroEffortPromiseSection() {
                 03
               </span>
               <strong style={{ fontSize: "0.95rem", color: "#0f172a", lineHeight: 1.4 }}>
-                同意した範囲の更新と、推薦の追跡を任せられるから
+                毎週のAI回答追跡と、掲載データの自動調整
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              有効な有料Watchでは、同意後の週次処理で同じサイトの料金・対応地域などの短い記載を参照元付きで更新。毎週の承認は不要です。<br />
-              同じ質問で推薦状況を追跡し、自動更新の停止・直前の更新の取り消しもできます。
+              毎週同じ条件でAI回答の変化を自動追跡し、AIの回答傾向や自社情報の変化に合わせて掲載データを常に最適化。社長が毎週チェックや承認をする手間は一切ありません。
             </p>
           </div>
         </div>

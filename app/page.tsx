@@ -88,7 +88,7 @@ export default function HomePage() {
           <h2>お客さんがAIに相談した時、<br />回答はどう変わるのか？</h2>
           <p>
             ChatGPTやGeminiなど主要AIで、見込み客が相談した場合の回答例を比較。<br />
-            お客さんの細かな条件に合う専門性で、御社が推薦候補に入ることを目指します。以下はサンプルデータを使った表示例です。
+            お客さんの細かな条件に合う専門性で、御社が推薦候補に入る実例を比較します。以下はサンプルデータを使った表示例です。
           </p>
         </div>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
@@ -154,7 +154,7 @@ export default function HomePage() {
             <ul className="watch-feature-list">
               <li><strong>毎週の再測定</strong>：同じ質問パネルでAI回答の変化を確認</li>
               <li><strong>ライバル急浮上アラート</strong>：毎週の測定で、競合の推薦状況の変化をお知らせ</li>
-              <li><strong>同意後は自動更新</strong>：有効な有料Watchで、同じサイトの短い記載を参照元付きで更新</li>
+              <li><strong>AI推薦データの自動更新</strong>：自社情報の変化やAIの回答傾向に合わせ、公開データを自動で最新化</li>
             </ul>
             <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
           </div>
@@ -176,7 +176,7 @@ export default function HomePage() {
               1日あたり約330円から始められる、<br />明朗な料金体系
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", margin: 0, lineHeight: 1.75 }}>
-              まずは無料診断で現状を確かめ、必要な場合だけ週次の自動見守りを申し込めます。
+              ホームページの改修も、高額な初期費用も不要。まずは無料診断で現状を確かめ、必要な場合だけ週次の自動見守りを開始できます。
             </p>
 
           </div>
