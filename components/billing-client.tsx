@@ -48,26 +48,26 @@ export function BillingClient() {
       <h2>AI推薦・自動見守りプランのご契約管理</h2>
       <p>お支払い方法の変更、請求書・領収書の発行、次回更新日の確認、解約手続きをStripeの管理画面で行えます。</p>
       {watch ? (
-        <div className="billing-watch-summary" style={{ marginBottom: "16px" }}>
-          <span>照合完了（ログイン中）</span>
+        <div className="billing-watch-summary" style={{ marginBottom: "20px" }}>
+          <span>ログイン中</span>
           <strong>{watch.latest.discovery.brandName}</strong>
           <small>{watch.paid ? "有料見守り契約中" : watch.status === "trial" ? "無料トライアル中" : "契約状況をご確認ください"}</small>
         </div>
       ) : (
-        <div style={{ margin: "16px 0", padding: "14px 16px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "6px", textAlign: "left" }}>
-          <strong style={{ display: "block", color: "#0f172a", fontSize: "0.82rem", marginBottom: "4px" }}>
-            専用リンクからアクセスしてください
+        <div style={{ margin: "20px 0", padding: "18px 20px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", textAlign: "left" }}>
+          <strong style={{ display: "block", color: "#0f172a", fontSize: "0.9rem", marginBottom: "6px" }}>
+            ログインが必要です
           </strong>
-          <p style={{ margin: 0, color: "#64748b", fontSize: "0.76rem", lineHeight: 1.5 }}>
-            ID・パスワードの記憶や手入力は不要です。登録完了メール、または毎週お届けするレポートメール内の「ご契約管理」リンクから直接開けます。
+          <p style={{ margin: 0, color: "#64748b", fontSize: "0.82rem", lineHeight: 1.6 }}>
+            本画面はご契約者様専用の管理画面です。<br />
+            登録完了時のメール、または毎週お届けしているAI推薦レポートメール内の「ご契約管理」リンクをクリックしてアクセスしてください（ID・パスワードの記憶や手入力は不要です）。
           </p>
         </div>
       )}
-      <label style={{ display: watch ? "none" : "block" }}>
-        専用アクセスキー（キーをお持ちの場合のみ手入力）
-        <input value={token} disabled={busy} onChange={(event) => { setWatch(null); setToken(event.target.value); }} placeholder="管理URLに含まれる専用キーを入力" />
-      </label>
-      <button className="button button-dark" type="submit" disabled={busy || !token || !watch}>{busy ? "準備中…" : <>契約・決済管理画面を開く <ArrowIcon /></>}</button>
+      <input type="hidden" value={token} disabled={busy} onChange={(event) => { setWatch(null); setToken(event.target.value); }} />
+      <button className="button button-dark" type="submit" disabled={busy || !token || !watch}>
+        {busy ? "準備中…" : watch ? <>契約・決済管理画面を開く <ArrowIcon /></> : "ログインリンクから開いてください"}
+      </button>
       {message ? <p className="form-error" role="status">{message}</p> : null}
 
       <div style={{ marginTop: "24px", padding: "16px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "6px", textAlign: "left" }}>
