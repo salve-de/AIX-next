@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { MarketingShell } from "@/components/marketing-shell";
+import { seller, sellerReady } from "@/lib/legal";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = { title: "利用規約", description: "Rovanの利用条件、測定上の制約、公開情報の下書きに関する条件。" };
 
@@ -11,7 +13,7 @@ export default function TermsPage() {
     <h2>保証しない事項</h2><ul><li>特定順位または推薦</li><li>特定の参照元URLや引用</li><li>購入前の質問で候補に入る割合の増加</li><li>検索流入、問い合わせ、契約または売上</li><li>施策と数値変化の因果関係</li><li>第三者サイト・AIサービスの継続提供</li></ul>
     <h2>ユーザーの責任</h2><p>ユーザーは、入力する会社情報、実績、顧客数、料金、認証、投資対効果等について入力・外部処理・公開に必要な権限を持ち、正確であることを確認します。Rovanが生成した文案は公開前にユーザーが確認します。</p>
     <h2>禁止事項</h2><ul><li>他社を装った確認情報の入力</li><li>虚偽の実績、レビュー、認証、No.1表示</li><li>送信権限のない秘密情報・個人情報・第三者情報の入力</li><li>不正アクセス、過剰な診断、制限回避</li><li>医療・金融・法務等の高リスク用途での無審査利用</li><li>第三者の権利を侵害する情報の入力</li></ul>
-    <h2>有料Watch</h2><p>有料Watchは月ごとの自動更新です。無料Watchから自動課金されません。契約開始前にStripe Checkoutで価格、税、更新条件を確認します。正式販売開始前に返金・解約・請求日等の最終条件を特定商取引法に基づく表記と一致させてください。</p>
-    <p className="document-note">本ページは初期製品仕様です。正式販売開始前に、準拠法、管轄、責任制限、サービス水準（SLA）、返金、法人情報、連絡先、AIサービスへのデータ送信条件を法務確認の上で確定してください。</p>
+    {sellerReady() ? <><h2>有料Watch</h2><p>有料Watchは月ごとの自動更新です。無料Watchから自動課金されません。契約開始前に決済画面で価格、税、更新条件を確認できます。支払時期、解約、返金については「特定商取引法に基づく表記」をご確認ください。</p><p><a className="document-link" href="/commerce">特定商取引法に基づく表記</a></p></> : null}
+    <p><a className="document-link" href="/privacy">データの取り扱い</a>{seller.email ? <> · <a className="document-link" href="/support">お問い合わせ</a></> : null}</p>
   </MarketingShell>;
 }

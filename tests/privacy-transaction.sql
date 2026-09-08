@@ -1,4 +1,4 @@
--- Run only in a disposable database with migrations 001-011 applied.
+-- Run only in a disposable database with migrations through 014 applied.
 begin;
 create function pg_temp.check_privacy(ok boolean, message text) returns void
 language plpgsql as $$ begin if ok is distinct from true then raise exception '%', message; end if; end; $$;
@@ -79,4 +79,18 @@ select pg_temp.check_privacy(exists(select 1 from public.aix_next_scans where id
 select pg_temp.check_privacy(not has_function_privilege('anon','public.aix_next_delete_watch_data(text,text,text,boolean)','EXECUTE'),'anon can delete');
 select pg_temp.check_privacy(not has_function_privilege('authenticated','public.aix_next_export_watch_data(text,text)','EXECUTE'),'authenticated can export');
 select pg_temp.check_privacy(has_function_privilege('service_role','public.aix_next_delete_watch_data(text,text,text,boolean)','EXECUTE'),'service role blocked');
+-- Email-less users retain deletion/export rights without weakening registered ownership.
+insert into public.aix_next_scans(id,target_url,stage) values ('email_less_scan','https://example.com','complete');
+insert into public.aix_next_watches(id,token,email,scan_id,baseline,latest,next_run_at)
+ values ('email_less_watch','email_less_token','','email_less_scan','{}','{}',now());
+select pg_temp.check_privacy(public.aix_next_export_watch_data('email_less_token','')->'watch'->>'id'='email_less_watch','email-less export failed');
+do $$ begin
+ begin
+  perform public.aix_next_delete_watch_data('email_less_token','someone@example.com',null,false);
+  raise exception 'nonmatching email accepted';
+ exception when invalid_authorization_specification then null;
+ end;
+end $$;
+select pg_temp.check_privacy(public.aix_next_delete_watch_data('email_less_token','',null,false)->>'deleted'='true','email-less delete failed');
+select pg_temp.check_privacy(public.aix_next_delete_watch_data('email_less_token','',null,false)->>'deleted'='true','email-less receipt retry failed');
 rollback;

@@ -20,10 +20,8 @@ export const indexableRoutes = [
   "/",
   "/methodology",
   "/pricing",
-  "/support",
   "/privacy",
   "/terms",
-  "/commerce",
 ] as const;
 
 export const privateRoutes = [
@@ -35,4 +33,6 @@ export const privateRoutes = [
   "/billing",
   "/setup",
   "/data-rights",
+  "/manage",
+  "/profile/manage",
 ] as const;

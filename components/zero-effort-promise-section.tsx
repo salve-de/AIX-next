@@ -70,7 +70,7 @@ export function ZeroEffortPromiseSection() {
               marginRight: "auto",
             }}
           >
-            ホームページの改修やサーバー設定は不要です。<br />
+            ホームページの改修も、サーバーの設定も、面倒なブログ更新も一切不要です。<br />
             <strong>専門知識や追加の質問票は不要。</strong> 初回に対象サイト・公開内容を確認し、継続更新を許可します。
           </p>
         </div>
@@ -147,7 +147,7 @@ export function ZeroEffortPromiseSection() {
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
-              Web制作会社に改修を依頼したり、サーバー設定を変更したりする必要はありません。<br />
+              既存の自社サイトは1文字も触る必要がありません。<br />
               参照元付きの公開情報ページをRovan上に用意し、初回確認後に公開できます。
             </p>
           </div>
@@ -217,8 +217,8 @@ export function ZeroEffortPromiseSection() {
               安心の約束
             </span>
             <span style={{ fontSize: "0.88rem", color: "#334155", lineHeight: 1.5 }}>
-              <strong>初回確認のあとは、許可した事実更新を任せて本業へ。</strong><br />
-              会社紹介文や自社サイトは書き換えません。自動更新は公開ページの30日間の有効期限内で動作し、期限は延長しません。
+              <strong>社長は、本業（接客・施工・製造・経営）に100%専念してください。</strong><br />
+              会社紹介文や自社サイトは書き換えません。無料公開は30日間。有料プランでは、掲載維持に同意した公開ページの有効期限を週次測定時に更新します。非公開にしたページや期限切れのページを勝手に再公開しません。
             </span>
           </div>
           <span

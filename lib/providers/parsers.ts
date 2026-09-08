@@ -1,10 +1,13 @@
 import type { Citation } from "@/lib/types";
 
-function addCitation(result: Map<string, Citation>, url: unknown, title?: unknown) {
+function addCitation(result: Map<string, Citation>, url: unknown, title?: unknown, kind: Citation["kind"] = "search") {
   if (typeof url !== "string" || !url) return;
   try {
     const parsed = new URL(url);
+    if (!["http:", "https:"].includes(parsed.protocol) || parsed.username || parsed.password) return;
+    const previous = result.get(parsed.toString());
     result.set(parsed.toString(), {
+      kind: previous?.kind === "answer" ? "answer" : kind,
       title: typeof title === "string" && title ? title : parsed.hostname,
       url: parsed.toString(),
       domain: parsed.hostname.replace(/^www\./, ""),
@@ -21,7 +24,7 @@ export function parseOpenAiWebSearchResponse(data: any) {
   for (const message of messages) {
     for (const part of Array.isArray(message.content) ? message.content : []) {
       for (const annotation of Array.isArray(part?.annotations) ? part.annotations : []) {
-        addCitation(citations, annotation?.url || annotation?.url_citation?.url, annotation?.title || annotation?.url_citation?.title);
+        addCitation(citations, annotation?.url || annotation?.url_citation?.url, annotation?.title || annotation?.url_citation?.title, "answer");
       }
     }
   }
@@ -29,6 +32,8 @@ export function parseOpenAiWebSearchResponse(data: any) {
   for (const call of searchCalls) {
     for (const source of Array.isArray(call?.action?.sources) ? call.action.sources : []) addCitation(citations, source?.url, source?.title);
   }
+  // Sonar's citation array is separate from search_results. Preserve both kinds.
+  for (const url of Array.isArray(data?.citations) ? data.citations : []) addCitation(citations, url, undefined, "answer");
   return {
     rawText,
     citations: [...citations.values()].slice(0, 20),
@@ -51,7 +56,7 @@ export function parseGeminiInteractionResponse(data: any) {
   const citations = new Map<string, Citation>();
   for (const block of blocks) {
     for (const annotation of Array.isArray(block?.annotations) ? block.annotations : []) {
-      if (annotation?.type === "url_citation") addCitation(citations, annotation?.url, annotation?.title);
+      if (annotation?.type === "url_citation") addCitation(citations, annotation?.url, annotation?.title, "answer");
     }
   }
   const groundingCount = (Array.isArray(data?.usage?.grounding_tool_count) ? data.usage.grounding_tool_count : [])
@@ -77,6 +82,8 @@ export function parsePerplexitySonarResponse(data: any) {
     if (typeof source === "string") addCitation(citations, source);
     else addCitation(citations, source?.url, source?.title);
   }
+  // Sonar's citation array is separate from search_results. Preserve both kinds.
+  for (const url of Array.isArray(data?.citations) ? data.citations : []) addCitation(citations, url, undefined, "answer");
   return {
     rawText,
     citations: [...citations.values()].slice(0, 20),

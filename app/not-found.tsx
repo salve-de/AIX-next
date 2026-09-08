@@ -1,6 +1,9 @@
 import Link from "next/link";
-import { Brand } from "@/components/brand";
+import { MarketingShell } from "@/components/marketing-shell";
 
 export default function NotFound() {
-  return <main className="empty-page"><Brand /><p className="eyebrow">404</p><h1>ページが見つかりません。</h1><p>診断結果とWatchは非公開Tokenを含みます。URLが途中で欠けていないか確認してください。</p><Link className="button button-dark" href="/">無料診断へ戻る</Link></main>;
+  return <MarketingShell eyebrow="404" title="ページが見つかりません" lead="URLが変更されたか、ページが公開されていない可能性があります。">
+    <p><Link href="/">ホームへ戻る</Link></p>
+    <p>保存した管理リンクをお持ちの方は、<Link href="/manage">管理画面を開く</Link>から確認できます。</p>
+  </MarketingShell>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -14,6 +14,7 @@ import { PublicProfileActions } from "@/components/public-profile-actions";
 import { ExecutiveDiagnosticSummary } from "@/components/executive-diagnostic-summary";
 import { sampleResult } from "@/lib/sample-data";
 import { WATCH_MONTHLY_PRICE_LABEL } from "@/lib/pricing";
+import { measurementReadout, readoutIdentity } from "@/lib/measurement-readout";
 import type { Observation, ProviderName, ScanRecord, ScanResult } from "@/lib/types";
 
 function providerLabel(provider: ProviderName) {
@@ -36,9 +37,14 @@ function userFacingWarning(value: string) {
 
 export function ResultClient() {
   const params = useSearchParams();
-  const router = useRouter();
   const sample = params.get("sample") === "1";
   const scanId = params.get("id");
+  return <ResultView key={readoutIdentity(sample, scanId)} sample={sample} scanId={scanId} />;
+}
+
+function ResultView({ sample, scanId }: { sample: boolean; scanId: string | null }) {
+  const router = useRouter();
+  const lifecycle = useRef<AbortController | null>(null);
   const [rawResult, setResult] = useState<ScanResult | null>(sample ? sampleResult : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
@@ -48,34 +54,40 @@ export function ResultClient() {
   const [showCorrectionForm, setShowCorrectionForm] = useState(false);
   const [correctionQuery, setCorrectionQuery] = useState("");
 
-  const result = useMemo(() => rawResult, [rawResult]);
+  const result = rawResult;
+  const resultHref = `/result?id=${encodeURIComponent(scanId || "")}`;
+  const headerContext = !sample && scanId ? { resultHref, profileHref: `${resultHref}#step-2`, watchHref: `${resultHref}#step-3` } : undefined;
 
   useEffect(() => {
-    if (sample) return;
-    if (!scanId) { setError("診断IDがありません。"); setLoading(false); return; }
-    fetch(`/api/scans/${encodeURIComponent(scanId)}`, { cache: "no-store" })
+    const controller = new AbortController();
+    lifecycle.current = controller;
+    if (sample) return () => controller.abort();
+    if (!scanId) { setError("診断IDがありません。"); setLoading(false); return () => controller.abort(); }
+    fetch(`/api/scans/${encodeURIComponent(scanId)}`, { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
         const data = await response.json() as ScanRecord & { error?: string };
         if (!response.ok) throw new Error(data.error || "診断結果を取得できませんでした。");
         if (!data.result) throw new Error(data.error || "診断はまだ完了していません。");
-        setResult(data.result);
+        if (!controller.signal.aborted) setResult(data.result);
       })
-      .catch((caught) => setError(caught instanceof Error ? caught.message : "結果を取得できませんでした。"))
-      .finally(() => setLoading(false));
+      .catch((caught) => { if (!controller.signal.aborted) setError(caught instanceof Error ? caught.message : "結果を取得できませんでした。"); })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
   }, [sample, scanId]);
 
   async function startWatch(event: FormEvent) {
     event.preventDefault();
     if (sample) { router.push("/watch?sample=1"); return; }
     if (!scanId) return;
+    const signal = lifecycle.current!.signal;
     setWatchBusy(true); setError("");
     try {
-      const response = await fetch("/api/watch", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ scanId, email }) });
+      const response = await fetch("/api/watch", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ scanId, email }), signal });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "改善後の確認を開始できませんでした。");
-      router.push(`/watch?token=${encodeURIComponent(data.token)}`);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : "改善後の確認を開始できませんでした。"); }
-    finally { setWatchBusy(false); }
+      if (!signal.aborted) router.push(`/watch?token=${encodeURIComponent(data.token)}`);
+    } catch (caught) { if (!signal.aborted) setError(caught instanceof Error ? caught.message : "改善後の確認を開始できませんでした。"); }
+    finally { if (!signal.aborted) setWatchBusy(false); }
   }
 
   if (loading) return <div className="full-loading">診断結果を読み込んでいます。</div>;
@@ -84,17 +96,17 @@ export function ResultClient() {
   const topCompetitor = result.competitors[0];
   const primaryLoss = result.lostPrompts[0];
   const primaryGap = result.evidenceGaps[0];
-  const hasMeasurement = result.successfulObservations > 0;
-  const ownPromptCount = new Set(result.observations.filter((item) => item.status === "success" && item.ownRecommended).map((item) => item.promptId)).size;
+  const readout = measurementReadout(result);
+  const hasMeasurement = readout.successful > 0;
   const primaryWinner = primaryLoss?.winner || topCompetitor?.name || null;
-  const citationCount = result.observations.reduce((total, item) => total + item.citations.length, 0);
+  const citationCount = new Set(result.observations.filter(item => item.status === "success").flatMap(item => item.citations.map(citation => citation.url))).size;
   const host = (() => { try { return new URL(result.targetUrl).hostname.replace(/^www\./, ""); } catch { return result.targetUrl; } })();
   const displayWarnings = [...new Set(result.warnings.map(userFacingWarning))];
 
 
 
   return <main className="report-page">
-    <SiteHeader compact />
+    <SiteHeader compact context={headerContext} />
 
     {/* 極細スマートサブバー（多重帯を完全統合・ファーストビューを開放） */}
     <div className="report-subbar" style={{ background: "var(--bg-base, #ffffff)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "10px 0" }}>
@@ -107,7 +119,7 @@ export function ResultClient() {
           <span style={{ background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", padding: "2px 8px", borderRadius: "4px", fontSize: "0.72rem", border: "1px solid var(--border-subtle, #e2e8f0)" }}>
             {result.discovery.brandName}
           </span>
-            {sample ? <span style={{ fontSize: "0.72rem", color: "var(--accent-blue, #0284c7)", background: "#e0f2fe", padding: "1px 6px", borderRadius: "3px", fontWeight: 600 }}>設計見本（架空データ）</span> : null}
+            {sample ? <span style={{ fontSize: "0.72rem", color: "var(--accent-blue, #0284c7)", background: "#e0f2fe", padding: "1px 6px", borderRadius: "3px", fontWeight: 600 }}>見本</span> : null}
         </div>
 
         {/* 中央：スリムな3ステップ・ナビゲーション */}
@@ -116,7 +128,7 @@ export function ResultClient() {
             <span>① 現状を知る</span>
           </a>
           <a href="#step-2" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
-            <span>② 選ばれる理由を整える</span>
+            <span>② AI推薦データを配備</span>
           </a>
           <a href="#step-3" style={{ display: "inline-flex", alignItems: "center", gap: "6px", textDecoration: "none", padding: "4px 10px", borderRadius: "20px", background: "var(--bg-surface, #f1f5f9)", color: "var(--text-secondary, #475569)", fontSize: "0.74rem", fontWeight: 600, border: "1px solid var(--border-subtle, #e2e8f0)" }}>
             <span>③ 推移を追跡</span>
@@ -154,6 +166,8 @@ export function ResultClient() {
             >
               <input
                 type="text"
+                name="correctionQuery"
+                aria-label="診断対象の会社名・地域またはURL"
                 placeholder="例: 青葉ベーカリー 高崎、URL"
                 value={correctionQuery}
                 onChange={(e) => setCorrectionQuery(e.target.value)}
@@ -188,7 +202,7 @@ export function ResultClient() {
           <div className="report-header-top">
             <div>
               <p className="overline" style={{ color: "var(--text-muted, #64748b)", fontSize: "0.76rem", letterSpacing: "0.05em", textTransform: "uppercase", marginBottom: "4px" }}>
-                AI推薦の獲得に向けた診断レポート
+                自社専用 AI診断レポート
               </p>
               <h1 style={{ fontSize: "clamp(1.65rem, 2.8vw, 2.2rem)", fontWeight: 800, color: "var(--navy, #0f172a)", margin: "0 0 6px", letterSpacing: "-0.025em" }}>
                 {result.discovery.brandName}
@@ -199,7 +213,7 @@ export function ResultClient() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span className="report-date" style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)", background: "#ffffff", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 10px", borderRadius: "4px" }}>
-                {sample ? "サンプル検証レポート" : `実測日: ${formatDate(result.measuredAt)}`}
+                {sample ? "診断レポートの見本" : `実測日: ${formatDate(result.measuredAt)}`}
               </span>
             </div>
           </div>
@@ -207,9 +221,9 @@ export function ResultClient() {
           <div className="report-headline" style={{ margin: "24px 0 18px", fontSize: "clamp(1.25rem, 2.2vw, 1.65rem)", fontWeight: 700, color: "var(--navy, #0f172a)", lineHeight: 1.4, letterSpacing: "-0.02em" }}>
             {hasMeasurement ? (
               <>
-                比較した<strong>{result.panel.promptCount}問</strong>中、
+                回答を取得した<strong>{readout.successful}問</strong>中、
                 <span style={{ color: "var(--navy, #0f172a)" }}>
-                  <strong>{result.lostPrompts.length}問</strong>で他社候補が先に表示されました。
+                  <strong>{readout.excluded}問</strong>で自社が候補外でした。
                 </span>
               </>
             ) : (
@@ -237,9 +251,9 @@ export function ResultClient() {
       <section className="report-summary shell">
         <div className="summary-copy">
           <p className={`overline ${primaryLoss ? "summary-urgent-label" : ""}`}>{primaryLoss ? "AI回答の測定結果" : "測定結果"}</p>
-          <h2>{primaryLoss ? <>AI回答では、<strong>{primaryWinner || "他社候補"}</strong>が<br />先に表示されました。</> : "測定した質問で、自社も候補に含まれました。"}</h2>
+          <h2>{!hasMeasurement ? "AI回答は未取得です。候補入りは未判定です。" : primaryLoss ? <>AI回答では、<strong>{primaryWinner || "他社候補"}</strong>が<br />先に表示されました。</> : "測定した質問で、自社も候補に含まれました。"}</h2>
           <p>
-            {primaryLoss
+            {!hasMeasurement ? "AI回答の取得後に候補入り状況を確認できます。" : primaryLoss
               ? "この相談でも自社が推薦候補に入ることを目指し、専門分野や対応条件で選ばれる理由を探します。今回の観測だけで候補外の原因や顧客の流出は断定せず、参照元と質問条件を確認します。"
               : "測定した質問では、自社が候補に含まれました。回答は質問・参照元・モデルの更新で変わるため、必要に応じて同じ条件で再測定します。"}
           </p>
@@ -257,10 +271,10 @@ export function ResultClient() {
         </div>
         <div>
           <div className="summary-stats">
-            <div><span>自社が候補に含まれた質問</span><strong>{ownPromptCount} / {result.panel.promptCount}問</strong></div>
+            <div><span>自社が候補に含まれた質問（成功回答の多数決）</span><strong>{readout.label}</strong></div>
             <div><span>回答に多く含まれた他社候補</span><strong>{topCompetitor?.name || "—"}</strong></div>
-            <div><span>確認した参考ページ</span><strong>{citationCount}件</strong></div>
-            <div><span>継続確認</span><strong className="summary-unconnected">週次で再測定</strong></div>
+            <div><span>確認した参照元URL</span><strong>{citationCount}件</strong></div>
+            <div><span>週次見守り</span><strong className="summary-unconnected">登録後に毎週測定</strong></div>
           </div>
         </div>
       </section>
@@ -269,8 +283,10 @@ export function ResultClient() {
       <ExecutiveDiagnosticSummary
         brandName={result.discovery.brandName}
         topCompetitor={topCompetitor?.name}
-        lostCount={result.lostPrompts.length}
-        totalCount={result.panel.promptCount}
+        lostCount={readout.excluded}
+        totalCount={readout.successful}
+        scheduledCount={result.panel.promptCount}
+        partial={!readout.complete}
       />
 
       {/* AI測定条件・参照元の説明 */}
@@ -292,7 +308,7 @@ export function ResultClient() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "10px", fontSize: "0.78rem", color: "var(--text-secondary, #334155)", background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "12px 16px", borderRadius: "8px" }}>
             <div><strong>調査対象AI:</strong> ChatGPT / Perplexity / Google Gemini</div>
               <div><strong>測定母数:</strong> 質問 {result.panel.promptCount}問 × AI回答（成功 {result.successfulObservations}件）</div>
-            <div><strong>調査方法:</strong> {sample ? "表示用に固定した設計見本" : "各AIに同一条件で質問し、取得できた回答を記録"}</div>
+            <div><strong>調査方法:</strong> {sample ? "サンプルデータを使った表示例" : "各AIに同一条件で質問し、取得できた回答を記録"}</div>
               <div><strong>判定基準:</strong> 回答内で自社が候補に含まれたかを分析</div>
           </div>
           <div style={{ marginTop: "10px", fontSize: "0.72rem", color: "var(--text-muted, #64748b)", lineHeight: 1.6, borderTop: "1px dashed var(--border-subtle, #e2e8f0)", paddingTop: "8px" }}>
@@ -306,7 +322,7 @@ export function ResultClient() {
       <section className="report-section shell">
         <div className="section-heading-simple">
           <p className="overline">買い手がAIに聞く質問</p>
-          <h2>どの相談で、次の推薦獲得を目指すか。</h2>
+          <h2>どの比較で、ライバルが推薦されているか。</h2>
           <p>質問ごとの候補入り状況から、御社の専門性を伝えるべき場面を探します。未確認の対応分野を強みとして断定するものではありません。</p>
         </div>
         <QuestionList result={result} />
@@ -407,12 +423,12 @@ export function ResultClient() {
     <div id="step-2" style={{ background: "var(--bg-surface, #f8fafc)", padding: "48px 0", borderTop: "1px solid var(--border-subtle, #e2e8f0)", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", margin: "40px 0" }}>
       <div className="shell">
         <div style={{ textAlign: "center", maxWidth: "720px", margin: "0 auto 36px" }}>
-          <span className="step-badge">【ステップ 2】選ばれる理由を整える</span>
+          <span className="step-badge">【ステップ 2】今すぐできる解決アクション</span>
           <h2 style={{ fontSize: "1.8rem", margin: "12px 0 8px", color: "var(--text-primary, #0f172a)", fontWeight: 800 }}>
-            大手に埋もれず、専門性で推薦されるための下書きへ
+            自社サイト改修ゼロで、AI推薦データを配備
           </h2>
           <p style={{ color: "var(--text-secondary, #475569)", lineHeight: 1.75 }}>
-            狙う顧客層や相談条件を絞り、確認できた事実を参照元付きの下書きにします。自社サイトの改修も、一から文章を作る作業も不要です。内容を確認・承認した後に公開でき、AIの回答・推薦・順位は保証しません。
+            会社の強み・対応条件・参照元をまとめた、AI向けの公開データを作成します。自社サイトの改修も、一から文章を作る作業も不要です。内容を確認・承認した後に公開でき、AIの回答・推薦・順位は保証しません。
           </p>
         </div>
 
@@ -434,8 +450,8 @@ export function ResultClient() {
         <div className="shell report-watch-inner">
           <div>
             <span className="step-badge" style={{ marginBottom: "8px", display: "inline-block" }}>【ステップ 3】継続・品質維持</span>
-            <p className="overline">週次AI回答測定プラン（14日間無料確認）</p>
-            <h2>次の推薦獲得を目指して、<br />自社が候補に入れたかを毎週追跡。</h2>
+            <p className="overline">週次自動見守りプラン（14日間無料トライアル）</p>
+            <h2>AIの推薦状況を、<br />毎週自動で追跡・チェック。</h2>
             <p>同じ質問パネルで、自社の候補入り状況と参照元の変化を記録します。毎回自分でAIに質問して比べる手間を抑え、選ばれる理由の見直しに役立てます。</p>
             <ul style={{ margin: "16px 0", paddingLeft: "20px" }}>
               <li style={{ marginBottom: "6px" }}>{WATCH_MONTHLY_PRICE_LABEL} / 週次の回答測定と差分確認</li>
@@ -445,17 +461,18 @@ export function ResultClient() {
           </div>
           <form onSubmit={startWatch}>
             <label htmlFor="watch-email">
-              変化通知メールアドレス <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "#64748b" }}>（任意・空欄のままでも開始できます）</span>
+              AI推薦状況の変化通知メールアドレス <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "#64748b" }}>（任意・空欄のままでも開始できます）</span>
             </label>
             <input
               id="watch-email"
+              name="email"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="通知を受け取る場合のみ入力（空欄でもOK）"
             />
             <button className="button button-primary" disabled={watchBusy} style={{ minHeight: "48px", borderRadius: "var(--radius-btn, 6px)" }}>
-              {watchBusy ? "準備しています…" : "14日間無料で週次測定を試す"}
+              {watchBusy ? "準備しています…" : "14日間無料で試してみる（メール登録不要）"}
               <ArrowIcon />
             </button>
             <small>※ メール入力は任意です。空欄のままでも週次測定を開始できます。</small>

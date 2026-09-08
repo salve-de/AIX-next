@@ -31,7 +31,7 @@ async function cancelStripeSubscription(subscriptionId: string) {
 }
 
 export async function exportWatchData(token: string, email: string) {
-  if (!token || typeof token !== "string" || typeof email !== "string" || !email.trim()) throw new Error("Watch tokenと登録メールが必要です。");
+  if (!token || typeof token !== "string" || typeof email !== "string") throw new Error("管理情報を確認できません。");
   if (env.supabaseUrl && env.supabaseServiceKey) {
     const data = await supabase<Record<string, unknown>>("rpc/aix_next_export_watch_data", {
       method: "POST", body: JSON.stringify({ p_token: token, p_email: email.trim().toLowerCase() }),
@@ -51,7 +51,7 @@ export async function exportWatchData(token: string, email: string) {
 }
 
 export async function deleteWatchData(token: string, email: string) {
-  if (!token || typeof token !== "string" || typeof email !== "string" || !email.trim()) throw new Error("Watch tokenと登録メールが必要です。");
+  if (!token || typeof token !== "string" || typeof email !== "string") throw new Error("管理情報を確認できません。");
   const durable = Boolean(env.supabaseUrl && env.supabaseServiceKey);
   const watch = await getWatch(token);
   if (!watch && durable) {

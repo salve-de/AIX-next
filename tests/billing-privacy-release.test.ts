@@ -6,6 +6,7 @@ import path from "node:path";
 import test from "node:test";
 import vm from "node:vm";
 import ts from "typescript";
+import { watchTokenFromInput } from "../lib/management-link";
 
 // Execute real handlers with sealed imports: never load lib/env, storage,
 // server-only, credentials, or a real provider. Unexpected imports/network fail.
@@ -66,6 +67,18 @@ function harness(options: { paid?: boolean; subscriptionId?: string; customerId?
 const subscription = (status: string, id = "sub_one") => ({ id, customer: "cus_one", metadata: { watch_token: "token_one" }, status });
 const eventObject = (status: string, id = "sub_one") => subscription(status, id);
 const rights = { token: "token_one", email: "owner@example.com", confirmation: "DELETE ROVAN DATA" };
+
+test("privacy routes allow email-less ownership but reject blank email for registered owners", async () => {
+  for (const [file, method] of [["privacy/export", "POST"], ["privacy/delete", "DELETE"]]) {
+    const h = harness();
+    const denied = await h.load(`app/api/${file}/route.ts`)[method](h.request({ ...rights, email: "" }, method));
+    assert.equal(denied.status, 403);
+    assert.equal(h.exported, false); assert.equal(h.deleted, false);
+    h.watch.email = "";
+    const allowed = await h.load(`app/api/${file}/route.ts`)[method](h.request({ ...rights, email: "" }, method));
+    assert.equal(allowed.status, 200);
+  }
+});
 
 test("billing and privacy reject non-string bearer credentials before provider/data access", async () => {
   for (const [file, method] of [["billing/checkout", "POST"], ["billing/portal", "POST"], ["privacy/export", "POST"], ["privacy/delete", "DELETE"]]) {
@@ -252,11 +265,17 @@ function clientHarness(filename: string, component: string) {
   vm.runInNewContext(source, {
     module: loaded, exports: loaded.exports, AbortController, URLSearchParams,
     fetch: (url: string) => new Promise<Response>(resolve => { calls.push({ url, resolve }); }),
-    require: (name: string) => { if (name in mocks) return mocks[name]; throw new Error(`Unexpected client import ${name}`); },
+      require: (name: string) => { if (name === "@/lib/management-link") return { watchTokenFromInput }; if (name in mocks) return mocks[name]; throw new Error(`Unexpected client import ${name}`); },
   });
   return {
     calls,
-    render() { index = 0; const tree = loaded.exports[component](); while (effects.length) effects.shift()!(); return tree; },
+    render() {
+      index = 0;
+      let tree = loaded.exports[component]();
+      while (typeof tree?.type === "function") tree = tree.type(tree.props);
+      while (effects.length) effects.shift()!();
+      return tree;
+    },
   };
 }
 

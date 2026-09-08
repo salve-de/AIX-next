@@ -1,3 +1,4 @@
+import { proofProviders, proofVote, sameProofPanel } from "./value-proof";
 import type {
   AutoAction,
   AutoActionImpact,
@@ -116,62 +117,26 @@ export function evaluateAutoActionImpact(
   previous?: ScanResult | null,
   now = new Date().toISOString()
 ): AutoActionImpact[] {
-  if (!previousActions.length || !previous) return [];
-
-  const comparablePanel = previous.panel.kind === latest.panel.kind
-    && previous.panel.version === latest.panel.version
-    && previous.panel.promptCount === latest.panel.promptCount
-    && previous.panel.repetitions === latest.panel.repetitions
-    && previous.panel.locale === latest.panel.locale
-    && previous.panel.country === latest.panel.country;
-  if (!comparablePanel) return [];
-
-  const impacts: AutoActionImpact[] = [];
-
-  const candidatePromptCount = (result: ScanResult, affectedPromptIds: Set<string>, provider?: string) => new Set(
-    result.observations
-      .filter((obs) => affectedPromptIds.has(obs.promptId)
-        && (!provider || obs.provider === provider)
-        && obs.status === "success"
-        && obs.ownRecommended)
-      .map((obs) => obs.promptId)
-  ).size;
-
-  const movement = (before: number, after: number): "improved" | "unchanged" | "declined" =>
-    after > before ? "improved" : after < before ? "declined" : "unchanged";
-
-  for (const action of previousActions) {
-    const wasApplied = action.status === "applied" || (!action.status && Boolean(action.executedAt));
-    if (!wasApplied) continue;
-
-    const affectedSet = new Set(action.affectedPromptIds);
-    if (!affectedSet.size) continue;
-
-    const prevWins = candidatePromptCount(previous, affectedSet);
-    const currentWins = candidatePromptCount(latest, affectedSet);
-    const uplift = currentWins - prevWins;
-    const providerAgreement = {
-      openai: movement(candidatePromptCount(previous, affectedSet, "openai"), candidatePromptCount(latest, affectedSet, "openai")),
-      gemini: movement(candidatePromptCount(previous, affectedSet, "gemini"), candidatePromptCount(latest, affectedSet, "gemini")),
-      perplexity: movement(candidatePromptCount(previous, affectedSet, "perplexity"), candidatePromptCount(latest, affectedSet, "perplexity")),
+  if (!previous || !sameProofPanel(previous, latest)) return [];
+  return previousActions.flatMap(action => {
+    if (action.status !== "applied" || !action.executedAt || action.beforeScanId !== previous.scanId || !(Date.parse(latest.measuredAt) > Date.parse(action.executedAt))) return [];
+    const pairs = [...new Set(action.affectedPromptIds)].flatMap(id => proofProviders.flatMap(provider => {
+      const b = proofVote(previous, id, provider), n = proofVote(latest, id, provider);
+      return b.complete && n.complete && b.signature === n.signature ? [{id,provider,before:b.included!,after:n.included!}] : [];
+    }));
+    if (!pairs.length) return [];
+    const before = pairs.filter(p=>p.before).length, after = pairs.filter(p=>p.after).length;
+    const movement = (provider: typeof proofProviders[number]) => {
+      const rows = pairs.filter(p=>p.provider===provider);
+      if(!rows.length)return "unavailable" as const;
+      const b=rows.filter(p=>p.before).length, n=rows.filter(p=>p.after).length;
+      return n>b?"improved" as const:n<b?"declined" as const:"unchanged" as const;
     };
-
-    impacts.push({
-      id: `imp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-      actionId: action.id,
-      afterScanId: latest.scanId,
-      // 旧スキーマのフィールド名を維持し、値は候補入り件数の観測差分として扱います。
-      observedUplift: uplift,
-      affectedPromptCount: affectedSet.size,
-      providerAgreement,
-      // 観測された差分だけでは、施策との因果効果を推定できません。
-      causalConfidence: "low",
-      summary: `比較可能な質問パネルの対象${affectedSet.size}問で、自社が候補に含まれた件数は前回${prevWins}件から今回${currentWins}件へ${uplift >= 0 ? "+" : ""}${uplift}件変化しました。因果効果は未検証です。`,
-      measuredAt: now,
-    });
-  }
-
-  return impacts;
+    return [{id:`imp_${action.id}_${latest.scanId}`,actionId:action.id,afterScanId:latest.scanId,observedUplift:after-before,
+      affectedPromptCount:new Set(pairs.map(p=>p.id)).size,comparedAnswerGroups:pairs.length,
+      providerAgreement:{openai:movement("openai"),gemini:movement("gemini"),perplexity:movement("perplexity")},causalConfidence:"low" as const,
+      summary:`同条件の相談×AI ${pairs.length}件で、自社が候補に含まれた件数は公開前${before}件から今回${after}件へ変化しました。因果効果は未検証です。`,measuredAt:now}];
+  });
 }
 
 type ReportObservation = {

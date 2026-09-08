@@ -33,7 +33,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
     <section className="positioning-section shell" aria-label="ポジショニング診断および戦略提言">
       {/* ポジショニング戦略の選定軸 */}
       <div className="section-heading-simple" style={{ textAlign: "left", margin: "16px 0 16px" }}>
-          <p className="overline">【推薦獲得の戦略】御社が選ばれる強みを見つける</p>
+          <p className="overline">【差別化戦略】AIに伝える「自社固有の強み」を選ぶ</p>
         <h2>大手と同じ土俵だけで競わず、専門分野や細かな対応条件で選ばれる軸を選びましょう。</h2>
         <p>目指すのは「この相談なら御社」とAIに推薦されること。以下は公開情報と測定結果をもとに検討する戦略案です。強みや他社の弱点を推測せず、内容を確認してから公開します。推薦・順位・成果は保証しません。</p>
       </div>
@@ -66,7 +66,7 @@ export function PositioningPanel({ positioning }: { positioning?: PositioningAdv
 
       {/* 選択された戦略の核 */}
       <div className="winning-angle-card" style={{ marginTop: "20px" }}>
-        <div className="winning-angle-badge">御社が推薦される理由として磨く強み</div>
+        <div className="winning-angle-badge">AIに伝える、御社固有の推薦軸</div>
         <h3>{current.coreThesis}</h3>
         <p>{current.strategicReason}</p>
       </div>

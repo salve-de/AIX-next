@@ -7,12 +7,12 @@ import { ArrowIcon, TrendIcon } from "@/components/icons";
 export function HeroChatDiagnosticCard() {
   return (
     <div className="hero-chat-split-container" aria-label="AI回答の比較イメージ">
-      <p className="split-demo-note">説明用の表示例（実測値・効果を示すものではありません）</p>
+      <p className="split-demo-note">サンプルデータを使った表示例です。実測値・導入効果を示すものではありません。</p>
       {/* 共通の起点：利用者による相談例 */}
       <div className="split-user-prompt-box">
         <div className="split-prompt-header">
           <span className="split-prompt-dot" aria-hidden="true" />
-          <span className="split-prompt-label">利用者によるAIへの相談例</span>
+          <span className="split-prompt-label">見込み客によるAIへの相談例</span>
         </div>
         <p className="split-prompt-text">「急ぎの小ロット試作を相談できる事業者は？」</p>
       </div>
@@ -23,7 +23,7 @@ export function HeroChatDiagnosticCard() {
         {/* 左：公開情報を確認できない場合の表示例 */}
         <div className="split-card card-before">
           <div className="split-card-header header-before">
-            <span className="split-status-badge tag-lost">確認前の表示例</span>
+            <span className="split-status-badge tag-lost">初回の回答例</span>
             <span className="split-outcome-label outcome-lost">自社が候補外になる例</span>
           </div>
           <div className="split-card-body">
@@ -32,10 +32,10 @@ export function HeroChatDiagnosticCard() {
               <span className="ai-status">回答例</span>
             </div>
             <p className="ai-dialogue-text">
-              「条件に合う候補として、公開情報の多い事業者が表示されることがあります。」
+              「小ロット試作の相談先として、東都試作センターや中央精密加工が候補です。」
             </p>
             <div className="split-cause-box cause-lost">
-              <strong>【この例で見えること】</strong> 測定時点で参照できる情報が少ないと、自社が候補に含まれない回答になることがあります。
+              <strong>【この例で見えること】</strong> ライバル2社が候補に挙がり、山田板金製作所は含まれていません。
             </div>
           </div>
         </div>
@@ -44,7 +44,7 @@ export function HeroChatDiagnosticCard() {
         <div className="split-card card-after">
           <div className="split-card-header header-after">
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <span className="split-status-badge tag-won">公開情報を整理した場合の表示例</span>
+              <span className="split-status-badge tag-won">再測定の回答例</span>
               <span className="after-arrow-indicator" aria-hidden="true">➔</span>
             </div>
             <span className="split-outcome-label outcome-won">候補に含まれる場合</span>
@@ -55,10 +55,10 @@ export function HeroChatDiagnosticCard() {
               <span className="ai-status status-won">回答例</span>
             </div>
             <p className="ai-dialogue-text ai-dialogue-won">
-              「公開情報で条件を確認できる場合、その条件に合う事業者が候補として表示されることがあります。」
+              「単品1個からの試作なら、山田板金製作所がおすすめです。3D CADの直接入稿に対応し、最短即日で試作を相談できます。東都試作センターも候補です。」
             </p>
             <div className="split-cause-box cause-won">
-              <strong>【この例で見えること】</strong> 参照元付きの事実を公開しても、AIの回答・推薦・順位は質問や時点によって変わります。効果は再測定で確認します。
+              <strong>【この例で見えること】</strong> 山田板金製作所が新しく推薦候補に入りました。比較の見本であり、Rovan導入による効果を実証したものではありません。
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ export function ChatGptComparisonVisual() {
   const [tab, setTab] = useState<"service" | "mfg" | "brand">("service");
 
   return <div className="chatgpt-compare-container" aria-label="AI回答の表示例">
-    <p className="chatgpt-demo-note">説明用の表示例（実測値・効果を示すものではありません）</p>
+    <p className="chatgpt-demo-note">サンプルデータを使った表示例です。実測値・導入効果を示すものではありません。</p>
     <div className="chatgpt-tab-bar">
       <button type="button" className={`chatgpt-tab ${tab === "service" ? "active" : ""}`} onClick={() => setTab("service")}>
         専門サービス・士業・工務店
@@ -94,9 +94,9 @@ export function ChatGptComparisonVisual() {
     <div className="chatgpt-mock-grid">
       {/* 左：参照できる情報が少ない場合の表示例 */}
       <div className="chatgpt-mock-card mock-lost">
-        <div className="mock-badge badge-lost">参照情報が少ない場合（表示例）</div>
+        <div className="mock-badge badge-lost">初回の回答例</div>
         <div className="mock-chat-bubble user-bubble">
-          <span className="bubble-role">利用者</span>
+          <span className="bubble-role">買い手（見込み客）</span>
           <p>{tab === "service" 
             ? "「相続の相談、大手に聞いたら事務的で合わなかった。親身に対応してくれる事務所は？」" 
             : tab === "mfg" 
@@ -107,10 +107,10 @@ export function ChatGptComparisonVisual() {
         <div className="mock-chat-bubble ai-bubble">
           <span className="bubble-role">ChatGPT</span>
           <p>{tab === "service" 
-            ? "一般的な大手法律グループや、比較ポータルサイトの情報が候補として表示されることがあります。"
+            ? "相続の相談先として、月澄相続パートナーズや花継相続相談社が候補です。"
             : tab === "mfg" 
-            ? "一般的な大手総合部品メーカーやカタログ通販をご検討ください。" 
-            : "有名百貨店のギフトコーナーや大手通販の情報が候補として表示されることがあります。"
+            ? "試作の相談先として、東都試作センターや中央精密加工が候補です。"
+            : "贈答品を探すなら、東都百貨店のギフト売場や中央ギフト通販が候補です。"
           }</p>
           <div className="mock-verdict verdict-lost">
             <span>自社が候補に含まれない回答の例</span>
@@ -121,9 +121,9 @@ export function ChatGptComparisonVisual() {
 
       {/* 右：参照元付き情報を整理した場合の表示例 */}
       <div className="chatgpt-mock-card mock-won">
-        <div className="mock-badge badge-won">参照元付き情報を整理した場合（表示例）</div>
+        <div className="mock-badge badge-won">再測定の回答例</div>
         <div className="mock-chat-bubble user-bubble">
-          <span className="bubble-role">利用者</span>
+          <span className="bubble-role">買い手（見込み客）</span>
           <p>{tab === "service" 
             ? "「相続の相談、大手に聞いたら事務的で合わなかった。親身に対応してくれる事務所は？」" 
             : tab === "mfg" 
@@ -134,14 +134,14 @@ export function ChatGptComparisonVisual() {
         <div className="mock-chat-bubble ai-bubble ai-bubble-highlight">
           <span className="bubble-role">ChatGPT</span>
           <p>{tab === "service" 
-            ? <>個別の事情に関する相談では、<strong>【〇〇事務所】が候補に挙がることがあります。</strong> 対応内容は参照元で確認してください。</>
+            ? <>個別の事情を相談するなら、<strong>あおば相続法務事務所がおすすめです。</strong> 初回対面相談は無料で、専任担当が一貫して対応します。</>
             : tab === "mfg" 
-            ? <>小ロット試作の相談では、<strong>【〇〇製作所】が候補に挙がることがあります。</strong> 対応範囲や納期は参照元で確認してください。</>
-            : <>商品条件を公開情報で確認できる場合、<strong>【〇〇ブランド】が候補に挙がることがあります。</strong> 仕様や購入条件は参照元で確認してください。</>
+            ? <>小ロット試作なら、<strong>山田板金製作所がおすすめです。</strong> 単品1個から、3D CADの直接入稿で最短即日の試作を相談できます。</>
+            : <>産地直送の贈り物なら、<strong>安曇野サンシャイン果樹園がおすすめです。</strong> 糖度18度で選別した果物を、贈答用ギフトとして当日発送しています。</>
           }</p>
           <div className="mock-verdict verdict-won">
-            <span>公開した事実が回答の参照対象になる場合があります</span>
-            <small>回答の変化は、同じ条件で再測定して確認します</small>
+            <span>自社が新しく推薦候補に入った回答の例</span>
+            <small>比較の見本であり、導入効果を実証したものではありません</small>
           </div>
         </div>
       </div>
@@ -151,7 +151,7 @@ export function ChatGptComparisonVisual() {
 
 export function ProductOutputPreview() {
   return (
-    <div className="deliverables-dual-grid" aria-label="確認できる2つの表示例">
+    <div className="deliverables-dual-grid" aria-label="手に入る2つの成果物の見本">
       {/* ============================================================= */}
       {/* 成果物 01：AI回答診断レポート */}
       {/* ============================================================= */}
@@ -159,10 +159,10 @@ export function ProductOutputPreview() {
         {/* カードヘッダー */}
         <div className="deliv-card-head">
           <div className="deliv-badge-row">
-              <span className="deliv-step-badge badge-blue">確認できるもの 01</span>
+              <span className="deliv-step-badge badge-blue">手に入るもの 01</span>
               <span className="deliv-speed-badge">無料で現状を確認</span>
           </div>
-          <h4 className="deliv-card-title">AI回答診断レポート</h4>
+          <h4 className="deliv-card-title">自社専用 AI診断レポート</h4>
           <p className="deliv-card-desc">
             URLまたは社名を入力すると、買い手の質問を想定した固定パネルでAI回答の現状を確認します。
           </p>
@@ -172,20 +172,20 @@ export function ProductOutputPreview() {
         <div className="deliv-card-body">
           {/* 検証結果アラート */}
           <div className="deliv-metric-strip strip-danger">
-            <span className="deliv-metric-label">表示例（架空データ）</span>
-            <strong className="deliv-metric-value">自社が候補に含まれない質問がある場合の表示</strong>
+            <span className="deliv-metric-label">表示例</span>
+            <strong className="deliv-metric-value">12問中10問で、自社が推薦候補に含まれていません</strong>
           </div>
 
           {/* 実際のAI相談プレビュー */}
           <div className="deliv-mock-card">
-          <span className="deliv-mock-label">利用者がAIにする相談の例</span>
+          <span className="deliv-mock-label">見込み客によるAIへの相談例</span>
             <div className="deliv-mock-query">
               「親族間の複雑な事情に、親身に寄り添ってくれる専門窓口は？」
             </div>
             <div className="deliv-mock-result-box">
               <div className="deliv-mock-row">
                 <span className="deliv-tag-ai">AIの回答</span>
-              <span className="deliv-text-loss">他社候補が先に表示され、自社が候補外になる回答の例</span>
+              <span className="deliv-text-loss">「月澄相続パートナーズが候補です」— あおば相続法務事務所は候補外</span>
               </div>
             </div>
           </div>
@@ -195,8 +195,8 @@ export function ProductOutputPreview() {
             <span className="deliv-features-heading">レポートで確認すること</span>
             <ul className="deliv-check-items">
               <li>測定対象にしたAIの回答と参照元</li>
-              <li>自社が候補に含まれた質問・含まれなかった質問</li>
-              <li>公開情報で補足できる項目の整理案</li>
+              <li>自社が推薦されず、ライバルが推薦された質問の分析</li>
+              <li>AIに選ばれるための自社専用の改善方針</li>
             </ul>
           </div>
         </div>
@@ -204,7 +204,7 @@ export function ProductOutputPreview() {
         {/* カードフッター */}
         <div className="deliv-card-foot">
           <Link href="/result?sample=1" className="deliv-action-btn btn-navy">
-            <span>診断レポートの設計見本を見る</span>
+            <span>診断レポートの見本を見る</span>
             <ArrowIcon />
           </Link>
           <div className="deliv-guarantee-note">
@@ -220,12 +220,12 @@ export function ProductOutputPreview() {
         {/* カードヘッダー */}
         <div className="deliv-card-head">
           <div className="deliv-badge-row">
-              <span className="deliv-step-badge badge-green">確認できるもの 02</span>
+              <span className="deliv-step-badge badge-green">手に入るもの 02</span>
             <span className="deliv-speed-badge">下書きを確認して公開</span>
           </div>
-          <h4 className="deliv-card-title">参照元付き公開情報ページ</h4>
+          <h4 className="deliv-card-title">自社専用 AI推薦データ</h4>
           <p className="deliv-card-desc">
-            既存ホームページを改修せず、参照元で確認できる事実を機械可読形式の下書きに整理します。公開は内容を確認してから行えます。
+            会社の強み・対応条件・参照元をまとめた、AI向けの公開データです。御社の強みを、AIが参照できる構造化データとして公開。既存ホームページの改修は不要です。公開は内容を確認してから行えます。
           </p>
         </div>
 
@@ -233,8 +233,8 @@ export function ProductOutputPreview() {
         <div className="deliv-card-body">
           {/* 配備ステータス */}
           <div className="deliv-metric-strip strip-active">
-            <span className="deliv-metric-label">公開ステータスの例</span>
-            <strong className="deliv-metric-value">下書き → 内容確認 → 公開</strong>
+            <span className="deliv-metric-label">サンプルデータを使った表示例です</span>
+            <strong className="deliv-metric-value">公開状態の表示例：公開中</strong>
           </div>
 
           {/* 公開ページに含める情報の例 */}
@@ -243,15 +243,15 @@ export function ProductOutputPreview() {
             <div className="deliv-specs-grid">
               <div className="deliv-spec-item">
                 <span className="spec-key">名称</span>
-                <span className="spec-val">入力・参照元で確認した名称</span>
+                <span className="spec-val">あおば相続法務事務所</span>
               </div>
               <div className="deliv-spec-item">
                 <span className="spec-key">確認できた事実</span>
-                <span className="spec-val">参照元に記載された内容だけ</span>
+                <span className="spec-val">初回対面相談無料・専任担当一貫対応</span>
               </div>
               <div className="deliv-spec-item">
                 <span className="spec-key">参照元</span>
-                <span className="spec-val">確認したページへのリンク</span>
+                <span className="spec-val">example.com/service（参照元の見本）</span>
               </div>
               <div className="deliv-spec-item">
                 <span className="spec-key">形式</span>
@@ -262,10 +262,10 @@ export function ProductOutputPreview() {
 
           {/* 配備によって得られる効果 */}
           <div className="deliv-features-list">
-            <span className="deliv-features-heading">公開ページの役割</span>
+            <span className="deliv-features-heading">AI推薦データで取り組む3つのこと</span>
             <ul className="deliv-check-items">
-              <li>既存ホームページの改修・新規開設は不要</li>
-              <li>参照元付きの事実を機械可読形式で整理</li>
+              <li>御社の強みを、参照元付きの構造化データで伝える</li>
+              <li>御社の強みに合う相談で、AIの推薦枠を狙う</li>
               <li>AI回答の変化は公開後の再測定で確認</li>
             </ul>
           </div>
@@ -274,7 +274,7 @@ export function ProductOutputPreview() {
         {/* カードフッター */}
         <div className="deliv-card-foot">
           <Link href="/ai/company/aoba-souzoku?sample=1" className="deliv-action-btn btn-green">
-            <span>公開情報ページの見本を見る</span>
+            <span>AI推薦データの見本を見る</span>
             <ArrowIcon />
           </Link>
           <div className="deliv-guarantee-note">
@@ -292,37 +292,37 @@ export function ProductProcessVisual() {
       label: "01",
       userTime: "入力",
       userAction: "URLまたは社名を入力",
-      title: "診断の起点を入力",
+      title: "社名を入れるだけ",
       systemAction: "公開ページから確認できる情報を読み取り、参照元付きで整理します。",
-      tag: "利用者の操作",
-      tagSystem: "サービスの処理",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
     },
     {
       label: "02",
       userTime: "確認",
       userAction: "診断レポートを確認",
-      title: "AI回答の現状がわかる",
+      title: "AI推薦の現状がわかる",
       systemAction: "固定した買い手質問パネルで、自社が候補に含まれた状況を確認します。",
-      tag: "利用者の操作",
-      tagSystem: "サービスの処理",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
     },
     {
       label: "03",
       userTime: "承認",
       userAction: "下書きを確認して公開",
-      title: "公開情報ページを整える",
+      title: "AI推薦データを配備",
       systemAction: "確認できた事実だけを機械可読形式にまとめ、公開前に内容を確認できます。",
-      tag: "利用者の操作",
-      tagSystem: "サービスの処理",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
     },
     {
       label: "04",
       userTime: "継続",
       userAction: "必要な時だけ結果を確認",
-      title: "同じ条件でAI回答を再測定",
+      title: "毎週のAI回答を自動見守り",
       systemAction: "同じ質問パネルで回答の変化を確認し、公開情報の見直し候補を記録します。",
-      tag: "利用者の操作",
-      tagSystem: "サービスの処理",
+      tag: "社長の作業",
+      tagSystem: "裏側の自動処理",
     },
   ];
 
@@ -355,9 +355,9 @@ export function ProductProcessVisual() {
 
 export function WatchTrendVisual() {
   return <figure className="watch-demo-window" aria-label="AI回答の定期測定レポート例">
-    <header><strong>AI回答の推移レポート</strong><span>週次測定の表示例</span></header>
-    <div className="watch-demo-rank"><small>同じ質問パネルで比較</small><strong><span>初回</span><ArrowIcon /><b>再測定</b></strong><p>質問・対象AI・条件をそろえて変化を確認</p></div>
-    <div className="watch-demo-rows"><div><span>自社が候補に含まれた質問</span><strong>初回 → 再測定</strong></div><div><span>自社が候補外だった質問</span><strong>初回 → 再測定</strong></div><div><span>参照元リンク</span><strong>取得件数を表示</strong></div></div>
-    <footer><TrendIcon /><span><small>変化の確認</small><strong>回答・参照元・候補入り率を同じ条件で比較します</strong></span></footer>
+    <header><strong>AI推薦の推移レポート</strong><span>週次測定の見本</span></header>
+    <div className="watch-demo-rank"><small>同じ12問で比較した表示例（50問パネルの結果ではありません）</small><strong><span>2問</span><ArrowIcon /><b>4問</b></strong><p>サンプルデータを使った表示例です。実測値・導入効果を示すものではありません。</p></div>
+    <div className="watch-demo-rows"><div><span>自社が候補に含まれた質問</span><strong>2問 → 4問</strong></div><div><span>自社が候補外だった質問</span><strong>10問 → 8問</strong></div><div><span>自社の参照元が含まれたAI回答</span><strong>8件 → 10件 / 各36件</strong></div></div>
+    <footer><TrendIcon /><span><small>比較の見本</small><strong>2問で、自社が新しく推薦候補に入りました。</strong></span></footer>
   </figure>;
 }

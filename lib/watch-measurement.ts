@@ -5,7 +5,7 @@ import { generateBuyerPrompts } from "@/lib/discovery";
 import { env } from "@/lib/env";
 import { runObservationPanel } from "@/lib/providers";
 import { buildScanResult } from "@/lib/scan-result";
-import { updateWatch, refreshPublicProfileFromScan } from "@/lib/storage";
+import { updateWatch, refreshPublicProfileFromScan, renewBoundPublicProfiles } from "@/lib/storage";
 import { sendWatchUpdate } from "@/lib/watch-email";
 import { createWatchRun, finalizeWatchRun, getActiveWatchRun, mergeObservations, updateWatchRun } from "@/lib/watch-runs";
 import { CORE_PANEL_SIZE } from "@/lib/prompt-panels";
@@ -16,6 +16,9 @@ import {
   planAndExecuteAutoActions,
 } from "@/lib/autonomous-watch";
 import type { BuyerPrompt, WatchMeasurementRun, WatchRecord } from "@/lib/types";
+
+import { matchingConsultations } from "@/lib/prompt-evidence";
+import { siteUrl } from "@/lib/site";
 
 const DAY_MS = 86_400_000;
 const FREE_WATCH_DAYS = 14;
@@ -76,6 +79,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
   if (process.env.NODE_ENV === "production" && !(env.supabaseUrl && env.supabaseServiceKey)) {
     throw new Error("Watch requires durable storage in production.");
   }
+  await renewBoundPublicProfiles(watch.token);
   let run = await ensureRun(watch);
   const previous = watch.latest;
 
@@ -153,11 +157,14 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     });
 
     const previousActions = watch.autoActions || [];
-    const impacts = evaluateAutoActionImpact(previousActions, result, previous);
+    const impacts = previousActions.flatMap(action => {
+      const before = [watch.baseline, ...watch.history].find(scan => scan.scanId === action.beforeScanId);
+      return evaluateAutoActionImpact([action], result, before);
+    });
 
     if (detectedEvents.length) competitorEvents = detectedEvents;
     if (planned.actions.length) autoActions = planned.actions;
-    if (impacts.length) autoActionImpacts = impacts;
+    autoActionImpacts = impacts;
 
     const refreshed = await refreshPublicProfileFromScan(watch.token, result, crawl.pages);
     if (refreshed.length) {
@@ -168,7 +175,11 @@ export async function processWatchMeasurement(watch: WatchRecord) {
         factLabel: "公開情報の自動更新",
         factValue: `${profile.automation?.changedFactCount || 0}件の記載差分を反映`,
         sourceUrl: profile.targetUrl,
-        affectedPromptIds: [],
+        beforeScanId: result.scanId,
+        publishedUrl: `${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}`,
+        addedFacts: profile.facts.filter(f => !(profile.automation?.previousFacts || []).some(old => old.label === f.label && old.value === f.value && old.sourceUrl === f.sourceUrl)),
+        removedFacts: (profile.automation?.previousFacts || []).filter(f => !profile.facts.some(next => next.label === f.label && next.value === f.value && next.sourceUrl === f.sourceUrl)),
+        affectedPromptIds: [...new Set(profile.facts.filter(f => !(profile.automation?.previousFacts || []).some(old => old.value === f.value && old.sourceUrl === f.sourceUrl)).flatMap(f => matchingConsultations(f, result.prompts || [])))],
         summary: "許可された参照元の記載をRovan公開ページへ反映しました。変更履歴から直前の更新を取り消せます。AI回答への影響は次回測定で確認します。",
         status: "applied" as const,
         executedAt: profile.automation!.lastUpdatedAt,

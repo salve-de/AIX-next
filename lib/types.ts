@@ -6,6 +6,8 @@ export type BuyerPromptIntent = "discover" | "compare" | "evaluate" | "switch" |
 export type BuyerPromptStage = "認知" | "比較" | "検討" | "導入";
 
 export type Citation = {
+  /** Explicit answer citation versus retrieved search source; legacy values remain unknown. */
+  kind?: "answer" | "search";
   title: string;
   url: string;
   domain: string;
@@ -367,6 +369,7 @@ export type ScanRecord = {
 export type PublicProfileStatus = "draft" | "published" | "revoked" | "expired";
 
 export type PublicProfileFact = {
+  provenance?: "company_asserted" | "source_excerpt";
   label: string;
   value: string;
   sourceUrl: string;
@@ -428,6 +431,7 @@ export type PublicProfileRecord = PublicProfile & {
   /** Private grant and recovery snapshot; never serialized to a public page. */
   automation?: {
     enabled: boolean;
+    maintenanceEnabled?: boolean;
     watchId: string;
     grantedAt: string;
     lastRunId?: string;
@@ -436,6 +440,11 @@ export type PublicProfileRecord = PublicProfile & {
     previousManagedFacts?: PublicProfileFact[];
     managedFacts?: PublicProfileFact[];
     changedFactCount?: number;
+    /** Stored in the existing private automation JSON, never in public DTOs. */
+    freeExpiresAt?: string;
+    renewedAt?: string;
+    renewalExpiresAt?: string;
+    measurementScanId?: string;
   };
 };
 
@@ -466,6 +475,10 @@ export type CompetitorEvent = {
 export type AutoActionType = "profile_fact_updated" | "source_synced" | "gap_addressed";
 
 export type AutoAction = {
+  beforeScanId?: string;
+  publishedUrl?: string;
+  addedFacts?: PublicProfileFact[];
+  removedFacts?: PublicProfileFact[];
   id: string;
   triggerEventIds: string[];
   actionType: AutoActionType;
@@ -481,9 +494,10 @@ export type AutoAction = {
   executedAt?: string;
 };
 
-export type ProviderMovement = "improved" | "unchanged" | "declined";
+export type ProviderMovement = "improved" | "unchanged" | "declined" | "unavailable";
 
 export type AutoActionImpact = {
+  comparedAnswerGroups?: number;
   id: string;
   actionId: string;
   afterScanId: string;

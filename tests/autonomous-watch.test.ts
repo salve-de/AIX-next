@@ -99,12 +99,13 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
       sourceUrl: "https://aoba.example",
       affectedPromptIds: ["prompt_1", "prompt_2"],
       summary: "台帳自動補強",
-      executedAt: new Date().toISOString(),
+      status: "applied", beforeScanId: "before", executedAt: "2026-09-02T00:00:00Z",
     },
   ];
 
   const previous: ScanResult = {
-    ...sampleResult,
+    ...sampleResult, scanId: "before", measuredAt: "2026-09-01T00:00:00Z",
+    prompts: [{...sampleResult.prompts![0],id:"prompt_1",text:"p1"},{...sampleResult.prompts![0],id:"prompt_2",text:"p2"}],
     observations: [
       {
         id: "obs_1", promptId: "prompt_1", prompt: "p1", provider: "openai", model: "gpt", repetition: 1,
@@ -120,7 +121,7 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
   };
 
   const latest: ScanResult = {
-    ...sampleResult,
+    ...sampleResult, scanId: "after", measuredAt: "2026-09-08T00:00:00Z", prompts: previous.prompts,
     observations: [
       {
         id: "obs_3", promptId: "prompt_1", prompt: "p1", provider: "openai", model: "gpt", repetition: 1,
@@ -139,6 +140,8 @@ test("evaluateAutoActionImpact calculates observed uplift without making absolut
   assert.equal(impacts.length, 1);
   assert.equal(impacts[0].observedUplift, 2);
   assert.equal(impacts[0].providerAgreement.openai, "improved");
+  assert.equal(impacts[0].providerAgreement.gemini, "unavailable");
+  assert.deepEqual(evaluateAutoActionImpact(previousActions, {...latest, measuredAt:"2026-09-01T00:00:00Z"}, previous), []);
   assert.ok(impacts[0].summary.includes("自社が候補に含まれた件数"));
   assert.ok(impacts[0].summary.includes("因果効果は未検証"));
 });

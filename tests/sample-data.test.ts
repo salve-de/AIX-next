@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { sampleResult, sampleWatch } from "../lib/sample-data";
 import type { ScanResult } from "../lib/types";
+import { sampleAiReadable } from "../lib/sample-report-content";
+import { getSampleProfile } from "../lib/sample-profiles";
 
 function shortlistedPromptCount(result: ScanResult) {
   return result.panel.promptCount - result.lostPrompts.length;
@@ -32,7 +34,7 @@ test("fictional baseline is internally consistent with the rank-first UI", () =>
   assert.equal(sampleResult.successfulObservations, 36);
 
   const leader = sampleResult.competitors[0];
-  assert.equal(leader.name, "サンプル候補A");
+  assert.equal(leader.name, "月澄相続パートナーズ");
   assert.equal(entityPromptWins(sampleResult, leader.name), 7);
 });
 
@@ -47,4 +49,20 @@ test("fictional Watch movement is derived from the latest observation set", () =
   assert.equal(watch.latest.lostPrompts.length, 8);
   assert.equal(watch.baseline.ownRecommendationCount, 8);
   assert.equal(watch.latest.ownRecommendationCount, 10);
+});
+
+test("sample reports contain fictional names and substantive shared draft facts", () => {
+  const watch = sampleWatch();
+  for (const result of [sampleResult, watch.latest]) {
+    assert.doesNotMatch(JSON.stringify(result), /サンプル候補[A-Z]|候補文字列/);
+    assert.ok(result.competitors.every(company => !company.name.includes("架空")));
+    assert.ok(result.observations.every(row => row.rawText.includes("AI回答の見本")));
+  }
+  const draft = sampleAiReadable();
+  const profile = getSampleProfile("aoba-souzoku")!;
+  assert.equal(draft.llmsTxt, profile.markdown);
+  assert.equal(draft.jsonLd, profile.structuredData);
+  assert.ok(watch.changePack?.items.length);
+  const content = JSON.stringify(watch.changePack);
+  for (const fact of ["88,000", "60分", "20時", "2〜4週間"]) assert.ok(content.includes(fact));
 });

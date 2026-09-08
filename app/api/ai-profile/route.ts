@@ -1,4 +1,4 @@
-import { buildDirectPublicProfileDraft, buildPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
+import { buildDirectPublicProfileDraft, toPublicProfile } from "@/lib/public-profile";
 import {
   createPublicProfilePreview,
   getActivePublicProfileBySlug,
@@ -7,9 +7,15 @@ import {
   publishPublicProfile,
   revokePublicProfile,
   manageProfileAutomation,
+  getManagedPublicProfiles,
+  bindPublicProfileWatch,
 } from "@/lib/storage";
 import { getScan } from "@/lib/storage";
 import { consumeProfileCreation } from "@/lib/rate-limit";
+import { profileManagementHref } from "@/lib/profile-management-link";
+import { buildSelectedPublicProfileDraft } from "@/lib/profile-selection";
+import { crawlCompanySite } from "@/lib/crawler";
+import { directProfileOrigin } from "@/lib/profile-origin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -64,9 +70,18 @@ export async function POST(request: Request) {
 
       const expiresInDays = body.expiresInDays;
       if (expiresInDays !== undefined && typeof expiresInDays !== "number") return json({ error: "期限の指定が不正です。" }, 400);
-      const record = await createPublicProfilePreview(buildPublicProfileDraft(scan), {
+      const strategyId = stringField(body, "strategyId");
+      const crawl = await crawlCompanySite(scan.targetUrl, 12);
+      const target = new URL(scan.targetUrl);
+      const sourceSlug = target.pathname.match(/^\/ai\/company\/([^/]+)\/?$/u)?.[1];
+      const sourceRecord = sourceSlug && target.origin === directProfileOrigin(request.url, request.headers.get("origin") || undefined)
+        ? await getActivePublicProfileBySlug(decodeURIComponent(sourceSlug)) : null;
+      const selected = buildSelectedPublicProfileDraft(scan.result, crawl.pages, strategyId, { sourceProfile: sourceRecord ? toPublicProfile(sourceRecord) : undefined });
+      if (selected.selection.status === "empty") return json({ error: "公開できる参照元の記載を確認できませんでした。候補または参照元を見直してください。", selection: selected.selection }, 409);
+      const record = await createPublicProfilePreview(selected.draft, {
         sourceScanId: scan.id,
-        ...(expiresInDays === undefined ? {} : { expiresInDays }),
+        // Public callers cannot extend the free lifetime.
+        expiresInDays: 30,
       });
 
       return json({
@@ -75,6 +90,8 @@ export async function POST(request: Request) {
         slug: record.slug,
         url: `/ai/company/${encodeURIComponent(record.slug)}`,
         status: "draft",
+        managementUrl: profileManagementHref({ profileId: record.id, token: record.token }),
+        selection: selected.selection,
       }, 201);
     }
 
@@ -91,6 +108,7 @@ export async function POST(request: Request) {
 
       const draft = buildDirectPublicProfileDraft({
         brandName,
+        referenceUrl: stringField(body, "referenceUrl"),
         market,
         summary,
         location,
@@ -100,6 +118,8 @@ export async function POST(request: Request) {
 
       const record = await createPublicProfilePreview(draft, {
         sourceScanId: "direct-creation",
+        requestUrl: request.url,
+        requestOrigin: request.headers.get("origin") || undefined,
         expiresInDays: 30,
       });
 
@@ -109,12 +129,29 @@ export async function POST(request: Request) {
         slug: record.slug,
         url: `/ai/company/${encodeURIComponent(record.slug)}`,
         status: "draft",
+        managementUrl: profileManagementHref({ profileId: record.id, token: record.token }),
       }, 201);
+    }
+
+    if (action === "manage") {
+      const records = await getManagedPublicProfiles({ profileId: stringField(body, "profileId"), token: stringField(body, "token"), watchToken: stringField(body, "watchToken") });
+      if (!records.length) return json({ error: "管理リンクが無効か、このWatchに紐付けられた公開ページがありません。公開ページの管理リンクから紐付けてください。" }, 404);
+      return json({ profiles: records.map((record) => {
+        const scanId = record.automation?.measurementScanId || (record.sourceScanId === "direct-creation" ? "" : record.sourceScanId);
+        return { profile: toPublicProfile(record), automation: automationView(record), direct: record.sourceScanId === "direct-creation", resultUrl: scanId ? `/result?id=${encodeURIComponent(scanId)}` : null };
+      }) });
+    }
+
+    if (action === "bind_watch") {
+      const record = await bindPublicProfileWatch(stringField(body, "profileId"), stringField(body, "token"), stringField(body, "watchToken"));
+      if (!record) return json({ error: "両方の管理権限と対象企業の一致を確認できませんでした。" }, 403);
+      return json({ profile: toPublicProfile(record), automation: automationView(record) });
     }
 
     if (action === "publish" || action === "revoke") {
       const profileId = stringField(body, "profileId");
-      const token = stringField(body, "token");
+      const owned = (await getManagedPublicProfiles({ profileId, token: stringField(body, "token"), watchToken: stringField(body, "watchToken") }))[0];
+      const token = owned?.token || "";
       if (!profileId || !token) return json({ error: "profileIdとtokenが必要です。" }, 400);
       const record = action === "publish"
         ? await publishPublicProfile(profileId, token)
@@ -123,11 +160,12 @@ export async function POST(request: Request) {
       return json({ profile: toPublicProfile(record) });
     }
 
-    if (["automation_enable", "automation_disable", "automation_rollback"].includes(action)) {
+    if (["automation_enable", "automation_disable", "automation_rollback", "maintenance_enable", "maintenance_disable"].includes(action)) {
       const profileId = stringField(body, "profileId");
-      const token = stringField(body, "token");
+      const owned = (await getManagedPublicProfiles({ profileId, token: stringField(body, "token"), watchToken: stringField(body, "watchToken") }))[0];
+      const token = owned?.token || "";
       if (!profileId || !token) return json({ error: "管理情報が必要です。" }, 400);
-      const operation = action === "automation_enable" ? "enable" : action === "automation_disable" ? "disable" : "rollback";
+      const operation = action === "maintenance_enable" ? "maintain" : action === "maintenance_disable" ? "stop_maintenance" : action === "automation_enable" ? "enable" : action === "automation_disable" ? "disable" : "rollback";
       const record = await manageProfileAutomation(profileId, token, operation, stringField(body, "watchToken"));
       if (!record) return json({ error: "操作できません。公開ページと有効な有料Watchの管理権限を確認してください。状態が変わった場合は再読み込みしてください。" }, 409);
       return json({ profile: toPublicProfile(record), automation: automationView(record) });
@@ -135,7 +173,7 @@ export async function POST(request: Request) {
 
     return json({ error: "actionはpreview、deploy、create_direct、publish、revokeのいずれかです。" }, 400);
   } catch (error) {
-    console.error("AI PROFILE ERROR:", error);
+    console.error("AI PROFILE operation failed");
     return json({ error: safeError(error) }, 400);
   }
 }
@@ -144,6 +182,7 @@ function automationView(record: Awaited<ReturnType<typeof getPublicProfile>>) {
   const previous = record?.automation?.previousFacts;
   return {
     enabled: record?.status === "published" && record?.automation?.enabled === true,
+    maintenanceEnabled: record?.status === "published" && (record?.automation?.maintenanceEnabled ?? record?.automation?.enabled) === true,
     lastUpdatedAt: record?.automation?.lastUpdatedAt || null,
     canRollback: record?.status === "published" && Boolean(previous),
     changedFactCount: record?.automation?.changedFactCount || 0,

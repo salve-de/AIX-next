@@ -8,9 +8,9 @@ test("market map separates discovered direct competitors from adjacent labels", 
   const map = buildMarketMap({ result: sampleResult, generatedAt: "2026-09-03T00:00:00.000Z" });
 
   assert.equal(map.generatedAt, "2026-09-03T00:00:00.000Z");
-  assert.equal(map.direct[0], "サンプル候補A");
-  assert.ok(map.direct.includes("サンプル候補B"));
-  assert.equal(map.alternatives.includes("サンプル候補A"), false);
+  assert.equal(map.direct[0], "月澄相続パートナーズ");
+  assert.ok(map.direct.includes("花継相続相談社"));
+  assert.equal(map.alternatives.includes("月澄相続パートナーズ"), false);
   assert.ok(map.adjacent.includes("相続・遺産分割・事業承継の専門相談"));
   assert.ok(map.adjacent.includes("親族間の遺産分割協議"));
   assert.deepEqual(map.upstream, []);

@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import vm from "node:vm";
 import ts from "typescript";
+import { profileManagementHref } from "../lib/profile-management-link";
 
 test("scan effect restarts after cleanup and reports a premature stream end", async () => {
   const effects: Array<() => (() => void)> = [];
@@ -31,6 +32,8 @@ test("scan effect restarts after cleanup and reports a premature stream end", as
       if (name === "next/navigation") return { useRouter: () => ({}), useSearchParams: () => new URLSearchParams({ input: "https://example.com" }) };
       if (name === "@/lib/input-kind") return { isUrlInput: () => true };
       if (name === "@/lib/social-input") return { parseSocialInput: () => ({ isSocial: false }) };
+      if (name === "@/lib/profile-management-link") return { profileManagementHref };
+      if (name === "./profile-management-link") return {};
       if (name.startsWith("@/components/")) return {};
       throw new Error(`Unexpected import ${name}`);
     },

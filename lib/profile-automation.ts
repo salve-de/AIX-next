@@ -1,12 +1,16 @@
-import type { CrawledPage, PublicProfileFact, PublicProfileRecord } from "./types";
+import type { CrawledPage, PublicProfileFact, PublicProfileRecord, ScanResult } from "./types";
 import { toPublicProfile } from "./public-profile";
+
+import { excludedConsultations, matchingConsultations } from "./prompt-evidence";
 
 const SIGNAL = /料金|価格|円|対応|地域|エリア|専門|対象|納期|受付|営業時間/u;
 const normalize = (text: string) => text.replace(/\s+/gu, " ").trim();
 const key = (fact: PublicProfileFact) => JSON.stringify([fact.label, fact.value, fact.sourceUrl]);
 
 /** Only short verbatim source statements, never generated selling claims. */
-export function buildAutomatedFacts(record: PublicProfileRecord, pages: CrawledPage[]): PublicProfileFact[] | null {
+export function buildAutomatedFacts(record: PublicProfileRecord, pages: CrawledPage[], scan?: ScanResult): PublicProfileFact[] | null {
+  // A no-site page is not independent verification of its own entered claims.
+  if (record.sourceScanId === "direct-creation") return null;
   const origin = new URL(record.targetUrl).origin;
   const eligible = pages.filter((page) => {
     try {
@@ -20,12 +24,19 @@ export function buildAutomatedFacts(record: PublicProfileRecord, pages: CrawledP
   const managedKeys = new Set(previous.map(key));
   const retained = record.facts.filter((fact) => !managedKeys.has(key(fact)));
   const additions: PublicProfileFact[] = [];
-  for (const page of eligible) {
-    const value = normalize(page.text).match(/[^。！？!?]+[。！？!?]/gu)?.find((sentence) => sentence.length >= 8 && sentence.length <= 140 && SIGNAL.test(sentence));
-    // A missing extract is not proof that an earlier service/fact expired.
-    if (!value && previous.some((fact) => fact.sourceUrl === page.url)) return null;
-    if (!value || retained.some((fact) => fact.value === value.trim())) continue;
-    additions.push({ label: "参照元の記載", value: value.trim(), sourceUrl: page.url });
+  const prompts = scan ? excludedConsultations(scan) : [];
+  const candidates = eligible.flatMap(page => {
+    const sentences = page.text.match(/[^。！？!?\n]+[。！？!?]/gu) || [];
+    return sentences.map(normalize).filter(value => value.length >= 8 && value.length <= 140 && SIGNAL.test(value))
+      .map(value => ({ label: "参照元の記載", value, sourceUrl: page.url, provenance: "source_excerpt" as const }));
+  });
+  // Never treat a failed extraction or changed selection as evidence of expiry.
+  if (previous.some(fact => !candidates.some(next => next.sourceUrl === fact.sourceUrl))) return null;
+  const ranked = candidates.map(fact => ({ fact, matches: matchingConsultations(fact, prompts) }))
+    .sort((a,b) => b.matches.length - a.matches.length);
+  for (const { fact } of ranked) {
+    if (retained.some(old => old.value === fact.value) || additions.some(old => old.value === fact.value)) continue;
+    additions.push(fact);
     if (additions.length === 5) break;
   }
   // Reuse the publication allow-list, including private-marker filtering.

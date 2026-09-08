@@ -6,12 +6,16 @@ import { ArrowIcon } from "@/components/icons";
 import type { PublicProfile, ScanResult } from "@/lib/types";
 
 import { derivePositioningAdvice } from "@/lib/positioning";
+import { ProfileManagementLink } from "./profile-management-link";
 
 type ProfileShape = PublicProfile;
 
 type PublicProfileActionsProps = {
   result: ScanResult;
   sample?: boolean;
+  selectedStrategyId?: string;
+  onStrategyChange?: (strategyId: string) => void;
+  hideStrategySelector?: boolean;
 };
 
 function profileFromPayload(payload: unknown) {
@@ -25,16 +29,20 @@ function profileFromPayload(payload: unknown) {
  * Publishing is deliberately a second, explicit action. A scan never writes
  * to the customer's site and never creates an Rovan public page by itself.
  */
-export function PublicProfileActions({ result, sample = false }: PublicProfileActionsProps) {
+export function PublicProfileActions({ result, sample = false, selectedStrategyId, onStrategyChange, hideStrategySelector = false }: PublicProfileActionsProps) {
   const [profile, setProfile] = useState<ProfileShape | null>(null);
   const [profileToken, setProfileToken] = useState("");
   const [busy, setBusy] = useState<"deploy" | "">("");
   const [error, setError] = useState("");
-  const [selectedStrategy, setSelectedStrategy] = useState<number>(0);
+  const [localStrategy, setSelectedStrategy] = useState<number>(0);
+  const [draftStrategyId, setDraftStrategyId] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState<boolean>(false);
 
   // サイト解析結果から抽出した特徴候補。公開内容を自動で増やすものではありません。
   const strategies = result.positioning?.strategies || derivePositioningAdvice(result).strategies || [];
+  const selectedStrategy = selectedStrategyId === undefined ? localStrategy : Math.max(0, strategies.findIndex((item) => item.id === selectedStrategyId));
+  const draftMismatch = draftStrategyId !== null && draftStrategyId !== (strategies[selectedStrategy]?.id || "");
+  const selectStrategy = (index: number) => { if (!isSaved) { setSelectedStrategy(index); onStrategyChange?.(strategies[index].id); } };
   const isPublished = sample || profile?.status === "published";
 
   useEffect(() => {
@@ -44,10 +52,11 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       const saved = JSON.parse(sessionStorage.getItem(`rovan:profile:${result.scanId}`) || "null") as { id?: string; token?: string } | null;
       if (saved?.id && saved.token) {
         const token = saved.token;
-        void fetch(`/api/ai-profile?profileId=${encodeURIComponent(saved.id)}&token=${encodeURIComponent(token)}`, { signal: controller.signal, cache: "no-store" })
+        void fetch("/api/ai-profile", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "manage", profileId: saved.id, token }), signal: controller.signal, cache: "no-store", referrerPolicy: "no-referrer" })
           .then(async (response) => {
             if (!response.ok) throw new Error("下書きを復元できませんでした。");
-            const restored = profileFromPayload(await response.json());
+            const data = await response.json();
+            const restored = profileFromPayload(data.profiles?.[0]);
             if (restored) { setProfile(restored); setProfileToken(token); setIsSaved(true); }
           }).catch(() => { if (!controller.signal.aborted) setError("保存済みの下書きを復元できませんでした。再読み込みしてお試しください。"); });
       }
@@ -66,16 +75,17 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       const response = await fetch("/api/ai-profile", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ scanId: result.scanId, action: "preview" }),
+        body: JSON.stringify({ scanId: result.scanId, action: "preview", strategyId: strategies[selectedStrategy]?.id || "" }),
       });
       const payload = await response.json() as { error?: string; token?: string; profile?: ProfileShape };
       if (!response.ok) throw new Error(payload.error || "公開情報の下書きを作成できませんでした。");
       const next = profileFromPayload(payload);
       if (!next || !payload.token) throw new Error("公開前の下書きを取得できませんでした。");
       setProfile(next);
+      setDraftStrategyId(strategies[selectedStrategy]?.id || "");
       setProfileToken(payload.token);
       try { sessionStorage.setItem(`rovan:profile:${result.scanId}`, JSON.stringify({ id: next.id, token: payload.token })); }
-      catch { setError("このブラウザーでは管理情報を保存できません。このページを閉じる前に公開内容を確認してください。"); }
+      catch { setError("このブラウザーではタブ内の管理情報を保存できません。下にある管理リンクを保存してください。"); }
       setIsSaved(true);
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "公開情報の下書きを作成できませんでした。");
@@ -85,7 +95,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   }
 
   async function publishProfile(action: "publish" | "revoke" = "publish") {
-    if (sample || !profile || !profileToken) return;
+    if (sample || !profile || !profileToken || (action === "publish" && draftMismatch)) return;
     setBusy("deploy");
     setError("");
     try {
@@ -105,16 +115,16 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
   }
 
   return (
-    <section className="public-profile-interactive-card" aria-label="公開情報参照ページの下書き">
+    <section className="public-profile-interactive-card" aria-label="AI推薦データの作成・公開">
       <div className="profile-interactive-header" style={{ marginBottom: "20px" }}>
         <p className="overline" style={{ color: "var(--color-success, #059669)", fontSize: "0.74rem", fontWeight: 700, letterSpacing: "0.08em" }}>
-          AIに選ばれるための情報補強
+          AI推薦データの生成・配備プレビュー
         </p>
         <h3 style={{ fontSize: "1.3rem", fontWeight: 800, margin: "6px 0 8px", color: "var(--navy, #0f172a)" }}>
           自社の強みが、AIの比較候補から埋もれないように。
         </h3>
         <p style={{ fontSize: "0.85rem", color: "var(--text-secondary, #475569)", lineHeight: 1.6, margin: 0 }}>
-          地域・専門性・対応条件を出典付きで伝える公開ページを作ります。自社サイトの改修は不要です。公開後はWatchで自動更新を許可し、AI回答の変化を追えます。
+          会社の強み・対応条件・参照元をまとめた、AI向けの公開データを作成します。自社サイトの改修は不要です。公開後はWatchで自動更新を許可し、AI回答の変化を追えます。
         </p>
       </div>
 
@@ -128,7 +138,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
       </div>
 
       {/* 3つの強み選択ラジオカード（無料プランは1枠のみ選択可能） */}
-      <div className="weapon-selector-grid">
+      {!hideStrategySelector ? <div className="weapon-selector-grid">
         {strategies.map((strat, index) => {
           const isSelected = selectedStrategy === index;
           const isRec = strat.isRecommended ?? index === 0;
@@ -136,11 +146,11 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             <div
               key={strat.code}
               className={`weapon-card ${isSelected ? "selected" : ""} ${isRec ? "recommended-card" : ""}`}
-              onClick={() => setSelectedStrategy(index)}
+              onClick={() => selectStrategy(index)}
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setSelectedStrategy(index);
+                  selectStrategy(index);
                 }
               }}
               role="button"
@@ -160,17 +170,17 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
               </div>
               <h4>{strat.name}</h4>
               <p className="weapon-desc">{strat.coreThesis}</p>
-              <small className="weapon-target">想定される相談対象：{strat.targetMarket}</small>
+              <small className="weapon-target">想定ターゲット：{strat.targetMarket}</small>
             </div>
           );
         })}
-      </div>
+      </div> : null}
 
       {/* Rovanからの分析所見 */}
       <div className="rovan-hot-advice-card">
         <div className="hot-advice-header">
-          <span className="hot-advice-tag">狙う領域と、その根拠</span>
-          <h4>「{strategies[selectedStrategy]?.name || "固有の特徴"}」を軸に、選ばれる理由を伝える</h4>
+          <span className="hot-advice-tag">戦略分析所見：看板選定の論理的根拠</span>
+          <h4>「{strategies[selectedStrategy]?.name || "固有の特徴"}」を軸に、大手と差別化する</h4>
         </div>
         <p className="hot-advice-body">
           {strategies[selectedStrategy]?.passionateReason ||
@@ -197,9 +207,9 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
             </thead>
             <tbody>
               <tr>
-                <td><strong>公開プロフィール</strong></td>
-                <td>下書きを確認</td>
-                <td className="col-highlight"><strong>承認した内容を公開</strong></td>
+                <td><strong>AI推薦データの公開ページ</strong></td>
+                <td>確認・同意後に公開（作成から30日）</td>
+                <td className="col-highlight"><strong>対象の紐付け・掲載維持への同意後、有効な有料契約中に維持</strong></td>
               </tr>
               <tr>
                 <td><strong>AI回答の測定</strong></td>
@@ -261,7 +271,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
               onClick={() => void deployProfile()}
               disabled={busy !== ""}
             >
-              {busy === "deploy" ? "下書きを作成中…" : "公開前の下書きを作成する"} <ArrowIcon />
+              {busy === "deploy" ? "下書きを作成中…" : "AI推薦データの下書きを作成する"} <ArrowIcon />
             </button>
           ) : (
             <div className="saved-success-box">
@@ -269,10 +279,13 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                 <h4>{profile.brandName}</h4><p>{profile.summary}</p>
                 <ul>{profile.facts.map((fact, index) => <li key={index}>{fact.label}：{fact.value}</li>)}</ul>
                 <p>参照元：</p><ul>{profile.sourcePages.map((source) => <li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title || source.url}</a></li>)}</ul>
-                <p>公開状態：{profile.status === "published" ? "公開中" : profile.status === "revoked" ? "非公開" : "下書き"}。管理情報はこのタブに保存されます。タブを閉じた後の掲載停止はお問い合わせ窓口をご利用ください。</p>
+                <p>公開状態：{profile.status === "published" ? "公開中" : profile.status === "revoked" ? "非公開" : profile.status === "expired" ? "期限切れ" : "下書き"}。選択した候補に関連する参照元の記載だけを掲載します。候補を変える場合は下書きを作り直してください。</p>
+                {!profile.facts.length ? <p>この候補を裏付ける参照元の短い記載を確認できませんでした。戦略案を会社の事実として追加していません。</p> : null}
+                {draftMismatch ? <p role="alert">選択した候補が変わりました。公開前に下書きを作り直してください。</p> : null}
+                {!sample && profileToken ? <ProfileManagementLink capability={{ profileId: profile.id, token: profileToken }} /> : null}
               </div> : null}
               <span className="saved-badge">
-                {sample ? "設計見本の公開ページを確認できます（実際の公開操作は行っていません）" : isPublished ? "公開済み：公開情報参照ページを確認できます" : "下書きを作成しました。公開前に内容を確認してください"}
+                {sample ? "見本です。実際の公開・契約は行われません。" : isPublished ? "配備完了：AI推薦データを公開しました。" : "AI推薦データの下書きを作成しました。公開前に内容を確認してください。"}
               </span>
               <div className="saved-links">
                 {isPublished ? (
@@ -283,7 +296,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                       target="_blank"
                       rel="noreferrer"
                     >
-                      公開情報参照ページを確認する <ArrowIcon />
+                      配備したAI推薦データを確認する <ArrowIcon />
                     </Link>
                     <button
                       type="button"
@@ -306,7 +319,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     type="button"
                     className="button button-primary"
                     onClick={() => void publishProfile()}
-                    disabled={busy !== "" || profile?.status === "revoked" || profile?.status === "expired"}
+                    disabled={busy !== "" || draftMismatch || profile?.status === "revoked" || profile?.status === "expired"}
                   >
                     {busy === "deploy" ? "公開処理中…" : "内容を確認して公開する"} <ArrowIcon />
                   </button>
@@ -328,7 +341,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     自社サイトの改修は不要
                   </span>
                   <strong style={{ fontSize: "0.9rem", color: "#0f172a" }}>
-                    この公開情報参照ページで確認できること
+                    このAI推薦データで、御社の強みをどう伝えるのか？
                   </strong>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginTop: "12px" }}>
@@ -339,7 +352,7 @@ export function PublicProfileActions({ result, sample = false }: PublicProfileAc
                     </p>
                   </div>
                   <div style={{ background: "#f0fdf4", padding: "12px 14px", borderRadius: "8px", border: "1px solid #bbf7d0" }}>
-                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", display: "block", marginBottom: "4px" }}>◯ Rovanの公開情報参照ページ</span>
+                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#16a34a", display: "block", marginBottom: "4px" }}>◯ AI推薦データの公開ページ</span>
                     <p style={{ margin: 0, fontSize: "0.78rem", color: "#14532d", lineHeight: 1.55 }}>
                       参照元付きの公開情報をSchema.org形式などで整理します。AIや人が確認しやすくなりますが、推薦や回答を保証するものではありません。
                     </p>

@@ -15,47 +15,47 @@ type CompanyCase = {
 
 const INDUSTRY_SHOWCASES: CompanyCase[] = [
   {
-    name: "山田板金製作所（設計見本）",
+    name: "山田板金製作所（見本）",
     category: "町工場・中小製造",
     location: "東京都大田区",
     industry: "試作板金加工・精密機械",
     featureNote: "公開情報整理の見本",
     beforeProblem: "公開情報が散在していると、試作先を探す人が比較しにくいことがあります。",
     afterSolution: "「単品1個対応・短納期試作」という公開情報を参照元付きで整理し、比較できる状態にします。",
-    registeredSpecs: "対応範囲 / 入稿方法 / 納期の確認項目",
+    registeredSpecs: "単品1個対応 / 3D CAD直接入稿 / 最短即日試作",
     href: "/ai/company/yamada-bankin?sample=1",
   },
   {
-    name: "青葉カフェ（設計見本）",
+    name: "青葉カフェ（見本）",
     category: "飲食・カフェ店舗",
     location: "東京都渋谷区",
     industry: "自家焙煎・スペシャリティ珈琲",
     featureNote: "公開情報整理の見本",
     beforeProblem: "SNS中心の情報発信では、設備や利用条件を一覧で比較しにくいことがあります。",
     afterSolution: "電源・Wi-Fi・作業利用など、確認できる公開情報を参照元付きで整理します。",
-    registeredSpecs: "設備 / 商品・サービス / 利用条件の確認項目",
+    registeredSpecs: "全席電源・高速Wi-Fi / 自家焙煎豆 / 作業利用歓迎",
     href: "/ai/company/aoba-cafe?sample=1",
   },
   {
-    name: "あおば相続法務事務所（設計見本）",
+    name: "あおば相続法務事務所（見本）",
     category: "士業・コンサルティング",
     location: "東京都千代田区",
     industry: "相続・遺産分割・事業承継",
-    featureNote: "AI回答測定の設計見本",
+    featureNote: "AI回答測定の見本",
     beforeProblem: "相談内容や対応範囲が複数ページに分かれていると、相談先を比較しにくいことがあります。",
     afterSolution: "参照元で確認できる対応範囲や相談方法を、比較しやすい項目に整理します。",
-    registeredSpecs: "対応範囲 / 相談方法 / 料金の確認項目",
+    registeredSpecs: "初回対面相談無料 / 専任担当一貫対応 / 事前面談見積",
     href: "/ai/company/aoba-souzoku?sample=1",
   },
   {
-    name: "安曇野サンシャイン果樹園（設計見本）",
+    name: "安曇野サンシャイン果樹園（見本）",
     category: "農業・産直直売",
     location: "長野県安曇野市",
     industry: "特選果樹・産直ぶどう農家",
     featureNote: "公開情報整理の見本",
     beforeProblem: "産地や注文条件が分散していると、購入前に確認すべき情報を比較しにくくなります。",
     afterSolution: "産地直送やギフト対応など、確認できる公開情報を参照元付きで整理します。",
-    registeredSpecs: "提供地域 / 注文方法 / 商品条件の確認項目",
+    registeredSpecs: "産地直送・当日発送 / 糖度18度選別 / 贈答用ギフト",
     href: "/ai/company/azumino-sunshine?sample=1",
   },
 ];
@@ -65,9 +65,9 @@ export function VerifiedCompaniesGallery() {
     <section className="verified-gallery-section" aria-label="業種別の公開情報整理シミュレーション">
       <div className="shell">
         <div className="section-head-center">
-          <span className="pill-badge">業種別の設計見本</span>
+          <span className="pill-badge">業種別の見本</span>
           <h2>町工場も、カフェも、士業も、農園も。<br />公開情報を比較しやすく整える例</h2>
-          <p>ここで示すのは画面確認用の架空データです。参照元付きで公開情報を整理し、AIと人が分野や用途を確認しやすくします。</p>
+          <p>サンプルデータを使った表示例です。参照元付きで公開情報を整理し、AIと人が分野や用途を確認しやすくします。</p>
         </div>
 
         <div className="verified-cards-grid">

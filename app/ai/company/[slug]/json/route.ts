@@ -9,7 +9,7 @@ export async function GET(request: Request, context: { params: Promise<{ slug: s
   const { slug } = await context.params;
   if (new URL(request.url).searchParams.get("sample") === "1") {
     const profile = getSampleProfile(slug);
-    if (!profile) return Response.json({ error: "設計見本が見つかりません。" }, { status: 404, headers: { "cache-control": "no-store", "x-robots-tag": "noindex" } });
+    if (!profile) return Response.json({ error: "見本が見つかりません。" }, { status: 404, headers: { "cache-control": "no-store", "x-robots-tag": "noindex" } });
     return new Response(JSON.stringify(profile, null, 2), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=300, s-maxage=300", "x-content-type-options": "nosniff", "x-robots-tag": "noindex" } });
   }
   const record = await getActivePublicProfileBySlug(slug);

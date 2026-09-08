@@ -36,7 +36,7 @@ export default function PartnersPage() {
                 現在の提供範囲を見る <ArrowIcon />
               </a>
               <Link href="/result?sample=1" className="button button-secondary">
-                診断の設計見本を見る
+                診断の見本を見る
               </Link>
             </div>
           </div>

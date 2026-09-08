@@ -30,8 +30,21 @@ function harness(durable = true) {
     },
     require(name: string) { if (name in mocks) return mocks[name]; throw new Error(`Unexpected import ${name}`); },
   });
-  return { service: loaded.exports, calls, setResponder(fn: typeof responder) { responder = fn; }, clearWatch() { watch = null; } };
+  return { service: loaded.exports, calls, setResponder(fn: typeof responder) { responder = fn; }, clearWatch() { watch = null; }, setEmail(email: string) { watch.email = email; } };
 }
+
+test("email-less owner can export and delete; blank email cannot bypass a registered address", async () => {
+  const empty = harness(false); empty.setEmail("");
+  assert.equal((await empty.service.exportWatchData("token_one", "")).watch.id, "watch_one");
+  assert.equal((await empty.service.deleteWatchData("token_one", "")).deleted, true);
+  const registered = harness(false);
+  await assert.rejects(registered.service.exportWatchData("token_one", ""));
+  await assert.rejects(registered.service.deleteWatchData("token_one", ""));
+  assert.equal(registered.calls.length, 0);
+  const durable = harness(true); durable.setEmail("");
+  await durable.service.deleteWatchData("token_one", "");
+  assert.equal(durable.calls[0].body.p_email, "");
+});
 
 test("privacy delete issues one atomic RPC and retries failure without deleting via REST", async () => {
   const h = harness();

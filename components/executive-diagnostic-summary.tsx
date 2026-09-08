@@ -5,6 +5,8 @@ interface ExecutiveDiagnosticSummaryProps {
   topCompetitor?: string;
   lostCount?: number;
   totalCount?: number;
+  scheduledCount?: number;
+  partial?: boolean;
 }
 
 export function ExecutiveDiagnosticSummary({
@@ -12,6 +14,8 @@ export function ExecutiveDiagnosticSummary({
   topCompetitor,
   lostCount,
   totalCount,
+  scheduledCount,
+  partial,
 }: ExecutiveDiagnosticSummaryProps) {
   const hasCounts = typeof lostCount === "number" && typeof totalCount === "number";
 
@@ -47,8 +51,9 @@ export function ExecutiveDiagnosticSummary({
 
         <div style={{ marginBottom: "28px" }}>
           <h2 style={{ fontSize: "clamp(1.25rem, 2.4vw, 1.65rem)", fontWeight: 800, lineHeight: 1.35, letterSpacing: "-0.025em", margin: "0 0 10px", color: "var(--navy, #0f172a)" }}>
-            {hasCounts ? <>今回の測定では、<strong>{lostCount}問 / {totalCount}問</strong>で自社が候補外でした。</> : "今回のAI回答を確認しました。"}
+            {hasCounts && totalCount === 0 ? "AI回答は未取得です。候補入り・候補外は未判定です。" : hasCounts ? <>今回の測定では、<strong>{lostCount}問 / 取得成功{totalCount}問</strong>で自社が候補外でした。</> : "今回のAI回答を確認しました。"}
           </h2>
+          {partial ? <p>部分観測：予定{scheduledCount}問・未取得{Math.max(0, (scheduledCount || 0) - (totalCount || 0))}問。取得できた回答の多数決で集計し、AI別の固定50問指標とは区別します。</p> : null}
           <p style={{ margin: 0, fontSize: "0.92rem", color: "var(--text-secondary, #475569)", lineHeight: 1.75 }}>
             これは指定した質問・AI・測定時点における観測結果です。実際の顧客数、問い合わせ、契約、売上や、AI全体の順位を示すものではありません。
           </p>
@@ -71,11 +76,11 @@ export function ExecutiveDiagnosticSummary({
 
         <div className="shadow-ambient-sm" style={{ background: "var(--bg-base, #ffffff)", border: "1.5px solid var(--navy, #0f172a)", borderRadius: "10px", padding: "24px 26px", marginBottom: "26px", boxShadow: "0 4px 12px rgba(15, 23, 42, 0.05)" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
-            <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>次の一手：専門性で選ばれる理由を公開する</strong>
+            <strong style={{ fontSize: "1.05rem", color: "var(--navy, #0f172a)", letterSpacing: "-0.01em" }}>自社サイト改修ゼロで、AI推薦データを配備</strong>
             <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary, #475569)", fontFamily: "var(--font-mono, monospace)", background: "var(--bg-surface, #f1f5f9)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "3px 10px", borderRadius: "4px" }}>確認・承認が必要</span>
           </div>
           <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", lineHeight: 1.75, margin: "0 0 16px" }}>
-            御社の専門性や対応条件を、参照元付きのページへ。初回に内容を確認して公開します。自社サイトの改修や、一から文章を作る作業は不要です。
+            会社の強み・対応条件・参照元をまとめた、AI向けの公開データを作成します。初回に内容を確認して公開します。自社サイトの改修や、一から文章を作る作業は不要です。
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", fontSize: "0.78rem" }}>
             {["URLまたは社名の入力", "参照元リンクを保持", "未確認の情報は推測しない", "公開後に同じ条件で再測定"].map((label) => <span key={label} style={{ background: "var(--bg-surface, #f8fafc)", border: "1px solid var(--border-subtle, #e2e8f0)", padding: "4px 10px", borderRadius: "6px", color: "var(--text-primary, #1e293b)", fontWeight: 600 }}>✓ {label}</span>)}
@@ -108,9 +113,9 @@ export function ExecutiveDiagnosticSummary({
         </div>
 
         <div style={{ marginTop: "24px", paddingTop: "18px", borderTop: "1px solid var(--border-subtle, #e2e8f0)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "14px" }}>
-          <div style={{ fontSize: "0.84rem", color: "var(--text-secondary, #475569)" }}>公開情報の下書きは、内容を確認してから公開できます。</div>
+          <div style={{ fontSize: "0.84rem", color: "var(--text-secondary, #475569)" }}>AI推薦データの下書きは、内容を確認してから公開できます。</div>
           <a href="#step-2" style={{ background: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)", color: "#ffffff", fontSize: "0.82rem", fontWeight: 700, padding: "9px 18px", borderRadius: "6px", display: "inline-flex", alignItems: "center", gap: "8px", textDecoration: "none", boxShadow: "0 2px 4px rgba(15, 23, 42, 0.16)", transition: "all 0.15s ease" }}>
-            選ばれる理由を伝える下書きを見る <span aria-hidden="true">↓</span>
+            AI推薦データの下書きを見る <span aria-hidden="true">↓</span>
           </a>
         </div>
       </div>

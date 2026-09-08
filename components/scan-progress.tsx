@@ -8,6 +8,8 @@ import { isUrlInput } from "@/lib/input-kind";
 import { parseSocialInput } from "@/lib/social-input";
 import type { InputResolutionCandidate } from "@/lib/input-resolution";
 import type { ScanProgressEvent, ScanStage } from "@/lib/types";
+import { profileManagementHref } from "@/lib/profile-management-link";
+import { ProfileManagementLink } from "./profile-management-link";
 
 const steps: Array<{ stage: ScanStage; label: string }> = [
   { stage: "validating", label: "診断先を確認" },
@@ -70,9 +72,9 @@ export function ScanProgress() {
       const finalBrand = (directBrandName || rawInput).trim();
       const summaryParts = [
         `${finalBrand}の公開情報参照ページの下書きです。`,
-        extraSocial ? `入力されたSNS参照先: ${extraSocial}。` : socialInfo.isSocial ? `入力されたSNS参照先: ${socialInfo.displayLabel || "SNS"}。` : "",
+        extraSocial || socialInfo.isSocial ? "入力されたSNS参照先は、内容を未確認の情報として記録します。" : "",
         extraProduct ? `入力された商品・サービス名: ${extraProduct}。` : "",
-        extraUrl ? `入力された参照元URL: ${extraUrl}。` : "参照元URLは未指定です。",
+        extraUrl ? "入力された参照元URLは未確認です。" : "参照元URLは未指定です。",
         "公開前に内容を確認し、必要な情報だけを掲載してください。"
       ].filter(Boolean).join(" ");
 
@@ -82,6 +84,7 @@ export function ScanProgress() {
         body: JSON.stringify({
           action: "create_direct",
           brandName: finalBrand,
+          referenceUrl: socialInfo.originalUrl || parseSocialInput(extraSocial || "").originalUrl || extraUrl || "",
           summary: summaryParts,
         }),
       });
@@ -94,7 +97,7 @@ export function ScanProgress() {
       setError(caught instanceof Error ? caught.message : "公開ページの下書きを作成できませんでした。");
       setDirectCreating(false);
     }
-  }, [directBrandName, extraProduct, extraSocial, extraUrl, rawInput, socialInfo.displayLabel, socialInfo.isSocial]);
+  }, [directBrandName, extraProduct, extraSocial, extraUrl, rawInput, socialInfo.originalUrl, socialInfo.isSocial]);
 
   const publishDirectProfile = useCallback(async () => {
     if (!directDraft) return;
@@ -108,7 +111,7 @@ export function ScanProgress() {
       });
       const data = await response.json();
       if (!response.ok || data.profile?.status !== "published") throw new Error(data.error || "公開ページを公開できませんでした。");
-      router.push(`/ai/company/${encodeURIComponent(directDraft.slug)}`);
+      router.push(profileManagementHref({ profileId: directDraft.profileId, token: directDraft.token }));
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "公開ページを公開できませんでした。");
       setDirectCreating(false);
@@ -157,6 +160,11 @@ export function ScanProgress() {
             if (event.detail) setDetail(event.detail);
           }
           if (event.type === "complete" && event.scanId) {
+            try {
+              const key = `rovan:pending-profile:${targetUrl}`;
+              const saved = sessionStorage.getItem(key);
+              if (saved) { sessionStorage.setItem(`rovan:profile:${event.scanId}`, saved); sessionStorage.removeItem(key); }
+            } catch { /* The saved owner link is the durable recovery path. */ }
             setProgress(100); setStage("complete"); setMessage("結果をまとめました。");
             router.replace(`/result?id=${encodeURIComponent(event.scanId)}`);
             return;
@@ -337,6 +345,7 @@ export function ScanProgress() {
                 {directCreating ? (isDirectPreview ? "公開処理中…" : "下書きを作成中…") : buttonText} <ArrowIcon />
               </button>
             </div>
+            {directDraft ? <ProfileManagementLink capability={{ profileId: directDraft.profileId, token: directDraft.token }} /> : null}
             {error ? <p className="form-error" style={{ marginTop: "12px" }}>{error}</p> : null}
             <small className="no-site-small-note" style={{ display: "block", marginTop: "14px", color: "#64748b", fontSize: "0.75rem" }}>
               {noteText}

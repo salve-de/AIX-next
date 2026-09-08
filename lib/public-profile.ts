@@ -122,7 +122,7 @@ function buildMarkdown(input: {
     lines.push("", "## 用途", "", ...input.useCases.map((item) => `- ${markdownText(item)}`));
   }
   if (input.facts.length) {
-    lines.push("", "## 公開されている情報", "", ...input.facts.map((fact) => `- **${markdownText(fact.label)}**: ${markdownText(fact.value)}`));
+    lines.push("", "## 公開されている情報", "", ...input.facts.map((fact) => `- **${markdownText(fact.label)}**: ${markdownText(fact.value)}${fact.provenance === "company_asserted" ? "（入力情報・参照元未確認）" : ""}`));
   }
   if (input.targetUrl) {
     lines.push("", "## 参照元サイト", "", `- ${sourceLink(input.targetUrl, input.targetUrl)}`);
@@ -268,7 +268,7 @@ function safeStoredFacts(values: unknown[], fallbackSourceUrl: string) {
     const key = `${label}\u0000${factValue}\u0000${sourceUrl}`;
     if (seen.has(key)) continue;
     seen.add(key);
-    facts.push({ label, value: factValue, sourceUrl });
+    facts.push({ label, value: factValue, sourceUrl, ...(item.provenance === "company_asserted" || item.provenance === "source_excerpt" ? { provenance: item.provenance } : {}) });
     if (facts.length >= 32) break;
   }
   return facts;
@@ -354,7 +354,7 @@ export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
     useCases,
     facts,
     sourcePages,
-    structuredData: buildPublicStructuredData(publicInput),
+    structuredData: buildPublicStructuredData(facts.some((fact) => fact.provenance === "company_asserted") ? { ...publicInput, summary: "", market: "", useCases: [] } : publicInput),
     markdown: buildMarkdown({ title, brandName, targetUrl, summary, market, targetCustomers, useCases, facts, sourcePages }),
     json: buildPublicJson(publicInput),
     createdAt: record.createdAt,
@@ -366,6 +366,7 @@ export function toPublicProfile(record: PublicProfileRecord): PublicProfile {
 
 export type DirectProfileInput = {
   brandName: string;
+  referenceUrl?: string;
   market?: string;
   summary?: string;
   targetCustomers?: string[];
@@ -389,7 +390,7 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
   const targetUrl = `${siteUrl}/ai/company/${encodeURIComponent(slug)}`;
   const title = `${brandName} | Rovan公開情報参照ページ`;
   const market = publicText(input.market || "", MAX_LIST_ITEM_LENGTH);
-  const summary = publicText(input.summary || `「${brandName}」について入力された情報を、公開前に確認できる形で整理した参照ページです。`, MAX_SUMMARY_LENGTH);
+  const summary = `入力情報（参照元未確認）：${publicText(input.summary || `「${brandName}」について入力された情報を、公開前に確認できる形で整理した参照ページです。`, MAX_SUMMARY_LENGTH - 20)}`;
   const targetCustomers = uniquePublicList(input.targetCustomers?.length ? input.targetCustomers : []);
   const useCases = uniquePublicList(input.useCases?.length ? input.useCases : []);
 
@@ -397,6 +398,8 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
     { label: "入力された名称", value: brandName, sourceUrl: targetUrl },
   ];
   if (market) facts.push({ label: "入力された分野", value: market, sourceUrl: targetUrl });
+  const referenceUrl = publicUrl(input.referenceUrl);
+  if (referenceUrl) facts.push({ label: "入力された参照先（未確認）", value: referenceUrl, sourceUrl: targetUrl });
 
   if (input.location?.trim()) {
     facts.push({ label: "所在地・対応エリア", value: publicText(input.location, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
@@ -411,9 +414,8 @@ export function buildDirectPublicProfileDraft(input: DirectProfileInput, generat
     facts.push({ label: "料金規約・費用目安", value: publicText(input.pricingInfo, MAX_LIST_ITEM_LENGTH), sourceUrl: targetUrl });
   }
 
-  const sourcePages: PublicProfileDraft["sourcePages"] = [
-    { url: targetUrl, title: `${brandName} | Rovan公開情報参照ページ`, description: "入力された情報を整理した参照ページ" },
-  ];
+  facts.forEach((fact) => { fact.provenance = "company_asserted"; });
+  const sourcePages: PublicProfileDraft["sourcePages"] = [];
 
   const validThroughDate = new Date(new Date(generatedAt).getTime() + 30 * 86_400_000).toISOString();
 

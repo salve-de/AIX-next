@@ -14,21 +14,28 @@ export function SiteHeader({ compact = false, context }: { compact?: boolean; co
       <div className="shell header-inner">
         <Brand />
         <nav className="header-nav" aria-label="主要ナビゲーション">
-          {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
-          <Link href="/pricing" title="料金プラン">
-            料金プラン
-          </Link>
-          <Link href="/login" style={{ fontWeight: 600, marginLeft: "4px" }}>
-            ログイン
-          </Link>
-          <Link className="header-cta" href="/#scan">
-            AI推薦の現状を無料診断
-          </Link>
+          <div className="header-nav-links">
+            {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
+            <Link href="/pricing" title="料金プラン">
+              料金プラン
+            </Link>
+          </div>
+          <div className="header-nav-actions">
+            <Link href="/manage" className="header-manage-link" title="管理画面を開く">
+              管理画面を開く
+            </Link>
+            <Link href="/login" className="header-login-link">
+              ログイン
+            </Link>
+            <Link className="header-cta" href="/#scan">
+              無料診断
+            </Link>
+          </div>
         </nav>
         <details className="mobile-menu">
           <summary>メニュー</summary>
           <nav aria-label="モバイルナビゲーション">
-            <Link href="/#scan">AI推薦の現状を無料診断</Link>
+            <Link href="/#scan">無料診断</Link>
             {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
             <Link href="/pricing">料金プラン</Link>
             <Link href="/login">ログイン</Link>

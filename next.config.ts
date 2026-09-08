@@ -32,6 +32,11 @@ const nextConfig: NextConfig = {
       { source: "/:path*", headers: publicHeaders },
       { source: "/result", headers: privateHeaders },
       { source: "/watch", headers: privateHeaders },
+      { source: "/manage", headers: privateHeaders },
+      { source: "/profile/manage", headers: privateHeaders },
+      { source: "/data-rights", headers: privateHeaders },
+      { source: "/ai-info", headers: privateHeaders },
+      { source: "/billing", headers: privateHeaders },
       { source: "/api/:path*", headers: [
         { key: "Cache-Control", value: "no-store" },
         { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },

@@ -106,7 +106,7 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
           <div className="expanded-footer">
               <span className="expanded-note">※ 無料診断から自動で課金されることはありません</span>
             <button type="submit" className="expanded-submit-btn">
-              <span>無料でAI回答を確認する</span>
+              <span>AI推薦の現状を無料診断</span>
               <ArrowIcon />
             </button>
           </div>
@@ -134,7 +134,7 @@ export function ScanForm({ compact = false, hideExtraToggle = false }: { compact
             onChange={(event) => setInput(event.target.value)}
           />
           <button type="submit">
-            <span>{compact ? "無料診断" : "無料でAI回答を確認する"}</span>
+            <span>{compact ? "無料診断" : "AI推薦の現状を無料診断"}</span>
             <ArrowIcon />
           </button>
         </div>

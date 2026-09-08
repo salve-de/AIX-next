@@ -64,7 +64,7 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
 
   const description = profile.summary || `${profile.brandName}の公開情報を確認できます。`;
   return {
-    title: sample ? `${profile.title}（画面確認用）` : profile.title,
+    title: sample ? `${profile.brandName} AI推薦データ（見本）` : profile.title,
     description,
     alternates: { canonical: `${siteUrl}/ai/company/${encodeURIComponent(profile.slug)}` },
     robots: sample ? { index: false, follow: false, noarchive: true } : { index: true, follow: true, noarchive: true },
@@ -92,10 +92,10 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
         <div className="shell header-inner">
           <Link className="brand" href="/">
             <span className="brand-mark" aria-hidden="true"><i /><i /><i /></span>
-            <span><strong>Rovan</strong><small>公開情報参照ページ</small></span>
+            <span><strong>Rovan</strong><small>AI推薦データの公開ページ</small></span>
           </Link>
           <Link className="text-button" href="/">
-            自社サイトの公開情報を確認する <ArrowIcon />
+            まずは無料で診断してみる <ArrowIcon />
           </Link>
         </div>
       </header>
@@ -105,7 +105,7 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--text-muted, #64748b)" }}>
             <Link href="/" style={{ color: "var(--text-muted, #64748b)", textDecoration: "none" }}>ホーム</Link>
             <span aria-hidden="true">/</span>
-            <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>公開情報参照ページ</span>
+            <span style={{ color: "var(--text-primary, #0f172a)", fontWeight: 700 }}>AI推薦データの公開ページ</span>
           </div>
           <span style={{ fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>Schema.org 構造化データ・Markdown</span>
         </div>
@@ -117,11 +117,11 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
                 <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-success, #059669)", background: "var(--color-success-bg, #f0fdf4)", border: "1px solid #bbf7d0", padding: "2px 8px", borderRadius: "4px" }}>
-                  公開情報参照ページ
+                  AI推薦データの公開ページ
                 </span>
                 {sample ? (
                   <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#92400e", background: "#fffbeb", border: "1px solid #fcd34d", padding: "2px 8px", borderRadius: "4px" }}>
-                    設計見本（架空データ）
+                    見本
                   </span>
                 ) : null}
                 <span style={{ fontSize: "0.75rem", color: "var(--text-muted, #64748b)" }}>
@@ -179,11 +179,11 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
           <section className="knowledge-section" aria-labelledby="about-page-heading">
             <p className="overline">このページについて</p>
             <h2 id="about-page-heading">公開情報参照ページの位置づけ</h2>
-            <p className="section-lead-desc">{sourceTargetIsRovan ? "入力された内容を整理したページです。掲載内容の正確性・最新性は、公開前に入力者が確認してください。" : "Rovanが確認時点の参照元ページを整理したスナップショットです。情報の正確性・最新性は参照元サイトでご確認ください。"}</p>
+            <p className="section-lead-desc">AI推薦データは、会社の強み・対応条件・参照元をまとめた、AI向けの公開データです。本人確認や公的認証を示す公式台帳・公認推薦ではありません。{sourceTargetIsRovan ? "入力された内容を整理したページです。掲載内容の正確性・最新性は、公開前に入力者が確認してください。" : "Rovanが確認時点の参照元ページを整理したスナップショットです。情報の正確性・最新性は参照元サイトでご確認ください。"}</p>
             <ul style={{ margin: 0, paddingLeft: "1.2rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8 }}>
               <li>{sourceTargetIsRovan ? "掲載内容は入力された情報に限ります。" : "掲載内容は参照元ページから確認できた情報に限ります。"}</li>
               <li>AIの回答・推薦・掲載順位・問い合わせ数・売上は保証しません。</li>
-              <li>誤りや非公開のご希望は、ページ下部のお問い合わせ窓口からご連絡ください。</li>
+              <li>{seller.email ? "誤りや非公開のご希望は、ページ下部のお問い合わせ窓口からご連絡ください。" : "公開者は、保存した管理リンクから掲載を停止できます。"}</li>
             </ul>
           </section>
         </div>
@@ -223,13 +223,13 @@ export default async function PublicCompanyPage({ params, searchParams }: PagePr
       <footer className="public-company-footer">
         <div className="shell">
           <p>Rovan 公開情報参照ページ · 最終更新: {dateLabel(profile.updatedAt)}</p>
-          <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
+          {seller.email ? <p className="disclaimer-text" style={{ fontSize: "0.72rem", color: "#64748b", marginTop: "10px", lineHeight: 1.6 }}>
             【掲載照会・非公開申請】本ページは、{sourceTargetIsRovan ? "入力された内容を整理したページ" : "確認時点に参照元ページから整理した公開情報のスナップショット"}です。特定の生成AIによる回答・推薦・掲載順位、問い合わせ数、売上を保証するものではありません。掲載内容の確認・非公開（掲載停止）のご要望、最新情報への更新照会は{" "}
             <a href={seller.email ? `mailto:${seller.email}?subject=${encodeURIComponent(`【掲載照会・非公開申請】${profile.brandName}の公開情報参照ページについて`)}` : "/support"} style={{ color: "#0284c7", textDecoration: "underline" }}>
               お問い合わせ窓口{seller.email ? `（${seller.email}）` : ""}
             </a>
             {" "}までご連絡ください。
-          </p>
+          </p> : <p><a href="/manage">公開者向けの管理・掲載停止</a></p>}
         </div>
       </footer>
 
