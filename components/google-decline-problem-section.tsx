@@ -96,14 +96,14 @@ export function GoogleDeclineProblemSection() {
                 現実 01
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                「検索して比較する」から「AIに選んでもらう」へ
+                検索で1位でも、AIに無視されれば客は来ない
               </strong>
             </div>
-            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              検索順位を争う時代から、AIが最適な候補を直接選定して提案する時代へシフトしています。顧客の最初の相談窓口が、検索エンジンからChatGPTなどの対話型AIへ移行しています。
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
+              広告や比較サイトが並ぶ検索エンジンを避け、顧客はChatGPTに「どこが良い？」と直接相談する時代へ移りました。従来のSEOで上位にいても、AIが顧客に推薦する候補に入っていなければ、顧客の視界にすら入りません。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>見落としがちな盲点:</strong> 自社サイトのアクセス解析だけを見ていても、AIの推薦段階で候補から漏れて奪われた顧客には気付けません。
+            <div style={{ marginTop: "auto", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #0f172a", padding: "10px 14px", borderRadius: "0 6px 6px 0", fontSize: "0.78rem", color: "#334155", lineHeight: 1.55 }}>
+              <strong style={{ color: "#0f172a" }}>見えない顧客流出:</strong> 自社サイトのアクセス数だけを見ていても、AIの段階でライバルに奪われた顧客の存在には気付けません。
             </div>
           </div>
 
@@ -137,14 +137,14 @@ export function GoogleDeclineProblemSection() {
                 現実 02
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                人間向けに飾ったホームページは、AIには読まれない
+                人間向けの「綺麗なホームページ」は、AIには届かない
               </strong>
             </div>
-            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              写真やイメージ中心の美しいデザインも、AIにとっては中身の読み取れない画像にすぎません。AIが推薦の根拠とするのは、機械が客観的に検証できる確定仕様データ（取扱分野・実績・対応条件）です。
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
+              写真やイメージ中心のパンフレットのようなウェブサイトは、AIにとっては中身の検証できない画像にすぎません。AIが推薦の根拠にするのは、機械が客観的に検証できる確定仕様データ（取扱分野・実績・対応条件）です。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>構造的な課題:</strong> ホームページをいくら多額の費用でリニューアルしても、AIが解釈できる構造化データがなければ推薦対象になりません。
+            <div style={{ marginTop: "auto", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #0f172a", padding: "10px 14px", borderRadius: "0 6px 6px 0", fontSize: "0.78rem", color: "#334155", lineHeight: 1.55 }}>
+              <strong style={{ color: "#0f172a" }}>構造的な死角:</strong> ホームページを多額の費用でリニューアルしても、AIが解釈できる確定データがなければ推薦対象になりません。
             </div>
           </div>
 
@@ -178,14 +178,14 @@ export function GoogleDeclineProblemSection() {
                 現実 03
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                対策を怠ると、ライバルや大手チェーンへ自動で送客される
+                対策を放置すると、大手やライバルへの送客が固定化する
               </strong>
             </div>
-            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              AIは「客観的な根拠が明確な事業者」を優先して推薦します。御社の強みや専門性がデータ化されていない場合、AIはすでに情報の揃っている競合他社を顧客に提案し続けます。
+            <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.65, margin: 0 }}>
+              AIは「客観的な根拠が確認できる安全な事業者」を優先して推薦します。自社の強みや専門性がデータ化されていない場合、AIはすでに情報の揃っている大手チェーンや競合他社を顧客に案内し続けます。
             </p>
-            <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>必要な対策:</strong> AIが自社を正しく把握しているかを定期的に確認し、AIが参照できる専用データを配備・維持することが不可欠です。
+            <div style={{ marginTop: "auto", background: "#f8fafc", border: "1px solid #e2e8f0", borderLeft: "3px solid #0f172a", padding: "10px 14px", borderRadius: "0 6px 6px 0", fontSize: "0.78rem", color: "#334155", lineHeight: 1.55 }}>
+              <strong style={{ color: "#0f172a" }}>手遅れになる前に:</strong> AIの回答傾向（「この地域・分野なら○○社」）が固定化する前に、AIが参照できる専用データを配備・維持することが不可欠です。
             </div>
           </div>
         </div>
