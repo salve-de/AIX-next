@@ -47,8 +47,26 @@ export function BillingClient() {
       </span>
       <h2>AI推薦・自動見守りプランのご契約管理</h2>
       <p>お支払い方法の変更、請求書・領収書の発行、次回更新日の確認、解約手続きをStripeの管理画面で行えます。</p>
-      <label>管理コード（Watch token）<input value={token} disabled={busy} onChange={(event) => { setWatch(null); setToken(event.target.value); }} placeholder="token_..." /></label>
-      {watch ? <div className="billing-watch-summary"><span>対象企業</span><strong>{watch.latest.discovery.brandName}</strong><small>{watch.paid ? "有料見守り契約中" : watch.status === "trial" ? "無料トライアル中" : "契約状況をご確認ください"}</small></div> : null}
+      {watch ? (
+        <div className="billing-watch-summary" style={{ marginBottom: "16px" }}>
+          <span>照合完了（ログイン中）</span>
+          <strong>{watch.latest.discovery.brandName}</strong>
+          <small>{watch.paid ? "有料見守り契約中" : watch.status === "trial" ? "無料トライアル中" : "契約状況をご確認ください"}</small>
+        </div>
+      ) : (
+        <div style={{ margin: "16px 0", padding: "14px 16px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "6px", textAlign: "left" }}>
+          <strong style={{ display: "block", color: "#0f172a", fontSize: "0.82rem", marginBottom: "4px" }}>
+            専用リンクからアクセスしてください
+          </strong>
+          <p style={{ margin: 0, color: "#64748b", fontSize: "0.76rem", lineHeight: 1.5 }}>
+            ID・パスワードの記憶や手入力は不要です。登録完了メール、または毎週お届けするレポートメール内の「ご契約管理」リンクから直接開けます。
+          </p>
+        </div>
+      )}
+      <label style={{ display: watch ? "none" : "block" }}>
+        専用アクセスキー（キーをお持ちの場合のみ手入力）
+        <input value={token} disabled={busy} onChange={(event) => { setWatch(null); setToken(event.target.value); }} placeholder="管理URLに含まれる専用キーを入力" />
+      </label>
       <button className="button button-dark" type="submit" disabled={busy || !token || !watch}>{busy ? "準備中…" : <>契約・決済管理画面を開く <ArrowIcon /></>}</button>
       {message ? <p className="form-error" role="status">{message}</p> : null}
 
