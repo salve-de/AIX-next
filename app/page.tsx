@@ -22,16 +22,16 @@ export default function HomePage() {
         <div className="shell landing-hero-inner">
           <div className="landing-hero-single">
             <div className="landing-hero-head-block">
-              <p className="overline">ChatGPT・生成AI おすすめ獲得支援</p>
+              <p className="overline">ChatGPT・生成AI おすすめ獲得システム</p>
               <h1>
-                お客さんがAIに「おすすめ」を聞いた時、<br />
-                <em>大手に埋もれず、あなたの専門性で選ばれる会社へ。</em>
+                お客さんがChatGPTに「おすすめ」を聞いた時、<br />
+                <em>あなたの会社ではなく、大手ばかり紹介されていませんか？</em>
               </h1>
               <p className="landing-hero-lead">
-                今のホームページの改修も、新たな開設も不要。<br />
-                URLまたは社名から、診断・選ばれる理由の公開・毎週の追跡まで。<br />
-                初回に内容を確認し、継続更新は許可した範囲でRovanに任せられます。
+                ホームページの改修はもちろん、サイトをお持ちでない場合も新たな作成は不要です。あなた側の作業は一切ありません。<br />
+                社名や店名を入力するだけで、ChatGPTなどのAIが御社をおすすめするための公開ページを開設し、毎週の推薦状況を自動で追跡します。
               </p>
+
             </div>
 
             {/* 入力フォーム */}
@@ -52,7 +52,7 @@ export default function HomePage() {
                 <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M3 8.5L6.5 12L13 4" />
                 </svg>
-                HPの改修は不要
+                HPの改修・開設も不要
               </span>
               <span className="trust-sep" aria-hidden="true">•</span>
               <span className="trust-item">
@@ -65,14 +65,14 @@ export default function HomePage() {
 
             {/* 調査対象AI（モデル番号なし・主要サービス名を堂々提示） */}
             <div className="hero-ai-targets-clean" aria-label="調査対象AI">
-              <span className="ai-clean-caption">測定対象のAI:</span>
+              <span className="ai-clean-caption">調査対象AI:</span>
               <span className="ai-clean-names">ChatGPT • Google Gemini • Perplexity</span>
             </div>
 
             {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
               <Link className="hero-sample-link" href="/result?sample=1">
-                診断レポートの設計見本を見る <span aria-hidden="true">→</span>
+                診断レポートの見本を見る <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
@@ -84,11 +84,11 @@ export default function HomePage() {
       {/* ================================================================= */}
       <section className="landing-simulation-section shell" style={{ paddingTop: "64px", paddingBottom: "64px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">回答の表示例</span>
-          <h2>利用者がAIに相談した時、<br />回答はどう変わるのか？</h2>
+          <span className="pill-badge">AI推薦の比較イメージ</span>
+          <h2>お客さんがAIに相談した時、<br />回答はどう変わるのか？</h2>
           <p>
-            ChatGPTやGeminiなど主要AIで、利用者が相談した場合の回答例を比較。<br />
-            お客さんの細かな条件に合う専門性で、御社が推薦候補に入ることを目指します。以下は設計上の表示例です。
+            ChatGPTやGeminiなど主要AIで、見込み客が相談した場合の回答例を比較。<br />
+            お客さんの細かな条件に合う専門性で、御社が推薦候補に入ることを目指します。以下はサンプルデータを使った表示例です。
           </p>
         </div>
         <div style={{ maxWidth: "880px", margin: "0 auto" }}>
@@ -106,11 +106,11 @@ export default function HomePage() {
       {/* ================================================================= */}
       <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">AI推薦の獲得に向けた2つの成果物</span>
-          <h2>推薦の現状を知り、<br />選ばれる理由を公開する。</h2>
+          <span className="pill-badge">手に入る2つの確定成果物</span>
+          <h2>社名を入力するだけで、<br />手元に届く「2大成果物」</h2>
           <p>
             今のホームページの改修も、専門知識も一切不要。<br />
-            「推薦の現状がわかる診断レポート」と「専門性・対応条件を伝える公開情報ページ」。ページは初回確認後に公開できます。
+            「推薦の現状がわかる診断レポート」と「御社の強みをAIに伝える推薦データ」。ページは初回確認後に公開できます。
           </p>
         </div>
 
@@ -148,12 +148,12 @@ export default function HomePage() {
         <div className="landing-watch-grid" style={{ marginBottom: "36px" }}>
           <WatchTrendVisual />
           <div className="section-intro">
-            <span className="pill-badge">推薦獲得を目指す、週次の見守り</span>
-            <h2>自社が選ばれる機会を、<br />毎週の回答から探す。</h2>
+            <span className="pill-badge">専属のAI見守り体制</span>
+            <h2>AIの回答状況を、<br />毎週自動で追跡・チェック。</h2>
             <p>自社が候補に入った質問、競合だけが登場した質問を同じ条件で追跡。専門性や対応条件の伝え方を見直し、次の推薦獲得につなげるための候補を整理します。</p>
             <ul className="watch-feature-list">
               <li><strong>毎週の再測定</strong>：同じ質問パネルでAI回答の変化を確認</li>
-              <li><strong>比較候補の変化</strong>：候補の入れ替わりや参照元の差分を記録</li>
+              <li><strong>ライバル急浮上アラート</strong>：毎週の測定で、競合の推薦状況の変化をお知らせ</li>
               <li><strong>同意後は自動更新</strong>：有効な有料Watchで、同じサイトの短い記載を参照元付きで更新</li>
             </ul>
             <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
@@ -171,13 +171,14 @@ export default function HomePage() {
           }}
         >
           <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 32px" }}>
-            <span className="pill-badge">料金</span>
+            <span className="pill-badge">明朗・適正な価格設定</span>
             <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 10px", lineHeight: 1.35 }}>
-              必要な範囲だけ選べる、<br />明朗な料金体系
+              1日あたり約330円から始められる、<br />明朗な料金体系
             </h3>
             <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", margin: 0, lineHeight: 1.75 }}>
-              まずは無料診断で現状を確かめ、必要な場合だけ週次の再測定を申し込めます。
+              まずは無料診断で現状を確かめ、必要な場合だけ週次の自動見守りを申し込めます。
             </p>
+
           </div>
 
           <div
@@ -201,10 +202,10 @@ export default function HomePage() {
               }}
             >
               <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
-                現状把握と公開情報整理
+                現状把握とAI推薦データの作成
               </span>
               <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
-                無料AI回答 診断レポート
+                無料AI推薦 診断レポート
               </h4>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
                 <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>0円</span>
@@ -212,7 +213,7 @@ export default function HomePage() {
               </div>
               <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
                 <li>固定した{FREE_PANEL_SIZE}問の質問パネルでの診断レポート</li>
-                <li>参照元付きの公開情報整理案（自動下書き）</li>
+                <li>自社専用のAI推薦データ（自動下書き）</li>
                 <li>ホームページの改修・新たな開設も不要</li>
                 <li>クレジットカード登録不要・自動課金なし</li>
               </ul>
@@ -266,23 +267,24 @@ export default function HomePage() {
                   fontFamily: "var(--font-mono, monospace)",
                 }}
               >
-                継続利用向け
+                おすすめ
               </span>
                 <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
-                継続測定・差分確認
+                継続運用・AI推薦の監視
               </span>
               <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
-                週次測定プラン
+                毎週の自動見守りプラン
               </h4>
               <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
                 <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{WATCH_MONTHLY_PRICE_LABEL}</span>
               </div>
               <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
-                <li>同じ測定パネルでAI回答を毎週再チェック</li>
-                <li>比較候補や参照元の変化を確認</li>
-                <li>承認した公開プロフィールの維持</li>
-                <li>月単位で利用でき、管理画面から解約手続きが可能</li>
+                <li>1日約330円（税別9,800円・月単位でいつでも解約可能）</li>
+                <li>自社サイトの改修不要・サイトをお持ちでない場合も開設不要</li>
+                <li>御社の強みをAIが正しく読む公開ページの常時維持</li>
+                <li>毎週の推薦状況を自動チェック・変化時の自動調整</li>
               </ul>
+
               <Link
                 href="/pricing"
                 style={{
@@ -318,8 +320,8 @@ export default function HomePage() {
       {/* ================================================================= */}
       <section className="landing-final-cta">
         <div className="shell">
-            <span className="pill-badge">URL・社名だけで開始</span>
-            <h2>「この条件なら御社」とAIにおすすめされるために。<br />まずは無料診断で、候補に入れているか確認しましょう。</h2>
+            <span className="pill-badge">URL・社名だけで開始。自社サイト改修ゼロ。</span>
+            <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
           <ScanForm compact />
           <div className="hero-trust-badges" style={{ justifyContent: "center", marginTop: "18px" }} aria-label="サービスの特長">
             <div className="trust-badge">
@@ -332,7 +334,7 @@ export default function HomePage() {
               <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M3 8.5L6.5 12L13 4" />
               </svg>
-              <span>HPの改修は不要</span>
+              <span>HPの改修・開設も不要</span>
             </div>
             <div className="trust-badge">
               <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

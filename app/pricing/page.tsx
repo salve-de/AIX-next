@@ -6,31 +6,31 @@ import { WATCH_MONTHLY_PRICE_LABEL, WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL, WAT
 
 export const metadata: Metadata = {
   title: "料金プラン",
-  description: "専門性でAIのおすすめ獲得を目指すRovan。無料診断と週次見守りの料金・提供範囲。",
+  description: "Rovanの無料AI推薦診断と、AI推薦・自動見守りプランの料金・提供範囲。",
 };
 
 const free = [
   "社名またはURL 1件の初回診断",
   "公開情報をもとにした購入検討向け質問パネルでの比較",
   "AI回答に自社が含まれた質問・含まれなかった質問の確認",
-  "回答で参照されたURLと公開情報の対応確認",
-  "自社サイトを改修せずに公開情報の整理案を確認",
+  "大手ライバルが推薦された回答と、その根拠の確認",
+  "自社専用のAI推薦データ（自動下書き）",
 ];
 
 const paid = [
-  "承認済みの公開情報参照ページを維持（自社サイト改修不要）",
-  "同じ測定条件でAI回答を毎週記録・比較",
-  "AI回答に含まれる候補と参照URLの変化を通知",
-  "公開前の変更案と参照元の確認",
-  "URL入力後は、追加の質問票なしで継続測定",
-  "月単位で利用でき、管理画面から解約手続きが可能",
+  "1日約330円（税別9,800円 / 税込10,780円）",
+  "自社サイトの改修不要・サイトをお持ちでない場合も新たな開設不要",
+  "ChatGPTなどのAIが御社をおすすめするための公開ページを常時維持",
+  "毎週の推薦状況を自動チェック（AI回答の変化を追跡）",
+  "AIの回答傾向や競合の変化に合わせた掲載情報の自動調整",
+  "月単位で利用でき、管理画面からいつでも解約可能",
 ];
 
 export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
-    title="大手に埋もれず、専門性でAIのおすすめ獲得を目指す。"
-    lead="URLまたは社名から、推薦の現状診断と、御社が選ばれる理由を伝える下書きへ。サイト改修や追加の質問票なしで取り組めます。公開は内容を確認・承認した後に行います。AIの推薦・順位・売上の改善は保証しません。"
+    title="営業マンを雇う前に。1日あたり約330円、ホームページ改修不要でAI推薦の獲得と維持を自動化。"
+    lead="専門知識も、事前の準備も必要ありません。社名や店名を入力するだけで、ChatGPTなどのAIが御社をおすすめするための公開ページを開設し、毎週の推薦状況を自動で追跡します。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
@@ -44,7 +44,7 @@ export default function PricingPage() {
       </div>
       <div className="pricing-plan pricing-paid">
         <header>
-          <p>AI回答・週次見守りプラン</p>
+          <p>AI推薦・自動見守りプラン</p>
           <strong>¥{WATCH_MONTHLY_PRICE_TAX_INCLUSIVE.toLocaleString()} <small>/月・税込</small></strong>
           <span>{WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL}</span>
         </header>
@@ -80,8 +80,8 @@ export default function PricingPage() {
       </p>
       <div className="pricing-steps">
         <div><strong>1</strong><span>URL・社名を入力</span><p>公開情報をもとに初回診断</p></div>
-        <div><strong>2</strong><span>公開情報の下書き</span><p>内容を確認してから公開</p></div>
-        <div><strong>3</strong><span>週次測定を開始</span><p>同じ条件で前回との差分を確認</p></div>
+        <div><strong>2</strong><span>AI推薦データを配備</span><p>内容を確認してから公開</p></div>
+        <div><strong>3</strong><span>毎週のAI回答を自動見守り</span><p>同じ条件で前回との差分を確認</p></div>
       </div>
     </section>
     <section className="pricing-note">
