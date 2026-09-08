@@ -15,6 +15,20 @@ export function BillingClient() {
   const submitting = useRef(false);
 
   useEffect(() => {
+    if (token) return;
+    let stale = false;
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!stale && data?.authenticated && data?.user?.watchToken) {
+          setToken(data.user.watchToken);
+        }
+      })
+      .catch(() => {});
+    return () => { stale = true; };
+  }, [token]);
+
+  useEffect(() => {
     let stale = false;
     const controller = new AbortController();
     setWatch(null);
@@ -60,8 +74,13 @@ export function BillingClient() {
           </strong>
           <p style={{ margin: 0, color: "#64748b", fontSize: "0.82rem", lineHeight: 1.6 }}>
             本画面はご契約者様専用の管理画面です。<br />
-            登録完了時のメール、または毎週お届けしているAI推薦レポートメール内の「ご契約管理」リンクをクリックしてアクセスしてください（ID・パスワードの記憶や手入力は不要です）。
+            Googleアカウントまたはメールアドレスでログインしてアクセスしてください。
           </p>
+          <div style={{ marginTop: "14px" }}>
+            <Link href="/login" className="button button-dark" style={{ display: "inline-block", fontSize: "0.82rem", padding: "8px 16px", textDecoration: "none" }}>
+              ログイン画面を開く →
+            </Link>
+          </div>
         </div>
       )}
       <input type="hidden" value={token} disabled={busy} onChange={(event) => { setWatch(null); setToken(event.target.value); }} />

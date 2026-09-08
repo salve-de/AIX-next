@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 
-export function SiteHeader({ compact = false }: { compact?: boolean }) {
+export type NavigationContext = { resultHref: string; profileHref: string; watchHref: string };
+
+export function SiteHeader({ compact = false, context }: { compact?: boolean; context?: NavigationContext }) {
+  const links = context ? [
+    [context.resultHref, "① 診断レポート"], [context.profileHref, "② AI推薦データ"], [context.watchHref, "③ 週次見守り"],
+  ] : [
+    ["/result?sample=1", "診断レポートの見本"], ["/ai/company/aoba-souzoku?sample=1", "AI推薦データの見本"], ["/watch?sample=1", "週次見守りの見本"],
+  ];
   return (
     <header className={`site-header ${compact ? "site-header-compact" : ""}`}>
       <div className="shell header-inner">
         <Brand />
         <nav className="header-nav" aria-label="主要ナビゲーション">
-          <Link href="/result?sample=1" title="AI診断レポートの設計見本">
-            ① 診断レポート
-          </Link>
-          <Link href="/ai/company/aoba-souzoku?sample=1" title="公開情報参照ページの設計見本">
-            ② 公開情報の見本
-          </Link>
-          <Link href="/watch?sample=1" title="週次測定の管理画面の見本">
-            ③ 週次見守り
-          </Link>
+          {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
+          <Link href="/login" style={{ fontWeight: 600 }}>ログイン</Link>
+          <Link href="/manage">管理画面を開く</Link>
           <Link href="/pricing" title="料金プラン">
             料金プラン
           </Link>
@@ -27,9 +28,9 @@ export function SiteHeader({ compact = false }: { compact?: boolean }) {
           <summary>メニュー</summary>
           <nav aria-label="モバイルナビゲーション">
             <Link href="/#scan">AI推薦の現状を無料診断</Link>
-            <Link href="/result?sample=1">① 診断レポート（見本）</Link>
-            <Link href="/ai/company/aoba-souzoku?sample=1">② 公開情報の見本</Link>
-            <Link href="/watch?sample=1">③ 週次見守り（見本）</Link>
+            {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
+            <Link href="/login">ログイン</Link>
+            <Link href="/manage">管理画面を開く</Link>
             <Link href="/pricing">料金プラン</Link>
           </nav>
         </details>

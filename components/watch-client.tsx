@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { ArrowIcon, WarningIcon } from "@/components/icons";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { toPublicWatch } from "@/lib/public-dto";
 import type { PublicWatch, PublicWatchMeasurementRun } from "@/lib/public-dto";
-import { sampleWatch } from "@/lib/sample-data";
+import { sampleValueWatch as sampleWatch } from "@/lib/sample-value-proof";
 import { ProfileAutomationControls } from "@/components/profile-automation-controls";
 import { ExecutiveReferralCard } from "@/components/executive-referral-card";
 import type { PromptPanelKind } from "@/lib/types";
+import { compareMeasurementReadouts, readoutIdentity, safeReadoutResultHref, updateReadoutEmail } from "@/lib/measurement-readout";
+
+import { ValueProofBoard } from "@/components/value-proof-board";
 
 type WatchView = PublicWatch & { measurementRun?: PublicWatchMeasurementRun | null; publicProfileUrl?: string | null; resultUrl?: string };
 
@@ -26,7 +29,30 @@ function panelDescription(watch: { latest: { panel: { kind: PromptPanelKind } } 
 export function WatchClient() {
   const params = useSearchParams();
   const sample = params.get("sample") === "1";
-  const token = params.get("token") || "";
+  const urlToken = params.get("token") || "";
+  const [sessionToken, setSessionToken] = useState("");
+
+  useEffect(() => {
+    if (sample || urlToken) return;
+    let stale = false;
+    fetch("/api/auth/session", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!stale && data?.authenticated && data?.user?.watchToken) {
+          setSessionToken(data.user.watchToken);
+        }
+      })
+      .catch(() => {});
+    return () => { stale = true; };
+  }, [sample, urlToken]);
+
+  const token = urlToken || sessionToken;
+  return <WatchViewClient key={readoutIdentity(sample, token)} sample={sample} token={token} />;
+}
+
+function WatchViewClient({ sample, token }: { sample: boolean; token: string }) {
+  const lifecycle = useRef<AbortController | null>(null);
+  const emailRevision = useRef(0);
   const [watch, setWatch] = useState<WatchView | null>(sample ? toPublicWatch(sampleWatch()) : null);
   const [loading, setLoading] = useState(!sample);
   const [error, setError] = useState("");
@@ -35,156 +61,143 @@ export function WatchClient() {
   const [savingEmail, setSavingEmail] = useState(false);
   const [emailStatus, setEmailStatus] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [bookmarkStatus, setBookmarkStatus] = useState("");
   const profileUrl = sample ? "/ai/company/aoba-souzoku?sample=1" : watch?.publicProfileUrl;
-  const profileDestination = profileUrl || watch?.resultUrl || "/";
+  const profileDestination = profileUrl || safeReadoutResultHref(watch?.resultUrl, watch?.baseline.scanId);
 
   useEffect(() => {
-    if (sample) return;
-    if (!token) { setError("Watch tokenがありません。"); setLoading(false); return; }
+    const controller = new AbortController();
+    lifecycle.current = controller;
+    if (sample) return () => controller.abort();
+    if (!token) { setError("ログインが必要です。Googleアカウントまたはメールアドレスでログインしてアクセスしてください。"); setLoading(false); return () => controller.abort(); }
     let cancelled = false;
-    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" })
+    fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
         const data = await response.json() as WatchView & { error?: string };
         if (!response.ok) throw new Error(data.error || "Watchを取得できませんでした。");
         if (!cancelled) {
           setWatch(data);
-          if (data.maskedEmail) setNotificationEmail(data.maskedEmail);
         }
       })
       .catch((caught) => { if (!cancelled) setError(caught instanceof Error ? caught.message : "Watchを取得できませんでした。"); })
       .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+    return () => { cancelled = true; controller.abort(); };
   }, [sample, token]);
 
   const measurementStatus = watch?.measurementRun?.status;
   useEffect(() => {
     if (sample || !token || !measurementStatus || !["pending", "running"].includes(measurementStatus)) return;
     let cancelled = false;
+    let busy = false;
+    const controller = new AbortController();
     const poll = async () => {
+      if (busy) return;
+      busy = true;
+      const requestedEmailRevision = emailRevision.current;
       try {
-        const response = await fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store" });
+        const response = await fetch(`/api/watch?token=${encodeURIComponent(token)}`, { cache: "no-store", signal: controller.signal });
         const data = await response.json() as WatchView & { error?: string };
         if (!response.ok) throw new Error(data.error || "Watchを取得できませんでした。");
-        if (!cancelled) setWatch(data);
+        if (!cancelled) {
+          setWatch((previous) => previous && requestedEmailRevision !== emailRevision.current ? { ...data, emailConfigured: previous.emailConfigured, maskedEmail: previous.maskedEmail } : data);
+          setError("");
+        }
       } catch (caught) {
         // Keep the current result visible while a transient poll fails. The
         // next interval can recover without interrupting the measurement.
         if (!cancelled) setError(caught instanceof Error ? caught.message : "Watchを取得できませんでした。");
+      } finally {
+        busy = false;
       }
     };
     const interval = window.setInterval(poll, 4_000);
-    return () => { cancelled = true; window.clearInterval(interval); };
+    return () => { cancelled = true; controller.abort(); window.clearInterval(interval); };
   }, [measurementStatus, sample, token]);
 
   const change = useMemo(() => {
     if (!watch) return null;
-    const comparable = watch.takeBackShare.status === "available";
-    const baselineLost = new Set(watch.baseline.lostPrompts.map((item) => item.promptId));
-    const latestLost = new Set(watch.latest.lostPrompts.map((item) => item.promptId));
-    const baselineCitations = new Set(watch.baseline.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
-    const latestCitations = new Set(watch.latest.observations.flatMap((item) => item.citations.map((citation) => citation.url)));
-
-    // 新たに候補入りした質問一覧（初回は候補外だったが今回含まれた質問）
-    const newlyWonPromptIds = comparable ? [...baselineLost].filter((promptId) => !latestLost.has(promptId)) : [];
-    const newlyWonPrompts = (watch.latest.prompts || []).filter((p) => newlyWonPromptIds.includes(p.id));
-
-    // 今回新しく候補外になった質問一覧
-    const newlyLostPromptIds = [...latestLost].filter((promptId) => !baselineLost.has(promptId));
-    const newlyLostPrompts = (watch.latest.prompts || []).filter((p) => newlyLostPromptIds.includes(p.id));
-
-    // 比較候補のカバレッジ変動計算（baseline vs latest）
-    const competitorMovements = watch.latest.competitors.slice(0, 5).map((latestComp) => {
-      const baseComp = watch.baseline.competitors.find((c) => c.name === latestComp.name);
-      const baseCov = baseComp ? baseComp.coverage : latestComp.coverage;
-      const diff = latestComp.coverage - baseCov;
-      return {
-        name: latestComp.name,
-        baselineCoverage: baseCov,
-        latestCoverage: latestComp.coverage,
-        diff,
-      };
-    });
-
+    const comparison = compareMeasurementReadouts(watch.baseline, watch.latest, watch.takeBackShare.status === "available");
     return {
-      comparable,
-      baselineShortlisted: Math.max(0, watch.baseline.panel.promptCount - baselineLost.size),
-      latestShortlisted: Math.max(0, watch.latest.panel.promptCount - latestLost.size),
-      baselineLost: baselineLost.size,
-      latestLost: latestLost.size,
-      newPromptWins: newlyWonPromptIds.length,
-      newPromptLosses: newlyLostPromptIds.length,
-      newCitations: [...latestCitations].filter((url) => !baselineCitations.has(url)).length,
-      baselineCitationCount: baselineCitations.size,
-      latestCitationCount: latestCitations.size,
-      newlyWonPrompts,
-      newlyLostPrompts,
-      competitorMovements,
+      ...comparison,
+      baselineShortlisted: comparison.before.included,
+      latestShortlisted: comparison.after.included,
+      baselineLost: comparison.before.excluded,
+      latestLost: comparison.after.excluded,
+      newPromptWins: comparison.wins.length,
+      newPromptLosses: comparison.losses.length,
+      newCitations: comparison.addedCitations,
+      newlyWonPrompts: (watch.latest.prompts || []).filter((p) => comparison.wins.includes(p.id)),
+      newlyLostPrompts: (watch.latest.prompts || []).filter((p) => comparison.losses.includes(p.id)),
+      competitorMovements: comparison.competitorMovements.filter((row) => row.name !== watch.latest.discovery.brandName),
       takeBackShare: watch.takeBackShare,
     };
   }, [watch]);
 
   async function manageBilling() {
     if (sample) return;
+    const signal = lifecycle.current!.signal;
     setCheckoutBusy(true); setError("");
     try {
       const endpoint = watch?.paid ? "/api/billing/portal" : "/api/billing/checkout";
-      const response = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
+      const response = await fetch(endpoint, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }), signal });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || (watch?.paid ? "契約管理を開けませんでした。" : "契約画面を開けませんでした。"));
-      window.location.assign(data.url);
-    } catch (caught) { setError(caught instanceof Error ? caught.message : (watch?.paid ? "契約管理を開けませんでした。" : "契約画面を開けませんでした。")); }
-    finally { setCheckoutBusy(false); }
+      if (!signal.aborted) window.location.assign(data.url);
+    } catch (caught) { if (!signal.aborted) setError(caught instanceof Error ? caught.message : (watch?.paid ? "契約管理を開けませんでした。" : "契約画面を開けませんでした。")); }
+    finally { if (!signal.aborted) setCheckoutBusy(false); }
   }
 
   async function saveNotificationEmail(e: FormEvent) {
     e.preventDefault();
+    await setNotification(notificationEmail);
+  }
+
+  async function setNotification(email: string) {
     if (!token || sample) return;
+    const signal = lifecycle.current!.signal;
     setSavingEmail(true);
     setEmailStatus("");
     try {
-      const response = await fetch("/api/watch", {
-        method: "PATCH",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ token, email: notificationEmail }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "設定に失敗しました。");
-      setEmailStatus("通知先メールアドレスを保存しました。");
+      const data = await updateReadoutEmail(token, email, signal);
+      if (signal.aborted) return;
+      emailRevision.current += 1;
+      setEmailStatus(data.emailConfigured ? "通知先メールアドレスを保存しました。" : "メール通知を解除しました。");
+      setNotificationEmail("");
       setShowEmailForm(false);
-      setWatch((prev) => (prev ? { ...prev, emailConfigured: Boolean(data.email), maskedEmail: data.email || null } : prev));
+      setWatch((prev) => (prev ? { ...prev, ...data } : prev));
     } catch (caught) {
-      setEmailStatus(caught instanceof Error ? caught.message : "更新できませんでした。");
+      if (!signal.aborted) setEmailStatus(caught instanceof Error ? caught.message : "更新できませんでした。");
     } finally {
-      setSavingEmail(false);
+      if (!signal.aborted) setSavingEmail(false);
     }
   }
 
-  if (loading) return <div className="full-loading">AI回答の測定結果を読み込んでいます。</div>;
-  if (!watch || !change) return <main className="empty-page"><SiteHeader compact /><div className="shell empty-content"><h1>測定結果の変化を表示できません。</h1><p>{error}</p><Link className="button button-primary" href="/">無料診断へ戻る</Link></div></main>;
+  if (loading) return <div className="full-loading">AI推薦状況を読み込んでいます。</div>;
+  if (!watch || !change) return <main className="empty-page"><SiteHeader compact /><div className="shell empty-content"><h1>AI推薦状況の変化を表示できません。</h1><p>{error}</p><Link className="button button-primary" href="/">無料診断へ戻る</Link></div></main>;
 
   const primaryLoss = watch.latest.lostPrompts[0];
-  const stopped = ["expired", "cancelled"].includes(watch.status);
+  const stopped = ["expired", "cancelled", "past_due"].includes(watch.status);
   const measurementRun = watch.measurementRun;
-  const measurementActive = Boolean(measurementRun && ["pending", "running"].includes(measurementRun.status));
+  const measurementActive = !stopped && Boolean(measurementRun && ["pending", "running"].includes(measurementRun.status));
   const statusText = watch.status === "expired" ? "無料期間は終了しました。自動課金はされていません。" : watch.status === "cancelled" ? "有料の追跡は解約済みです。過去の結果は確認できます。" : watch.status === "past_due" ? "支払いの確認が必要です。" : "";
-  const meaningfulChanges = [change.newPromptWins > 0, change.newPromptLosses > 0, change.newCitations > 0, change.takeBackShare.value !== null].filter(Boolean).length;
-  const changeHeadline = change.takeBackShare.value !== null
-    ? `初回に他社候補が先に含まれた${change.takeBackShare.eligiblePromptCount}問のうち、${change.takeBackShare.recoveredPromptCount}問で候補入りを確認しました。`
+  const meaningfulChanges = change.meaningful;
+  const changeHeadline = !change.comparable
+    ? "比較できませんでした。"
     : change.newPromptWins > 0
-    ? `${change.newPromptWins}問で、自社が新しく候補に入りました。`
+    ? `${change.newPromptWins}問で、自社が新しく推薦候補に入りました。${change.newPromptLosses > 0 ? ` ${change.newPromptLosses}問で、自社が推薦候補から外れました。` : ""}`
     : change.newPromptLosses > 0
-      ? `${change.newPromptLosses}問で、自社が候補から外れました。`
-      : change.newCitations > 0
-        ? `${change.newCitations}件のページが、新しく参照されました。`
-        : "今回は、候補入りの大きな変化はありませんでした。";
-  const changeDescription = change.takeBackShare.value !== null
-    ? `${change.takeBackShare.note} 測定日時：${formatDate(watch.latest.measuredAt)}`
-    : change.takeBackShare.note;
-  const visibleChangePack = watch.changePack || null;
+      ? `${change.newPromptLosses}問で、自社が推薦候補から外れました。`
+      : change.answerChanged ? "AI別の候補入り・比較候補の回答に変化がありました。"
+        : meaningfulChanges ? "AI回答の取得状況・参照元URLに変化がありました。"
+          : "今回の測定では、推薦候補入りの変化はありませんでした。";
+  const changeDescription = `${change.note} 初回（基準）：${formatDate(watch.baseline.measuredAt)}／今回：${formatDate(watch.latest.measuredAt)}`;
+  const visibleChangePack = watch.changePack?.items.length ? watch.changePack : null;
+  const resultHref = safeReadoutResultHref(watch.resultUrl, watch.baseline.scanId);
+  const headerContext = !sample ? { resultHref, profileHref: `/profile/manage?watchToken=${encodeURIComponent(token)}`, watchHref: `/watch?token=${encodeURIComponent(token)}` } : undefined;
 
   return (
     <main className="watch-page">
-      <SiteHeader compact />
+      <SiteHeader compact context={headerContext} />
 
       {/* 画面現在地（知的極細サブバー） */}
       <div className="report-subbar" style={{ background: "#ffffff", borderBottom: "1px solid var(--border-subtle, #e2e8f0)", padding: "8px 0", fontSize: "0.78rem" }}>
@@ -199,12 +212,12 @@ export function WatchClient() {
             </span>
             {sample ? (
               <span style={{ background: "#f1f5f9", color: "#0f172a", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: "3px", fontSize: "0.7rem", fontWeight: 600 }}>
-                設計見本（架空データ）
+                見本
               </span>
             ) : null}
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "12px", fontSize: "0.74rem", color: "var(--text-muted, #64748b)" }}>
-            <span>{sample ? "※ 推移体験用サンプル" : watch.paid ? "有料契約中" : "14日間無料トライアル中"}</span>
+            <span>{sample ? "見本です。実際の公開・契約は行われません。" : watch.status === "trial" ? "14日間無料トライアル中" : watch.status === "expired" ? "無料トライアル終了" : watch.status === "cancelled" ? "解約済み" : watch.status === "past_due" ? "支払い確認が必要" : watch.paid ? "有料契約中" : "契約状況をご確認ください"}</span>
           </div>
         </div>
       </div>
@@ -216,10 +229,10 @@ export function WatchClient() {
             <div>
               <div className="watch-badge-wrap">
                 <span className="pill-badge">週次自動モニタリング</span>
-                <span className="pill-badge pill-badge-outline">{panelDescription(watch)} 毎週再測定</span>
+                <span className="pill-badge pill-badge-outline">{stopped ? "自動見守り停止中" : `${panelDescription(watch)} 毎週自動見守り`}</span>
               </div>
               <h1>{watch.latest.discovery.brandName}</h1>
-              <p>{watch.latest.panel.promptCount}問の固定パネルを同じ条件で毎週再測定し、AI回答の変化と比較候補の動きを記録しています。</p>
+              <p>{stopped ? "自動見守りは停止中です。保存済みの測定結果を表示しています。" : `${watch.latest.panel.promptCount}問の固定パネルを同じ条件で毎週再測定し、AI回答の変化と比較候補の動きを記録しています。`}</p>
             </div>
             <div className="watch-header-actions">
               <Link
@@ -228,12 +241,12 @@ export function WatchClient() {
                 target="_blank"
                 rel="noreferrer"
               >
-                {profileUrl ? "公開情報参照ページを確認 ↗" : "診断結果から公開情報を確認 ↗"}
+                {profileUrl ? "配備したAI推薦データを確認 ↗" : "診断結果から公開情報を確認 ↗"}
               </Link>
               {stopped ? (
                 <span className="watch-status stopped"><i />停止中</span>
               ) : (
-                <span className="watch-status"><i />次回測定 {formatDate(watch.nextRunAt)}</span>
+                <span className="watch-status"><i />次回巡回 {formatDate(watch.nextRunAt)}</span>
               )}
               {sample ? (
                 <Link className="button button-primary" href="/pricing">
@@ -250,7 +263,22 @@ export function WatchClient() {
         </div>
       </section>
 
+      <ValueProofBoard key={readoutIdentity(sample, token)} sample={sample} token={token} revision={watch.updatedAt} />
+
       {/* 任意メール通知設定（防犯ベル通知枠） */}
+      {!sample ? <section className="shell" aria-label="見守り管理URLの保存" style={{ marginTop: "14px" }}>
+        <p>このページをブックマークしてください。メール未登録でも、保存した管理URLから見守りに戻れます。「管理」ページではこのURLを使って開けます。管理URLを知る人は設定を変更できるため、共有しないでください。</p>
+        <button type="button" onClick={async () => {
+          const signal = lifecycle.current!.signal;
+          try {
+            await navigator.clipboard.writeText(new URL(`/watch?token=${encodeURIComponent(token)}`, window.location.origin).href);
+            if (!signal.aborted) setBookmarkStatus("管理URLをコピーしました。安全な場所に保存してください。");
+          } catch {
+            if (!signal.aborted) setBookmarkStatus("コピーできませんでした。ブラウザのブックマーク機能でこのページを保存してください。");
+          }
+        }}>管理URLをコピー</button>
+        {bookmarkStatus ? <p role="status">{bookmarkStatus}</p> : null}
+      </section> : null}
       <section className="shell" style={{ margin: "14px auto 0" }}>
         <div style={{ background: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "6px", padding: "12px 18px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px", fontSize: "0.82rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
@@ -259,19 +287,21 @@ export function WatchClient() {
             </span>
             {watch.emailConfigured && !showEmailForm ? (
               <span style={{ color: "#334155" }}>
-                速報メール通知先: <strong style={{ color: "#0f172a" }}>{watch.maskedEmail || notificationEmail}</strong>（測定結果の変化を通知中）
+                AI推薦状況の変化通知先: <strong style={{ color: "#0f172a" }}>{watch.maskedEmail || notificationEmail}</strong>（{stopped ? "通知停止中" : "AI推薦状況の変化を通知中"}）
               </span>
             ) : (
               <span style={{ color: "#64748b" }}>
                 AI回答・参照元URL・候補入り状況に変化があった時だけ、メールでお知らせします（登録不要・いつでも解除可能）。
               </span>
             )}
-            {emailStatus ? <span style={{ color: "#16a34a", fontWeight: 600 }}>{emailStatus}</span> : null}
+            {emailStatus ? <span role="status" style={{ fontWeight: 600 }}>{emailStatus}</span> : null}
+            {sample ? <span>見本では通知設定を変更できません。</span> : watch.emailConfigured ? <button type="button" disabled={savingEmail} onClick={() => void setNotification("")}>メール通知を解除する</button> : null}
           </div>
 
           {!showEmailForm ? (
             <button
               type="button"
+              disabled={sample || savingEmail}
               onClick={() => setShowEmailForm(true)}
               style={{ background: "#f8fafc", border: "1px solid #cbd5e1", color: "#334155", padding: "5px 12px", borderRadius: "4px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
             >
@@ -281,6 +311,8 @@ export function WatchClient() {
             <form onSubmit={saveNotificationEmail} style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
               <input
                 type="email"
+                name="notificationEmail"
+                aria-label="通知先メールアドレス"
                 placeholder="you@company.jp"
                 value={notificationEmail}
                 onChange={(e) => setNotificationEmail(e.target.value)}
@@ -332,8 +364,8 @@ export function WatchClient() {
           </div>
           <div className="watch-change-hero-state">
             <span className="watch-change-state-dot" aria-hidden="true" />
-            <strong>{meaningfulChanges > 0 ? "測定結果に変化" : "大きな変化なし"}</strong>
-            <small>{meaningfulChanges > 0 ? "同じ条件で差分を確認" : "次回の測定を待機"}</small>
+            <strong>{!change.comparable ? "比較不可" : meaningfulChanges ? "測定結果に変化" : "変化なし"}</strong>
+            <small>{!change.comparable ? "測定条件・取得状況をご確認ください" : meaningfulChanges ? "同じ条件で差分を確認" : stopped ? "自動見守り停止中" : "次回の測定を待機"}</small>
           </div>
         </div>
       </section>
@@ -342,23 +374,23 @@ export function WatchClient() {
       <section className="watch-summary shell">
         <div>
           <span>自社が候補に含まれた質問</span>
-          <strong>{change.baselineShortlisted} <b>→ {change.latestShortlisted}問</b></strong>
-          <small>{watch.latest.panel.promptCount}問中</small>
+          <strong>{change.after.label}</strong>
+          <small>{change.comparable ? `初回（基準）${change.baselineShortlisted}問 → 今回${change.latestShortlisted}問（成功回答の多数決）` : "比較不可・今回の取得成功分のみ表示"}</small>
         </div>
         <div>
           <span>自社が候補外だった質問</span>
-          <strong>{change.baselineLost} <b>→ {change.latestLost}問</b></strong>
-          <small>{change.newPromptWins ? `前回候補外から変化 ${change.newPromptWins}問` : "候補外の質問"}</small>
+          <strong>{change.after.successful ? `${change.latestLost} / ${change.after.successful}問` : "未測定"}</strong>
+          <small>{change.newPromptWins ? `初回（基準）候補外から変化 ${change.newPromptWins}問` : "候補外の質問"}</small>
         </div>
         <div>
           <span>参照元URLの件数</span>
-          <strong>{change.baselineCitationCount} <b>→ {change.latestCitationCount}件</b></strong>
-          <small>{change.newCitations ? `新しく確認 ${change.newCitations}件` : "取得した回答の参照元"}</small>
+          <strong>{change.comparable ? <>{change.baselineCitationCount} <b>→ {change.latestCitationCount}件</b></> : "比較不可"}</strong>
+          <small>{!change.comparable ? "取得状況・測定条件が一致せず比較不可" : change.newCitations ? `新しく確認 ${change.newCitations}件` : "取得した回答の参照元"}</small>
         </div>
         <div>
           <span>候補回復率（補助指標）</span>
-          <strong><b>{change.takeBackShare.value === null ? "—" : `${change.takeBackShare.value}%`}</b></strong>
-          <small>{change.takeBackShare.value === null ? change.takeBackShare.note : `${change.takeBackShare.recoveredPromptCount}/${change.takeBackShare.eligiblePromptCount}問を回復`}</small>
+          <strong><b>{!change.comparable || change.takeBackShare.value === null ? "—" : `${change.takeBackShare.value}%`}</b></strong>
+          <small>{!change.comparable || change.takeBackShare.value === null ? change.note : `${change.takeBackShare.recoveredPromptCount}/${change.takeBackShare.eligiblePromptCount}問を回復`}</small>
         </div>
       </section>
 
@@ -371,7 +403,7 @@ export function WatchClient() {
         </table></div>}
         <p>今回：{formatDate(watch.northStar.measuredAt)}{watch.northStar.baselineMeasuredAt ? `／基準：${formatDate(watch.northStar.baselineMeasuredAt)}` : ""}。条件が一致しない回答は推移に含めません。</p>
       </section>
-      <ProfileAutomationControls scanId={new URL(watch.resultUrl || "/result", "https://rovan.invalid").searchParams.get("id") || watch.baseline.scanId} watchToken={token} sample={sample} />
+      <ProfileAutomationControls scanId={new URL(resultHref, "https://rovan.invalid").searchParams.get("id") || watch.baseline.scanId} watchToken={token} sample={sample} />
       <ExecutiveReferralCard />
       {/* 今週の週次モニタリングタイムライン */}
       <section className="watch-section shell" style={{ marginBottom: "24px" }}>
@@ -392,7 +424,7 @@ export function WatchClient() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "18px" }}>
             <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em" }}>1. 比較候補の変化</span>
+              <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em" }}>1. 競合のAI推薦状況</span>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "#0f172a", margin: "6px 0 4px" }}>
                 保存済みの前後クロール差分はありません
               </strong>
@@ -402,12 +434,16 @@ export function WatchClient() {
             </div>
 
             <div style={{ background: "#f0f9ff", padding: "16px", borderRadius: "8px", border: "1px solid #bae6fd" }}>
-                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. 情報補強の実行記録</span>
+                <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "#0284c7", textTransform: "uppercase", letterSpacing: "0.05em" }}>2. Rovanの自動対処</span>
               <strong style={{ display: "block", fontSize: "0.92rem", color: "#0369a1", margin: "6px 0 4px" }}>
-                {watch.autoActions?.[0]?.summary || "公開プロフィールへの変更候補はありません"}
+                {watch.autoActions?.[0]?.status === "applied" ? "AI推薦データを自動更新しました。" : watch.autoActions?.[0]?.status === "planned" ? "更新案を作成しました。まだ公開には反映していません。" : watch.autoActions?.[0]?.summary || "公開プロフィールへの変更候補はありません"}
               </strong>
+              {watch.autoActions?.[0] ? <p style={{ fontSize: "0.76rem", color: "#0284c7" }}>
+                保存済みの対処記録（過去の更新・案を含みます）<br />
+                {watch.autoActions[0].status === "applied" ? `実行日時: ${watch.autoActions[0].executedAt || "記録なし"}` : `案の作成日時: ${watch.autoActions[0].plannedAt || "記録なし"}`}
+              </p> : null}
               <p style={{ margin: 0, fontSize: "0.76rem", color: "#0284c7", lineHeight: 1.5 }}>
-                反映済みの更新と、未反映の案を区別します。自動更新を許可した範囲は週ごとの承認なしで実行します。
+                {stopped ? "保存済みの更新・案を表示しています。見守り停止中は週次の自動更新を実行しません。" : "反映済みの更新と、未反映の案を区別します。自動更新を許可した範囲は週ごとの承認なしで実行します。"}
               </p>
             </div>
 
@@ -417,7 +453,7 @@ export function WatchClient() {
                 {watch.autoActionImpacts?.[0]?.summary || "同じ条件での再測定結果を記録しています"}
               </strong>
               <p style={{ margin: 0, fontSize: "0.76rem", color: "#166534", lineHeight: 1.5 }}>
-                次週も同じパネル・条件でAI回答の変化を記録します。
+                {stopped ? "自動見守りは停止中です。次回の測定は予定されていません。" : "次週も同じパネル・条件でAI回答の変化を記録します。"}
               </p>
             </div>
           </div>
@@ -462,7 +498,7 @@ export function WatchClient() {
               </strong>
             </div>
             <div style={{ background: "#f8fafc", padding: "14px", borderRadius: "8px", border: "1px solid #e2e8f0", textAlign: "center" }}>
-              <span style={{ fontSize: "0.72rem", color: "#64748b" }}>公開反映回数（承認済み）</span>
+              <span style={{ fontSize: "0.72rem", color: "#64748b" }}>AI推薦データの自動更新（公開反映回数）</span>
               <strong style={{ display: "block", fontSize: "1.4rem", color: "#0f172a", marginTop: "4px" }}>
                 {watch.monthlyReport.profileUpdateCount}回
               </strong>
@@ -501,12 +537,12 @@ export function WatchClient() {
       <section className="watch-chart-section">
         <div className="shell">
           <div className="section-heading-simple">
-            <p className="overline">週次推移ダッシュボード</p>
-            <h2>AI回答の変化と比較候補の推移。</h2>
-            <p>前回と同じ{watch.latest.panel.promptCount}問・同じ測定条件で、観測結果の変化を確認できます。</p>
+            <p className="overline">AI推薦の推移レポート</p>
+            <h2>AI推薦枠の獲得と、ライバルとの比較</h2>
+            <p>{change.comparable ? `初回（基準）と同じ${watch.latest.panel.promptCount}問・同じ測定条件で、観測結果の変化を確認できます。` : `比較できませんでした。${change.note}`}</p>
           </div>
 
-          <div className="watch-trend-cards-grid">
+          {change.comparable ? <div className="watch-trend-cards-grid">
             <div className="watch-trend-card trend-card-primary">
               <div className="trend-card-head">
                 <span className="trend-tag">候補回復率（補助指標）</span>
@@ -533,7 +569,7 @@ export function WatchClient() {
                   <span className="trend-arrow">→</span>
                   <span className="trend-num-latest text-green">{change.latestLost}問</span>
                 </div>
-                <p className="trend-desc">前回と今回で、自社が候補に含まれなかった質問の件数を比較しています。</p>
+                <p className="trend-desc">初回（基準）と今回で、自社が候補に含まれなかった質問の件数を比較しています。</p>
               </div>
             </div>
 
@@ -556,12 +592,12 @@ export function WatchClient() {
                     rel="noreferrer"
                     style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0284c7", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
                   >
-                    {profileUrl ? "公開情報参照ページを確認 ↗" : "診断結果から公開情報を確認 ↗"}
+                    {profileUrl ? "配備したAI推薦データを確認 ↗" : "診断結果から公開情報を確認 ↗"}
                   </Link>
                 </div>
               </div>
             </div>
-          </div>
+          </div> : <p>比較値は未確定です。{change.note}</p>}
         </div>
       </section>
 
@@ -569,7 +605,7 @@ export function WatchClient() {
       <section className="watch-section shell" style={{ paddingTop: 0 }}>
         <div className="section-heading-simple">
           <p className="overline">候補入りの変化</p>
-          <h2>前回と今回で、候補入り状況は変わったか。</h2>
+          <h2>初回（基準）と今回で、候補入り状況は変わったか。</h2>
           <p>同じ質問・同じ測定条件で、今回新しく自社が候補に含まれた質問を記録しています。</p>
         </div>
 
@@ -577,7 +613,7 @@ export function WatchClient() {
           <div className="won-prompts-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span className="won-icon">✓</span>
-              <strong>前回候補外から今回候補に含まれた質問（{change.newlyWonPrompts.length}件）</strong>
+              <strong>初回候補外から今回候補に含まれた質問（{change.comparable ? `${change.newlyWonPrompts.length}件` : "未確定"}）</strong>
             </div>
           </div>
           <div className="won-prompts-list">
@@ -585,7 +621,7 @@ export function WatchClient() {
               <div key={prompt.id} className="won-prompt-item">
                 <div className="won-item-head">
                   <span className="won-item-num">変化 {idx + 1}</span>
-                  <span className="won-tag-status">前回は自社が候補外 → 今回は候補に含まれた</span>
+                  <span className="won-tag-status">初回（基準）は自社が候補外 → 今回は候補に含まれた</span>
                 </div>
                 <p className="won-prompt-text">「{prompt.text}」</p>
                 <div className="won-item-foot">
@@ -595,14 +631,14 @@ export function WatchClient() {
                   </p>
                 </div>
               </div>
-            )) : <p style={{ color: "#64748b" }}>今回、新しく候補に入った質問はありません。</p>}
+            )) : <p style={{ color: "#64748b" }}>{change.comparable ? "今回、新しく候補に入った質問はありません。" : `候補入りの変化は未確定です。${change.note}`}</p>}
           </div>
         </div>
 
         {/* 次回に確認する残存課題 */}
-        {primaryLoss ? (
+        {change.comparable && primaryLoss ? (
           <div className="watch-current-loss">
-            <small>次回の確認対象（今回も自社が候補に入らなかった質問）</small>
+            <small>次回の改善対象（今回も自社が推薦候補に入らなかった質問）</small>
             <strong>「{primaryLoss.prompt}」</strong>
             <span>今回の回答で先に含まれた候補: {primaryLoss.winner || "特定できませんでした"}</span>
           </div>
@@ -613,16 +649,16 @@ export function WatchClient() {
       <section className="watch-section shell watch-competitor-monitor">
         <div className="section-heading-simple">
           <p className="overline">回答に含まれた候補</p>
-          <h2>候補入り率と、前回からの変化。</h2>
+          <h2>候補入り率と、初回（基準）からの変化。</h2>
           <p>毎週の測定で、AI回答に含まれた対象企業と比較候補の変化を記録しています。実際の顧客シェアや市場順位ではありません。</p>
         </div>
 
-        <div className="watch-comp-table-wrapper">
+        {change.comparable ? <div className="watch-comp-table-wrapper">
           <table className="watch-comp-table">
             <thead>
               <tr>
                 <th style={{ width: "35%" }}>会社・事業者名</th>
-                <th style={{ width: "20%" }}>前回の候補入り率</th>
+                <th style={{ width: "20%" }}>初回（基準）の候補入り率</th>
                 <th style={{ width: "20%" }}>今回の候補入り率</th>
                 <th style={{ width: "25%" }}>変動状況</th>
               </tr>
@@ -655,7 +691,7 @@ export function WatchClient() {
                   <td>{comp.baselineCoverage}%</td>
                   <td>{comp.latestCoverage}%</td>
                   <td>
-                    {comp.diff < 0 ? (
+                    {comp.newcomer ? <span className="badge-warning">新規候補</span> : comp.departed ? <span className="badge-loss">今回の回答では未出現</span> : comp.diff === null ? <span>比較不可</span> : comp.diff < 0 ? (
                         <span className="badge-loss">{comp.diff}% 低下</span>
                     ) : comp.diff > 0 ? (
                       <span className="badge-warning">+{comp.diff}% 候補変化</span>
@@ -667,16 +703,16 @@ export function WatchClient() {
               ))}
             </tbody>
           </table>
-        </div>
+        </div> : <p>比較できませんでした。{change.note} 候補入り率の変化は未確定です。</p>}
       </section>
 
       {/* 公開情報の不足項目 */}
       <section className="watch-section watch-evidence">
         <div className="shell">
           <div className="section-heading-simple">
-            <p className="overline">公開情報の確認範囲</p>
+            <p className="overline">Rovanの自動情報補強</p>
             <h2>今回の測定で、公開情報だけでは比べにくかった項目。</h2>
-            <p>参照元ページから確認できない内容は、推測や自動作文で補いません。次回も同じ基準で確認し、変化があれば記録します。</p>
+            <p>参照元ページから確認できない内容は、推測や自動作文で補いません。{stopped ? "自動見守りは停止中です。" : "次回も同じ基準で確認し、変化があれば記録します。"}</p>
           </div>
           
           <div className="watch-input-grid">
@@ -715,8 +751,8 @@ export function WatchClient() {
       {/* 公開前の変更案（Change Pack） */}
       <section className="watch-section shell watch-change-pack">
         <div className="section-heading-simple">
-          <p className="overline">公開前の変更案</p>
-          <h2>参照元ページを確認するときの変更案。</h2>
+          <p className="overline">自動生成された改善文面</p>
+          <h2>次回の巡回で選ばれるための紹介文</h2>
           <p>今回の測定結果から、参照元ページに追加確認できる項目の案を作成します。公開プロフィールへは自動反映しません。</p>
         </div>
         
@@ -741,7 +777,7 @@ export function WatchClient() {
                 ))}
                 {item.faq.length ? (
                   <div className="draft-faq">
-                    <small>AIが読み取りやすくするためのFAQ案</small>
+                    <small>AI引用用FAQ案</small>
                     {item.faq.slice(0, 2).map((faq) => (
                       <p key={faq.question}>
                         <strong>Q. {faq.question}</strong>
@@ -757,11 +793,11 @@ export function WatchClient() {
               </article>
             ))}
           </div>
-        ) : null}
+        ) : <p role="status">未作成：公開前の変更案（Change Pack）はまだありません。</p>}
       </section>
 
       {error ? <p className="floating-error" role="alert">{error}</p> : null}
-      <SiteFooter />
+      <SiteFooter watchToken={sample ? undefined : token} />
     </main>
   );
 }

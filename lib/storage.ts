@@ -14,6 +14,7 @@ import { toPublicProfile } from "@/lib/public-profile";
 import { buildAutomatedFacts, changedFacts, mergeAutomatedFacts } from "@/lib/profile-automation";
 import { publicProfileSlug } from "@/lib/public-profile-path";
 import { durableStorageAvailable } from "@/lib/runtime-readiness";
+import { directProfileOrigin } from "@/lib/profile-origin";
 
 const globalMemory = globalThis as unknown as {
   aixNextScans?: Map<string, ScanRecord>;
@@ -33,6 +34,9 @@ const DAY_MS = 86_400_000;
 
 type PublicProfileStorageOptions = {
   sourceScanId?: string;
+  /** Trusted server Request.url; only used for unconfigured local development. */
+  requestUrl?: string;
+  requestOrigin?: string;
   expiresInDays?: number;
   /** Test/maintenance hook; regular callers should use the current time. */
   now?: Date | string;
@@ -242,6 +246,14 @@ export async function createPublicProfilePreview(draft: PublicProfileDraft, opti
     updatedAt: now.toISOString(),
     expiresAt,
   };
+  if (record.sourceScanId === "direct-creation") {
+    // Resolve the actual unique public destination before serializing artifacts.
+    const targetUrl = `${directProfileOrigin(options.requestUrl, options.requestOrigin)}/ai/company/${encodeURIComponent(record.slug)}`;
+    Object.assign(record, toPublicProfile({ ...record, targetUrl,
+      facts: record.facts.map((fact) => ({ ...fact, sourceUrl: targetUrl, provenance: "company_asserted" as const })),
+      sourcePages: [],
+    }));
+  }
   if (durable()) {
     try {
       const rows = await supabase<any[]>("aix_next_public_profiles", { method: "POST", headers: { prefer: "return=representation" }, body: JSON.stringify(publicProfileRow(record)) });
@@ -389,6 +401,18 @@ async function existingWatch(scanId: string, email: string) {
   return [...watches.values()].find((watch) => watch.scanId === scanId && watch.email === email) || null;
 }
 
+export async function findWatchesByEmail(email: string): Promise<WatchRecord[]> {
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return [];
+  if (durable()) {
+    const rows = await supabase<any[]>(`aix_next_watches?email=eq.${encodeURIComponent(normalized)}&order=created_at.desc`);
+    return (rows || []).map(watchFromRow);
+  }
+  return [...watches.values()]
+    .filter((watch) => watch.email.toLowerCase() === normalized)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
 export async function createWatch(scan: ScanRecord, email: string) {
   if (!scan.result) throw new Error("診断結果が完成していません。");
   const normalizedEmail = email.toLowerCase();
@@ -491,38 +515,103 @@ async function saveProfileAutomation(existing: PublicProfileRecord, candidate: P
   const safe = toPublicProfile({ ...candidate, updatedAt });
   const updated = { ...candidate, ...safe, updatedAt };
   if (durable()) {
-    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}&status=eq.published&updated_at=eq.${encodeURIComponent(existing.updatedAt)}&expires_at=gt.${encodeURIComponent(new Date().toISOString())}`, {
+    const rows = await supabase<any[]>(`aix_next_public_profiles?id=eq.${encodeURIComponent(existing.id)}&status=eq.${existing.status}&updated_at=eq.${encodeURIComponent(existing.updatedAt)}&expires_at=gt.${encodeURIComponent(new Date().toISOString())}`, {
       method: "PATCH", headers: { prefer: "return=representation" },
-      // Do not send status/token/expiry; an automatic update cannot republish.
-      body: JSON.stringify({ facts: updated.facts, structured_data: updated.structuredData, markdown: updated.markdown, json: updated.json, automation: updated.automation, updated_at: updatedAt }),
+      // Never send status/token: expiry renewal cannot republish a stopped page.
+      body: JSON.stringify({ facts: updated.facts, structured_data: updated.structuredData, markdown: updated.markdown, json: updated.json, automation: updated.automation, ...(candidate.expiresAt !== existing.expiresAt ? { expires_at: updated.expiresAt } : {}), updated_at: updatedAt }),
     });
     return rows[0] ? publicProfileFromRow(rows[0]) : null;
   }
   const current = publicProfiles.get(existing.id);
-  if (!current || current.status !== "published" || current.updatedAt !== existing.updatedAt || Date.parse(current.expiresAt) <= Date.now()) return null;
+  if (!current || current.status !== existing.status || !["draft", "published"].includes(current.status) || current.updatedAt !== existing.updatedAt || Date.parse(current.expiresAt) <= Date.now()) return null;
   publicProfiles.set(existing.id, updated);
   return updated;
 }
 
-export async function manageProfileAutomation(profileId: string, token: string, action: "enable" | "disable" | "rollback", watchToken = "") {
+/** A public scan id is never an ownership credential. */
+export async function getManagedPublicProfiles(capability: { profileId?: string; token?: string; watchToken?: string }) {
+  if (capability.token) {
+    const record = capability.profileId ? await getPublicProfile(capability.profileId) : await getPublicProfileByToken(capability.token);
+    return record?.token === capability.token ? [record] : [];
+  }
+  if (!capability.watchToken) return [];
+  const watch = await getWatch(capability.watchToken);
+  if (!watch) return [];
+  const records = durable()
+    ? (await supabase<any[]>(`aix_next_public_profiles?automation->>watchId=eq.${encodeURIComponent(watch.id)}`)).map(publicProfileFromRow)
+    : [...publicProfiles.values()].filter((record) => record.automation?.watchId === watch.id);
+  return records.filter((record) => (!capability.profileId || record.id === capability.profileId) && record.automation?.watchId === watch.id)
+    .map((record) => markExpired(record, new Date()));
+}
+
+/** Bind requires both existing bearer capabilities and explicit owner action. */
+export async function bindPublicProfileWatch(profileId: string, token: string, watchToken: string) {
+  const record = await getPublicProfile(profileId);
+  const watch = watchToken ? await getWatch(watchToken) : null;
+  if (!record || record.token !== token || !["draft", "published"].includes(record.status) || !watch) return null;
+  if (record.automation?.watchId && record.automation.watchId !== watch.id) return null;
+  if (record.targetUrl !== watch.latest.targetUrl || (record.sourceScanId !== "direct-creation" && record.sourceScanId !== watch.scanId)) return null;
+  return saveProfileAutomation(record, { ...record, automation: { enabled: false, grantedAt: new Date().toISOString(), ...record.automation, watchId: watch.id, measurementScanId: watch.scanId } });
+}
+
+/** Eight-day rolling lease, renewed by weekly execution, even when no facts change.
+ * Billing keeps period-end cancellations active until the paid period ends.
+ * No active contract, no fresh lease; revoked/expired records never revive.
+ */
+export async function renewBoundPublicProfiles(watchToken: string) {
+  if (!watchToken) return [];
+  if (durable()) {
+    // The RPC locks the Watch through the expiry write; no read/PATCH fallback.
+    const rows = await supabase<any[]>("rpc/aix_next_renew_public_profiles", { method: "POST", body: JSON.stringify({ p_watch_token: watchToken }) });
+    return rows.map(publicProfileFromRow);
+  }
+  // No await between entitlement validation and in-memory writes.
+  const watch = watches.get(watchToken);
+  if (!watch || !watch.paid || watch.status !== "active" || !watch.stripeSubscriptionId) return [];
+  const records = [...publicProfiles.values()].filter((record) => record.automation?.watchId === watch.id);
+  const renewed: PublicProfileRecord[] = [];
+  const now = new Date();
+  for (const record of records) {
+    if (record.status !== "published" || Date.parse(record.expiresAt) <= now.getTime() || !(record.automation?.maintenanceEnabled ?? record.automation?.enabled) || record.targetUrl !== watch.latest.targetUrl || (record.sourceScanId !== watch.scanId && record.sourceScanId !== "direct-creation")) continue;
+    const freeExpiresAt = record.automation.freeExpiresAt || record.expiresAt;
+    const renewalExpiresAt = new Date(now.getTime() + 8 * DAY_MS).toISOString();
+    const expiresAt = [record.expiresAt, freeExpiresAt, renewalExpiresAt].sort().at(-1)!;
+    if (record.automation.renewedAt && Date.parse(record.automation.renewedAt) > now.getTime() - DAY_MS) continue;
+    const updated = { ...record, expiresAt, updatedAt: new Date(Math.max(now.getTime(), Date.parse(record.updatedAt) + 1)).toISOString(),
+      automation: { ...record.automation, freeExpiresAt, renewalExpiresAt, renewedAt: now.toISOString() },
+    };
+    publicProfiles.set(record.id, updated);
+    renewed.push(updated);
+  }
+  return renewed;
+}
+
+export async function manageProfileAutomation(profileId: string, token: string, action: "enable" | "disable" | "rollback" | "maintain" | "stop_maintenance", watchToken = "") {
   const record = await getPublicProfile(profileId);
   if (!record || record.token !== token || record.status !== "published") return null;
-  if (action === "enable") {
+  if (action === "enable" || action === "maintain") {
     const watch = await getWatch(watchToken);
-    if (!watch || !watch.paid || watch.status !== "active" || watch.scanId !== record.sourceScanId || watch.latest.targetUrl !== record.targetUrl) return null;
-    return saveProfileAutomation(record, { ...record, automation: { ...record.automation, enabled: true, watchId: watch.id, grantedAt: new Date().toISOString() } });
+    if (!watch || !watch.paid || watch.status !== "active" || (watch.scanId !== record.sourceScanId && record.sourceScanId !== "direct-creation") || watch.latest.targetUrl !== record.targetUrl) return null;
+    if (record.automation?.watchId && record.automation.watchId !== watch.id) return null;
+    const saved = await saveProfileAutomation(record, { ...record, automation: { ...record.automation, enabled: action === "enable" ? true : record.automation?.enabled || false, maintenanceEnabled: true, watchId: watch.id, measurementScanId: watch.scanId, freeExpiresAt: record.automation?.freeExpiresAt || record.expiresAt, grantedAt: new Date().toISOString() } });
+    if (!saved) return null;
+    // A consent granted on day 29 must bridge the next weekly execution.
+    await renewBoundPublicProfiles(watchToken);
+    return getPublicProfile(profileId);
   }
   if (!record.automation) return record;
   if (action === "rollback" && !record.automation.previousFacts) return null;
   return saveProfileAutomation(record, {
     ...record,
+    ...(action === "stop_maintenance" ? { expiresAt: record.automation.freeExpiresAt || record.expiresAt } : {}),
     ...(action === "rollback" ? { facts: record.automation.previousFacts! } : {}),
-    automation: { ...record.automation, enabled: false, ...(action === "rollback" ? { previousFacts: undefined, managedFacts: record.automation.previousManagedFacts || [], previousManagedFacts: undefined, lastRunId: undefined, changedFactCount: 0 } : {}) },
+    automation: { ...record.automation, enabled: action === "stop_maintenance" ? record.automation.enabled : false, maintenanceEnabled: action === "stop_maintenance" ? false : record.automation.maintenanceEnabled ?? record.automation.enabled, ...(action === "rollback" ? { previousFacts: undefined, managedFacts: record.automation.previousManagedFacts || [], previousManagedFacts: undefined, lastRunId: undefined, changedFactCount: 0 } : {}) },
   });
 }
 
 /** Refresh only explicitly linked profiles; never guess ownership from a URL. */
 export async function refreshPublicProfileFromScan(watchToken: string, scan: ScanResult, pages: CrawledPage[]) {
+  await renewBoundPublicProfiles(watchToken);
   const watch = await getWatch(watchToken);
   if (!watch || !watch.paid || watch.status !== "active" || watch.latest.targetUrl !== scan.targetUrl) return [];
   let records: PublicProfileRecord[];
@@ -534,9 +623,9 @@ export async function refreshPublicProfileFromScan(watchToken: string, scan: Sca
   }
   const applied: PublicProfileRecord[] = [];
   for (const record of records) {
-    if (record.status !== "published" || Date.parse(record.expiresAt) <= Date.now() || !record.automation?.enabled || record.automation.watchId !== watch.id || record.sourceScanId !== watch.scanId || record.targetUrl !== scan.targetUrl) continue;
+    if (record.status !== "published" || Date.parse(record.expiresAt) <= Date.now() || !record.automation?.enabled || record.automation.watchId !== watch.id || (record.sourceScanId !== watch.scanId && record.sourceScanId !== "direct-creation") || record.targetUrl !== scan.targetUrl) continue;
     if (record.automation.lastRunId === scan.scanId) { applied.push(record); continue; }
-    const managedFacts = buildAutomatedFacts(record, pages);
+    const managedFacts = buildAutomatedFacts(record, pages, scan);
     if (!managedFacts) continue;
     const facts = mergeAutomatedFacts(record, managedFacts);
     const count = changedFacts(record.facts, facts);

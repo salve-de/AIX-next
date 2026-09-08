@@ -30,6 +30,9 @@ export const env = {
   watchPromptBatchSize: Math.min(12, Math.max(1, integer("WATCH_PROMPT_BATCH_SIZE", 8))),
   watchObservationConcurrency: Math.min(12, Math.max(1, integer("WATCH_OBSERVATION_CONCURRENCY", 9))),
   watchResumeMinutes: Math.min(60, Math.max(5, integer("WATCH_RESUME_MINUTES", 15))),
+  googleClientId: text("GOOGLE_CLIENT_ID"),
+  googleClientSecret: text("GOOGLE_CLIENT_SECRET"),
+  authSecret: text("AUTH_SECRET", text("RATE_LIMIT_SALT", "rovan-auth-secret-fallback")),
 };
 
 export function providerReadiness() {
