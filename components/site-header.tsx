@@ -15,10 +15,11 @@ export function SiteHeader({ compact = false, context }: { compact?: boolean; co
         <Brand />
         <nav className="header-nav" aria-label="主要ナビゲーション">
           {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
-          <Link href="/login" style={{ fontWeight: 600 }}>ログイン</Link>
-          <Link href="/manage">管理画面を開く</Link>
           <Link href="/pricing" title="料金プラン">
             料金プラン
+          </Link>
+          <Link href="/login" style={{ fontWeight: 600, marginLeft: "4px" }}>
+            ログイン
           </Link>
           <Link className="header-cta" href="/#scan">
             AI推薦の現状を無料診断
@@ -29,9 +30,9 @@ export function SiteHeader({ compact = false, context }: { compact?: boolean; co
           <nav aria-label="モバイルナビゲーション">
             <Link href="/#scan">AI推薦の現状を無料診断</Link>
             {links.map(([href, label]) => <Link key={label} href={href} prefetch={false}>{label}</Link>)}
+            <Link href="/pricing">料金プラン</Link>
             <Link href="/login">ログイン</Link>
             <Link href="/manage">管理画面を開く</Link>
-            <Link href="/pricing">料金プラン</Link>
           </nav>
         </details>
       </div>

@@ -1,18 +1,20 @@
 import Link from "next/link";
 import { Brand } from "@/components/brand";
 
-export function SiteFooter() {
+export function SiteFooter({ watchToken = "" }: { watchToken?: string }) {
   return (
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div className="footer-brand">
           <Brand />
-          <p>大手に埋もれず、御社の専門性でAIのおすすめ獲得を目指す。自社サイト改修なしで、公開情報の整備と継続測定を支援します。</p>
+          <p>自社サイト改修ゼロで、御社の強みを伝えるAI推薦データを配備。AIからの推薦獲得に向けて、競合診断と毎週の自動見守りを行うシステムです。</p>
         </div>
         <nav aria-label="製品">
           <strong>製品</strong>
           <Link href="/result?sample=1">結果の例</Link>
-          <Link href="/watch?sample=1">AI回答の変化</Link>
+          <Link href="/watch?sample=1">推薦の変化の見本</Link>
+          <Link href="/login">ログイン</Link>
+          <Link href="/manage">管理画面を開く</Link>
           <Link href="/pricing">料金</Link>
           <Link href="/methodology">調べ方</Link>
         </nav>
@@ -20,10 +22,8 @@ export function SiteFooter() {
           <strong>サポート</strong>
           <Link href="/privacy">プライバシー</Link>
           <Link href="/terms">利用規約</Link>
-          <Link href="/commerce">特商法表記</Link>
-          <Link href="/data-rights">データ管理</Link>
+          <Link prefetch={false} href={watchToken ? `/data-rights?token=${encodeURIComponent(watchToken)}` : "/data-rights"}>データ管理</Link>
           <Link href="/partners">パートナー制度</Link>
-          <Link href="/support">お問い合わせ</Link>
         </nav>
         <div className="footer-meta">
           <span>© 2026 Rovan</span>
