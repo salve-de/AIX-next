@@ -36,7 +36,7 @@ export function GoogleDeclineProblemSection() {
               fontFamily: "var(--font-mono, monospace)",
             }}
           >
-            AI回答時代に確認しておきたいこと
+            検索からAI相談へ：購買行動の地殻変動
           </span>
           <h2
             style={{
@@ -48,11 +48,12 @@ export function GoogleDeclineProblemSection() {
               margin: "0 0 14px",
             }}
           >
-            検索だけでなく、AIに直接相談して比較する場面もあります
+            お客さんはGoogleで探すのをやめ、AIに「どこが良い？」と直接聞く時代へ。
           </h2>
           <p style={{ fontSize: "0.92rem", color: "#475569", lineHeight: 1.75, margin: 0 }}>
-            ChatGPTなどのAIに「どこが自分に合う？」と尋ねる場面では、質問・参照元・測定時点によって表示される候補が変わります。<br />
-            ここでは、回答を測定する前に確認しておきたい3つのポイントを整理します。
+            広告や比較サイトが並ぶ検索結果よりも、中立で的確な答えをくれる生成AIへ相談する顧客が急速に増えています。<br />
+            しかし、AIが検証できる確定データがWeb上に整っていなければ、御社は候補にすら挙がらず、静かに競合や大手へ顧客が流出します。<br />
+            今、中小企業が直面している「3つの現実」を整理しました。
           </p>
         </div>
 
@@ -65,7 +66,7 @@ export function GoogleDeclineProblemSection() {
             marginBottom: "16px",
           }}
         >
-          {/* 理由 01 */}
+          {/* 現実 01 */}
           <div
             className="shadow-ambient-sm shadow-ambient-hover"
             style={{
@@ -92,21 +93,21 @@ export function GoogleDeclineProblemSection() {
                   letterSpacing: "0.05em",
                 }}
               >
-                理由 01
+                現実 01
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                比較の入口が検索だけではなくなった
+                「検索して比較する」から「AIに選んでもらう」へ
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              一部の人は検索結果だけでなく、AIに条件を伝えて候補を比較するようになっています。
+              検索順位を争う時代から、AIが最適な候補を直接選定して提案する時代へシフトしています。顧客の最初の相談窓口が、検索エンジンからChatGPTなどの対話型AIへ移行しています。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>確認点:</strong> AI経由の流入や問い合わせは、アクセス解析などで別に確認する必要があります。
+              <strong>見落としがちな盲点:</strong> 自社サイトのアクセス解析だけを見ていても、AIの推薦段階で候補から漏れて奪われた顧客には気付けません。
             </div>
           </div>
 
-          {/* 理由 02 */}
+          {/* 現実 02 */}
           <div
             className="shadow-ambient-sm shadow-ambient-hover"
             style={{
@@ -133,21 +134,21 @@ export function GoogleDeclineProblemSection() {
                   letterSpacing: "0.05em",
                 }}
               >
-                理由 02
+                現実 02
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                人向けの表示だけでは比較しにくいことがある
+                人間向けに飾ったホームページは、AIには読まれない
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              写真やデザインだけでなく、名称・分野・条件・参照元を文章と構造化データで示すと、AIや人が確認しやすくなります。
+              写真やイメージ中心の美しいデザインも、AIにとっては中身の読み取れない画像にすぎません。AIが推薦の根拠とするのは、機械が客観的に検証できる確定仕様データ（取扱分野・実績・対応条件）です。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>確認点:</strong> 掲載内容がどのページに書かれているか、参照元をたどれる状態にします。
+              <strong>構造的な課題:</strong> ホームページをいくら多額の費用でリニューアルしても、AIが解釈できる構造化データがなければ推薦対象になりません。
             </div>
           </div>
 
-          {/* 理由 03 */}
+          {/* 現実 03 */}
           <div
             className="shadow-ambient-sm shadow-ambient-hover"
             style={{
@@ -174,17 +175,17 @@ export function GoogleDeclineProblemSection() {
                   letterSpacing: "0.05em",
                 }}
               >
-                理由 03
+                現実 03
               </span>
               <strong style={{ fontSize: "0.98rem", color: "#0f172a", lineHeight: 1.4 }}>
-                回答の候補は質問ごとに変わる
+                対策を怠ると、ライバルや大手チェーンへ自動で送客される
               </strong>
             </div>
             <p style={{ fontSize: "0.84rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
-              AIは質問・参照元・モデルの更新によって異なる候補を表示します。自社が含まれるかは、同じ条件で測定して確認します。
+              AIは「客観的な根拠が明確な事業者」を優先して推薦します。御社の強みや専門性がデータ化されていない場合、AIはすでに情報の揃っている競合他社を顧客に提案し続けます。
             </p>
             <div style={{ marginTop: "auto", background: "#fef2f2", border: "1px solid #fecaca", padding: "10px 12px", borderRadius: "6px", fontSize: "0.76rem", color: "#991b1b", lineHeight: 1.5 }}>
-              <strong>確認点:</strong> 1回の回答だけで判断せず、質問パネルと測定日をそろえて推移を見ます。
+              <strong>必要な対策:</strong> AIが自社を正しく把握しているかを定期的に確認し、AIが参照できる専用データを配備・維持することが不可欠です。
             </div>
           </div>
         </div>
