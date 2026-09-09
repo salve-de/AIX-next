@@ -148,7 +148,7 @@ Failed and unconfigured provider calls reduce Measurement Completeness. They are
 The active implementation is on `feature/positioning-autopilot`, not `main`.
 
 ```bash
-git clone https://github.com/salve-de/AIX-next.git rovan
+git clone https://github.com/salve-de/rovan.git
 cd rovan
 git checkout feature/positioning-autopilot
 npm ci

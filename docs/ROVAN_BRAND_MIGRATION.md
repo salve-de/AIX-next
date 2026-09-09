@@ -20,7 +20,7 @@
 
 ## 外部設定の境界
 
-リポジトリの実体名は `salve-de/AIX-next`。リポジトリ自体のrenameは管理API権限を要する別操作であり、このコード変更はrename済みと偽らない。clone URLは動作する実在URLを保持する。
+リポジトリの実体名は `salve-de/rovan`（旧 `salve-de/AIX-next` よりGitHub CLI/API経由で2026-09-08/09に正式改名・URL更新完了。旧URLからの転送も保持）。ローカルのgit remote originも `https://github.com/salve-de/rovan.git` に同期済み。
 
 公開URLは `NEXT_PUBLIC_SITE_URL`、問い合わせは `SELLER_EMAIL`、送信元は `WATCH_FROM_EMAIL`。未所有のrovanドメイン・メールを作ったことにはしない。資料中の `rovan.example` は例示専用であり稼働URLではない。SELLER_EMAIL未設定時は既存の `/support` に案内する。Stripe管理画面の商品表示・送信ドメイン認証・DNS・外部ホスト設定・本番デプロイはコード変更だけでは完了しない。
 

@@ -1898,6 +1898,23 @@ flowchart TD
 - `npx tsc --noEmit`: TypeScript型検査エラー0件。
 - `npm run build`: Next.js全29ルートの静的生成・本番ビルド完全成功。
 
+---
+
+## 54. GitHubリポジトリの正式改名とリモート完全同期（salve-de/rovanへの移行完了）
+
+2026-09-09、GitHub上のリポジトリを旧名 `salve-de/AIX-next` から正式サービス名に完全合致する `salve-de/rovan` へリネームし、ローカル環境・設定・ドキュメントの整合性を同期完了。
+
+### 54.1 実施内容
+1. **GitHubリポジトリのリネーム**:
+   - `gh repo rename rovan -y` を実行。
+   - リポジトリURLが `https://github.com/salve-de/rovan` へ正式移行完了。旧URL（`salve-de/AIX-next`）からのアクセスはGitHub側の301リダイレクトにより保全。
+2. **ローカルGitリモートURLの同期**:
+   - `git remote set-url origin https://github.com/salve-de/rovan.git` を設定し、`git fetch origin` の疎通を確認。
+3. **リポジトリ内ドキュメントの整合性更新**:
+   - `README.md` のクローン手順を `git clone https://github.com/salve-de/rovan.git` に更新。
+   - `docs/ROVAN_BRAND_MIGRATION.md` のリポジトリ実体名に関する記述を更新。
+
+
 
 
 
