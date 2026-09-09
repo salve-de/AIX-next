@@ -1,6 +1,4 @@
 import "server-only";
-import { sendBuyingAuditAlert } from "@/lib/buying-audit-email";
-import { attachBuyingAuditDelta } from "@/lib/buying-audit-core";
 import { generateChangePack } from "@/lib/change-pack";
 import { crawlCompanySite } from "@/lib/crawler";
 import { generateBuyerPrompts } from "@/lib/discovery";
@@ -132,6 +130,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
     pages: crawl.pages,
     crawlAudit: crawl.audit,
   });
+  const { attachBuyingAuditDelta } = await import("@/lib/buying-audit-core");
   attachBuyingAuditDelta(result, previous);
   if (!result.successfulObservations) {
     await updateWatchRun(run.id, { status: "failed", error: "成功したAI観測が0件だったため公開しませんでした。" });
@@ -217,6 +216,7 @@ export async function processWatchMeasurement(watch: WatchRecord) {
   let notificationFailed = false;
   try {
     await sendWatchUpdate(updated, previous, { trialEnded: expiresAfterRun });
+    const { sendBuyingAuditAlert } = await import("@/lib/buying-audit-email");
     await sendBuyingAuditAlert(updated);
   } catch {
     notificationFailed = true;
