@@ -5,21 +5,19 @@ import { getSampleProfile } from "../lib/sample-profiles";
 
 const read = (file: string) => readFileSync(file, "utf8");
 
-test("approved marketing language is restored without replacing the product objective", () => {
+test("public product copy reflects the AI buying audit contract", () => {
   const expected: Record<string, string[]> = {
-    "app/page.tsx": ["おすすめ獲得システム", "手に入る2つの確定成果物", "専属のAI見守り体制", "明朗・適正な価格設定", "毎週の自動見守りプラン"],
-    "components/brand.tsx": ["生成AI・競合診断"],
-    "components/zero-effort-promise-section.tsx": ["社長は、本業（接客・施工・製造・経営）に100%専念してください。", "既存の自社サイトは1文字も触る必要がありません。"],
-    "components/product-visuals.tsx": ["手に入るもの 01", "手に入るもの 02", "自社専用 AI診断レポート", "AI推薦データを配備", "毎週のAI回答を自動見守り", "社長の作業", "裏側の自動処理"],
-    "app/pricing/page.tsx": ["営業マンを雇う前に。", "AI推薦・自動見守りプラン"],
-    "components/result-client.tsx": ["自社専用 AI診断レポート", "今すぐできる解決アクション", "14日間無料で試してみる（メール登録不要）"],
-    "components/site-header.tsx": ["② AI推薦データ"],
-    "components/site-footer.tsx": ["推薦の変化", "AIからの推薦獲得に向けて"],
-    "components/scan-form.tsx": ["AI推薦の現状を無料診断"],
+    "app/page.tsx": ["AI購買監査", "候補落ち", "AIの誤情報", "問題が見つかった時", "重要な変化"],
+    "app/pricing/page.tsx": ["無料AI購買監査", "AI購買Watch", "新しいAI誤情報", "新しい競合候補"],
+    "app/layout.tsx": ["AI上の候補落ち・誤情報・競合変化を監視"],
+    "components/buying-audit-panel.tsx": ["AI上の購買監査", "公式情報との明確な食い違い", "購入に近い質問の候補入り状況"],
+    "components/site-header.tsx": ["① AI購買監査", "③ 継続Watch", "無料AI購買監査"],
+    "components/site-footer.tsx": ["AI購買監査サービス", "AI購買監査の見本"],
+    "components/scan-form.tsx": ["AI購買監査を無料で開始"],
   };
   for (const [file, phrases] of Object.entries(expected)) {
     const source = read(file);
-    for (const phrase of phrases) assert.ok(source.includes(phrase), `${file}: missing approved copy ${phrase}`);
+    for (const phrase of phrases) assert.ok(source.includes(phrase), `${file}: missing current product copy ${phrase}`);
   }
 });
 
@@ -53,11 +51,14 @@ test("specific business examples are segregated fictional profiles, not invented
   }
 });
 
-test("search and machine-readable descriptions retain the same recommendation acquisition purpose", () => {
+test("search and machine-readable descriptions retain the same AI buying audit purpose", () => {
   const index = JSON.parse(read("public/ai-index.json"));
-  assert.match(index.description, /AIからの推薦獲得/);
-  assert.match(read("public/llms.txt"), /AIからの推薦獲得/);
-  assert.match(read("components/structured-data.tsx"), /AIからの推薦獲得/);
-  assert.match(read("app/layout.tsx"), /ChatGPTに、御社はおすすめされていますか？/);
+  assert.match(index.description, /AI購買監査/);
+  assert.match(index.description, /候補から落ち|公式情報と違う説明/);
+  assert.match(read("public/llms.txt"), /AI購買監査/);
+  assert.match(read("public/llms.txt"), /候補落ち|事実矛盾/);
+  assert.match(read("components/structured-data.tsx"), /AI購買監査/);
+  assert.match(read("app/layout.tsx"), /候補落ち・誤情報・競合変化/);
   assert.ok(index.limits.some((limit: string) => limit.includes("保証しない")));
+  assert.ok(index.limits.some((limit: string) => limit.includes("顧客流出")));
 });
