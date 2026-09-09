@@ -6,45 +6,45 @@ import { WATCH_MONTHLY_PRICE_LABEL, WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL, WAT
 
 export const metadata: Metadata = {
   title: "料金プラン",
-  description: "Rovanの無料AI推薦診断と、AI推薦・自動見守りプランの料金・提供範囲。",
+  description: "Rovanの無料AI購買監査と、候補落ち・AI誤情報・競合変化を継続監視するWatchプランの料金・提供範囲。",
 };
 
 const free = [
   "社名またはURL 1件の初回診断",
-  "公開情報をもとにした購入検討向け質問パネルでの比較",
-  "AI回答に自社が含まれた質問・含まれなかった質問の確認",
-  "大手ライバルが推薦された回答と、その根拠の確認",
-  "自社専用のAI推薦データ（自動下書き）",
+  "購入判断に近い質問を優先したAI観測",
+  "重要質問での候補入り・候補外と競合の確認",
+  "AI回答と公式サイトに明確な食い違いがある場合の事実照合",
+  "重要質問でAIが使った外部参照元の確認",
 ];
 
 const paid = [
-  "1日約330円（税別9,800円 / 税込10,780円）",
-  "自社サイトの改修不要・サイトをお持ちでない場合も新たな開設不要",
-  "ChatGPTなどのAIが御社をおすすめするための公開ページを常時維持",
-  "毎週の推薦状況を自動チェック（AI回答の変化を追跡）",
-  "AIの回答傾向や競合の変化に合わせた掲載情報の自動調整",
-  "月単位で利用でき、管理画面からいつでも解約可能",
+  "重要な購入前質問を継続観測",
+  "新たな候補落ち・候補入り回復を検出",
+  "新しいAI誤情報を検出",
+  "新しい競合候補・外部参照元の変化を記録",
+  "問題が見つかった時のChange Pack（対象ページ・見出し・本文・FAQ・根拠）",
+  "月単位で利用でき、管理画面から解約手続きが可能",
 ];
 
 export default function PricingPage() {
   return <MarketingShell
     eyebrow="料金プラン"
-    title="営業マンを雇う前に。1日あたり約330円、ホームページ改修不要でAI推薦の獲得と維持を自動化。"
-    lead="専門知識も、事前の準備も必要ありません。社名や店名を入力するだけで、ChatGPTなどのAIが御社をおすすめするための公開ページを開設し、毎週の推薦状況を自動で追跡します。"
+    title="AIの中で御社がどう選ばれ、どう説明されているかを継続監視。"
+    lead="まず無料診断で、重要な購入前質問の候補落ち・競合・AIの事実誤り・参照元を確認。必要な場合だけWatchを開始できます。"
   >
     <div className="pricing-compare" aria-label="料金比較">
       <div className="pricing-plan pricing-free">
         <header>
-          <p>無料診断</p>
+          <p>無料AI購買監査</p>
           <strong>¥0</strong>
-          <span>まずはAI回答の現状を確認</span>
+          <span>まずはAI上の扱われ方を確認</span>
         </header>
         <ul>{free.map((item) => <li key={item}><CheckIcon />{item}</li>)}</ul>
         <Link className="button button-secondary" href="/#scan">まずは無料で診断する <ArrowIcon /></Link>
       </div>
       <div className="pricing-plan pricing-paid">
         <header>
-          <p>AI推薦・自動見守りプラン</p>
+          <p>AI購買Watch</p>
           <strong>¥{WATCH_MONTHLY_PRICE_TAX_INCLUSIVE.toLocaleString()} <small>/月・税込</small></strong>
           <span>{WATCH_MONTHLY_PRICE_TAX_EXCLUSIVE_LABEL}</span>
         </header>
@@ -53,41 +53,42 @@ export default function PricingPage() {
         <small className="pricing-plan-note">無料診断後、料金を確認してから開始します。開始しない限り有料契約にはなりません。</small>
       </div>
     </div>
+
     <div className="pricing-value-strip" aria-label="サービスで確認できること">
       <article>
-        <small>現在</small>
-        <strong>推薦候補に入れているかを診断</strong>
-        <span>指定した質問とAI回答を記録し、自社が候補に含まれたか、どのURLが参照されたかを確認します。</span>
+        <small>候補</small>
+        <strong>どんな購入条件で候補から落ちているか</strong>
+        <span>重要な購入前質問で自社が候補に入った割合と、代わりに現れた競合を確認します。</span>
       </article>
       <article>
-        <small>整理</small>
-        <strong>専門性で選ばれる理由を伝える</strong>
-        <span>公開情報で確認できた専門分野・対応条件を参照元付きの下書きへ。一から文章を作る手間を抑えます。</span>
+        <small>正確性</small>
+        <strong>AIが自社を間違って説明していないか</strong>
+        <span>AI回答と取得できた公式サイト本文に直接の矛盾がある場合だけ、原文と公式ページを並べて確認します。</span>
       </article>
       <article>
-        <small>継続</small>
-        <strong>推薦獲得への変化を毎週追う</strong>
-        <span>同じ質問・AI・条件で、自社が候補に入ったかを比較。次に見直す情報を探します。結果は将来の推薦や売上を保証しません。</span>
+        <small>変化</small>
+        <strong>新しい異常だけを継続監視</strong>
+        <span>候補落ち、新しい誤情報、新しい競合・参照元の変化を前回と比較します。</span>
       </article>
     </div>
 
     <section className="pricing-explanation">
-      <h2>無料診断と週次測定の違い</h2>
+      <h2>無料診断とWatchの違い</h2>
       <p>
-        無料診断では、指定した質問・AI・日時の条件で、AI回答と参照URLを確認します。<br />
-        有料プランでは、同じ測定条件を毎週記録し、前回との差分を確認できます。料金は{WATCH_MONTHLY_PRICE_LABEL}です。<br />
-        Rovanは営業活動の代行サービスではなく、AIの推薦や回答を保証するサービスでもありません。
+        無料診断では、指定した質問・AI・日時の条件で、現在の候補入り・競合・参照元と、確認可能な事実不一致を調べます。<br />
+        Watchでは同じ測定パネルを継続して観測し、前回から新しく発生した重要変化を確認できます。料金は{WATCH_MONTHLY_PRICE_LABEL}です。
       </p>
       <div className="pricing-steps">
-        <div><strong>1</strong><span>URL・社名を入力</span><p>公開情報をもとに初回診断</p></div>
-        <div><strong>2</strong><span>AI推薦データを配備</span><p>内容を確認してから公開</p></div>
-        <div><strong>3</strong><span>毎週のAI回答を自動見守り</span><p>同じ条件で前回との差分を確認</p></div>
+        <div><strong>1</strong><span>URL・社名を入力</span><p>公開情報から会社・市場・購入前質問を整理</p></div>
+        <div><strong>2</strong><span>AI上の候補・説明を監査</span><p>競合、事実不一致、参照元を確認</p></div>
+        <div><strong>3</strong><span>Watchで変化を監視</span><p>問題発生時はChange Packで修正案まで整理</p></div>
       </div>
     </section>
+
     <section className="pricing-note">
-      <h2>ご契約について</h2>
-      <p>無料診断を利用しただけで有料課金は発生しません。継続測定を開始するときに料金と更新条件を確認し、Stripe Customer Portalから解約手続きを行えます。</p>
-      <p>本サービスは、指定した条件でのAI回答と公開情報を確認・整理するものです。AIの推薦、引用、検索順位、問い合わせ、契約、売上は保証しません。対象会社のサイトを自動変更することもありません。</p>
+      <h2>ご契約と測定の範囲</h2>
+      <p>無料診断を利用しただけで有料課金は発生しません。Watchを開始するときに料金と更新条件を確認し、Stripe Customer Portalから解約手続きを行えます。</p>
+      <p>Rovanは指定した質問・AI・日時における観測と公開情報の照合を行います。全利用者のAI会話、AI内部順位、実際の顧客流出を取得するものではなく、推薦、引用、問い合わせ、契約、売上を保証しません。対象会社のサイトを無断で変更することもありません。</p>
     </section>
   </MarketingShell>;
 }
