@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { ArrowIcon } from "@/components/icons";
+import { BuyingAuditLandingPreview } from "@/components/buying-audit-landing-preview";
 import { ScanForm } from "@/components/scan-form";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { HeroChatDiagnosticCard, ProductOutputPreview, ProductProcessVisual, WatchTrendVisual } from "@/components/product-visuals";
-import { VerifiedCompaniesGallery } from "@/components/verified-companies-gallery";
-import { GoogleDeclineProblemSection } from "@/components/google-decline-problem-section";
-import { ZeroEffortPromiseSection } from "@/components/zero-effort-promise-section";
 import { FREE_PANEL_SIZE } from "@/lib/prompt-panels";
 import { WATCH_MONTHLY_PRICE_LABEL } from "@/lib/pricing";
 
@@ -15,333 +12,168 @@ export default function HomePage() {
     <main className="landing-page">
       <SiteHeader />
 
-      {/* ================================================================= */}
-      {/* 1. ファーストビュー：スクロール不要・1画面完結型シングルフォーカスヒーロー */}
-      {/* ================================================================= */}
       <section className="landing-hero">
         <div className="shell landing-hero-inner">
           <div className="landing-hero-single">
             <div className="landing-hero-head-block">
-              <p className="overline">ChatGPT・生成AI おすすめ獲得システム</p>
+              <p className="overline">ChatGPT・Gemini・PerplexityのAI購買監査</p>
               <h1>
-                お客さんがChatGPTに「おすすめ」を聞いた時、<br />
-                <em>あなたの会社ではなく、大手ばかり紹介されていませんか？</em>
+                客がAIに相談した時、<br />
+                <em>御社が候補から落ちていないか、間違って説明されていないか。</em>
               </h1>
               <p className="landing-hero-lead">
-                ホームページの改修はもちろん、サイトをお持ちでない場合も新たな作成は不要です。あなた側の作業は一切ありません。<br />
-                社名や店名を入力するだけで、ChatGPTなどのAIが御社をおすすめするための公開ページを開設し、毎週の推薦状況を自動で追跡します。
+                Rovanは、購入前の重要な質問をAIで継続調査し、候補落ち・競合・AIの誤情報・参照元の変化を監視します。<br />
+                問題が見つかった時は、公式情報を根拠に「どこを何に直すか」まで整理します。
               </p>
-
             </div>
 
-            {/* 入力フォーム */}
             <div className="landing-hero-form-box" id="scan">
               <ScanForm hideExtraToggle />
             </div>
 
-            {/* 3大安心マイクロコピー（丸ボタンを排した知的なインライン表示） */}
             <div className="hero-trust-row" aria-label="サービスの特長">
               <span className="trust-item">
-                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4" /></svg>
                 URL・社名だけで開始
               </span>
               <span className="trust-sep" aria-hidden="true">•</span>
               <span className="trust-item">
-                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
-                HPの改修・開設も不要
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4" /></svg>
+                診断にサイト権限不要
               </span>
               <span className="trust-sep" aria-hidden="true">•</span>
               <span className="trust-item">
-                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M3 8.5L6.5 12L13 4" />
-                </svg>
-                完全無料（自動課金なし）
+                <svg className="trust-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4" /></svg>
+                無料診断・自動課金なし
               </span>
             </div>
 
-            {/* 調査対象AI（モデル番号なし・主要サービス名を堂々提示） */}
             <div className="hero-ai-targets-clean" aria-label="調査対象AI">
-              <span className="ai-clean-caption">調査対象AI:</span>
-              <span className="ai-clean-names">ChatGPT • Google Gemini • Perplexity</span>
+              <span className="ai-clean-caption">調査対象:</span>
+              <span className="ai-clean-names">OpenAI • Google Gemini • Perplexity</span>
             </div>
 
-            {/* 診断見本リンク */}
             <div className="hero-sample-link-wrapper">
               <Link className="hero-sample-link" href="/result?sample=1">
-                診断レポートの見本を見る <span aria-hidden="true">→</span>
+                AI購買監査の見本を見る <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ================================================================= */}
-      {/* 2. AI回答シミュレーション：一目でわかるビフォーアフター比較 */}
-      {/* ================================================================= */}
-      <section className="landing-simulation-section shell" style={{ paddingTop: "64px", paddingBottom: "64px" }}>
+      <section className="landing-deliverables-section shell" style={{ marginTop: "56px", marginBottom: "56px" }}>
         <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">AI推薦の比較イメージ</span>
-          <h2>お客さんがAIに相談した時、<br />回答はどう変わるのか？</h2>
+          <span className="pill-badge">無料診断で分かること</span>
+          <h2>「AIで見つかるか」だけではなく、<br />「どう選ばれ、どう説明されているか」まで見る。</h2>
           <p>
-            ChatGPTやGeminiなど主要AIで、見込み客が相談した場合の回答例を比較。<br />
-            お客さんの細かな条件に合う専門性で、御社が推薦候補に入る実例を比較します。以下はサンプルデータを使った表示例です。
+            重要な購入前質問を優先し、御社が候補から外れる場面、AIの説明と公式情報の食い違い、回答に使われた外部情報源をまとめます。
           </p>
         </div>
-        <div style={{ maxWidth: "880px", margin: "0 auto" }}>
-          <HeroChatDiagnosticCard />
-        </div>
-      </section>
-
-      {/* ================================================================= */}
-      {/* 3. なぜ今、こんなことが起きているのか？（理由が1秒でわかる3大危機） */}
-      {/* ================================================================= */}
-      <GoogleDeclineProblemSection />
-
-      {/* ================================================================= */}
-      {/* 3. このサービスで手に入るもの（社名を入れるだけで届く「2大成果物」） */}
-      {/* ================================================================= */}
-      <section className="landing-deliverables-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        <div className="section-head-center" style={{ marginBottom: "32px" }}>
-          <span className="pill-badge">手に入る2つの確定成果物</span>
-          <h2>社名を入力するだけで、<br />手元に届く「2大成果物」</h2>
-          <p>
-            今のホームページの改修も、専門知識も一切不要。<br />
-            「推薦の現状がわかる診断レポート」と「御社の強みをAIに伝える推薦データ」。ページは初回確認後に公開できます。
-          </p>
-        </div>
-
-        {/* 左右2大成果物プレミアムショーケース */}
-        <div style={{ marginBottom: "32px" }}>
-          <ProductOutputPreview />
-        </div>
-
-        {/* 法的免責・客観性保証の注記 */}
-        <p style={{ textAlign: "center", fontSize: "0.72rem", color: "#64748b", margin: "0 auto", maxWidth: "780px", lineHeight: 1.6 }}>
-          ※ AI回答は質問や測定時点で変わります。変化は同じ条件で比較します。
+        <BuyingAuditLandingPreview />
+        <p style={{ textAlign: "center", fontSize: "0.72rem", color: "#64748b", margin: "20px auto 0", maxWidth: "800px", lineHeight: 1.7 }}>
+          ※ AI回答は質問・提供元・測定時点で変わります。候補外を実際の顧客流出とは扱わず、公式サイトに記載がないだけで「誤情報」とは判定しません。
         </p>
       </section>
 
-      {/* ================================================================= */}
-      {/* 4. ウチの業種だとどうなる？（主要業種シミュレーション） */}
-      {/* ================================================================= */}
-      <VerifiedCompaniesGallery />
-
-      {/* ================================================================= */}
-      {/* 5. なぜ社長は何もしなくていいのか？（完全放置の理由と4ステップ） */}
-      {/* ================================================================= */}
-      <section className="landing-architecture-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        <ZeroEffortPromiseSection />
-        <div style={{ marginTop: "24px" }}>
-          <ProductProcessVisual />
+      <section className="shell" style={{ marginTop: "56px", marginBottom: "56px" }}>
+        <div className="section-head-center" style={{ marginBottom: "32px" }}>
+          <span className="pill-badge">仕組み</span>
+          <h2>社名かURLを入れた後は、<br />Rovanが調査・比較・監視する。</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px" }}>
+          {[
+            ["01", "購入前の質問を作る", "会社・商品・市場を公開情報から読み、比較・価格・用途・対象顧客など、購入判断に近い質問を優先します。"],
+            ["02", "主要AIで実測する", "同じ質問をOpenAI・Gemini・Perplexityで観測し、御社・競合・引用元を記録します。"],
+            ["03", "公式情報と照合する", "AIが料金・機能・利用条件などを明確に誤って説明している場合、公式ページの原文と並べて表示します。"],
+            ["04", "変化があれば知らせる", "候補落ち、新しい競合、新しい誤情報、参照元の変化をWatchで追い、重要な変化を通知します。"],
+          ].map(([number, title, body]) => (
+            <article key={number} style={{ border: "1px solid #e2e8f0", borderRadius: "10px", padding: "22px", background: "#fff" }}>
+              <span style={{ display: "block", fontSize: ".74rem", fontWeight: 800, color: "#64748b", marginBottom: "10px" }}>{number}</span>
+              <h3 style={{ margin: "0 0 9px", fontSize: "1rem", color: "#0f172a" }}>{title}</h3>
+              <p style={{ margin: 0, color: "#475569", fontSize: ".84rem", lineHeight: 1.75 }}>{body}</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      {/* ================================================================= */}
-      {/* 6. 継続的な安心と明朗価格（「これなら払うわ」の安心アンカー） */}
-      {/* ================================================================= */}
-      <section className="landing-watch-pricing-section shell" style={{ marginTop: "48px", marginBottom: "48px" }}>
-        {/* 毎週の見守りビジュアル */}
-        <div className="landing-watch-grid" style={{ marginBottom: "36px" }}>
-          <WatchTrendVisual />
-          <div className="section-intro">
-            <span className="pill-badge">専属のAI見守り体制</span>
-            <h2>AIの回答状況を、<br />毎週自動で追跡・チェック。</h2>
-            <p>自社が候補に入った質問、競合だけが登場した質問を同じ条件で追跡。専門性や対応条件の伝え方を見直し、次の推薦獲得につなげるための候補を整理します。</p>
-            <ul className="watch-feature-list">
-              <li><strong>毎週の再測定</strong>：同じ質問パネルでAI回答の変化を確認</li>
-              <li><strong>ライバル急浮上アラート</strong>：毎週の測定で、競合の推薦状況の変化をお知らせ</li>
-              <li><strong>AI推薦データの自動更新</strong>：自社情報の変化やAIの回答傾向に合わせ、公開データを自動で最新化</li>
-            </ul>
-            <Link className="text-button" href="/watch?sample=1">追跡レポートの見本を見る <span aria-hidden="true">→</span></Link>
-          </div>
+      <section className="shell" style={{ marginTop: "56px", marginBottom: "56px" }}>
+        <div className="section-head-center" style={{ marginBottom: "30px" }}>
+          <span className="pill-badge">問題が見つかった時</span>
+          <h2>「改善してください」で終わらせず、<br />実装できる変更内容まで出す。</h2>
+          <p>対象ページ、見出し、本文、FAQ、必要に応じた構造化データなどを、確認できた事実だけで下書きします。顧客サイトへ勝手に書き込みません。</p>
         </div>
-
-        {/* 明朗価格アンカーカード */}
-        <div
-          style={{
-            background: "var(--bg-base, #ffffff)",
-            border: "1px solid var(--border-subtle, #e2e8f0)",
-            borderRadius: "var(--radius-card, 8px)",
-            padding: "clamp(24px, 4vw, 40px)",
-            boxShadow: "0 2px 12px rgba(15, 23, 42, 0.04)",
-          }}
-        >
-          <div style={{ textAlign: "center", maxWidth: "680px", margin: "0 auto 32px" }}>
-            <span className="pill-badge">明朗・適正な価格設定</span>
-            <h3 style={{ fontSize: "1.35rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 10px", lineHeight: 1.35 }}>
-              1日あたり約330円から始められる、<br />明朗な料金体系
-            </h3>
-            <p style={{ fontSize: "0.88rem", color: "var(--text-secondary, #475569)", margin: 0, lineHeight: 1.75 }}>
-              ホームページの改修も、高額な初期費用も不要。まずは無料診断で現状を確かめ、必要な場合だけ週次の自動見守りを開始できます。
-            </p>
-
+        <div style={{ maxWidth: "860px", margin: "0 auto", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "24px", background: "#f8fafc" }}>
+          <p style={{ margin: "0 0 8px", fontSize: ".74rem", color: "#64748b", fontWeight: 800 }}>変更例</p>
+          <h3 style={{ margin: "0 0 12px", fontSize: "1.05rem", color: "#0f172a" }}>/service の「対応企業」セクション</h3>
+          <p style={{ margin: "0 0 12px", color: "#475569", lineHeight: 1.7, fontSize: ".86rem" }}>購入前質問で確認できなかった対応条件を、公式情報に根拠がある範囲で明確にする案を作成。</p>
+          <div style={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "8px", padding: "16px", fontSize: ".84rem", color: "#334155", lineHeight: 1.7 }}>
+            <strong>出力:</strong> 変更先URL / 変更箇所 / 新しい見出し / 本文 / FAQ / 使用した根拠URL / 関係する購入前質問
           </div>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: "24px",
-              maxWidth: "840px",
-              margin: "0 auto",
-            }}
-          >
-            {/* プラン 1：無料診断 */}
-            <div
-              style={{
-                background: "var(--bg-surface, #f8fafc)",
-                border: "1px solid var(--border-subtle, #e2e8f0)",
-                borderRadius: "var(--radius-card, 8px)",
-                padding: "28px 24px",
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
-              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
-                現状把握とAI推薦データの作成
-              </span>
-              <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
-                無料AI推薦 診断レポート
-              </h4>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>0円</span>
-                <span style={{ fontSize: "0.78rem", color: "var(--text-muted, #64748b)" }}>（カード登録不要・自動課金なし）</span>
-              </div>
-              <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
-                <li>固定した{FREE_PANEL_SIZE}問の質問パネルでの診断レポート</li>
-                <li>自社専用のAI推薦データ（自動下書き）</li>
-                <li>ホームページの改修・新たな開設も不要</li>
-                <li>クレジットカード登録不要・自動課金なし</li>
-              </ul>
-              <a
-                href="#scan"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  background: "var(--color-brand, #0f172a)",
-                  color: "#ffffff",
-                  fontSize: "0.86rem",
-                  fontWeight: 700,
-                  minHeight: "48px",
-                  padding: "0 20px",
-                  borderRadius: "var(--radius-btn, 6px)",
-                  textDecoration: "none",
-                  transition: "background 0.15s ease",
-                }}
-              >
-                <span>まずは無料で診断してみる</span>
-                <ArrowIcon />
-              </a>
-            </div>
-
-            {/* プラン 2：週次測定 */}
-            <div
-              style={{
-                background: "var(--bg-base, #ffffff)",
-                border: "2px solid var(--color-brand, #0f172a)",
-                borderRadius: "var(--radius-card, 8px)",
-                padding: "28px 24px",
-                display: "flex",
-                flexDirection: "column",
-                position: "relative",
-                boxShadow: "0 4px 16px rgba(15, 23, 42, 0.06)",
-              }}
-            >
-              <span
-                style={{
-                  position: "absolute",
-                  top: "-11px",
-                  right: "20px",
-                  background: "var(--color-brand, #0f172a)",
-                  color: "#ffffff",
-                  fontSize: "0.68rem",
-                  fontWeight: 700,
-                  padding: "2px 10px",
-                  borderRadius: "var(--radius-badge, 4px)",
-                  fontFamily: "var(--font-mono, monospace)",
-                }}
-              >
-                おすすめ
-              </span>
-                <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted, #64748b)", fontFamily: "var(--font-mono, monospace)", marginBottom: "6px" }}>
-                継続運用・AI推薦の監視
-              </span>
-              <h4 style={{ fontSize: "1.2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)", margin: "0 0 12px" }}>
-                毎週の自動見守りプラン
-              </h4>
-              <div style={{ display: "flex", alignItems: "baseline", gap: "6px", marginBottom: "16px" }}>
-                <span style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary, #0f172a)" }}>{WATCH_MONTHLY_PRICE_LABEL}</span>
-              </div>
-              <ul style={{ margin: "0 0 24px", paddingLeft: "18px", fontSize: "0.84rem", color: "var(--text-secondary, #475569)", lineHeight: 1.8, flex: 1 }}>
-                <li>1日約330円（税別9,800円・月単位でいつでも解約可能）</li>
-                <li>自社サイトの改修不要・サイトをお持ちでない場合も開設不要</li>
-                <li>御社の強みをAIが正しく読む公開ページの常時維持</li>
-                <li>毎週の推薦状況を自動チェック・変化時の自動調整</li>
-              </ul>
-
-              <Link
-                href="/pricing"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  background: "var(--bg-surface, #f8fafc)",
-                  border: "1px solid var(--border-subtle, #cbd5e1)",
-                  color: "var(--text-primary, #0f172a)",
-                  fontSize: "0.86rem",
-                  fontWeight: 700,
-                  minHeight: "48px",
-                  padding: "0 20px",
-                  borderRadius: "var(--radius-btn, 6px)",
-                  textDecoration: "none",
-                }}
-              >
-                <span>料金プランの詳細を見る</span>
-                <ArrowIcon />
-              </Link>
-            </div>
-          </div>
-
-          <p style={{ textAlign: "center", fontSize: "0.74rem", color: "#94a3b8", margin: "20px 0 0" }}>
-            ※ クレジットカード登録は不要です。無料診断のあとに自動で課金されることは一切ありません。継続的な見守りをご希望の方のみお申し込みいただけます。
-          </p>
         </div>
       </section>
 
-      {/* ================================================================= */}
-      {/* 7. 最終アクション：迷わず押せるワンアクション */}
-      {/* ================================================================= */}
+      <section className="landing-watch-pricing-section shell" style={{ marginTop: "56px", marginBottom: "56px" }}>
+        <div className="section-head-center" style={{ marginBottom: "30px" }}>
+          <span className="pill-badge">継続監視</span>
+          <h2>毎週レポートを読むサービスではなく、<br />重要な変化を見逃さないためのWatch。</h2>
+          <p>平常時は作業不要。候補落ち・AI誤情報・新しい競合など、確認すべき変化が出た時に分かる状態を維持します。</p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px", maxWidth: "920px", margin: "0 auto 32px" }}>
+          {[
+            ["候補落ち", "前回は候補入りしていた重要質問で、今回候補外が優勢になった変化を検出。"],
+            ["AI誤情報", "料金・利用条件・機能など、公式情報と明確に矛盾する新しい説明を検出。"],
+            ["競合・参照元", "新しく現れた競合候補や、AIが使う外部情報源の変化を記録。"],
+          ].map(([title, body]) => (
+            <article key={title} style={{ border: "1px solid #e2e8f0", borderRadius: "10px", padding: "20px", background: "#fff" }}>
+              <h3 style={{ margin: "0 0 8px", fontSize: ".98rem", color: "#0f172a" }}>{title}</h3>
+              <p style={{ margin: 0, color: "#475569", fontSize: ".83rem", lineHeight: 1.7 }}>{body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div style={{ background: "#fff", border: "1px solid #cbd5e1", borderRadius: "12px", padding: "clamp(24px, 4vw, 38px)", maxWidth: "860px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "26px" }}>
+            <span className="pill-badge">料金</span>
+            <h3 style={{ margin: "10px 0 8px", fontSize: "1.35rem", color: "#0f172a" }}>まず無料で現状確認。必要なら継続監視。</h3>
+            <p style={{ margin: 0, color: "#64748b", fontSize: ".84rem" }}>無料診断から自動で課金されることはありません。</p>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "18px" }}>
+            <div style={{ border: "1px solid #e2e8f0", borderRadius: "10px", padding: "22px" }}>
+              <span style={{ fontSize: ".74rem", fontWeight: 800, color: "#64748b" }}>無料診断</span>
+              <strong style={{ display: "block", fontSize: "1.8rem", margin: "8px 0 14px", color: "#0f172a" }}>0円</strong>
+              <ul style={{ paddingLeft: "18px", margin: "0 0 20px", color: "#475569", fontSize: ".82rem", lineHeight: 1.8 }}>
+                <li>{FREE_PANEL_SIZE}問の購入前質問で初回診断</li>
+                <li>候補落ち・競合・参照元を確認</li>
+                <li>取得できた公式情報との事実照合</li>
+              </ul>
+              <a href="#scan" style={{ display: "inline-flex", alignItems: "center", gap: "7px", fontWeight: 800, color: "#0f172a", textDecoration: "none" }}>無料で診断する <ArrowIcon /></a>
+            </div>
+            <div style={{ border: "2px solid #0f172a", borderRadius: "10px", padding: "22px" }}>
+              <span style={{ fontSize: ".74rem", fontWeight: 800, color: "#64748b" }}>Watch</span>
+              <strong style={{ display: "block", fontSize: "1.5rem", margin: "8px 0 14px", color: "#0f172a" }}>{WATCH_MONTHLY_PRICE_LABEL}</strong>
+              <ul style={{ paddingLeft: "18px", margin: "0 0 20px", color: "#475569", fontSize: ".82rem", lineHeight: 1.8 }}>
+                <li>重要な購入前質問を継続観測</li>
+                <li>候補落ち・誤情報・新競合の異常検知</li>
+                <li>問題発生時のChange Pack</li>
+              </ul>
+              <Link href="/pricing" style={{ display: "inline-flex", alignItems: "center", gap: "7px", fontWeight: 800, color: "#0f172a", textDecoration: "none" }}>料金の詳細を見る <ArrowIcon /></Link>
+            </div>
+          </div>
+          <p style={{ textAlign: "center", fontSize: ".72rem", color: "#94a3b8", margin: "18px 0 0", lineHeight: 1.6 }}>※ 表示価格に対応するStripe Price IDは本番公開前に設定確認が必要です。</p>
+        </div>
+      </section>
+
       <section className="landing-final-cta">
         <div className="shell">
-            <span className="pill-badge">URL・社名だけで開始。自社サイト改修ゼロ。</span>
-            <h2>御社はAIから「おすすめ」されていますか？<br />まずは無料診断で、自社の現状をご確認ください。</h2>
+          <span className="pill-badge">URL・社名だけで開始</span>
+          <h2>AIの中で、御社がどう扱われているか。<br />まず無料で確認する。</h2>
           <ScanForm compact />
           <div className="hero-trust-badges" style={{ justifyContent: "center", marginTop: "18px" }} aria-label="サービスの特長">
-            <div className="trust-badge">
-              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 8.5L6.5 12L13 4" />
-              </svg>
-              <span>URLまたは社名を入力</span>
-            </div>
-            <div className="trust-badge">
-              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 8.5L6.5 12L13 4" />
-              </svg>
-              <span>HPの改修・開設も不要</span>
-            </div>
-            <div className="trust-badge">
-              <svg className="badge-check" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M3 8.5L6.5 12L13 4" />
-              </svg>
-              <span>完全無料・自動課金なし</span>
-            </div>
+            <div className="trust-badge"><span>サイト権限不要</span></div>
+            <div className="trust-badge"><span>カード登録不要</span></div>
+            <div className="trust-badge"><span>自動課金なし</span></div>
           </div>
         </div>
       </section>

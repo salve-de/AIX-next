@@ -1,80 +1,76 @@
 # Rovan（ロヴァン）
 
-正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。名称と移行時の互換性は [改名記録](docs/ROVAN_BRAND_MIGRATION.md) を参照してください。
+正式サービス名は **Rovan**、日本語の読みは **ロヴァン**。
 
-公開準備の修正・Safari実操作・未完了項目は [2026-09-07 リリース作業記録](docs/RELEASE_2026-09-07.md) を参照してください。コードの検証と本番公開は別です。現時点で本番公開・一般販売の完了を示す記録ではありません。
+> **Rovanは、AIが購買前の利用者に対して御社をどう選び、どう説明しているかを監視する「AI購買監査」サービスです。**
 
-価値提案・北極星・許可に基づく自動更新の修復内容と未復旧機能は [2026-09-07 修復記録](docs/REPAIR_2026-09-07_PRODUCT_INTENT.md) を参照してください。
-
-> **大手に埋もれず、専門性でAIのおすすめ獲得を目指す。自社サイト改修ゼロの情報補強・継続測定。**
-
----
+2026-09-09時点の新しい商品契約は [`docs/AI_BUYING_AUDIT_PRODUCT_2026-09-09.md`](docs/AI_BUYING_AUDIT_PRODUCT_2026-09-09.md) を優先します。過去の「AIおすすめ獲得」「公開ページ中心」の文書は履歴として残りますが、現在の主商品定義ではありません。
 
 ## 現在のプロダクト契約
 
-Rovanは、会社・商品・サービス名またはURLを起点に、自社のニッチな強みでAI推薦候補を取り戻すための情報補強・継続測定を提供します。全ユーザーの会話やAI内部順位を取得するものではありません。
+会社・商品・サービス名またはURLを起点に、Rovanは次を行います。
 
-- 実測値は、質問・AI・モデル・地域・言語・測定時点と、成功した観測数を添えて表示する。
-- 会社名を入力した場合は、見つかった公開サイト候補を利用者が確認してから測定する。
-- 初回の公開確認と許可後、有効な有料Watchは同じ参照元サイトの短い記載をRovan公開ページへ自動更新する。停止・直前取り消しが可能。自由文Change Packは下書きのまま扱い、顧客サイトには書き込まない。
-- 公開情報は、参照元で確認できる事実と入力者が確認した内容に限定する。AIの推薦・順位・問い合わせ・売上は保証しない。
-- 北極星はAI顧客奪還シェア（固定50問の候補入り割合）。WatchでAI別の成功分母・欠損・同条件の前後推移を示す。初回候補外からの回復率とは別であり、実際の顧客シェアではない。
+1. 公開情報から会社・商品・市場・競合を理解する。
+2. 比較・価格・用途・対象顧客など、購入判断に近いBuyer Promptを優先する。
+3. OpenAI / Gemini / Perplexityを同じ宣言条件で観測し、自社・競合・Citationを記録する。
+4. 重要質問で自社が候補から落ちている場面を抽出する。
+5. AI回答と対象企業の公式サイト本文に明確な事実矛盾がある場合だけ「AI誤情報」として表示する。
+6. Watchで、候補落ち・候補入り回復・新しい競合・新しい誤情報・外部参照元の変化を継続監視する。
+7. 問題が見つかった場合、対象ページ・見出し・本文・FAQ・根拠を含むChange Packを人間確認用に作る。
 
-現行の開発ルールは [`AGENTS.md`](AGENTS.md)、現行のプロダクト方針は [`docs/CORE_PRODUCT_STRATEGY.md`](docs/CORE_PRODUCT_STRATEGY.md)、継続測定の定義は [`docs/CONTINUOUS_VALUE_RETENTION.md`](docs/CONTINUOUS_VALUE_RETENTION.md) を参照してください。履歴・旧案はマスター白書とオーナー台帳に保存しています。
+Rovanは全利用者のAI会話やAI内部順位を取得しません。候補外を実際の顧客流出とは扱いません。前後差だけで施策の因果効果を断定しません。
 
----
+### 主役から外した機能
 
-Rovan is an AI buyer-consideration improvement product for Japanese B2B companies.
+以下は削除せず補助機能・実験対象として残します。
 
-It starts with a company, service, product name, or URL and answers the commercial question that matters before a buyer contacts sales:
+- Rovan-hosted公開情報参照ページ
+- `llms.txt` 下書き
+- JSON-LD下書き
 
-> When a buyer asks ChatGPT or another AI to compare vendors, which buying questions exclude this company, which competitor is selected instead, what observable evidence explains the difference, what should the company change first, and did the same decision surface improve after that change?
+これらを公開するだけでAIの推薦・引用・順位が改善すると保証しません。
 
-The product loop is:
+### 必須にしない接続
 
-```text
-FIND where the company is excluded
-→ EXPLAIN who wins and why
-→ ACT with a human-reviewable Change Pack
-→ PROVE what moved under comparable remeasurement
-```
+初期商品では以下を要求しません。
 
-Rovan does not treat Buyer Prompt counts as customers or revenue and does not claim a universal ChatGPT rank.
+- GitHub接続
+- WordPress管理者権限
+- FTP
+- 顧客CMSへの自動書き込み
 
-## Product flow
+無料診断とWatchは、公開情報の取得とAI観測を中心に動作します。
+
+## Product loop
 
 ```text
 Company / product name or URL
-→ public-site candidate resolution when a name is entered
-→ user confirms the public site to diagnose
+→ confirm the public site when name resolution is used
 → bounded public-site crawl
-→ company / brand / market / competitor discovery
-→ Buyer Prompt panel
+→ company / market / competitor discovery
+→ prioritize commercially relevant Buyer Prompts
 → OpenAI / Gemini / Perplexity observations
-→ shortlist outcomes and Citations
-→ Evidence gaps and first Action
-→ 14-day Watch
-→ paid weekly remeasurement
-→ Change Pack (title / lead / sections / FAQ / publish checks)
-→ optional AI-readable public-information draft (`llms.txt` / JSON-LD)
-→ next comparable measurement
+→ candidate gaps / competitors / Citations
+→ conservative fact-accuracy check against official pages
+→ Watch anomaly detection
+→ human-reviewable Change Pack when action is needed
+→ comparable remeasurement
 ```
 
 ## What is implemented
 
 ### Public product
 
-- outcome-led landing page with a first-viewport fictional result;
-- ungated scan from a company, service, product name, or URL;
-- public-site candidate search for name input, with explicit candidate confirmation before crawling;
+- URL / company / product / service input;
+- public-site candidate confirmation for name input;
 - streamed scan progress;
-- fully fictional result and Watch samples;
-- one-page result showing excluded Buyer Prompts, competitors, Citations, Evidence gaps and first Action;
-- explicit bridge from diagnosis → Action → remeasurement;
-- 14-day free Watch conversion;
-- Watch focused on improvement verification rather than activity logging;
-- paid Weekly Watch pricing and continuation;
-- responsive desktop and mobile UI;
+- fictional result and Watch samples;
+- AI Buying Audit panel on the result surface;
+- candidate-gap count for commercially important prompts;
+- explicit AI-vs-official fact mismatches only when both source texts support the contradiction;
+- external citation-domain summary;
+- free diagnosis without automatic billing;
+- paid Watch pricing and continuation;
 - pricing, methodology, privacy, terms and data-rights surfaces.
 
 ### Scan engine
@@ -85,36 +81,38 @@ Company / product name or URL
 - sitemap and bounded crawl;
 - company, brand, market, buyer, use-case and competitor discovery;
 - Buyer Prompt generation;
+- commercial-intent prioritization for buying audit;
 - OpenAI web-search adapter;
 - Gemini Google Search grounding adapter;
 - Perplexity Sonar adapter;
 - raw answers and Citations;
 - deterministic shortlist extraction;
 - Recommendation Coverage, First Choice Rate, Mention Coverage, Citation Coverage, Repeat Agreement and Measurement Completeness;
+- candidate-risk and citation-dependency derivation;
+- conservative fact-accuracy verification;
 - Evidence and Action analysis;
 - partial-result handling;
 - per-IP and per-domain free-scan limits.
-- per-IP name-resolution limits to protect paid search usage.
 
 ### Watch, execution and billing
 
 - private Watch token;
 - baseline and weekly history;
-- private company Evidence answers;
 - comparable Core remeasurement;
-- movement tracking for newly shortlisted / newly excluded Buyer Prompts;
+- candidate-drop and recovery detection;
+- new-competitor detection;
+- new-fact-error detection;
+- new-external-citation-domain detection;
+- buying-audit alert email when actionable new risk appears;
+- private company Evidence answers;
 - Change Pack generator using only public or company-asserted facts;
 - persisted Change Pack on Watch;
-- on-demand paid Change Pack endpoint;
-- automatic Change Pack generation after paid Watch measurement when provider configuration is available;
-- AI-readable public-information draft generated from crawled pages, with `llms.txt` and JSON-LD downloads;
-- optional Rovan-hosted public company profile with preview, explicit publish/revoke, expiry, source links where available, HTML/JSON/Markdown output and a dedicated sitemap;
-- market relation map, purchase-question demand proxy and page-level content-quality checks derived from the same public scan;
-- AI visibility audit that checks crawler access, indexability, sitemap/canonical signals, page clarity, buyer facts, public proof and measurement completeness;
-- stale Change Pack invalidation after Evidence updates;
+- optional AI-readable public-information draft;
+- optional Rovan-hosted public company profile;
+- market relation map, purchase-question demand proxy and page-level content-quality checks;
+- AI visibility audit for crawler/indexability/site-quality signals;
 - protected weekly scheduler route;
-- Stripe Subscription Checkout;
-- signed Stripe lifecycle webhook;
+- Stripe Subscription Checkout and signed lifecycle webhook;
 - Supabase persistence with local in-memory fallback.
 
 Change Packs are drafts for human approval. Rovan does not directly publish to the customer site.
@@ -132,7 +130,7 @@ Free Scan:
 = up to 36 observations
 ```
 
-Paid Weekly Watch Core measurement:
+Paid Watch Core measurement currently retains the existing fixed panel design:
 
 ```text
 50 fixed Core Prompts
@@ -141,16 +139,25 @@ Paid Weekly Watch Core measurement:
 = up to 450 observations per full Core run
 ```
 
-Failed and unconfigured provider calls reduce Measurement Completeness. They are not counted as negative recommendations.
+The Buying Audit UI prioritizes the commercially relevant subset instead of presenting all prompts as equally important. Failed and unconfigured provider calls reduce Measurement Completeness; they are not counted as negative recommendations.
 
-## Run the current implementation locally
+## Pricing
 
-The active implementation is on `feature/positioning-autopilot`, not `main`.
+Current validation price in the codebase:
+
+- Free diagnosis: ¥0
+- Watch: **¥19,800 / month (tax included)**
+
+`STRIPE_PRICE_ID` is an external environment setting. Before production, it must be verified to point to the same ¥19,800 price. Changing `lib/pricing.ts` alone does not change a Stripe product price.
+
+## Run locally
+
+The current PR implementation is on `feature/ai-buying-audit` and targets `feature/positioning-autopilot`.
 
 ```bash
 git clone https://github.com/salve-de/rovan.git
 cd rovan
-git checkout feature/positioning-autopilot
+git checkout feature/ai-buying-audit
 npm ci
 cp .env.example .env.local
 npm run dev -- -p 3001
@@ -164,7 +171,7 @@ http://localhost:3001/result?sample=1
 http://localhost:3001/watch?sample=1
 ```
 
-The fictional sample surfaces do not require provider credentials. A real URL scan requires the relevant provider configuration and must not be represented as verified until it has actually completed. Name input requires at least one configured public-search provider (OpenAI, Gemini, or Perplexity); the UI asks the user to confirm the returned public-site candidate before crawling.
+Fictional sample surfaces do not require provider credentials. Real scans require relevant provider configuration and must not be represented as verified until they complete.
 
 ## Environment
 
@@ -172,30 +179,25 @@ Use `.env.example` as the authoritative variable inventory. Do not commit secret
 
 The product can use:
 
-- OpenAI for discovery/search and Change Pack generation;
+- OpenAI for discovery/search, fact checking and Change Pack generation;
 - Gemini and Perplexity for additional AI observation surfaces;
 - Supabase for durable scan/Watch/rate-limit/run persistence;
-- Stripe for paid Weekly Watch billing;
-- mail configuration for Watch notifications where configured;
+- Stripe for paid Watch billing;
+- Resend/mail configuration for Watch notifications;
 - `CRON_SECRET` for the protected Watch scheduler.
 
 ## Database
 
-Apply every migration in `supabase/migrations/` in numeric order. Do not stop at the original core migrations; later migrations add Watch idempotency, Stripe identifiers, claim leases, durable measurement runs, finalize semantics and persisted Change Packs.
-
-Current sequence includes `001_core.sql` through `011_privacy_delete.sql`.
+Apply every migration in `supabase/migrations/` in numeric order. Current repository sequence includes `001_core.sql` through `012_profile_automation.sql`.
 
 Without Supabase, local development uses a single-process in-memory store. It is not suitable for multi-instance production.
 
 ## Autonomous Watch Scheduler
 
-The repository includes a Cloud Run Jobs / Cloud Scheduler deployment path for long-running Watch measurements. Production deployment, quotas, parallelism and operating cost must be verified in the target Google Cloud project; the script alone is not deployment evidence.
+The repository includes a Cloud Run Jobs / Cloud Scheduler deployment path for long-running Watch measurements. Production deployment, quotas, parallelism and operating cost must be verified in the target Google Cloud project.
 
 ```bash
-# Deploy after verifying the target project, secrets, quotas and IAM
 ./scripts/deploy-cloud-run-job.sh
-
-# Run locally or inside container:
 npm run watch:job
 ```
 
@@ -216,15 +218,14 @@ npm run check
 
 A passing check is required before claiming a code change is release-ready.
 
-## Product decisions and research
+## Current product decisions
 
-- [`docs/PRODUCT_STRATEGY.md`](docs/PRODUCT_STRATEGY.md)
-- [`docs/VALUE_PROPOSITION_RESEARCH_2026-09-02.md`](docs/VALUE_PROPOSITION_RESEARCH_2026-09-02.md)
-- [`docs/UX_RATIONALE.md`](docs/UX_RATIONALE.md)
+- [`docs/AI_BUYING_AUDIT_PRODUCT_2026-09-09.md`](docs/AI_BUYING_AUDIT_PRODUCT_2026-09-09.md) — current product contract
+- [`docs/CORE_PRODUCT_STRATEGY.md`](docs/CORE_PRODUCT_STRATEGY.md) — product strategy; update together with the current contract
 - [`docs/MEASUREMENT.md`](docs/MEASUREMENT.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
-- [`docs/CHAT_HANDOFF_2026-09-02.md`](docs/CHAT_HANDOFF_2026-09-02.md)
-- [`docs/CHANGELOG_2026-09-06_FULL_AUDIT.md`](docs/CHANGELOG_2026-09-06_FULL_AUDIT.md) — 2026-09-06全体監査・修正・検証記録
+- [`docs/RELEASE_2026-09-07.md`](docs/RELEASE_2026-09-07.md) — prior release preparation record
+- [`docs/ROVAN_BRAND_MIGRATION.md`](docs/ROVAN_BRAND_MIGRATION.md)
 
 ## Safety and truth boundaries
 
@@ -235,8 +236,10 @@ A passing check is required before claiming a code change is release-ready.
 - missing credentials never produce fabricated live observations;
 - company Evidence is private by default;
 - Buyer Prompts are not customers or leads;
+- candidate gaps are not actual lost customers;
+- fact errors require explicit AI-answer text and explicit contradictory official-site text;
 - no universal rank, recommendation, Citation, inquiry or revenue guarantee;
 - no causal claim from a simple before/after movement;
 - no invented customer results, implementation times, certifications or ROI;
 - no direct customer-site write without explicit approval and rollback design;
-- AI-readable drafts are human-reviewed aids; they do not guarantee AI recommendation, citation or search ranking.
+- AI-readable drafts and public profile pages do not guarantee AI recommendation, citation or search ranking.
