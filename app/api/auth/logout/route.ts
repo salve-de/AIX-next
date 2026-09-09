@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { buildClearCookieHeader } from "@/lib/auth";
 
-export async function POST(request: Request) {
-  const url = new URL(request.url);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function POST(_request?: Request) {
   const response = NextResponse.json({ ok: true });
   response.headers.set("Set-Cookie", buildClearCookieHeader());
   return response;
