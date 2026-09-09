@@ -5,12 +5,15 @@ import { siteUrl } from "@/lib/site";
 import "./globals.css";
 import "./rovan-brand.css";
 
+const title = "Rovan（ロヴァン）— AI上の候補落ち・誤情報・競合変化を監視";
+const description = "購入前の重要な質問をOpenAI・Gemini・Perplexityで観測し、候補落ち、AIの説明と公式情報の明確な食い違い、競合・参照元の変化を監視。問題時は修正案まで整理します。";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Rovan（ロヴァン）— ChatGPTに、御社はおすすめされていますか？", template: "%s | Rovan" },
-  description: "自社サイトの改修・新規開設は不要。社名からAI推薦の現状を診断し、御社の強みを伝えるAI推薦データを作成。公開後の推薦状況を毎週追跡します。",
+  title: { default: title, template: "%s | Rovan" },
+  description,
   applicationName: BRAND.name,
-  openGraph: { siteName: BRAND.name, type: "website", locale: "ja_JP", title: "Rovan（ロヴァン）— ChatGPTに、御社はおすすめされていますか？", description: "自社サイトの改修・新規開設は不要。社名からAI推薦の現状を診断し、御社の強みを伝えるAI推薦データを作成。公開後の推薦状況を毎週追跡します。", url: "/" },
+  openGraph: { siteName: BRAND.name, type: "website", locale: "ja_JP", title, description, url: "/" },
   icons: { icon: "/favicon.svg" },
 };
 
