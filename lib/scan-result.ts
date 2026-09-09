@@ -1,4 +1,6 @@
 import "server-only";
+import { buildBuyingAudit } from "@/lib/buying-audit";
+import { setBuyingAudit } from "@/lib/buying-audit-core";
 import { buildContentQuality } from "@/lib/content-quality";
 import { buildDemandProxy } from "@/lib/demand-proxy";
 import { analyzeEvidence } from "@/lib/discovery";
@@ -64,5 +66,6 @@ export async function buildScanResult(input: {
   result.demandProxy = buildDemandProxy({ result, generatedAt: result.measuredAt });
   result.contentQuality = buildContentQuality({ result, pages: input.pages, generatedAt: result.measuredAt });
   result.positioning = derivePositioningAdvice(result);
+  setBuyingAudit(result, await buildBuyingAudit({ result, pages: input.pages }));
   return result;
 }

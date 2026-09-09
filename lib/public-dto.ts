@@ -8,12 +8,14 @@ import type {
   WatchRecord,
   TakeBackShareMetric,
 } from "@/lib/types";
+import type { BuyingAudit } from "@/lib/buying-audit-core";
+import { getBuyingAudit } from "@/lib/buying-audit-core";
 import { takeBackShare } from "@/lib/measurement";
 import { northStarShare } from "@/lib/north-star";
 
 /**
  * Fields needed by the Watch screen, without provider answers or operational
- * accounting details.  Watch is addressed by its bearer token, so returning
+ * accounting details. Watch is addressed by its bearer token, so returning
  * more than this shape would unnecessarily widen the impact of a leaked URL.
  */
 export type PublicObservation = Pick<
@@ -44,6 +46,7 @@ export type PublicScanResult = Omit<
 > & {
   observations: PublicObservation[];
   lostPrompts: PublicLostPrompt[];
+  buyingAudit?: BuyingAudit;
 };
 
 export type PublicAiReadableDraft = Omit<AiReadableDraft, "sourceMeasurementId">;
@@ -126,6 +129,7 @@ function publicLostPrompt(lostPrompt: LostPrompt): PublicLostPrompt {
 }
 
 export function toPublicScanResult(result: ScanResult): PublicScanResult {
+  const buyingAudit = getBuyingAudit(result);
   return {
     scanId: result.scanId,
     targetUrl: result.targetUrl,
@@ -151,6 +155,7 @@ export function toPublicScanResult(result: ScanResult): PublicScanResult {
     marketMap: result.marketMap,
     demandProxy: result.demandProxy,
     contentQuality: result.contentQuality,
+    ...(buyingAudit ? { buyingAudit } : {}),
   };
 }
 
